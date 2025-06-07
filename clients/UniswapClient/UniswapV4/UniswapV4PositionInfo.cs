@@ -21,6 +21,8 @@ public class UniswapV4PositionInfo : IUniswapPosition
     public required BigInteger FeeGrowthInside1LastX128 { get; init; }
     
     public required BigInteger PositionId { get; init; }
+    
+    public int ProtocolVersion => 4;
 
     public required UniswapV4PoolKey PoolKey { get; init; } = null!;
 }

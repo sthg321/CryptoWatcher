@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CryptoWatcher.Data")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3fcfca772941d7fa563e0057cf60a6acd42c8c4f")]
 [assembly: System.Reflection.AssemblyProductAttribute("CryptoWatcher.Data")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CryptoWatcher.Data")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

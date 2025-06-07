@@ -51,12 +51,12 @@ public class TokenService
             cancellationToken: ct);
     }
     
-    public async ValueTask<decimal> GetTokenPriceByTokenSymbolAsync(string tokenAddress, CancellationToken ct)
+    public async ValueTask<decimal> GetTokenPriceByTokenSymbolAsync(string symbol, CancellationToken ct)
     {
-        var cacheKey = string.Format(CacheKeys.TokenPrice.TokenPriceInUsdByTokenSymbolCacheKeyTemplate, tokenAddress);
+        var cacheKey = string.Format(CacheKeys.TokenPrice.TokenPriceInUsdByTokenSymbolCacheKeyTemplate, symbol);
         return await _cache.GetOrCreateAsync(cacheKey, async token =>
             {
-                var result = await _coinGeckoTokenPriceProvider.GetTokenPriceInUsdAsync(tokenAddress, token);
+                var result = await _coinGeckoTokenPriceProvider.GetTokenPriceInUsdAsync(symbol, token);
 
                 return result;
             },

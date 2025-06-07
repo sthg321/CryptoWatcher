@@ -46,4 +46,9 @@ public interface IUniswapPosition
     /// Gets the identifier for the liquidity position within the Uniswap pool.
     /// </summary>
     BigInteger PositionId { get; }
+    
+    /// <summary>
+    /// Protocol version
+    /// </summary>
+    int ProtocolVersion { get; }
 }

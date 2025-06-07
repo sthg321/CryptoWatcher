@@ -15,3 +15,4 @@ E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Application\obj\Deb
 E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Application\obj\Debug\net9.0\ref\CryptoWatcher.Application.dll
 E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Application\bin\Debug\net9.0\UniswapClient.dll
 E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Application\bin\Debug\net9.0\UniswapClient.pdb
+E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Application\obj\Debug\net9.0\CryptoWatcher.Application.sourcelink.json

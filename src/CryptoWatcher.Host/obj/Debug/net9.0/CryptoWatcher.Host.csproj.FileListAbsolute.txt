@@ -236,3 +236,4 @@ E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\bin\Debug\net9
 E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\bin\Debug\net9.0\System.Threading.Channels.dll
 E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\bin\Debug\net9.0\AaveClient.dll
 E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\bin\Debug\net9.0\AaveClient.pdb
+E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\obj\Debug\net9.0\CryptoWatcher.Host.sourcelink.json

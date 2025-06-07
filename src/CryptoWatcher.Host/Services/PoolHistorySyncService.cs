@@ -142,11 +142,15 @@ public class PoolHistorySyncService
             NetworkName = network.Name,
             CreatedAt = DateOnly.FromDateTime(DateTime.Now),
             IsActive = position.Liquidity != 0,
+            Token0Symbol = tokensEnriched.Token0.Symbol,
+            Token1Symbol = tokensEnriched.Token1.Symbol,
+            
             Token0Amount = tokensEnriched.Token0.Amount,
             Token1Amount = tokensEnriched.Token1.Amount,
             
             Token0PriceInUsd = tokensEnriched.Token0.PriceInUsd,
             Token1PriceInUsd = tokensEnriched.Token1.PriceInUsd,
+            
             WalletAddress = wallet.Address,
             PositionId = (ulong)position.PositionId
         };
@@ -166,6 +170,8 @@ public class PoolHistorySyncService
             Token1Amount = poolInfo.Token1.Amount,
             Token0PriceInUsd = poolInfo.Token0.PriceInUsd,
             Token1PriceInUsd = poolInfo.Token1.PriceInUsd,
+            Token0Symbol = poolInfo.Token0.Symbol,
+            Token1Symbol = poolInfo.Token1.Symbol,
 
             Token0FeesUnclaimed = feeInfo.Token0.Amount,
             Token1FeesUnclaimed = feeInfo.Token1.Amount,

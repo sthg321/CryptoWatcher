@@ -1,10 +1,5 @@
-using CryptoWatcher.Abstractions.Integrations;
-using CryptoWatcher.Application.Uniswap.V3;
-using CryptoWatcher.Application.Uniswap.V4;
 using CryptoWatcher.Entities;
-using CryptoWatcher.Host.Services.Uniswap.V3;
 using CryptoWatcher.Models;
-using Microsoft.Extensions.DependencyInjection;
 using Nethereum.Web3;
 using UniswapClient.Models;
 using UniswapClient.UniswapV3;
@@ -14,21 +9,34 @@ namespace CryptoWatcher.Application.Uniswap;
 
 public class UniswapProvider
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly UniswapV3Client _uniswapV3Client;
+    private readonly UniswapV4Client _uniswapV4Client;
 
-    public UniswapProvider(IServiceProvider serviceProvider)
+    public UniswapProvider(UniswapV3Client uniswapV3Client, UniswapV4Client uniswapV4Client)
     {
-        _serviceProvider = serviceProvider;
+        _uniswapV3Client = uniswapV3Client;
+        _uniswapV4Client = uniswapV4Client;
     }
 
     public async Task<List<IUniswapPosition>> GetPositionsAsync(Network network, Wallet wallet)
     {
         return network.Name switch
         {
-            "ZkSync" => await _serviceProvider.GetRequiredService<UniswapV3PositionFetcher>()
-                .GetPositionsAsync(network, wallet),
-            "Unichain" => await _serviceProvider.GetRequiredService<UniswapV4PositionFetcher>()
-                .GetPositionsAsync(network, wallet),
+            "ZkSync" => await _uniswapV3Client.PositionFetcher.GetPositionsDataAsync(new Web3(network.RpcUrl),
+                new NetworkInfo
+                {
+                    NetworkUrl = network.RpcUrl,
+                    MultiCallAddress = network.MultiCallAddress,
+                    NftManagerAddress = network.NftManagerAddress
+                }, wallet.Address),
+
+            "Unichain" => await _uniswapV4Client.PositionFetcher.GetPositionsDataAsync(new Web3(network.RpcUrl),
+                new NetworkInfo
+                {
+                    NetworkUrl = network.RpcUrl,
+                    MultiCallAddress = network.MultiCallAddress,
+                    NftManagerAddress = network.NftManagerAddress
+                }, wallet.Address),
             _ => throw new NotImplementedException(),
         };
     }
@@ -36,14 +44,50 @@ public class UniswapProvider
     public async Task<LiquidityPool> GetPoolAsync(IWeb3 web3, Network network,
         IUniswapPosition position)
     {
-        return network.Name switch
+        switch (position.ProtocolVersion)
         {
-            "ZkSync" => await _serviceProvider.GetRequiredService<IUniswapPoolProvider<UniswapV3PositionInfo>>()
-                .GetPoolAsync(web3, network, (UniswapV3PositionInfo)position),
+            case 3:
+            {
+                var poolAddress = await _uniswapV3Client.PoolFactory.GetPoolAddressAsync(new Web3(network.RpcUrl),
+                    network.PoolFactoryAddress, position.Token0, position.Token1);
 
-            "Unichain" => await _serviceProvider.GetRequiredService<IUniswapPoolProvider<UniswapV4PositionInfo>>()
-                .GetPoolAsync(web3, network, (UniswapV4PositionInfo)position),
-            _ => throw new NotImplementedException(),
+                var poolInfoV3 = await _uniswapV3Client.LiquidityPool.GetPoolInfoAsync(new Web3(network.RpcUrl),
+                    poolAddress,
+                    network.MultiCallAddress,
+                    position.TickLower, position.TickUpper);
+            
+                return Map(poolInfoV3);
+            }
+            case 4:
+            {
+                var poolInfoV4 = await _uniswapV4Client.LiquidityPool.GetPoolAsync(new Web3(network.RpcUrl),
+                    (position as UniswapV4PositionInfo)!);
+
+                return Map(poolInfoV4);
+            }
+            default:
+                throw new InvalidOperationException($"Protocol version {position.ProtocolVersion} not implemented");
+        }
+    }
+
+    private static LiquidityPool Map(LiquidityPoolInfo poolInfo)
+    {
+        return new LiquidityPool
+        {
+            Tick = poolInfo.Tick,
+            LowerTick = new LiquidityPoolTick
+            {
+                FeeGrowthOutside0X128 = poolInfo.LowerTick.FeeGrowthOutside0X128,
+                FeeGrowthOutside1X128 = poolInfo.LowerTick.FeeGrowthOutside1X128,
+            },
+            UpperTick = new LiquidityPoolTick
+            {
+                FeeGrowthOutside0X128 = poolInfo.UpperTick.FeeGrowthOutside0X128,
+                FeeGrowthOutside1X128 = poolInfo.UpperTick.FeeGrowthOutside1X128,
+            },
+            SqrtPriceX96 = poolInfo.SqrtPriceX96,
+            FeeGrowthGlobal0X128 = poolInfo.FeeGrowthGlobal0X128,
+            FeeGrowthGlobal1X128 = poolInfo.FeeGrowthGlobal1X128,
         };
     }
 }

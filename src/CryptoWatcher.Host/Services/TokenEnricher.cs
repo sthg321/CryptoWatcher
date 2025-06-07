@@ -29,7 +29,7 @@ public class TokenEnricher
         return new TokenInfo
         {
             Address = token.Address,
-            Symbol = await _tokenService.GetTokenSymbolAsync(web3, token.Address),
+            Symbol = symbol,
             Amount = token.Balance.ToDecimal(tokenDecimals),
             PriceInUsd = await _tokenService.GetTokenPriceByTokenSymbolAsync(symbol, ct)
         };

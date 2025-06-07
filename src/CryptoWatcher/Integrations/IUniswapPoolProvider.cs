@@ -3,7 +3,7 @@ using CryptoWatcher.Models;
 using Nethereum.Web3;
 using UniswapClient.Models;
 
-namespace CryptoWatcher.Abstractions.Integrations;
+namespace CryptoWatcher.Integrations;
 
 public interface IUniswapPoolProvider<in TPosition> where TPosition : IUniswapPosition
 {

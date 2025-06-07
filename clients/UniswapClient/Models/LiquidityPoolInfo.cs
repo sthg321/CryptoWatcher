@@ -3,7 +3,7 @@ using System.Numerics;
 namespace UniswapClient.Models;
 
 /// <summary>
-/// Represents the state of an Uniswap V3 liquidity pool.
+/// Represents the state of an Uniswap liquidity pool.
 /// </summary>
 public class LiquidityPoolInfo
 {

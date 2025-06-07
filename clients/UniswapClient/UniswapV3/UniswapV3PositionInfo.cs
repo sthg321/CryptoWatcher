@@ -23,4 +23,6 @@ public class UniswapV3PositionInfo : IUniswapPosition
     public required BigInteger FeeGrowthInside1LastX128 { get; init; }
     
     public required BigInteger PositionId { get; init; }
+
+    public int ProtocolVersion => 3;
 }

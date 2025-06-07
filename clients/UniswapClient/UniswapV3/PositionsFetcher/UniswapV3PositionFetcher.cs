@@ -24,7 +24,7 @@ internal class UniswapV3PositionFetcher : IUniswapV3PositionFetcher
         string walletAddress)
     {
         var balance = await web3.Eth.ERC20.GetContractService(network.NftManagerAddress)
-            .BalancesQueryAsync(walletAddress);
+            .BalanceOfQueryAsync(walletAddress);
 
         var tokenIds = await GetTokenIdsAsync(web3, network, walletAddress, balance);
 

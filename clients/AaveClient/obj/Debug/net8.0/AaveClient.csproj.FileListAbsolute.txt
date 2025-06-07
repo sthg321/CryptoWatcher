@@ -10,3 +10,4 @@ E:\Programming\Home projects\CryptoWatcher\clients\AaveClient\obj\Debug\net8.0\A
 E:\Programming\Home projects\CryptoWatcher\clients\AaveClient\obj\Debug\net8.0\refint\AaveClient.dll
 E:\Programming\Home projects\CryptoWatcher\clients\AaveClient\obj\Debug\net8.0\AaveClient.pdb
 E:\Programming\Home projects\CryptoWatcher\clients\AaveClient\obj\Debug\net8.0\ref\AaveClient.dll
+E:\Programming\Home projects\CryptoWatcher\clients\AaveClient\obj\Debug\net8.0\AaveClient.sourcelink.json

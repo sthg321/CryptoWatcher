@@ -3,6 +3,7 @@ using Nethereum.ABI.FunctionEncoding.Attributes;
 
 namespace UniswapClient.UniswapV3.LiquidityPool.Contracts;
 
+[FunctionOutput]
 internal class TickInfo : IFunctionOutputDTO
 {
     [Parameter("uint128", "liquidityGross", 1)]

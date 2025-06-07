@@ -10,3 +10,4 @@ E:\Programming\Home projects\CryptoWatcher\clients\UniswapClient\obj\Debug\net9.
 E:\Programming\Home projects\CryptoWatcher\clients\UniswapClient\obj\Debug\net9.0\UniswapClient.pdb
 E:\Programming\Home projects\CryptoWatcher\clients\UniswapClient\obj\Debug\net9.0\ref\UniswapClient.dll
 E:\Programming\Home projects\CryptoWatcher\clients\UniswapClient\obj\Debug\net9.0\UniswapClient.csproj.AssemblyReference.cache
+E:\Programming\Home projects\CryptoWatcher\clients\UniswapClient\obj\Debug\net9.0\UniswapClient.sourcelink.json
