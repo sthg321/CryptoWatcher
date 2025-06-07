@@ -32,4 +32,10 @@ public class LiquidityPoolPositionSnapshot
     public string NetworkName { get; init; } = null!;
 
     public LiquidityPoolPosition LiquidityPoolPosition { get; init; } = null!;
+
+    public decimal CalculateFeeInUsd()
+    {
+        return Token0FeesUnclaimed * Token0PriceInUsd +
+               Token1FeesUnclaimed * Token1PriceInUsd;
+    }
 }
