@@ -1,6 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using CryptoWatcher.Abstractions.Integrations;
+using CryptoWatcher.Integrations;
 
 namespace CryptoWatcher.Host.Integrations;
 

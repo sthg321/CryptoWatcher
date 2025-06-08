@@ -1,4 +1,4 @@
-namespace CryptoWatcher.Abstractions.Integrations;
+namespace CryptoWatcher.Integrations;
 
 /// <summary>
 /// Provides the current price of tokens in USD.

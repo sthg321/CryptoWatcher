@@ -1,6 +1,7 @@
 using System.Data;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Entities;
+using CryptoWatcher.Entities.Uniswap;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -23,11 +24,11 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
     /// </summary>
     /// <remarks>
     /// This property defines the entity set for blockchain networks, enabling the application to query and manage
-    /// network-related data stored in the database. Each network record contains essential configuration
+    /// uniswapNetwork-related data stored in the database. Each uniswapNetwork record contains essential configuration
     /// details such as RPC URLs, contract addresses, and associated historical data, which are
     /// critical for interacting with and monitoring blockchain states.
     /// </remarks>
-    public DbSet<Network> Networks => Set<Network>();
+    public DbSet<UniswapNetwork> Networks => Set<UniswapNetwork>();
 
     /// <summary>
     /// Represents the collection of user wallet entities within the application's database context.
@@ -45,7 +46,7 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
     /// </summary>
     /// <remarks>
     /// This property defines the entity set for managing and querying liquidity pool positions stored in the database.
-    /// Each record provides detailed information about token amounts, their corresponding USD values, network details,
+    /// Each record provides detailed information about token amounts, their corresponding USD values, uniswapNetwork details,
     /// and metadata regarding the liquidity pool position's activity status. It integrates with other entities such as
     /// networks to ensure comprehensive tracking of liquidity metrics.
     /// </remarks>

@@ -1,5 +1,6 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Entities;
+using CryptoWatcher.Entities.Uniswap;
 
 namespace CryptoWatcher.PoolHistorySyncFeature;
 
@@ -8,12 +9,12 @@ namespace CryptoWatcher.PoolHistorySyncFeature;
 /// </summary>
 public class PoolHistorySyncRepositoryFacade : IPoolHistorySyncRepositoryFacade
 {
-    private readonly IRepository<Network> _networkRepository;
+    private readonly IRepository<UniswapNetwork> _networkRepository;
     private readonly IRepository<Wallet> _walletRepository;
     private readonly IRepository<LiquidityPoolPosition> _liquidityPoolPositionRepository;
     private readonly IRepository<LiquidityPoolPositionSnapshot> _liquidityPoolPositionSnapshotRepository;
 
-    public PoolHistorySyncRepositoryFacade(IRepository<Network> networkRepository,
+    public PoolHistorySyncRepositoryFacade(IRepository<UniswapNetwork> networkRepository,
         IRepository<Wallet> walletRepository, IRepository<LiquidityPoolPosition> liquidityPoolPositionRepository,
         IRepository<LiquidityPoolPositionSnapshot> liquidityPoolPositionSnapshotRepository)
     {
@@ -23,7 +24,7 @@ public class PoolHistorySyncRepositoryFacade : IPoolHistorySyncRepositoryFacade
         _liquidityPoolPositionSnapshotRepository = liquidityPoolPositionSnapshotRepository;
     }
 
-    public async Task<List<Network>> GetNetworksAsync(CancellationToken ct = default)
+    public async Task<List<UniswapNetwork>> GetNetworksAsync(CancellationToken ct = default)
     {
         return await _networkRepository.ListAsync(ct);
     }
@@ -33,11 +34,11 @@ public class PoolHistorySyncRepositoryFacade : IPoolHistorySyncRepositoryFacade
         return await _walletRepository.ListAsync(ct);
     }
 
-    public async Task<List<LiquidityPoolPosition>> GetLiquidityPoolPositionsAsync(Network network, Wallet wallet,
+    public async Task<List<LiquidityPoolPosition>> GetLiquidityPoolPositionsAsync(UniswapNetwork uniswapNetwork, Wallet wallet,
         CancellationToken ct = default)
     {
         return await _liquidityPoolPositionRepository.ListAsync(
-            new GetPositionsByWalletAndNetworkSpecification(network, wallet), ct);
+            new GetPositionsByWalletAndNetworkSpecification(uniswapNetwork, wallet), ct);
     }
 
     public async Task MergePoolPositionsAsync(IList<LiquidityPoolPosition> positions,

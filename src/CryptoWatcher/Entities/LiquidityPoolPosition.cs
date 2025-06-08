@@ -1,12 +1,14 @@
+using CryptoWatcher.Entities.Uniswap;
+
 namespace CryptoWatcher.Entities;
 
 /// <summary>
 /// Represents a position in a liquidity pool, tracking the amounts and USD values of tokens,
-/// as well as associated metadata such as creation date, network information, and status.
+/// as well as associated metadata such as creation date, uniswapNetwork information, and status.
 /// </summary>
 /// <remarks>
 /// A liquidity pool position contains details about token quantities, their equivalent USD values,
-/// and the associated blockchain network. This class also includes information on whether the
+/// and the associated blockchain uniswapNetwork. This class also includes information on whether the
 /// position is currently active and the date it was created.
 /// </remarks>
 public class LiquidityPoolPosition
@@ -114,23 +116,23 @@ public class LiquidityPoolPosition
     public Wallet Wallet { get; init; } = null!;
     
     /// <summary>
-    /// Specifies the name of the network associated with the current configuration or operation.
+    /// Specifies the name of the uniswapNetwork associated with the current configuration or operation.
     /// </summary>
     /// <remarks>
-    /// This property is used to identify the network, such as a blockchain or communication network,
+    /// This property is used to identify the uniswapNetwork, such as a blockchain or communication uniswapNetwork,
     /// that the system is interacting with or utilizing for its processes.
     /// </remarks>
     public string NetworkName { get; init; } = null!;
 
     /// <summary>
-    /// Represents the blockchain network associated with the liquidity pool position.
+    /// Represents the blockchain uniswapNetwork associated with the liquidity pool position.
     /// </summary>
     /// <remarks>
-    /// This property defines the network on which the liquidity pool position operates. It provides
+    /// This property defines the uniswapNetwork on which the liquidity pool position operates. It provides
     /// details and configurations specific to the blockchain, such as RPC URL, associated addresses,
-    /// and historical data, aiding in network-specific operations and analytics.
+    /// and historical data, aiding in uniswapNetwork-specific operations and analytics.
     /// </remarks>
-    public Network Network { get; init; } = null!;
+    public UniswapNetwork UniswapNetwork { get; init; } = null!;
 
     /// <summary>
     /// Represents the collection of historical records for a liquidity pool position.

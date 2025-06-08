@@ -1,4 +1,4 @@
-namespace CryptoWatcher.Abstractions.Integrations;
+namespace CryptoWatcher.Integrations;
 
 public interface IAaveProvider
 {

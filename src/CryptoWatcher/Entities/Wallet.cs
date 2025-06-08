@@ -16,7 +16,7 @@ public class Wallet
     /// <summary>
     /// Gets the collection of liquidity pool positions associated with the wallet.
     /// Liquidity pool positions represent the user's participation in various liquidity pools,
-    /// including details such as token amounts, equivalent USD values, and network metadata.
+    /// including details such as token amounts, equivalent USD values, and uniswapNetwork metadata.
     /// </summary>
     /// <remarks>
     /// This property provides access to all the liquidity pool positions that the wallet is involved in,

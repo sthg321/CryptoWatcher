@@ -1,12 +1,13 @@
 using Ardalis.Specification;
 using CryptoWatcher.Entities;
+using CryptoWatcher.Entities.Uniswap;
 
 namespace CryptoWatcher.PoolHistorySyncFeature;
 
 public sealed class GetPositionsByWalletAndNetworkSpecification : Specification<LiquidityPoolPosition>
 {
-    public GetPositionsByWalletAndNetworkSpecification(Network network, Wallet wallet)
+    public GetPositionsByWalletAndNetworkSpecification(UniswapNetwork uniswapNetwork, Wallet wallet)
     {
-        Query.Where(position => position.Network.Name == network.Name && position.Wallet.Address == wallet.Address);
+        Query.Where(position => position.UniswapNetwork.Name == uniswapNetwork.Name && position.Wallet.Address == wallet.Address);
     }
 }

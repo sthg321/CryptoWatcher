@@ -1,12 +1,13 @@
 using CryptoWatcher.Entities;
+using CryptoWatcher.Entities.Uniswap;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CryptoWatcher.Data.Configuration;
 
-public class NetworkConfiguration : IEntityTypeConfiguration<Network>
+public class NetworkConfiguration : IEntityTypeConfiguration<UniswapNetwork>
 {
-    public void Configure(EntityTypeBuilder<Network> builder)
+    public void Configure(EntityTypeBuilder<UniswapNetwork> builder)
     {
         builder.HasKey(network => network.Name);
 
@@ -17,7 +18,7 @@ public class NetworkConfiguration : IEntityTypeConfiguration<Network>
         builder.Property(network => network.PoolFactoryAddress).HasMaxLength(256);
 
         builder.HasMany(x => x.LiquidityPoolPositions)
-            .WithOne(position => position.Network)
+            .WithOne(position => position.UniswapNetwork)
             .HasForeignKey(position => position.NetworkName)
             .IsRequired();
     }

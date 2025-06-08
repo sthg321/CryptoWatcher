@@ -1,4 +1,5 @@
 using CryptoWatcher.Entities;
+using CryptoWatcher.Entities.Uniswap;
 using CryptoWatcher.Models;
 using Nethereum.Web3;
 using UniswapClient.Models;
@@ -18,49 +19,49 @@ public class UniswapProvider
         _uniswapV4Client = uniswapV4Client;
     }
 
-    public async Task<List<IUniswapPosition>> GetPositionsAsync(Network network, Wallet wallet)
+    public async Task<List<IUniswapPosition>> GetPositionsAsync(UniswapNetwork uniswapNetwork, Wallet wallet)
     {
-        return network.Name switch
+        return uniswapNetwork.Name switch
         {
-            "ZkSync" => await _uniswapV3Client.PositionFetcher.GetPositionsDataAsync(new Web3(network.RpcUrl),
+            "ZkSync" => await _uniswapV3Client.PositionFetcher.GetPositionsDataAsync(new Web3(uniswapNetwork.RpcUrl),
                 new NetworkInfo
                 {
-                    NetworkUrl = network.RpcUrl,
-                    MultiCallAddress = network.MultiCallAddress,
-                    NftManagerAddress = network.NftManagerAddress
+                    NetworkUrl = uniswapNetwork.RpcUrl,
+                    MultiCallAddress = uniswapNetwork.MultiCallAddress,
+                    NftManagerAddress = uniswapNetwork.NftManagerAddress
                 }, wallet.Address),
 
-            "Unichain" => await _uniswapV4Client.PositionFetcher.GetPositionsDataAsync(new Web3(network.RpcUrl),
+            "Unichain" => await _uniswapV4Client.PositionFetcher.GetPositionsDataAsync(new Web3(uniswapNetwork.RpcUrl),
                 new NetworkInfo
                 {
-                    NetworkUrl = network.RpcUrl,
-                    MultiCallAddress = network.MultiCallAddress,
-                    NftManagerAddress = network.NftManagerAddress
+                    NetworkUrl = uniswapNetwork.RpcUrl,
+                    MultiCallAddress = uniswapNetwork.MultiCallAddress,
+                    NftManagerAddress = uniswapNetwork.NftManagerAddress
                 }, wallet.Address),
             _ => throw new NotImplementedException(),
         };
     }
 
-    public async Task<LiquidityPool> GetPoolAsync(IWeb3 web3, Network network,
+    public async Task<LiquidityPool> GetPoolAsync(IWeb3 web3, UniswapNetwork uniswapNetwork,
         IUniswapPosition position)
     {
         switch (position.ProtocolVersion)
         {
             case 3:
             {
-                var poolAddress = await _uniswapV3Client.PoolFactory.GetPoolAddressAsync(new Web3(network.RpcUrl),
-                    network.PoolFactoryAddress, position.Token0, position.Token1);
+                var poolAddress = await _uniswapV3Client.PoolFactory.GetPoolAddressAsync(new Web3(uniswapNetwork.RpcUrl),
+                    uniswapNetwork.PoolFactoryAddress, position.Token0, position.Token1);
 
-                var poolInfoV3 = await _uniswapV3Client.LiquidityPool.GetPoolInfoAsync(new Web3(network.RpcUrl),
+                var poolInfoV3 = await _uniswapV3Client.LiquidityPool.GetPoolInfoAsync(new Web3(uniswapNetwork.RpcUrl),
                     poolAddress,
-                    network.MultiCallAddress,
+                    uniswapNetwork.MultiCallAddress,
                     position.TickLower, position.TickUpper);
             
                 return Map(poolInfoV3);
             }
             case 4:
             {
-                var poolInfoV4 = await _uniswapV4Client.LiquidityPool.GetPoolAsync(new Web3(network.RpcUrl),
+                var poolInfoV4 = await _uniswapV4Client.LiquidityPool.GetPoolAsync(new Web3(uniswapNetwork.RpcUrl),
                     (position as UniswapV4PositionInfo)!);
 
                 return Map(poolInfoV4);

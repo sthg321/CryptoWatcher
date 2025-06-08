@@ -9,14 +9,12 @@ using CryptoWatcher.Host.Configs;
 using CryptoWatcher.Host.Extensions;
 using CryptoWatcher.Host.Integrations;
 using CryptoWatcher.Host.Services;
-using CryptoWatcher.Integrations;
 using CryptoWatcher.PoolHistorySyncFeature;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using UniswapClient.Extensions;
-using UniswapClient.UniswapV3;
 using UniswapClient.UniswapV4;
 using UniswapProvider = CryptoWatcher.Application.Uniswap.UniswapProvider;
 

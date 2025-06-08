@@ -1,6 +1,7 @@
 using CryptoWatcher.Application.Uniswap;
 using CryptoWatcher.Core;
 using CryptoWatcher.Entities;
+using CryptoWatcher.Entities.Uniswap;
 using CryptoWatcher.Models;
 using CryptoWatcher.PoolHistorySyncFeature;
 using Nethereum.Web3;
@@ -46,20 +47,20 @@ public class PoolHistorySyncService
 
             foreach (var network in networks)
             {
-                using var networkScope = _logger.BeginScope("Processing network {NetworkName}", network.Name);
+                using var networkScope = _logger.BeginScope("Processing uniswapNetwork {NetworkName}", network.Name);
 
                 var web3 = new Web3(network.RpcUrl);
                 var uniswapPositions = await _providerFactory.GetPositionsAsync(network, wallet);
 
                 if (uniswapPositions.Count == 0)
                 {
-                    _logger.LogInformation("No positions found for wallet {WalletAddress} on network {NetworkName}",
+                    _logger.LogInformation("No positions found for wallet {WalletAddress} on uniswapNetwork {NetworkName}",
                         wallet.Address, network.Name);
                     continue;
                 }
 
                 _logger.LogInformation(
-                    "Found {PositionCount} positions for wallet {WalletAddress} on network {NetworkName}",
+                    "Found {PositionCount} positions for wallet {WalletAddress} on uniswapNetwork {NetworkName}",
                     uniswapPositions.Count, wallet.Address, network.Name);
 
                 var existedPositions = (await _repositoryFacade.GetLiquidityPoolPositionsAsync(network, wallet, ct))
@@ -103,7 +104,7 @@ public class PoolHistorySyncService
                     catch (Exception ex)
                     {
                         _logger.LogError(ex,
-                            "Failed to process position {PositionId} on network {NetworkName} for wallet {WalletAddress}: {ErrorMessage}",
+                            "Failed to process position {PositionId} on uniswapNetwork {NetworkName} for wallet {WalletAddress}: {ErrorMessage}",
                             uniswapPosition.PositionId, network.Name, wallet.Address, ex.Message);
                     }
                 }
@@ -113,17 +114,17 @@ public class PoolHistorySyncService
                     await _repositoryFacade.MergePoolPositionsAsync(positions, poolPositionSnapshots, ct);
 
                     _logger.LogInformation(
-                        "Persisted {PositionCount} positions and {SnapshotCount} snapshots for network {NetworkName}",
+                        "Persisted {PositionCount} positions and {SnapshotCount} snapshots for uniswapNetwork {NetworkName}",
                         positions.Count, poolPositionSnapshots.Count, network.Name);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex,
-                        "Failed to save positions/snapshots to database for network {NetworkName}: {ErrorMessage}",
+                        "Failed to save positions/snapshots to database for uniswapNetwork {NetworkName}: {ErrorMessage}",
                         network.Name, ex.Message);
                 }
 
-                _logger.LogInformation("Completed processing network {NetworkName} for wallet {WalletAddress}",
+                _logger.LogInformation("Completed processing uniswapNetwork {NetworkName} for wallet {WalletAddress}",
                     network.Name, wallet.Address);
             }
 
@@ -134,12 +135,12 @@ public class PoolHistorySyncService
     }
 
 
-    private static LiquidityPoolPosition MapToLiquidityPoolPosition(Network network, Wallet wallet,
+    private static LiquidityPoolPosition MapToLiquidityPoolPosition(UniswapNetwork uniswapNetwork, Wallet wallet,
         IUniswapPosition position, TokenInfoPair tokensEnriched)
     {
         return new LiquidityPoolPosition
         {
-            NetworkName = network.Name,
+            NetworkName = uniswapNetwork.Name,
             CreatedAt = DateOnly.FromDateTime(DateTime.Now),
             IsActive = position.Liquidity != 0,
             Token0Symbol = tokensEnriched.Token0.Symbol,
@@ -157,7 +158,7 @@ public class PoolHistorySyncService
     }
 
     private static LiquidityPoolPositionSnapshot MapToLiquidityPoolPositionSnapshot(
-        Network network,
+        UniswapNetwork uniswapNetwork,
         IUniswapPosition position,
         LiquidityPool pool,
         TokenInfoPair poolInfo,
@@ -178,7 +179,7 @@ public class PoolHistorySyncService
  
             IsInRange = pool.Tick >= position.TickLower && pool.Tick < position.TickUpper,
             LiquidityPoolPositionId = (ulong)position.PositionId,
-            NetworkName = network.Name,
+            NetworkName = uniswapNetwork.Name,
         };
     }
 }

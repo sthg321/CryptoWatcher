@@ -1,4 +1,5 @@
 using CryptoWatcher.Entities;
+using CryptoWatcher.Entities.Uniswap;
 
 namespace CryptoWatcher.PoolHistorySyncFeature;
 
@@ -11,8 +12,8 @@ public interface IPoolHistorySyncRepositoryFacade
     /// Asynchronously retrieves a list of blockchain networks configured in the system.
     /// </summary>
     /// <param name="ct">An optional cancellation token to cancel the operation if required.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains a list of <see cref="Network"/> objects representing configured blockchain networks.</returns>
-    Task<List<Network>> GetNetworksAsync(CancellationToken ct = default);
+    /// <returns>A task that represents the asynchronous operation. The task result contains a list of <see cref="UniswapNetwork"/> objects representing configured blockchain networks.</returns>
+    Task<List<UniswapNetwork>> GetNetworksAsync(CancellationToken ct = default);
 
     /// <summary>
     /// Retrieves a list of wallets.
@@ -22,13 +23,13 @@ public interface IPoolHistorySyncRepositoryFacade
     Task<List<Wallet>> GetWalletsAsync(CancellationToken ct = default);
 
     /// <summary>
-    /// Asynchronously retrieves a list of liquidity pool positions for the specified network and wallet.
+    /// Asynchronously retrieves a list of liquidity pool positions for the specified uniswapNetwork and wallet.
     /// </summary>
-    /// <param name="network">The blockchain network for which liquidity pool positions are being retrieved.</param>
+    /// <param name="uniswapNetwork">The blockchain uniswapNetwork for which liquidity pool positions are being retrieved.</param>
     /// <param name="wallet">The wallet for which liquidity pool positions are being retrieved.</param>
     /// <param name="ct">An optional cancellation token to cancel the operation if required.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains a list of <see cref="LiquidityPoolPosition"/> objects representing the liquidity pool positions.</returns>
-    Task<List<LiquidityPoolPosition>> GetLiquidityPoolPositionsAsync(Network network, Wallet wallet,
+    Task<List<LiquidityPoolPosition>> GetLiquidityPoolPositionsAsync(UniswapNetwork uniswapNetwork, Wallet wallet,
         CancellationToken ct = default);
 
     /// <summary>
