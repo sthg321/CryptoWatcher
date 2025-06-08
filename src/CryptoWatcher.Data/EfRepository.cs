@@ -15,12 +15,12 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
     // ReSharper disable once StaticMemberInGenericType
     private static readonly Dictionary<Type, List<string>> Type2PrimaryKeyFields = new()
     {
-        [typeof(LiquidityPoolPosition)] =
-            [nameof(LiquidityPoolPosition.PositionId), nameof(LiquidityPoolPosition.NetworkName)],
-        [typeof(LiquidityPoolPositionSnapshot)] =
+        [typeof(PoolPosition)] =
+            [nameof(PoolPosition.PositionId), nameof(PoolPosition.NetworkName)],
+        [typeof(PositionFee)] =
         [
-            nameof(LiquidityPoolPositionSnapshot.Day), nameof(LiquidityPoolPositionSnapshot.LiquidityPoolPositionId),
-            nameof(LiquidityPoolPositionSnapshot.NetworkName)
+            nameof(PositionFee.Day), nameof(PositionFee.LiquidityPoolPositionId),
+            nameof(PositionFee.NetworkName)
         ],
     };
 

@@ -19,7 +19,7 @@ public class ExcelService
         var now = DateTime.Now;
         var monthStart = new DateTime(now.Year, now.Month, 1);
         var monthEnd = monthStart.AddMonths(1).AddDays(-1);
-        
+
         if (!from.HasValue || !to.HasValue)
         {
             from = DateOnly.FromDateTime(monthStart);
@@ -28,7 +28,7 @@ public class ExcelService
 
         var pools = _dbContext.LiquidityPoolPositions
             .Include(position =>
-                position.PositionSnapshots.Where(snapshot => snapshot.Day >= from.Value && snapshot.Day <= to.Value))
+                position.PositionFees.Where(snapshot => snapshot.Day >= from.Value && snapshot.Day <= to.Value))
             .Where(position => position.IsActive);
 
         var ms = new MemoryStream();
@@ -39,14 +39,15 @@ public class ExcelService
         await sheet.AddHeaderRowAsync(PoolInfoExcelRowContext.Default.PoolInfoExcel);
         foreach (var poolPosition in pools)
         {
-            foreach (var positionSnapshot in poolPosition.PositionSnapshots.OrderBy(snapshot => snapshot.Day))
+            foreach (var positionSnapshot in poolPosition.PositionFees.OrderBy(snapshot => snapshot.Day))
             {
                 await sheet.AddAsRowAsync(new PoolInfoExcel
                 {
-                    Network = poolPosition.NetworkName,
                     Day = positionSnapshot.Day.ToShortDateString(),
+                    PositionInUsd = Math.Round(poolPosition.Token0.AmountInUsd + poolPosition.Token1.AmountInUsd, 2),
                     TokenPairSymbol = $"{positionSnapshot.Token0Fee.Symbol} / {positionSnapshot.Token1Fee.Symbol}",
-                    FeeInUsd = Math.Round(positionSnapshot.CalculateFeeInUsd(), 2)
+                    FeeInUsd = Math.Round(positionSnapshot.CalculateFeeInUsd(), 2),
+                    Network = poolPosition.NetworkName,
                 }, PoolInfoExcelRowContext.Default.PoolInfoExcel);
             }
         }
@@ -60,14 +61,34 @@ public class ExcelService
 
     public class PoolInfoExcel
     {
-        [ColumnHeader("Сеть")] public string Network { get; init; } = null!;
+        [ColumnHeader("Комиссия в $")]
+        [ColumnWidth(255)]
+        public decimal FeeInUsd { get; init; }
 
-        [ColumnHeader("День")] public string Day { get; init; } = null!;
+        [ColumnHeader("Позиция в $")]
+        [ColumnWidth(255)]
+        public decimal PositionInUsd { get; init; }
 
-        [ColumnHeader("Пара")] public string TokenPairSymbol { get; init; } = null!;
+        [ColumnHeader("APY %")] public decimal Apy => Math.Round(FeeInUsd / PositionInUsd * 100 * 12, 2);
+        
+        [ColumnHeader("День")]
+        public string Day { get; init; } = null!;
 
-        [ColumnHeader("Комиссия в $")] public decimal FeeInUsd { get; init; }
+        [ColumnHeader("Пара")]
+        public string TokenPairSymbol { get; init; } = null!;
+
+        [ColumnHeader("Сеть")]
+        public string Network { get; init; } = null!;
+        
+        private decimal GetAnnualizationFactor()
+        {
+            var daysActive = (DateTime.Now - DateTime.Parse(Day)).TotalDays;
+            if (daysActive <= 0) return 12;
+        
+            return 365m / (decimal)daysActive;
+        }
     }
 }
 
-[WorksheetRow(typeof(ExcelService.PoolInfoExcel))] public partial class PoolInfoExcelRowContext : WorksheetRowContext;
+[WorksheetRow(typeof(ExcelService.PoolInfoExcel))]
+public partial class PoolInfoExcelRowContext : WorksheetRowContext;

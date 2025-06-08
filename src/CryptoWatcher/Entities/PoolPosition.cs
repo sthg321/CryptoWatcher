@@ -11,7 +11,7 @@ namespace CryptoWatcher.Entities;
 /// and the associated blockchain uniswapNetwork. This class also includes information on whether the
 /// position is currently active and the date it was created.
 /// </remarks>
-public class LiquidityPoolPosition
+public class PoolPosition
 {
     /// <summary>
     /// Represents the unique identifier for a liquidity pool position from NFT manager.
@@ -29,11 +29,17 @@ public class LiquidityPoolPosition
     /// This property stores the creation date for a specific position in the liquidity pool.
     /// It is used to track the timeline of when the position was initialized.
     /// </remarks>
-    public DateOnly CreatedAt { get; init; }
+    public DateOnly SynchronizedAt { get; init; }
     
-    public TokenInfo Token0 { get; set; } = null!;
+    /// <summary>
+    /// 
+    /// </summary>
+    public TokenInfo Token0 { get; init; } = null!;
     
-    public TokenInfo Token1 { get; set; } = null!;
+    /// <summary>
+    /// 
+    /// </summary>
+    public TokenInfo Token1 { get; init; } = null!;
 
     /// <summary>
     /// Indicates whether the liquidity pool position is active.
@@ -100,5 +106,5 @@ public class LiquidityPoolPosition
     /// Each record includes token quantities, USD values, fees, and other relevant details for a specific date.
     /// It provides a comprehensive history of the position's performance and activity over time.
     /// </remarks>
-    public List<LiquidityPoolPositionSnapshot> PositionSnapshots { get; set; } = [];
+    public List<PositionFee> PositionFees { get; set; } = [];
 }

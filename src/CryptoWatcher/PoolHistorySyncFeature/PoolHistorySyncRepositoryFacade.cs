@@ -11,12 +11,12 @@ public class PoolHistorySyncRepositoryFacade : IPoolHistorySyncRepositoryFacade
 {
     private readonly IRepository<UniswapNetwork> _networkRepository;
     private readonly IRepository<Wallet> _walletRepository;
-    private readonly IRepository<LiquidityPoolPosition> _liquidityPoolPositionRepository;
-    private readonly IRepository<LiquidityPoolPositionSnapshot> _liquidityPoolPositionSnapshotRepository;
+    private readonly IRepository<PoolPosition> _liquidityPoolPositionRepository;
+    private readonly IRepository<PositionFee> _liquidityPoolPositionSnapshotRepository;
 
     public PoolHistorySyncRepositoryFacade(IRepository<UniswapNetwork> networkRepository,
-        IRepository<Wallet> walletRepository, IRepository<LiquidityPoolPosition> liquidityPoolPositionRepository,
-        IRepository<LiquidityPoolPositionSnapshot> liquidityPoolPositionSnapshotRepository)
+        IRepository<Wallet> walletRepository, IRepository<PoolPosition> liquidityPoolPositionRepository,
+        IRepository<PositionFee> liquidityPoolPositionSnapshotRepository)
     {
         _networkRepository = networkRepository;
         _walletRepository = walletRepository;
@@ -34,15 +34,15 @@ public class PoolHistorySyncRepositoryFacade : IPoolHistorySyncRepositoryFacade
         return await _walletRepository.ListAsync(ct);
     }
 
-    public async Task<List<LiquidityPoolPosition>> GetLiquidityPoolPositionsAsync(UniswapNetwork uniswapNetwork, Wallet wallet,
+    public async Task<List<PoolPosition>> GetLiquidityPoolPositionsAsync(UniswapNetwork uniswapNetwork, Wallet wallet,
         CancellationToken ct = default)
     {
         return await _liquidityPoolPositionRepository.ListAsync(
             new GetPositionsByWalletAndNetworkSpecification(uniswapNetwork, wallet), ct);
     }
 
-    public async Task MergePoolPositionsAsync(IList<LiquidityPoolPosition> positions,
-        IList<LiquidityPoolPositionSnapshot> snapshots,
+    public async Task MergePoolPositionsAsync(IList<PoolPosition> positions,
+        IList<PositionFee> snapshots,
         CancellationToken ct = default)
     {
         await using var tr = await _liquidityPoolPositionRepository.UnitOfWork.BeginTransactionAsync(ct);

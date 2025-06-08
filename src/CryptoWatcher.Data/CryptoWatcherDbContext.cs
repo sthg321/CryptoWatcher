@@ -50,7 +50,7 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
     /// and metadata regarding the liquidity pool position's activity status. It integrates with other entities such as
     /// networks to ensure comprehensive tracking of liquidity metrics.
     /// </remarks>
-    public DbSet<LiquidityPoolPosition> LiquidityPoolPositions => Set<LiquidityPoolPosition>();
+    public DbSet<PoolPosition> LiquidityPoolPositions => Set<PoolPosition>();
 
     /// <summary>
     /// Represents the collection of liquidity pool position snapshots as part of the database context in the CryptoWatcher application.
@@ -60,7 +60,7 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
     /// historical snapshots of liquidity pool positions. Each snapshot contains time-series data such as token amounts, fees, APR, and
     /// range status, providing a detailed record of liquidity pool performance over time.
     /// </remarks>
-    public DbSet<LiquidityPoolPositionSnapshot> LiquidityPoolPositionSnapshots => Set<LiquidityPoolPositionSnapshot>();
+    public DbSet<PositionFee> LiquidityPoolPositionSnapshots => Set<PositionFee>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -16,4 +16,6 @@ public record TokenInfo
     /// Token price in USD.
     /// </summary>
     public decimal PriceInUsd { get; init; }
+    
+    public decimal AmountInUsd => Amount * PriceInUsd;
 }

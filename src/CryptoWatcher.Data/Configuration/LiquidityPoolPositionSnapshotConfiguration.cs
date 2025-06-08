@@ -4,16 +4,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CryptoWatcher.Data.Configuration;
 
-public class LiquidityPoolPositionSnapshotConfiguration : IEntityTypeConfiguration<LiquidityPoolPositionSnapshot>
+public class LiquidityPoolPositionSnapshotConfiguration : IEntityTypeConfiguration<PositionFee>
 {
-    public void Configure(EntityTypeBuilder<LiquidityPoolPositionSnapshot> builder)
+    public void Configure(EntityTypeBuilder<PositionFee> builder)
     {
         builder.Property(poolPositionHistory => poolPositionHistory.NetworkName).HasMaxLength(32);
 
         builder.HasKey(history => new { history.NetworkName, history.LiquidityPoolPositionId, history.Day });
 
-        builder.HasOne(liquidityPoolPositionHistory => liquidityPoolPositionHistory.LiquidityPoolPosition)
-            .WithMany(position => position.PositionSnapshots)
+        builder.HasOne(liquidityPoolPositionHistory => liquidityPoolPositionHistory.PoolPosition)
+            .WithMany(position => position.PositionFees)
             .HasForeignKey(history => new { history.LiquidityPoolPositionId, history.NetworkName })
             .IsRequired();
         

@@ -67,9 +67,9 @@ public class UniswapNetwork
     /// A collection of historical data records related to liquidity pools within the blockchain uniswapNetwork.
     /// </summary>
     /// <remarks>
-    /// This property contains a list of <see cref="LiquidityPoolPositionSnapshot"/> objects, representing daily snapshots
+    /// This property contains a list of <see cref="PositionFee"/> objects, representing daily snapshots
     /// of pool states, including token amounts, fees, APR, and activity status. The data is associated
     /// with the specific blockchain uniswapNetwork and can be used for analytics and historical performance tracking.
     /// </remarks>
-    public List<LiquidityPoolPosition> LiquidityPoolPositions { get; init; } = [];
+    public List<PoolPosition> LiquidityPoolPositions { get; init; } = [];
 }

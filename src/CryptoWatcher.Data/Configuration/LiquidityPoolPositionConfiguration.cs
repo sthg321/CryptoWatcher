@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CryptoWatcher.Data.Configuration;
 
-public class LiquidityPoolPositionConfiguration : IEntityTypeConfiguration<LiquidityPoolPosition>
+public class LiquidityPoolPositionConfiguration : IEntityTypeConfiguration<PoolPosition>
 {
-    public void Configure(EntityTypeBuilder<LiquidityPoolPosition> builder)
+    public void Configure(EntityTypeBuilder<PoolPosition> builder)
     {
         builder.HasKey(position => new { position.PositionId, position.NetworkName });
         

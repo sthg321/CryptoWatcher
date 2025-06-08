@@ -23,5 +23,5 @@ public class Wallet
     /// allowing for tracking and analysis of investments across decentralized finance platforms.
     /// Each entry in the collection corresponds to a distinct position in a liquidity pool.
     /// </remarks>
-    public List<LiquidityPoolPosition> LiquidityPoolPositions { get; init; } = [];
+    public List<PoolPosition> LiquidityPoolPositions { get; init; } = [];
 }

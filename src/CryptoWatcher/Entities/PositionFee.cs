@@ -9,13 +9,13 @@ namespace CryptoWatcher.Entities;
 /// pool position by a foreign key. Instances of this class are used for analytical and historical
 /// performance purposes, offering insights into the performance and status of liquidity pool positions over time.
 /// </remarks>
-public class LiquidityPoolPositionSnapshot
+public class PositionFee
 {
     public DateOnly Day { get; init; }
 
-    public TokenInfo Token0Fee { get; set; } = null!;
+    public TokenInfo Token0Fee { get; init; } = null!;
     
-    public TokenInfo Token1Fee { get; set; } = null!;
+    public TokenInfo Token1Fee { get; init; } = null!;
     
     public bool IsInRange { get; init; }
 
@@ -23,11 +23,10 @@ public class LiquidityPoolPositionSnapshot
 
     public string NetworkName { get; init; } = null!;
 
-    public LiquidityPoolPosition LiquidityPoolPosition { get; init; } = null!;
+    public PoolPosition PoolPosition { get; init; } = null!;
 
     public decimal CalculateFeeInUsd()
     {
-        return Token0Fee.Amount * Token0Fee.PriceInUsd +
-               Token1Fee.Amount * Token1Fee.PriceInUsd;
+        return Token0Fee.AmountInUsd + Token1Fee.AmountInUsd;
     }
 }
