@@ -50,6 +50,8 @@ public class ExcelService
                     Network = poolPosition.NetworkName,
                 }, PoolInfoExcelRowContext.Default.PoolInfoExcel);
             }
+
+            await sheet.AddRowAsync([]);
         }
 
         await sheet.FinishAsync();
