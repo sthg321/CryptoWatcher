@@ -26,10 +26,11 @@ public class ExcelService
             to = DateOnly.FromDateTime(monthEnd);
         }
 
-        var pools = _dbContext.LiquidityPoolPositions
+        var pools = await _dbContext.LiquidityPoolPositions
             .Include(position =>
                 position.PositionFees.Where(snapshot => snapshot.Day >= from.Value && snapshot.Day <= to.Value))
-            .Where(position => position.IsActive);
+            .Where(position => position.IsActive)
+            .ToArrayAsync();
 
         var ms = new MemoryStream();
         var sheet = await Spreadsheet.CreateNewAsync(ms);
@@ -37,6 +38,8 @@ public class ExcelService
         await sheet.StartWorksheetAsync("report");
 
         await sheet.AddHeaderRowAsync(PoolInfoExcelRowContext.Default.PoolInfoExcel);
+
+        var feeTotal = 0m;
         foreach (var poolPosition in pools)
         {
             foreach (var positionSnapshot in poolPosition.PositionFees.OrderBy(snapshot => snapshot.Day))
@@ -53,6 +56,16 @@ public class ExcelService
 
             await sheet.AddRowAsync([]);
         }
+
+        await sheet.AddAsRowAsync(new PoolInfoExcel
+        {
+            Day = "-",
+            FeeInUsd = Math.Round(pools.Sum(position => position.PositionFees.Max(fee => fee.CalculateFeeInUsd())), 2),
+            Network = "-",
+            PositionInUsd = Math.Round(pools.Sum(position => position.Token0.AmountInUsd + position.Token1.AmountInUsd),
+                2),
+            TokenPairSymbol = "-"
+        }, PoolInfoExcelRowContext.Default.PoolInfoExcel);
 
         await sheet.FinishAsync();
 
@@ -72,21 +85,18 @@ public class ExcelService
         public decimal PositionInUsd { get; init; }
 
         [ColumnHeader("APY %")] public decimal Apy => Math.Round(FeeInUsd / PositionInUsd * 100 * 12, 2);
-        
-        [ColumnHeader("День")]
-        public string Day { get; init; } = null!;
 
-        [ColumnHeader("Пара")]
-        public string TokenPairSymbol { get; init; } = null!;
+        [ColumnHeader("День")] public string Day { get; init; } = null!;
 
-        [ColumnHeader("Сеть")]
-        public string Network { get; init; } = null!;
-        
+        [ColumnHeader("Пара")] public string TokenPairSymbol { get; init; } = null!;
+
+        [ColumnHeader("Сеть")] public string Network { get; init; } = null!;
+
         private decimal GetAnnualizationFactor()
         {
             var daysActive = (DateTime.Now - DateTime.Parse(Day)).TotalDays;
             if (daysActive <= 0) return 12;
-        
+
             return 365m / (decimal)daysActive;
         }
     }
