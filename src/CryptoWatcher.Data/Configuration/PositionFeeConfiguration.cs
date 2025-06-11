@@ -4,17 +4,17 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CryptoWatcher.Data.Configuration;
 
-public class LiquidityPoolPositionSnapshotConfiguration : IEntityTypeConfiguration<PositionFee>
+public class PositionFeeConfiguration : IEntityTypeConfiguration<PoolPositionFee>
 {
-    public void Configure(EntityTypeBuilder<PositionFee> builder)
+    public void Configure(EntityTypeBuilder<PoolPositionFee> builder)
     {
         builder.Property(poolPositionHistory => poolPositionHistory.NetworkName).HasMaxLength(32);
 
-        builder.HasKey(history => new { history.NetworkName, history.LiquidityPoolPositionId, history.Day });
+        builder.HasKey(fee => new { fee.LiquidityPoolPositionId, fee.NetworkName, fee.Day });
 
-        builder.HasOne(liquidityPoolPositionHistory => liquidityPoolPositionHistory.PoolPosition)
+        builder.HasOne(positionFee => positionFee.PoolPosition)
             .WithMany(position => position.PositionFees)
-            .HasForeignKey(history => new { history.LiquidityPoolPositionId, history.NetworkName })
+            .HasForeignKey(fee => new { fee.LiquidityPoolPositionId, fee.NetworkName,  fee.Day })
             .IsRequired();
         
         builder.OwnsOne<TokenInfo>(snapshot => snapshot.Token0Fee);

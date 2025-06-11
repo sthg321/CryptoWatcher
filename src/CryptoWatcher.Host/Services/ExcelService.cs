@@ -26,7 +26,7 @@ public class ExcelService
             to = DateOnly.FromDateTime(monthEnd);
         }
 
-        var pools = await _dbContext.LiquidityPoolPositions
+        var pools = await _dbContext.PoolPositions
             .Include(position =>
                 position.PositionFees.Where(snapshot => snapshot.Day >= from.Value && snapshot.Day <= to.Value))
             .Where(position => position.IsActive)
@@ -39,7 +39,6 @@ public class ExcelService
 
         await sheet.AddHeaderRowAsync(PoolInfoExcelRowContext.Default.PoolInfoExcel);
 
-        var feeTotal = 0m;
         foreach (var poolPosition in pools)
         {
             foreach (var positionSnapshot in poolPosition.PositionFees.OrderBy(snapshot => snapshot.Day))
@@ -59,7 +58,7 @@ public class ExcelService
 
         await sheet.AddAsRowAsync(new PoolInfoExcel
         {
-            Day = "-",
+            Day = "Итого",
             FeeInUsd = Math.Round(pools.Sum(position => position.PositionFees.Max(fee => fee.CalculateFeeInUsd())), 2),
             Network = "-",
             PositionInUsd = Math.Round(pools.Sum(position => position.Token0.AmountInUsd + position.Token1.AmountInUsd),

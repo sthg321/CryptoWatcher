@@ -1,6 +1,4 @@
 using System.Linq.Expressions;
-using AaveClient;
-using AaveClient.UiPoolDataProvider;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Application.Uniswap;
 using CryptoWatcher.Core;
@@ -17,9 +15,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using UniswapClient.Extensions;
 
-var xx = new UiPoolDataProviderFetcher();
-
-await xx.GetUserReservesDataAsync(AaveNetwork.Sonic, "0xeb9191d780c0aB6Ab320C5F05E41ebF81f14255f");
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<ExternalServicesConfig>(builder.Configuration.GetSection(nameof(ExternalServicesConfig)));
@@ -55,6 +50,7 @@ builder.Services.AddHttpClient<CoinGeckoTokenPriceProvider>((provider, client) =
 
 var app = builder.Build();
 
+Console.WriteLine(app.Environment.EnvironmentName);
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<CryptoWatcherDbContext>();

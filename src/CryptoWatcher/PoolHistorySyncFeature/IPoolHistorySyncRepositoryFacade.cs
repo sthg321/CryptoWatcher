@@ -40,6 +40,6 @@ public interface IPoolHistorySyncRepositoryFacade
     /// <param name="ct">An optional cancellation token to cancel the operation if required.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     Task MergePoolPositionsAsync(IList<PoolPosition> positions,
-        IList<PositionFee> snapshots,
+        IList<PoolPositionFee> snapshots,
         CancellationToken ct = default);
 }

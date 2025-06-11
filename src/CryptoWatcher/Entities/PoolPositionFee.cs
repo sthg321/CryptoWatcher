@@ -9,7 +9,7 @@ namespace CryptoWatcher.Entities;
 /// pool position by a foreign key. Instances of this class are used for analytical and historical
 /// performance purposes, offering insights into the performance and status of liquidity pool positions over time.
 /// </remarks>
-public class PositionFee
+public class PoolPositionFee
 {
     public DateOnly Day { get; init; }
 

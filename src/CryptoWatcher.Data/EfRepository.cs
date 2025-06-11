@@ -16,11 +16,14 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
     private static readonly Dictionary<Type, List<string>> Type2PrimaryKeyFields = new()
     {
         [typeof(PoolPosition)] =
-            [nameof(PoolPosition.PositionId), nameof(PoolPosition.NetworkName)],
-        [typeof(PositionFee)] =
         [
-            nameof(PositionFee.Day), nameof(PositionFee.LiquidityPoolPositionId),
-            nameof(PositionFee.NetworkName)
+            nameof(PoolPosition.PositionId), nameof(PoolPosition.NetworkName),
+            nameof(PoolPosition.Day)
+        ],
+        [typeof(PoolPositionFee)] =
+        [
+            nameof(PoolPositionFee.Day), nameof(PoolPositionFee.LiquidityPoolPositionId),
+            nameof(PoolPositionFee.NetworkName)
         ],
     };
 

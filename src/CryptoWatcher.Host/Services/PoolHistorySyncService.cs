@@ -1,4 +1,3 @@
-using CryptoWatcher.Application.Uniswap;
 using CryptoWatcher.Core;
 using CryptoWatcher.Entities;
 using CryptoWatcher.Entities.Uniswap;
@@ -68,7 +67,7 @@ public class PoolHistorySyncService
                     .ToDictionary(position => position.PositionId);
 
                 var positions = new List<PoolPosition>();
-                var poolPositionSnapshots = new List<PositionFee>();
+                var poolPositionSnapshots = new List<PoolPositionFee>();
 
                 foreach (var uniswapPosition in uniswapPositions)
                 {
@@ -144,7 +143,7 @@ public class PoolHistorySyncService
         return new PoolPosition
         {
             NetworkName = uniswapNetwork.Name,
-            SynchronizedAt = DateOnly.FromDateTime(DateTime.Now),
+            Day = DateOnly.FromDateTime(DateTime.Now),
             IsActive = position.Liquidity != 0,
             Token0 = tokensEnriched.Token0,
             Token1 = tokensEnriched.Token1,
@@ -154,13 +153,13 @@ public class PoolHistorySyncService
         };
     }
 
-    private static PositionFee MapToLiquidityPoolPositionSnapshot(
+    private static PoolPositionFee MapToLiquidityPoolPositionSnapshot(
         UniswapNetwork uniswapNetwork,
         IUniswapPosition position,
         LiquidityPool pool,
         TokenInfoPair feeInfo)
     {
-        return new PositionFee
+        return new PoolPositionFee
         {
             Day = DateOnly.FromDateTime(DateTime.Now),
             Token0Fee = feeInfo.Token0,

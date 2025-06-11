@@ -29,7 +29,7 @@ public class PoolPosition
     /// This property stores the creation date for a specific position in the liquidity pool.
     /// It is used to track the timeline of when the position was initialized.
     /// </remarks>
-    public DateOnly SynchronizedAt { get; init; }
+    public DateOnly Day { get; init; }
     
     /// <summary>
     /// 
@@ -106,5 +106,5 @@ public class PoolPosition
     /// Each record includes token quantities, USD values, fees, and other relevant details for a specific date.
     /// It provides a comprehensive history of the position's performance and activity over time.
     /// </remarks>
-    public List<PositionFee> PositionFees { get; set; } = [];
+    public List<PoolPositionFee> PositionFees { get; set; } = [];
 }

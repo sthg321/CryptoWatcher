@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CryptoWatcher.Data.Configuration;
 
-public class LiquidityPoolPositionConfiguration : IEntityTypeConfiguration<PoolPosition>
+public class PoolPositionConfiguration : IEntityTypeConfiguration<PoolPosition>
 {
     public void Configure(EntityTypeBuilder<PoolPosition> builder)
     {
-        builder.HasKey(position => new { position.PositionId, position.NetworkName });
+        builder.HasKey(position => new { position.PositionId, position.NetworkName, Day = position.Day });
         
         builder.Property(network => network.NetworkName).HasMaxLength(32);
         builder.Property(network => network.WalletAddress).HasMaxLength(64);
