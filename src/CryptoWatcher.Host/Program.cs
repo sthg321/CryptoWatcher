@@ -76,16 +76,7 @@ Console.WriteLine(app.Environment.EnvironmentName);
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<CryptoWatcherDbContext>();
-
-    db.Database.Migrate();
-
-    var wallet = await db.Wallets.FirstAsync();
-    var geckoApiClient = scope.ServiceProvider.GetRequiredService<CoinPriceService>();
-
-    var aave = scope.ServiceProvider.GetRequiredService<AaveProvider>();
-
-
-    await aave.GetLendingPositionAsync(wallet, default);
+ 
     // var service = scope.ServiceProvider.GetRequiredService<PoolHistorySyncService>();
     //
     // Expression<Func<Task>> x = () => service.SyncAsync(CancellationToken.None);

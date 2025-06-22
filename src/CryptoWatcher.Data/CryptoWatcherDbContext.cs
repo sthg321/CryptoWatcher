@@ -61,6 +61,8 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
     /// range status, providing a detailed record of liquidity pool performance over time.
     /// </remarks>
     public DbSet<PoolPositionFee> PoolPositionFees => Set<PoolPositionFee>();
+    
+    public DbSet<PoolPositionSnapshot> PoolPositionSnapshots => Set<PoolPositionSnapshot>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

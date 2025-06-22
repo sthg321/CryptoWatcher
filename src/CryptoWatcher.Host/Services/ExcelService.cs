@@ -58,8 +58,7 @@ public class ExcelService
                         PositionInUsd =
                             Math.Round(poolPosition.Token0.AmountInUsd + poolPosition.Token1.AmountInUsd, 2),
                         HoldInUsd = Math.Round(initialPosition!.Token0.Amount * positionSnapshot.Token0Fee.PriceInUsd +
-                                               initialPosition.Token1.Amount * positionSnapshot.Token1Fee.PriceInUsd -
-                                               positionSnapshot.FeeInUsd, 2),
+                                               initialPosition.Token1.Amount * positionSnapshot.Token1Fee.PriceInUsd, 2),
                         TokenPairSymbol = $"{positionSnapshot.Token0Fee.Symbol} / {positionSnapshot.Token1Fee.Symbol}",
                         FeeInUsd = Math.Round(positionSnapshot.FeeInUsd, 2),
                         Network = poolPosition.NetworkName,
@@ -69,7 +68,7 @@ public class ExcelService
 
             await sheet.AddRowAsync([]);
         }
-
+        
         var feeSum = groupedPoolPositions.Sum(groupedPoolPosition =>
         {
             var fee = groupedPoolPosition.SelectMany(position =>
@@ -79,15 +78,28 @@ public class ExcelService
         });
 
         var positionSum = groupedPoolPositions
-            .Select(grouping => grouping.OrderByDescending(position => position.Day).Last())
+            .Select(grouping => grouping.MaxBy(position => position.Day))
             .Sum(position => position.Token0.AmountInUsd + position.Token1.AmountInUsd);
+
+        var holdSum = groupedPoolPositions
+            .Sum(grouping =>
+            {
+                var position = grouping.MinBy(poolPosition => poolPosition.Day);
+                var lastPosition = grouping.MaxBy(poolPosition => poolPosition.Day);
+
+                var fee = lastPosition!.PositionFees.First();
+                
+                return position!.Token0.Amount * fee.Token0Fee.PriceInUsd +
+                       position.Token1.Amount * fee.Token1Fee.PriceInUsd;
+            });
 
         await sheet.AddAsRowAsync(new PoolInfoExcel
         {
             Day = "Итого",
-            FeeInUsd = Math.Round(feeSum, 2),
+            PositionInUsd = Math.Round(positionSum, 2), 
+            FeeInUsd = Math.Round(feeSum, 2) ,
+            HoldInUsd = Math.Round(holdSum, 2),
             Network = "-",
-            PositionInUsd = Math.Round(positionSum, 2),
             TokenPairSymbol = "-"
         }, PoolInfoExcelRowContext.Default.PoolInfoExcel);
 
@@ -127,15 +139,19 @@ public class ExcelService
         [ColumnHeader("Позиция в $")]
         [ColumnWidth(20)]
         public decimal PositionInUsd { get; init; }
-
+        
         [ColumnHeader("HOLD $")]
         [ColumnWidth(20)]
         public decimal HoldInUsd { get; set; }
-        
+
         [ColumnHeader("Комиссия в $")]
         [ColumnWidth(20)]
         public decimal FeeInUsd { get; init; }
 
+        [ColumnHeader("Прибыль")]
+        [ColumnWidth(20)]
+        public decimal RoiNet => Math.Round(PositionInUsd + FeeInUsd - HoldInUsd , 2); 
+        
         [ColumnHeader("APY %")] public decimal Apy => Math.Round(FeeInUsd / PositionInUsd * 100 * 12, 2);
 
         [ColumnHeader("Пара")] public string TokenPairSymbol { get; init; } = null!;

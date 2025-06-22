@@ -107,4 +107,6 @@ public class PoolPosition
     /// It provides a comprehensive history of the position's performance and activity over time.
     /// </remarks>
     public List<PoolPositionFee> PositionFees { get; set; } = [];
+
+    public List<PoolPositionSnapshot> PoolPositionSnapshots { get; set; } = [];
 }

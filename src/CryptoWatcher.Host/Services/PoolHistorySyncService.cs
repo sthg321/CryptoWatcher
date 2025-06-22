@@ -65,7 +65,8 @@ public class PoolHistorySyncService
                     uniswapPositions.Count, wallet.Address, network.Name);
 
                 var existedPositions = (await _repositoryFacade.GetLiquidityPoolPositionsAsync(network, wallet, ct))
-                    .ToDictionary(position => new { position.PositionId, position.NetworkName, position.Day });
+                    .ToDictionary(position =>
+                        new PositionKey(position.PositionId, position.NetworkName, position.Day));
 
                 var positions = new List<PoolPosition>();
                 var poolPositionSnapshots = new List<PoolPositionFee>();
@@ -78,13 +79,8 @@ public class PoolHistorySyncService
 
                     try
                     {
-                        if (existedPositions.TryGetValue(new
-                                {
-                                    PositionId = (ulong)uniswapPosition.PositionId,
-                                    NetworkName = network.Name,
-                                    Day = now
-                                },
-                                out var existedPosition) &&
+                        var positionKey = new PositionKey((ulong)uniswapPosition.PositionId, network.Name, now);
+                        if (existedPositions.TryGetValue(positionKey, out var existedPosition) &&
                             !existedPosition.IsActive)
                         {
                             _logger.LogInformation("Skipping inactive position");
@@ -175,5 +171,21 @@ public class PoolHistorySyncService
             LiquidityPoolPositionId = (ulong)position.PositionId,
             NetworkName = uniswapNetwork.Name,
         };
+    }
+
+    private readonly record struct PositionKey
+    {
+        public PositionKey(ulong positionId, string networkName, DateOnly day)
+        {
+            PositionId = positionId;
+            NetworkName = networkName;
+            Day = day;
+        }
+
+        public ulong PositionId { get; init; }
+
+        public string NetworkName { get; init; }
+
+        public DateOnly Day { get; init; }
     }
 }
