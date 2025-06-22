@@ -17,13 +17,12 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
     {
         [typeof(PoolPosition)] =
         [
-            nameof(PoolPosition.PositionId), nameof(PoolPosition.NetworkName),
-            nameof(PoolPosition.Day)
+            nameof(PoolPosition.PositionId), nameof(PoolPosition.NetworkName)
         ],
-        [typeof(PoolPositionFee)] =
+        [typeof(PoolPositionSnapshot)] =
         [
-            nameof(PoolPositionFee.Day), nameof(PoolPositionFee.LiquidityPoolPositionId),
-            nameof(PoolPositionFee.NetworkName)
+            nameof(PoolPositionSnapshot.Day), nameof(PoolPositionSnapshot.PoolPositionId),
+            nameof(PoolPositionSnapshot.NetworkName)
         ],
     };
 

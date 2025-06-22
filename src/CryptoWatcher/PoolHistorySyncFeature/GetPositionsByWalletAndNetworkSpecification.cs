@@ -8,6 +8,8 @@ public sealed class GetPositionsByWalletAndNetworkSpecification : Specification<
 {
     public GetPositionsByWalletAndNetworkSpecification(UniswapNetwork uniswapNetwork, Wallet wallet)
     {
-        Query.Where(position => position.UniswapNetwork.Name == uniswapNetwork.Name && position.Wallet.Address == wallet.Address);
+        Query
+            .Include(position => position.PoolPositionSnapshots)
+            .Where(position => position.UniswapNetwork.Name == uniswapNetwork.Name && position.Wallet.Address == wallet.Address);
     }
 }

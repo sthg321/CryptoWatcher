@@ -36,10 +36,10 @@ public interface IPoolHistorySyncRepositoryFacade
     /// Asynchronously merges a list of liquidity pool positions with corresponding snapshots.
     /// </summary>
     /// <param name="positions">A collection of <see cref="PoolPosition"/> entities representing the pool positions to merge.</param>
-    /// <param name="snapshots">A collection of <see cref="PositionFee"/> entities representing the snapshots to merge with the positions.</param>
+    /// <param name="snapshots">A collection of <see cref="PoolPositionSnapshot"/> entities representing the snapshots to merge with the positions.</param>
     /// <param name="ct">An optional cancellation token to cancel the operation if required.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     Task MergePoolPositionsAsync(IList<PoolPosition> positions,
-        IList<PoolPositionFee> snapshots,
+        IList<PoolPositionSnapshot> snapshots,
         CancellationToken ct = default);
 }

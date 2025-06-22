@@ -36,4 +36,6 @@ public class PoolPositionSnapshot
     public TokenInfoWithFee Token1 { get; set; } = null!;
     
     public PoolPosition PoolPosition { get; init; } = null!;
+    
+    public decimal FeeInUsd => Token0.FeeAmount * Token0.PriceInUsd + Token1.FeeAmount * Token1.PriceInUsd;
 }

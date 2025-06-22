@@ -23,15 +23,6 @@ public class PoolPosition
     public ulong PositionId { get; init; }
 
     /// <summary>
-    /// Represents the date when the liquidity pool position was created.
-    /// </summary>
-    /// <remarks>
-    /// This property stores the creation date for a specific position in the liquidity pool.
-    /// It is used to track the timeline of when the position was initialized.
-    /// </remarks>
-    public DateOnly Day { get; init; }
-    
-    /// <summary>
     /// 
     /// </summary>
     public TokenInfo Token0 { get; init; } = null!;
@@ -50,16 +41,6 @@ public class PoolPosition
     /// while an inactive state suggests the position has been exited or is no longer valid.
     /// </remarks>
     public bool IsActive { get; init; }
-    
-    /// <summary>
-    /// Indicates whether the liquidity pool position is within the specified range for the pool's price bounds.
-    /// </summary>
-    /// <remarks>
-    /// This property determines whether the current liquidity position is active within the operational
-    /// range of the liquidity pool, which may depend on token price bounds or other parameters tied
-    /// to the pool's configuration. It assists in assessing the position's current applicability or utility.
-    /// </remarks>
-    public bool IsInRange { get; init; }
 
     /// <summary>
     /// Represents the wallet address associated with the liquidity pool position.
@@ -97,16 +78,6 @@ public class PoolPosition
     /// and historical data, aiding in uniswapNetwork-specific operations and analytics.
     /// </remarks>
     public UniswapNetwork UniswapNetwork { get; init; } = null!;
-
-    /// <summary>
-    /// Represents the collection of historical records for a liquidity pool position.
-    /// </summary>
-    /// <remarks>
-    /// This property contains a list of historical snapshots related to the associated liquidity pool position.
-    /// Each record includes token quantities, USD values, fees, and other relevant details for a specific date.
-    /// It provides a comprehensive history of the position's performance and activity over time.
-    /// </remarks>
-    public List<PoolPositionFee> PositionFees { get; set; } = [];
 
     public List<PoolPositionSnapshot> PoolPositionSnapshots { get; set; } = [];
 }

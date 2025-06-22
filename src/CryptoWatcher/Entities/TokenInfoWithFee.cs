@@ -23,4 +23,15 @@ public class TokenInfoWithFee
     public decimal PriceInUsd { get; init; }
     
     public decimal AmountInUsd => Amount * PriceInUsd;
+
+    public static TokenInfoWithFee Create(TokenInfo info, decimal feeAmount)
+    {
+        return new TokenInfoWithFee
+        {
+            Symbol = info.Symbol,
+            Amount = info.Amount,
+            FeeAmount = feeAmount,
+            PriceInUsd = info.PriceInUsd
+        };
+    }
 }

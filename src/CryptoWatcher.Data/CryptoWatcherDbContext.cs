@@ -51,16 +51,6 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
     /// networks to ensure comprehensive tracking of liquidity metrics.
     /// </remarks>
     public DbSet<PoolPosition> PoolPositions => Set<PoolPosition>();
-
-    /// <summary>
-    /// Represents the collection of liquidity pool position snapshots as part of the database context in the CryptoWatcher application.
-    /// </summary>
-    /// <remarks>
-    /// This property defines the entity set for liquidity pool position snapshots, enabling the application to query and manage
-    /// historical snapshots of liquidity pool positions. Each snapshot contains time-series data such as token amounts, fees, APR, and
-    /// range status, providing a detailed record of liquidity pool performance over time.
-    /// </remarks>
-    public DbSet<PoolPositionFee> PoolPositionFees => Set<PoolPositionFee>();
     
     public DbSet<PoolPositionSnapshot> PoolPositionSnapshots => Set<PoolPositionSnapshot>();
 

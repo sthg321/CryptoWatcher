@@ -12,11 +12,11 @@ public class PoolHistorySyncRepositoryFacade : IPoolHistorySyncRepositoryFacade
     private readonly IRepository<UniswapNetwork> _networkRepository;
     private readonly IRepository<Wallet> _walletRepository;
     private readonly IRepository<PoolPosition> _liquidityPoolPositionRepository;
-    private readonly IRepository<PoolPositionFee> _liquidityPoolPositionSnapshotRepository;
+    private readonly IRepository<PoolPositionSnapshot> _liquidityPoolPositionSnapshotRepository;
 
     public PoolHistorySyncRepositoryFacade(IRepository<UniswapNetwork> networkRepository,
         IRepository<Wallet> walletRepository, IRepository<PoolPosition> liquidityPoolPositionRepository,
-        IRepository<PoolPositionFee> liquidityPoolPositionSnapshotRepository)
+        IRepository<PoolPositionSnapshot> liquidityPoolPositionSnapshotRepository)
     {
         _networkRepository = networkRepository;
         _walletRepository = walletRepository;
@@ -42,7 +42,7 @@ public class PoolHistorySyncRepositoryFacade : IPoolHistorySyncRepositoryFacade
     }
 
     public async Task MergePoolPositionsAsync(IList<PoolPosition> positions,
-        IList<PoolPositionFee> snapshots,
+        IList<PoolPositionSnapshot> snapshots,
         CancellationToken ct = default)
     {
         await using var tr = await _liquidityPoolPositionRepository.UnitOfWork.BeginTransactionAsync(ct);

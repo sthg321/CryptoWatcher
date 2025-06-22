@@ -14,7 +14,7 @@ public class PoolPositionSnapshotConfiguration : IEntityTypeConfiguration<PoolPo
 
         builder.HasOne(positionFee => positionFee.PoolPosition)
             .WithMany(position => position.PoolPositionSnapshots)
-            .HasForeignKey(fee => new { fee.PoolPositionId, fee.NetworkName,  fee.Day })
+            .HasForeignKey(fee => new { fee.PoolPositionId, fee.NetworkName })
             .IsRequired();
         
         builder.OwnsOne<TokenInfoWithFee>(snapshot => snapshot.Token0);

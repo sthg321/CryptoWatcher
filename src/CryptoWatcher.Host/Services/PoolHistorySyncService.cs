@@ -66,12 +66,11 @@ public class PoolHistorySyncService
 
                 var existedPositions = (await _repositoryFacade.GetLiquidityPoolPositionsAsync(network, wallet, ct))
                     .ToDictionary(position =>
-                        new PositionKey(position.PositionId, position.NetworkName, position.Day));
+                        new PositionKey(position.PositionId, position.NetworkName));
 
                 var positions = new List<PoolPosition>();
-                var poolPositionSnapshots = new List<PoolPositionFee>();
+                var poolPositionSnapshots = new List<PoolPositionSnapshot>();
 
-                var now = DateOnly.FromDateTime(DateTime.Now);
                 foreach (var uniswapPosition in uniswapPositions)
                 {
                     using var positionScope = _logger.BeginScope("Processing position {PositionId}",
@@ -79,29 +78,33 @@ public class PoolHistorySyncService
 
                     try
                     {
-                        var positionKey = new PositionKey((ulong)uniswapPosition.PositionId, network.Name, now);
-                        if (existedPositions.TryGetValue(positionKey, out var existedPosition) &&
-                            !existedPosition.IsActive)
+                        var pool = await _providerFactory.GetPoolAsync(network, uniswapPosition);
+
+                        var positionInPool = _math.CalculatePosition(pool, uniswapPosition);
+
+                        var tokensEnriched = await _enricher.EnrichAsync(web3, positionInPool.TokenInfoPair, ct);
+
+                        var positionKey = new PositionKey((ulong)uniswapPosition.PositionId, network.Name);
+                        if (!existedPositions.TryGetValue(positionKey, out var dbPoolPosition))
+                        {
+                            dbPoolPosition =
+                                MapToLiquidityPoolPosition(network, wallet, uniswapPosition, tokensEnriched);
+                            positions.Add(dbPoolPosition);
+                        }
+
+                        if (!dbPoolPosition.IsActive)
                         {
                             _logger.LogInformation("Skipping inactive position");
                             continue;
                         }
 
-                        var pool = await _providerFactory.GetPoolAsync(network, uniswapPosition);
-                        var positionInPool = _math.CalculatePosition(pool, uniswapPosition);
                         var fee = _math.CalculateClaimableFee(pool, uniswapPosition);
 
-                        var tokensEnriched = await _enricher.EnrichAsync(web3, positionInPool.TokenInfoPair, ct);
                         var feeEnriched = await _enricher.EnrichAsync(web3, fee, ct);
 
-                        var positionEntity =
-                            MapToLiquidityPoolPosition(network, wallet, uniswapPosition, tokensEnriched,
-                                positionInPool.IsInRange);
+                        var snapshotEntity =
+                            MapToLiquidityPoolPositionSnapshot(dbPoolPosition, uniswapPosition, pool, feeEnriched);
 
-                        var snapshotEntity = MapToLiquidityPoolPositionSnapshot(
-                            network, uniswapPosition, pool, feeEnriched);
-
-                        positions.Add(positionEntity);
                         poolPositionSnapshots.Add(snapshotEntity);
 
                         _logger.LogInformation("Successfully synchronized position");
@@ -141,51 +144,35 @@ public class PoolHistorySyncService
 
 
     private static PoolPosition MapToLiquidityPoolPosition(UniswapNetwork uniswapNetwork, Wallet wallet,
-        IUniswapPosition position, TokenInfoPair tokensEnriched, bool isInRage)
+        IUniswapPosition position, TokenInfoPair tokensEnriched)
     {
         return new PoolPosition
         {
             NetworkName = uniswapNetwork.Name,
-            Day = DateOnly.FromDateTime(DateTime.Now),
             IsActive = position.Liquidity != 0,
             Token0 = tokensEnriched.Token0,
             Token1 = tokensEnriched.Token1,
             WalletAddress = wallet.Address,
-            IsInRange = isInRage,
             PositionId = (ulong)position.PositionId
         };
     }
 
-    private static PoolPositionFee MapToLiquidityPoolPositionSnapshot(
-        UniswapNetwork uniswapNetwork,
+    private static PoolPositionSnapshot MapToLiquidityPoolPositionSnapshot(
+        PoolPosition poolPosition,
         IUniswapPosition position,
         LiquidityPool pool,
         TokenInfoPair feeInfo)
     {
-        return new PoolPositionFee
+        return new PoolPositionSnapshot
         {
+            PoolPositionId = poolPosition.PositionId,
+            NetworkName = poolPosition.NetworkName,
             Day = DateOnly.FromDateTime(DateTime.Now),
-            Token0Fee = feeInfo.Token0,
-            Token1Fee = feeInfo.Token1,
+            Token0 = TokenInfoWithFee.Create(poolPosition.Token0, feeInfo.Token0.Amount),
+            Token1 = TokenInfoWithFee.Create(poolPosition.Token1, feeInfo.Token1.Amount),
             IsInRange = pool.Tick >= position.TickLower && pool.Tick < position.TickUpper,
-            LiquidityPoolPositionId = (ulong)position.PositionId,
-            NetworkName = uniswapNetwork.Name,
         };
     }
 
-    private readonly record struct PositionKey
-    {
-        public PositionKey(ulong positionId, string networkName, DateOnly day)
-        {
-            PositionId = positionId;
-            NetworkName = networkName;
-            Day = day;
-        }
-
-        public ulong PositionId { get; init; }
-
-        public string NetworkName { get; init; }
-
-        public DateOnly Day { get; init; }
-    }
+    private readonly record struct PositionKey(ulong PositionId, string NetworkName);
 }

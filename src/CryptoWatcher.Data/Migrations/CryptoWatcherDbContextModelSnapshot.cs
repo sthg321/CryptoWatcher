@@ -31,13 +31,7 @@ namespace CryptoWatcher.Data.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
 
-                    b.Property<DateOnly>("Day")
-                        .HasColumnType("date");
-
                     b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsInRange")
                         .HasColumnType("boolean");
 
                     b.Property<string>("WalletAddress")
@@ -45,33 +39,13 @@ namespace CryptoWatcher.Data.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
-                    b.HasKey("PositionId", "NetworkName", "Day");
+                    b.HasKey("PositionId", "NetworkName");
 
                     b.HasIndex("NetworkName");
 
                     b.HasIndex("WalletAddress");
 
                     b.ToTable("PoolPositions");
-                });
-
-            modelBuilder.Entity("CryptoWatcher.Entities.PoolPositionFee", b =>
-                {
-                    b.Property<decimal>("LiquidityPoolPositionId")
-                        .HasColumnType("numeric(20,0)");
-
-                    b.Property<string>("NetworkName")
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)");
-
-                    b.Property<DateOnly>("Day")
-                        .HasColumnType("date");
-
-                    b.Property<bool>("IsInRange")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("LiquidityPoolPositionId", "NetworkName", "Day");
-
-                    b.ToTable("PoolPositionFees");
                 });
 
             modelBuilder.Entity("CryptoWatcher.Entities.PoolPositionSnapshot", b =>
@@ -161,9 +135,6 @@ namespace CryptoWatcher.Data.Migrations
                             b1.Property<string>("PoolPositionNetworkName")
                                 .HasColumnType("character varying(32)");
 
-                            b1.Property<DateOnly>("PoolPositionDay")
-                                .HasColumnType("date");
-
                             b1.Property<decimal>("Amount")
                                 .HasColumnType("numeric");
 
@@ -174,12 +145,12 @@ namespace CryptoWatcher.Data.Migrations
                                 .IsRequired()
                                 .HasColumnType("text");
 
-                            b1.HasKey("PoolPositionPositionId", "PoolPositionNetworkName", "PoolPositionDay");
+                            b1.HasKey("PoolPositionPositionId", "PoolPositionNetworkName");
 
                             b1.ToTable("PoolPositions");
 
                             b1.WithOwner()
-                                .HasForeignKey("PoolPositionPositionId", "PoolPositionNetworkName", "PoolPositionDay");
+                                .HasForeignKey("PoolPositionPositionId", "PoolPositionNetworkName");
                         });
 
                     b.OwnsOne("CryptoWatcher.Entities.TokenInfo", "Token1", b1 =>
@@ -190,9 +161,6 @@ namespace CryptoWatcher.Data.Migrations
                             b1.Property<string>("PoolPositionNetworkName")
                                 .HasColumnType("character varying(32)");
 
-                            b1.Property<DateOnly>("PoolPositionDay")
-                                .HasColumnType("date");
-
                             b1.Property<decimal>("Amount")
                                 .HasColumnType("numeric");
 
@@ -203,12 +171,12 @@ namespace CryptoWatcher.Data.Migrations
                                 .IsRequired()
                                 .HasColumnType("text");
 
-                            b1.HasKey("PoolPositionPositionId", "PoolPositionNetworkName", "PoolPositionDay");
+                            b1.HasKey("PoolPositionPositionId", "PoolPositionNetworkName");
 
                             b1.ToTable("PoolPositions");
 
                             b1.WithOwner()
-                                .HasForeignKey("PoolPositionPositionId", "PoolPositionNetworkName", "PoolPositionDay");
+                                .HasForeignKey("PoolPositionPositionId", "PoolPositionNetworkName");
                         });
 
                     b.Navigation("Token0")
@@ -222,86 +190,11 @@ namespace CryptoWatcher.Data.Migrations
                     b.Navigation("Wallet");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.Entities.PoolPositionFee", b =>
-                {
-                    b.HasOne("CryptoWatcher.Entities.PoolPosition", "PoolPosition")
-                        .WithMany("PositionFees")
-                        .HasForeignKey("LiquidityPoolPositionId", "NetworkName", "Day")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.OwnsOne("CryptoWatcher.Entities.TokenInfo", "Token0Fee", b1 =>
-                        {
-                            b1.Property<decimal>("PoolPositionFeeLiquidityPoolPositionId")
-                                .HasColumnType("numeric(20,0)");
-
-                            b1.Property<string>("PoolPositionFeeNetworkName")
-                                .HasColumnType("character varying(32)");
-
-                            b1.Property<DateOnly>("PoolPositionFeeDay")
-                                .HasColumnType("date");
-
-                            b1.Property<decimal>("Amount")
-                                .HasColumnType("numeric");
-
-                            b1.Property<decimal>("PriceInUsd")
-                                .HasColumnType("numeric");
-
-                            b1.Property<string>("Symbol")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.HasKey("PoolPositionFeeLiquidityPoolPositionId", "PoolPositionFeeNetworkName", "PoolPositionFeeDay");
-
-                            b1.ToTable("PoolPositionFees");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PoolPositionFeeLiquidityPoolPositionId", "PoolPositionFeeNetworkName", "PoolPositionFeeDay");
-                        });
-
-                    b.OwnsOne("CryptoWatcher.Entities.TokenInfo", "Token1Fee", b1 =>
-                        {
-                            b1.Property<decimal>("PoolPositionFeeLiquidityPoolPositionId")
-                                .HasColumnType("numeric(20,0)");
-
-                            b1.Property<string>("PoolPositionFeeNetworkName")
-                                .HasColumnType("character varying(32)");
-
-                            b1.Property<DateOnly>("PoolPositionFeeDay")
-                                .HasColumnType("date");
-
-                            b1.Property<decimal>("Amount")
-                                .HasColumnType("numeric");
-
-                            b1.Property<decimal>("PriceInUsd")
-                                .HasColumnType("numeric");
-
-                            b1.Property<string>("Symbol")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.HasKey("PoolPositionFeeLiquidityPoolPositionId", "PoolPositionFeeNetworkName", "PoolPositionFeeDay");
-
-                            b1.ToTable("PoolPositionFees");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PoolPositionFeeLiquidityPoolPositionId", "PoolPositionFeeNetworkName", "PoolPositionFeeDay");
-                        });
-
-                    b.Navigation("PoolPosition");
-
-                    b.Navigation("Token0Fee")
-                        .IsRequired();
-
-                    b.Navigation("Token1Fee")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("CryptoWatcher.Entities.PoolPositionSnapshot", b =>
                 {
                     b.HasOne("CryptoWatcher.Entities.PoolPosition", "PoolPosition")
                         .WithMany("PoolPositionSnapshots")
-                        .HasForeignKey("PoolPositionId", "NetworkName", "Day")
+                        .HasForeignKey("PoolPositionId", "NetworkName")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -381,8 +274,6 @@ namespace CryptoWatcher.Data.Migrations
             modelBuilder.Entity("CryptoWatcher.Entities.PoolPosition", b =>
                 {
                     b.Navigation("PoolPositionSnapshots");
-
-                    b.Navigation("PositionFees");
                 });
 
             modelBuilder.Entity("CryptoWatcher.Entities.Uniswap.UniswapNetwork", b =>

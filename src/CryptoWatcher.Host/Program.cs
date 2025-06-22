@@ -10,6 +10,7 @@ using CryptoWatcher.Application;
 using CryptoWatcher.Application.Uniswap;
 using CryptoWatcher.Core;
 using CryptoWatcher.Data;
+using CryptoWatcher.Entities;
 using CryptoWatcher.Host.Configs;
 using CryptoWatcher.Host.Extensions;
 using CryptoWatcher.Host.Integrations;
@@ -76,14 +77,14 @@ Console.WriteLine(app.Environment.EnvironmentName);
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<CryptoWatcherDbContext>();
- 
-    // var service = scope.ServiceProvider.GetRequiredService<PoolHistorySyncService>();
-    //
-    // Expression<Func<Task>> x = () => service.SyncAsync(CancellationToken.None);
-    //
-    // var recurringManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManagerV2>();
-    // recurringManager.AddOrUpdate("pool_history", x, Cron.Hourly);
-    // recurringManager.TriggerJob("pool_history");
+
+    var service = scope.ServiceProvider.GetRequiredService<PoolHistorySyncService>();
+
+    Expression<Func<Task>> x = () => service.SyncAsync(CancellationToken.None);
+
+    var recurringManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManagerV2>();
+    recurringManager.AddOrUpdate("pool_history", x, Cron.Hourly);
+    recurringManager.TriggerJob("pool_history");
 }
 
 app.MapGet("/report", async (ExcelService excelService, [FromQuery] DateOnly? from, [FromQuery] DateOnly? to) =>
