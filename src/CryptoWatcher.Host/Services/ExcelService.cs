@@ -43,17 +43,15 @@ public class ExcelService
 
         foreach (var poolPosition in poolPositions)
         {
-            var initialPosition = poolPosition.PoolPositionSnapshots.MinBy(position => position.Day);
-
             foreach (var positionSnapshot in poolPosition.PoolPositionSnapshots.OrderBy(snapshot => snapshot.Day))
             {
                 await sheet.AddAsRowAsync(new PoolInfoExcel
                 {
                     Day = positionSnapshot.Day.ToShortDateString(),
                     PositionInUsd =
-                        Math.Round(poolPosition.Token0.AmountInUsd + poolPosition.Token1.AmountInUsd, 2),
-                    HoldInUsd = Math.Round(initialPosition!.Token0.Amount * positionSnapshot.Token0.PriceInUsd +
-                                           initialPosition.Token1.Amount * positionSnapshot.Token1.PriceInUsd, 2),
+                        Math.Round(positionSnapshot.Token0.AmountInUsd + positionSnapshot.Token1.AmountInUsd, 2),
+                    HoldInUsd = Math.Round(poolPosition.Token0.Amount * positionSnapshot.Token0.PriceInUsd +
+                                           poolPosition.Token1.Amount * positionSnapshot.Token1.PriceInUsd, 2),
                     TokenPairSymbol = $"{positionSnapshot.Token0.Symbol} / {positionSnapshot.Token0.Symbol}",
                     FeeInUsd = Math.Round(positionSnapshot.FeeInUsd, 2),
                     Network = poolPosition.NetworkName,
@@ -72,11 +70,10 @@ public class ExcelService
         var holdSum = poolPositions
             .Sum(poolPosition =>
             {
-                var position = poolPosition.PoolPositionSnapshots.MinBy(positionSnapshot => positionSnapshot.Day);
                 var lastPosition = poolPosition.PoolPositionSnapshots.MaxBy(positionSnapshot => positionSnapshot.Day);
 
-                return position!.Token0.Amount * lastPosition!.Token0.PriceInUsd +
-                       position.Token1.Amount * lastPosition.Token1.PriceInUsd;
+                return poolPosition.Token0.Amount * lastPosition!.Token0.PriceInUsd +
+                       poolPosition.Token1.Amount * lastPosition.Token1.PriceInUsd;
             });
 
         await sheet.AddAsRowAsync(new PoolInfoExcel
@@ -100,7 +97,7 @@ public class ExcelService
     {
         var prevDayFee = 0m;
         var result = 0m;
-        foreach (var poolPositionFee in positionFees)
+        foreach (var poolPositionFee in positionFees.OrderBy(snapshot => snapshot.Day))
         {
             if (poolPositionFee.FeeInUsd > prevDayFee)
             {

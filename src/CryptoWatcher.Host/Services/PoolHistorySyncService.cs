@@ -102,8 +102,8 @@ public class PoolHistorySyncService
 
                         var feeEnriched = await _enricher.EnrichAsync(web3, fee, ct);
 
-                        var snapshotEntity =
-                            MapToLiquidityPoolPositionSnapshot(dbPoolPosition, uniswapPosition, pool, feeEnriched);
+                        var snapshotEntity = MapToLiquidityPoolPositionSnapshot(dbPoolPosition.PositionId,
+                            dbPoolPosition.NetworkName, tokensEnriched, feeEnriched, positionInPool.IsInRange);
 
                         poolPositionSnapshots.Add(snapshotEntity);
 
@@ -158,19 +158,20 @@ public class PoolHistorySyncService
     }
 
     private static PoolPositionSnapshot MapToLiquidityPoolPositionSnapshot(
-        PoolPosition poolPosition,
-        IUniswapPosition position,
-        LiquidityPool pool,
-        TokenInfoPair feeInfo)
+        ulong positionId,
+        string networkName,
+        TokenInfoPair poolPosition,
+        TokenInfoPair feeInfo,
+        bool isInRange)
     {
         return new PoolPositionSnapshot
         {
-            PoolPositionId = poolPosition.PositionId,
-            NetworkName = poolPosition.NetworkName,
+            PoolPositionId = positionId,
+            NetworkName = networkName,
             Day = DateOnly.FromDateTime(DateTime.Now),
-            Token0 = TokenInfoWithFee.Create(poolPosition.Token0, feeInfo.Token0.Amount),
-            Token1 = TokenInfoWithFee.Create(poolPosition.Token1, feeInfo.Token1.Amount),
-            IsInRange = pool.Tick >= position.TickLower && pool.Tick < position.TickUpper,
+            Token0 = TokenInfoWithFee.Create(poolPosition.Token0, feeInfo.Token0.Amount, feeInfo.Token0.PriceInUsd),
+            Token1 = TokenInfoWithFee.Create(poolPosition.Token1, feeInfo.Token1.Amount, feeInfo.Token1.PriceInUsd),
+            IsInRange = isInRange,
         };
     }
 

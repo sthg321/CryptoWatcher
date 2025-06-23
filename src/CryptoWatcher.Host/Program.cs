@@ -1,16 +1,13 @@
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using AaveClient;
 using AaveClient.Extensions;
-using CoinGeckoClient;
 using CoinGeckoClient.Extensions;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Application;
 using CryptoWatcher.Application.Uniswap;
 using CryptoWatcher.Core;
 using CryptoWatcher.Data;
-using CryptoWatcher.Entities;
 using CryptoWatcher.Host.Configs;
 using CryptoWatcher.Host.Extensions;
 using CryptoWatcher.Host.Integrations;
@@ -19,10 +16,8 @@ using CryptoWatcher.Integrations;
 using CryptoWatcher.PoolHistorySyncFeature;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using UniswapClient.Extensions;
-using JsonOptions = Microsoft.AspNetCore.Http.Json.JsonOptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -76,8 +71,6 @@ var app = builder.Build();
 Console.WriteLine(app.Environment.EnvironmentName);
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<CryptoWatcherDbContext>();
-
     var service = scope.ServiceProvider.GetRequiredService<PoolHistorySyncService>();
 
     Expression<Func<Task>> x = () => service.SyncAsync(CancellationToken.None);
