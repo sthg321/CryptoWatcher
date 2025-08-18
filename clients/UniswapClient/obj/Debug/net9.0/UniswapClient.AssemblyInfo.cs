@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UniswapClient")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+689cbaf2f45690d4793419997035179db77101b5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9dcf9bd5cdf4d3581b91c672866846d4cf727e6f")]
 [assembly: System.Reflection.AssemblyProductAttribute("UniswapClient")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UniswapClient")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

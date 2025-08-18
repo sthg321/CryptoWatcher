@@ -10,8 +10,8 @@
         "dependencies": {
           "Ardalis.Specification.EntityFrameworkCore": "9.1.0",
           "CryptoWatcher": "1.0.0",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
-          "Z.EntityFramework.Extensions.EFCore": "9.103.9.3"
+          "EFCore.BulkExtensions.PostgreSql": "9.0.1",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4"
         },
         "runtime": {
           "CryptoWatcher.Data.dll": {}
@@ -43,6 +43,39 @@
           "lib/net9.0/Ardalis.Specification.EntityFrameworkCore.dll": {
             "assemblyVersion": "9.1.0.0",
             "fileVersion": "9.1.0.0"
+          }
+        }
+      },
+      "EFCore.BulkExtensions.Core/9.0.1": {
+        "dependencies": {
+          "MedallionTopologicalSort": "1.0.0",
+          "Microsoft.EntityFrameworkCore.Relational": "9.0.2",
+          "NetTopologySuite": "2.5.0"
+        },
+        "runtime": {
+          "lib/net9.0/EFCore.BulkExtensions.Core.dll": {
+            "assemblyVersion": "9.0.1.0",
+            "fileVersion": "9.0.1.0"
+          }
+        }
+      },
+      "EFCore.BulkExtensions.PostgreSql/9.0.1": {
+        "dependencies": {
+          "EFCore.BulkExtensions.Core": "9.0.1",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4"
+        },
+        "runtime": {
+          "lib/net9.0/EFCore.BulkExtensions.PostgreSql.dll": {
+            "assemblyVersion": "9.0.1.0",
+            "fileVersion": "9.0.1.0"
+          }
+        }
+      },
+      "MedallionTopologicalSort/1.0.0": {
+        "runtime": {
+          "lib/netstandard2.0/MedallionTopologicalSort.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
           }
         }
       },
@@ -431,6 +464,17 @@
           }
         }
       },
+      "NetTopologySuite/2.5.0": {
+        "dependencies": {
+          "System.Memory": "4.5.4"
+        },
+        "runtime": {
+          "lib/netstandard2.0/NetTopologySuite.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.0"
+          }
+        }
+      },
       "Newtonsoft.Json/11.0.2": {
         "runtime": {
           "lib/netstandard2.0/Newtonsoft.Json.dll": {
@@ -471,60 +515,7 @@
           }
         }
       },
-      "System.Configuration.ConfigurationManager/9.0.0": {
-        "dependencies": {
-          "System.Diagnostics.EventLog": "9.0.0",
-          "System.Security.Cryptography.ProtectedData": "9.0.0"
-        },
-        "runtime": {
-          "lib/net9.0/System.Configuration.ConfigurationManager.dll": {
-            "assemblyVersion": "9.0.0.0",
-            "fileVersion": "9.0.24.52809"
-          }
-        }
-      },
-      "System.Diagnostics.EventLog/9.0.0": {
-        "runtime": {
-          "lib/net9.0/System.Diagnostics.EventLog.dll": {
-            "assemblyVersion": "9.0.0.0",
-            "fileVersion": "9.0.24.52809"
-          }
-        },
-        "runtimeTargets": {
-          "runtimes/win/lib/net9.0/System.Diagnostics.EventLog.Messages.dll": {
-            "rid": "win",
-            "assetType": "runtime",
-            "assemblyVersion": "9.0.0.0",
-            "fileVersion": "0.0.0.0"
-          },
-          "runtimes/win/lib/net9.0/System.Diagnostics.EventLog.dll": {
-            "rid": "win",
-            "assetType": "runtime",
-            "assemblyVersion": "9.0.0.0",
-            "fileVersion": "9.0.24.52809"
-          }
-        }
-      },
-      "System.Security.Cryptography.ProtectedData/9.0.0": {
-        "runtime": {
-          "lib/net9.0/System.Security.Cryptography.ProtectedData.dll": {
-            "assemblyVersion": "9.0.0.0",
-            "fileVersion": "9.0.24.52809"
-          }
-        }
-      },
-      "Z.EntityFramework.Extensions.EFCore/9.103.9.3": {
-        "dependencies": {
-          "Microsoft.EntityFrameworkCore.Relational": "9.0.2",
-          "System.Configuration.ConfigurationManager": "9.0.0"
-        },
-        "runtime": {
-          "lib/net8.0/Z.EntityFramework.Extensions.EFCore.dll": {
-            "assemblyVersion": "9.103.9.3",
-            "fileVersion": "9.103.9.3"
-          }
-        }
-      },
+      "System.Memory/4.5.4": {},
       "CryptoWatcher/1.0.0": {
         "dependencies": {
           "Ardalis.Specification": "9.1.0",
@@ -578,6 +569,27 @@
       "sha512": "sha512-9cPBhu+h40k0smi6o/ga6dx3hOeziEnnO8/CJA7j5JKHavbTWUq1uqtxqky90IJdGYRd8zvC/aKCqpTME6DG9Q==",
       "path": "ardalis.specification.entityframeworkcore/9.1.0",
       "hashPath": "ardalis.specification.entityframeworkcore.9.1.0.nupkg.sha512"
+    },
+    "EFCore.BulkExtensions.Core/9.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-s0wKAVPi6IB0v15aRfE0om4hRQGBPBeiAEMUYqMBBfzOlBsTGQr/YyqtIptcGN/uP6IyMcy3VA3PNOxwP1yzRQ==",
+      "path": "efcore.bulkextensions.core/9.0.1",
+      "hashPath": "efcore.bulkextensions.core.9.0.1.nupkg.sha512"
+    },
+    "EFCore.BulkExtensions.PostgreSql/9.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yqvavEg+0bpW9/X+eMEQXLUqSYiDsox+VZZFc4Ph5v0Bq+p4imK0lrJ9rS563ZG5GMyqr+nsAXjMrSkTZUDhHQ==",
+      "path": "efcore.bulkextensions.postgresql/9.0.1",
+      "hashPath": "efcore.bulkextensions.postgresql.9.0.1.nupkg.sha512"
+    },
+    "MedallionTopologicalSort/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-dcAqM8TcyZQ/T466CvqNMUUn/G0FQE+4R7l62ngXH7hLFP9yA7yoP/ySsLgiXx3pGUQC3J+cUvXmJOOR/eC+oQ==",
+      "path": "medalliontopologicalsort/1.0.0",
+      "hashPath": "medalliontopologicalsort.1.0.0.nupkg.sha512"
     },
     "Microsoft.EntityFrameworkCore/9.0.2": {
       "type": "package",
@@ -796,6 +808,13 @@
       "path": "nethereum.web3/4.29.0",
       "hashPath": "nethereum.web3.4.29.0.nupkg.sha512"
     },
+    "NetTopologySuite/2.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-5/+2O2ADomEdUn09mlSigACdqvAf0m/pVPGtIPEPQWnyrVykYY0NlfXLIdkMgi41kvH9kNrPqYaFBTZtHYH7Xw==",
+      "path": "nettopologysuite/2.5.0",
+      "hashPath": "nettopologysuite.2.5.0.nupkg.sha512"
+    },
     "Newtonsoft.Json/11.0.2": {
       "type": "package",
       "serviceable": true,
@@ -824,33 +843,12 @@
       "path": "portable.bouncycastle/1.8.2",
       "hashPath": "portable.bouncycastle.1.8.2.nupkg.sha512"
     },
-    "System.Configuration.ConfigurationManager/9.0.0": {
+    "System.Memory/4.5.4": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-PdkuMrwDhXoKFo/JxISIi9E8L+QGn9Iquj2OKDWHB6Y/HnUOuBouF7uS3R4Hw3FoNmwwMo6hWgazQdyHIIs27A==",
-      "path": "system.configuration.configurationmanager/9.0.0",
-      "hashPath": "system.configuration.configurationmanager.9.0.0.nupkg.sha512"
-    },
-    "System.Diagnostics.EventLog/9.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-qd01+AqPhbAG14KtdtIqFk+cxHQFZ/oqRSCoxU1F+Q6Kv0cl726sl7RzU9yLFGd4BUOKdN4XojXF0pQf/R6YeA==",
-      "path": "system.diagnostics.eventlog/9.0.0",
-      "hashPath": "system.diagnostics.eventlog.9.0.0.nupkg.sha512"
-    },
-    "System.Security.Cryptography.ProtectedData/9.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-CJW+x/F6fmRQ7N6K8paasTw9PDZp4t7G76UjGNlSDgoHPF0h08vTzLYbLZpOLEJSg35d5wy2jCXGo84EN05DpQ==",
-      "path": "system.security.cryptography.protecteddata/9.0.0",
-      "hashPath": "system.security.cryptography.protecteddata.9.0.0.nupkg.sha512"
-    },
-    "Z.EntityFramework.Extensions.EFCore/9.103.9.3": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-uVWanm1q9kgmak63gBeIDP0V2TGqo0qHGTg8ouNsJTcSMMQmOxzIac1eWTd/qRDqbq8wkM4jsXr/NDBb+2D4Bw==",
-      "path": "z.entityframework.extensions.efcore/9.103.9.3",
-      "hashPath": "z.entityframework.extensions.efcore.9.103.9.3.nupkg.sha512"
+      "sha512": "sha512-1MbJTHS1lZ4bS4FmsJjnuGJOu88ZzTT2rLvrhW7Ygic+pC0NWA+3hgAen0HRdsocuQXCkUTdFn9yHJJhsijDXw==",
+      "path": "system.memory/4.5.4",
+      "hashPath": "system.memory.4.5.4.nupkg.sha512"
     },
     "CryptoWatcher/1.0.0": {
       "type": "project",

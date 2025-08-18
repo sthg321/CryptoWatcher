@@ -8,8 +8,8 @@
 
     <ItemGroup>
       <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="9.1.0" />
+      <PackageReference Include="EFCore.BulkExtensions.PostgreSql" Version="9.0.1" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
-      <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="9.103.9.3" />
     </ItemGroup>
 
     <ItemGroup>

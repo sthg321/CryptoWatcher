@@ -74,7 +74,8 @@ builder.Services.AddSingleton<CoinNormalizer>();
 builder.Services.AddAaveClient();
 builder.Services.AddHyperLiquidClient();
 builder.Services.AddScoped<IHyperliquidProvider, HyperliquidProvider>();
- 
+builder.Services.AddScoped<HyperliquidExcelService>();
+
 builder.Services.AddSingleton<AaveProvider>();
 
 builder.Services.ConfigureHttpJsonOptions(options =>
@@ -92,20 +93,6 @@ using (var scope = app.Services.CreateScope())
 {
     var service = scope.ServiceProvider.GetRequiredService<PoolHistorySyncService>();
 
-    var context = scope.ServiceProvider.GetRequiredService<CryptoWatcherDbContext>();
-    
-    var client = scope.ServiceProvider.GetRequiredService<IHyperliquidProvider>();
-    
-    var wallet = new Wallet
-    {
-        Address = "0xeb9191d780c0aB6Ab320C5F05E41ebF81f14255f"
-    };
- 
-    
-    //
-    // var test = await client.GetVaultsFundingHistory(wallet);
-    // var test1 = await client.GetVaultsPositionsEquityAsync(wallet);
-    
     Expression<Func<Task>> x = () => service.SyncAsync(CancellationToken.None);
 
     var recurringManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManagerV2>();
@@ -113,11 +100,17 @@ using (var scope = app.Services.CreateScope())
     recurringManager.TriggerJob("pool_history");
 }
 
-app.MapGet("/report", async (ExcelService excelService, [FromQuery] DateOnly? from, [FromQuery] DateOnly? to) =>
-{
-    var repot = await excelService.ExportPoolInfoToExcelAsync(from, to);
+app.MapGet("/report",
+    async (ExcelService excelService, HyperliquidExcelService hyperliquidExcelService,
+        [FromQuery] bool poolReport,
+        [FromQuery] DateOnly? from,
+        [FromQuery] DateOnly? to) =>
+    {
+        var repot = poolReport
+            ? await excelService.ExportPoolInfoToExcelAsync(from, to)
+            : await hyperliquidExcelService.CreateReportAsync(from, to);
 
-    return TypedResults.File(repot, fileDownloadName: "report.xlsx");
-});
+        return TypedResults.File(repot, fileDownloadName: "report.xlsx");
+    });
 
 app.Run();

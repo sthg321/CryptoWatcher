@@ -224,6 +224,7 @@ E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\obj\Debug\net9
 E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\obj\Debug\net9.0\rjsmrazor.dswa.cache.json
 E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json
 E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\obj\Debug\net9.0\staticwebassets.build.json.cache
-E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\bin\Debug\net9.0\System.Configuration.ConfigurationManager.dll
-E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\bin\Debug\net9.0\System.Security.Cryptography.ProtectedData.dll
-E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\bin\Debug\net9.0\Z.EntityFramework.Extensions.EFCore.dll
+E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\bin\Debug\net9.0\EFCore.BulkExtensions.Core.dll
+E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\bin\Debug\net9.0\EFCore.BulkExtensions.PostgreSql.dll
+E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\bin\Debug\net9.0\MedallionTopologicalSort.dll
+E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\bin\Debug\net9.0\NetTopologySuite.dll

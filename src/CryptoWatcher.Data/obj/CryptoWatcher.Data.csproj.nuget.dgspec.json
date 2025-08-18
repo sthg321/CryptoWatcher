@@ -137,13 +137,13 @@
               "target": "Package",
               "version": "[9.1.0, )"
             },
+            "EFCore.BulkExtensions.PostgreSql": {
+              "target": "Package",
+              "version": "[9.0.1, )"
+            },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[9.0.4, )"
-            },
-            "Z.EntityFramework.Extensions.EFCore": {
-              "target": "Package",
-              "version": "[9.103.9.3, )"
             }
           },
           "imports": [

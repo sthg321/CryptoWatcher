@@ -15,7 +15,7 @@ public class ExcelService
         _dbContext = dbContext;
     }
 
-    public async Task<MemoryStream> ExportPoolInfoToExcelAsync(DateOnly? from, DateOnly? to)
+    public async Task<Stream> ExportPoolInfoToExcelAsync(DateOnly? from, DateOnly? to)
     {
         var now = DateTime.Now;
         var monthStart = new DateTime(now.Year, now.Month, 1);

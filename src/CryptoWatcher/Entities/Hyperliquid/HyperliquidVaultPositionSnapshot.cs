@@ -17,7 +17,7 @@ public class HyperliquidVaultPositionSnapshot
     /// </summary>
     public string VaultAddress { get; init; } = null!;
 
-    public HyperliquidVaultPosition VaultPosition { get; init; } = null!;
+    public HyperliquidVaultPosition Vault { get; init; } = null!;
     
     /// <summary>
     /// Represents the wallet address associated with the liquidity pool position.

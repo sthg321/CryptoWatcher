@@ -14,7 +14,7 @@ public class HyperliquidVaultPositionConfiguration : IEntityTypeConfiguration<Hy
         builder.Property(wallet => wallet.VaultAddress).HasMaxLength(64);
 
         builder.HasMany(position => position.PositionSnapshots)
-            .WithOne(snapshot => snapshot.VaultPosition)
+            .WithOne(snapshot => snapshot.Vault)
             .HasForeignKey(snapshot => new { snapshot.VaultAddress, snapshot.WalletAddress })
             .IsRequired();
 

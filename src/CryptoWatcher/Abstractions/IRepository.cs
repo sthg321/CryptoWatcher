@@ -24,14 +24,6 @@ public interface IRepository<TEntity> : IReadRepositoryBase<TEntity> where TEnti
     /// <param name="ct">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
     Task BulkMergeAsync(IList<TEntity> entities, CancellationToken ct);
-
-    /// <summary>
-    /// Merges a collection of entities into the repositoryFacade by inserting or updating them as needed.
-    /// </summary>
-    /// <param name="entities">The list of entities to be merged.</param>
-    /// <param name="ct">A cancellation token to observe while waiting for the task to complete.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
-    Task BulkMergeWithGraphAsync(IList<TEntity> entities, CancellationToken ct);
     
     /// <summary>
     /// Updates the specified entity in the underlying data store.

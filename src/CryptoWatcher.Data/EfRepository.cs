@@ -3,7 +3,7 @@ using Ardalis.Specification.EntityFrameworkCore;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Entities;
 using CryptoWatcher.Entities.Hyperliquid;
-using Z.BulkOperations;
+using EFCore.BulkExtensions;
 
 namespace CryptoWatcher.Data;
 
@@ -16,6 +16,11 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
     // ReSharper disable once StaticMemberInGenericType
     private static readonly Dictionary<Type, List<string>> Type2PrimaryKeyFields = new()
     {
+        [typeof(Wallet)] =
+        [
+            nameof(Wallet.Address)
+        ],
+
         [typeof(PoolPosition)] =
         [
             nameof(PoolPosition.PositionId), nameof(PoolPosition.NetworkName)
@@ -31,13 +36,13 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
         ],
         [typeof(HyperliquidVaultEvent)] =
         [
-            nameof(HyperliquidVaultPosition.VaultAddress), nameof(HyperliquidVaultPosition.WalletAddress),
-            nameof(HyperliquidVaultPositionSnapshot.Day)
+            nameof(HyperliquidVaultEvent.VaultAddress), nameof(HyperliquidVaultEvent.WalletAddress),
+            nameof(HyperliquidVaultEvent.Date)
         ],
         [typeof(HyperliquidVaultPositionSnapshot)] =
         [
-            nameof(HyperliquidVaultPositionSnapshot.WalletAddress),
             nameof(HyperliquidVaultPositionSnapshot.VaultAddress),
+            nameof(HyperliquidVaultPositionSnapshot.WalletAddress),
             nameof(HyperliquidVaultPositionSnapshot.Day)
         ],
     };
@@ -57,27 +62,7 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
         _dbContext = dbContext;
         UnitOfWork = unitOfWork;
     }
-
-    public async Task BulkMergeWithGraphAsync(IList<TEntity> entities, CancellationToken ct)
-    {
-        if (entities.Count == 0)
-        {
-            return;
-        }
-
-        await _dbContext.BulkMergeAsync(entities, operation =>
-        {
-            operation.IncludeGraph = true;
-            operation.IncludeGraphOperationBuilder = bulkOperation =>
-            {
-                if (Type2PrimaryKeyFields.TryGetValue(bulkOperation.EntityType.ClrType, out var primaryKeys))
-                {
-                    bulkOperation.ColumnPrimaryKeyNames = primaryKeys;
-                }
-            };
-        }, ct);
-    }
-
+ 
     public async Task BulkMergeAsync(IList<TEntity> entities, CancellationToken ct)
     {
         if (entities.Count == 0)
@@ -85,8 +70,9 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
             return;
         }
 
-        await _dbContext.BulkMergeAsync(entities, operation => operation.ColumnPrimaryKeyExpression =
-                entity => Type2PrimaryKeyFields.GetValueOrDefault(typeof(TEntity)), ct);
+        await _dbContext.BulkInsertOrUpdateAsync(entities,
+            operation => operation.UpdateByProperties = Type2PrimaryKeyFields.GetValueOrDefault(typeof(TEntity)),
+            cancellationToken: ct);
     }
 
     public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken ct)
