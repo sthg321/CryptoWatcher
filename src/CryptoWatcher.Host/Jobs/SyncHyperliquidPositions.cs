@@ -29,7 +29,6 @@ public class SyncHyperliquidPositions
         var now = DateTime.Now;
         foreach (var wallet in wallets)
         {
-            //using var tr = _repository.UnitOfWork.BeginTransactionAsync(ct);
             var fundingHistory = await _hyperliquidProvider.GetVaultsFundingHistory(wallet, ct);
 
             var vaultPositions = await _hyperliquidProvider.GetVaultsPositionsEquityAsync(wallet, ct);
@@ -62,51 +61,6 @@ public class SyncHyperliquidPositions
                 .ToArray();
 
             await _repository.BulkMergeWithGraphAsync(hyperliquidVaultPositions, ct);
-
-            // await _context.BulkInsertOrUpdateAsync(hyperliquidVaultPositions, cancellationToken: ct);
-            //
-            // var vaultEvents = fundingHistory.Select(@event =>
-            //         new HyperliquidVaultEvent
-            //         {
-            //             EventType = @event.EventType,
-            //             VaultAddress = @event.VaultAddress,
-            //             Usd = @event.Usd,
-            //             Date = @event.Date,
-            //             WalletAddress = wallet.Address,
-            //         })
-            //     .ToList();
-            //
-            // await _context.BulkInsertOrUpdateAsync(vaultEvents, config =>
-            // {
-            //     config.UpdateByProperties =
-            //     [
-            //         nameof(HyperliquidVaultEvent.WalletAddress), nameof(HyperliquidVaultEvent.VaultAddress),
-            //         nameof(HyperliquidVaultEvent.Date)
-            //     ];
-            // }, cancellationToken: ct);
-            //
-            // var positionSnapshots = vaultPositions.Select(tuple => new HyperliquidVaultPositionSnapshot
-            //     {
-            //         Balance = tuple.Equity,
-            //         Day = DateOnly.FromDateTime(now),
-            //         WalletAddress = wallet.Address,
-            //         VaultAddress = tuple.VaultAddress,
-            //     })
-            //     .ToList();
-            //
-            // await _context.BulkInsertOrUpdateAsync(positionSnapshots, config =>
-            // {
-            //     config.UpdateByProperties =
-            //     [
-            //         nameof(HyperliquidVaultPositionSnapshot.WalletAddress),
-            //         nameof(HyperliquidVaultPositionSnapshot.VaultAddress), nameof(HyperliquidVaultPositionSnapshot.Day)
-            //     ];
-            // }, cancellationToken: ct);
-            //
-            //
-            // await _repository.BulkMergeAsync(hyperliquidVaultPositions, ct);
-            //
-            // await _repository.UnitOfWork.SaveChangesAsync(ct);
         }
     }
 }
