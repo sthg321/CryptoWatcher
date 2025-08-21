@@ -71,6 +71,14 @@
           }
         }
       },
+      "MathNet.Numerics/5.0.0": {
+        "runtime": {
+          "lib/net6.0/MathNet.Numerics.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.0.0"
+          }
+        }
+      },
       "MedallionTopologicalSort/1.0.0": {
         "runtime": {
           "lib/netstandard2.0/MedallionTopologicalSort.dll": {
@@ -519,6 +527,7 @@
       "CryptoWatcher/1.0.0": {
         "dependencies": {
           "Ardalis.Specification": "9.1.0",
+          "MathNet.Numerics": "5.0.0",
           "Nethereum.Web3": "4.29.0",
           "UniswapClient": "1.0.0"
         },
@@ -583,6 +592,13 @@
       "sha512": "sha512-yqvavEg+0bpW9/X+eMEQXLUqSYiDsox+VZZFc4Ph5v0Bq+p4imK0lrJ9rS563ZG5GMyqr+nsAXjMrSkTZUDhHQ==",
       "path": "efcore.bulkextensions.postgresql/9.0.1",
       "hashPath": "efcore.bulkextensions.postgresql.9.0.1.nupkg.sha512"
+    },
+    "MathNet.Numerics/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pg1W2VwaEQMAiTpGK840hZgzavnqjlCMTVSbtVCXVyT+7AX4mc1o89SPv4TBlAjhgCOo9c1Y+jZ5m3ti2YgGgA==",
+      "path": "mathnet.numerics/5.0.0",
+      "hashPath": "mathnet.numerics.5.0.0.nupkg.sha512"
     },
     "MedallionTopologicalSort/1.0.0": {
       "type": "package",

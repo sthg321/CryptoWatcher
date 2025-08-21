@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="Ardalis.Specification" Version="9.1.0" />
+      <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
       <PackageReference Include="Nethereum.Web3" Version="4.29.0" />
     </ItemGroup>
 

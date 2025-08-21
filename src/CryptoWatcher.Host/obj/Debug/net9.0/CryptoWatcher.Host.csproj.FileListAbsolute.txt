@@ -228,3 +228,4 @@ E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\bin\Debug\net9
 E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\bin\Debug\net9.0\EFCore.BulkExtensions.PostgreSql.dll
 E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\bin\Debug\net9.0\MedallionTopologicalSort.dll
 E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\bin\Debug\net9.0\NetTopologySuite.dll
+E:\Programming\Home projects\CryptoWatcher\src\CryptoWatcher.Host\bin\Debug\net9.0\MathNet.Numerics.dll

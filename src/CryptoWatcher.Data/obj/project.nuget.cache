@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "cndvixrOdI8=",
+  "dgSpecHash": "EUDgAirEiTU=",
   "success": true,
   "projectFilePath": "E:\\Programming\\Home projects\\CryptoWatcher\\src\\CryptoWatcher.Data\\CryptoWatcher.Data.csproj",
   "expectedPackageFiles": [
@@ -9,6 +9,7 @@
     "C:\\Users\\Ashym\\.nuget\\packages\\ardalis.specification.entityframeworkcore\\9.1.0\\ardalis.specification.entityframeworkcore.9.1.0.nupkg.sha512",
     "C:\\Users\\Ashym\\.nuget\\packages\\efcore.bulkextensions.core\\9.0.1\\efcore.bulkextensions.core.9.0.1.nupkg.sha512",
     "C:\\Users\\Ashym\\.nuget\\packages\\efcore.bulkextensions.postgresql\\9.0.1\\efcore.bulkextensions.postgresql.9.0.1.nupkg.sha512",
+    "C:\\Users\\Ashym\\.nuget\\packages\\mathnet.numerics\\5.0.0\\mathnet.numerics.5.0.0.nupkg.sha512",
     "C:\\Users\\Ashym\\.nuget\\packages\\medalliontopologicalsort\\1.0.0\\medalliontopologicalsort.1.0.0.nupkg.sha512",
     "C:\\Users\\Ashym\\.nuget\\packages\\microsoft.entityframeworkcore\\9.0.2\\microsoft.entityframeworkcore.9.0.2.nupkg.sha512",
     "C:\\Users\\Ashym\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\9.0.2\\microsoft.entityframeworkcore.abstractions.9.0.2.nupkg.sha512",

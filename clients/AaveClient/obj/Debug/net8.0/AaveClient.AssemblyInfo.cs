@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AaveClient")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9dcf9bd5cdf4d3581b91c672866846d4cf727e6f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+65944c9e3ca249cbb60b5c5b64946c78a627a60e")]
 [assembly: System.Reflection.AssemblyProductAttribute("AaveClient")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AaveClient")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

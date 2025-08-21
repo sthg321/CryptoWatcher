@@ -1,4 +1,5 @@
 using CryptoWatcher.Data;
+using CryptoWatcher.Entities.Hyperliquid;
 using Microsoft.EntityFrameworkCore;
 using SpreadCheetah;
 using SpreadCheetah.SourceGeneration;
@@ -27,6 +28,7 @@ public class HyperliquidExcelService
         }
 
         var vaultPositions = await _context.HyperliquidVaultPositions
+            .Include(position => position.VaultEvents)
             .Include(position =>
                 position.PositionSnapshots
                     .OrderBy(snapshot => snapshot.Day)
@@ -39,6 +41,9 @@ public class HyperliquidExcelService
 
         await sheet.StartWorksheetAsync("report", token: ct);
 
+        await sheet.AddHeaderRowAsync(HyperliquidVaultPositionExcelContext.Default.HyperliquidVaultPositionExcelRow,
+            token: ct);
+
         foreach (var vaultPosition in vaultPositions)
         {
             decimal previousBalance = 0;
@@ -47,16 +52,26 @@ public class HyperliquidExcelService
                 var row = new HyperliquidVaultPositionExcelRow
                 {
                     Vault = vaultPosition.VaultAddress,
-                    Balance = vaultPositionSnapshot.Balance,
+                    Balance = Math.Round(vaultPositionSnapshot.Balance, 2),
                     Day = vaultPositionSnapshot.Day.ToString(),
-                    ChangesForDay = vaultPositionSnapshot.Balance - previousBalance
+                    ChangesForDay =
+                        Math.Round(previousBalance != 0 ? vaultPositionSnapshot.Balance - previousBalance : 0, 2),
+                    ChangesForPercent =
+                        Math.Round(vaultPosition.CalculatePercentageChange(from.Value, vaultPositionSnapshot.Day), 4)
                 };
 
                 await sheet.AddAsRowAsync(row,
                     HyperliquidVaultPositionExcelContext.Default.HyperliquidVaultPositionExcelRow, ct);
-                
+
                 previousBalance = vaultPositionSnapshot.Balance;
             }
+
+            await sheet.AddRowAsync([], ct);
+
+            await sheet.AddRowAsync([
+                new DataCell("Absolute profit"),
+                new DataCell(vaultPosition.CalculateAbsoluteProfit(from.Value, to.Value))
+            ], ct);
 
             await sheet.FinishAsync(ct);
         }
@@ -68,17 +83,16 @@ public class HyperliquidExcelService
 
 public class HyperliquidVaultPositionExcelRow
 {
-    [ColumnHeader("Vault")]
-    public string Vault { get; init; } = null!;
+    [ColumnHeader("Vault")] public string Vault { get; init; } = null!;
 
-    [ColumnHeader("День")]
-    public string Day { get; init; } = null!;
+    [ColumnHeader("День")] public string Day { get; init; } = null!;
 
-    [ColumnHeader("Баланс")]
-    public decimal Balance { get; init; }
+    [ColumnHeader("Баланс")] public decimal Balance { get; init; }
 
-    [ColumnHeader("Изменение за день")]
-    public decimal ChangesForDay { get; init; }
+    [ColumnHeader("Изменение за день")] public decimal ChangesForDay { get; init; }
+
+    [ColumnHeader("Изменение за день в процентах")]
+    public decimal ChangesForPercent { get; init; }
 }
 
 [WorksheetRow(typeof(HyperliquidVaultPositionExcelRow))]
