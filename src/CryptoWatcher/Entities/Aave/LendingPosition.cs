@@ -2,7 +2,7 @@ namespace CryptoWatcher.Entities;
 
 public class LendingPosition
 {
-    public TokenInfo Token { get; set; } = null!;
+    //public TokenInfo Token { get; set; } = null!;
     
     public string WalletAddress { get; init; } = null!; 
     

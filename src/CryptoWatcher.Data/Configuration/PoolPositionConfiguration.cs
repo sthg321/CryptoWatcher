@@ -13,6 +13,11 @@ public class PoolPositionConfiguration : IEntityTypeConfiguration<PoolPosition>
         builder.Property(network => network.NetworkName).HasMaxLength(32);
         builder.Property(network => network.WalletAddress).HasMaxLength(64);
         
+        builder.HasOne(x=>x.Wallet)
+            .WithMany()
+            .HasForeignKey(position => position.WalletAddress)
+            .IsRequired();
+        
         builder.OwnsOne<TokenInfo>(position => position.Token0);
         builder.OwnsOne<TokenInfo>(position => position.Token1);
     }

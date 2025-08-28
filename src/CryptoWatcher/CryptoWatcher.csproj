@@ -14,6 +14,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\clients\UniswapClient\UniswapClient.csproj" />
+      <ProjectReference Include="..\CryptoWatcher.Shared\CryptoWatcher.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Core\" />
+      <Folder Include="PoolHistorySyncFeature\" />
     </ItemGroup>
 
 </Project>

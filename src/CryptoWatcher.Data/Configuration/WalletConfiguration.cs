@@ -10,10 +10,5 @@ public class WalletConfiguration : IEntityTypeConfiguration<Wallet>
     {
         builder.HasKey(wallet => wallet.Address);
         builder.Property(wallet => wallet.Address).HasMaxLength(64);
-        
-        builder.HasMany(wallet=>wallet.LiquidityPoolPositions)
-            .WithOne(position => position.Wallet)
-            .HasForeignKey(position => position.WalletAddress)
-            .IsRequired();
     }
 }
