@@ -1,5 +1,5 @@
 using CryptoWatcher.Data;
-using CryptoWatcher.Entities;
+using CryptoWatcher.UniswapModule.Entities;
 using Microsoft.EntityFrameworkCore;
 using SpreadCheetah;
 using SpreadCheetah.SourceGeneration;

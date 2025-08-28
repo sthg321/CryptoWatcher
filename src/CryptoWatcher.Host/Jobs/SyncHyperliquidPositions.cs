@@ -1,7 +1,7 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Data;
-using CryptoWatcher.Entities.Hyperliquid;
-using CryptoWatcher.Integrations;
+using CryptoWatcher.HyperliquidModule;
+using CryptoWatcher.HyperliquidModule.Entities;
 using Microsoft.EntityFrameworkCore;
 using TickerQ.Utilities.Base;
 

@@ -1,6 +1,7 @@
 using CryptoWatcher.Extensions;
+using CryptoWatcher.Shared.Entities;
 
-namespace CryptoWatcher.Entities.Hyperliquid;
+namespace CryptoWatcher.HyperliquidModule.Entities;
 
 public class HyperliquidVaultPosition
 {

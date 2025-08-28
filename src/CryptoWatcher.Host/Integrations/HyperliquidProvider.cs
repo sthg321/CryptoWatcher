@@ -1,6 +1,6 @@
-using CryptoWatcher.Entities;
-using CryptoWatcher.Entities.Hyperliquid;
-using CryptoWatcher.Integrations;
+using CryptoWatcher.HyperliquidModule;
+using CryptoWatcher.HyperliquidModule.Entities;
+using CryptoWatcher.Shared.Entities;
 using HyperliquidClient;
 using HyperliquidClient.UserNonFundingLedgerUpdates.Contracts;
 

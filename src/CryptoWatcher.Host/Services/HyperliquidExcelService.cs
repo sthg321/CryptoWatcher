@@ -1,5 +1,4 @@
 using CryptoWatcher.Data;
-using CryptoWatcher.Entities.Hyperliquid;
 using Microsoft.EntityFrameworkCore;
 using SpreadCheetah;
 using SpreadCheetah.SourceGeneration;

@@ -1,4 +1,4 @@
-namespace CryptoWatcher.Entities.Uniswap;
+namespace CryptoWatcher.UniswapModule.Entities;
 
 /// <summary>
 /// Represents a blockchain uniswap network and its related configuration data.

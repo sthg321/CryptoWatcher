@@ -1,9 +1,9 @@
-using CryptoWatcher.Entities;
-using CryptoWatcher.Entities.Uniswap;
-using CryptoWatcher.Models;
+using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.UniswapModule.Entities;
+using CryptoWatcher.UniswapModule.Models;
 using UniswapClient.Models;
 
-namespace CryptoWatcher.Integrations;
+namespace CryptoWatcher.UniswapModule.Services;
 
 public interface IUniswapProvider
 {

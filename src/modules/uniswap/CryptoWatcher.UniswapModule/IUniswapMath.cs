@@ -1,8 +1,8 @@
 using System.Numerics;
-using CryptoWatcher.Models;
+using CryptoWatcher.UniswapModule.Models;
 using UniswapClient.Models;
 
-namespace CryptoWatcher.Core;
+namespace CryptoWatcher.UniswapModule;
 // ReSharper disable InconsistentNaming
 /// <summary>
 /// Provides mathematical operations and utilities for Uniswap liquidity pools and positions.

@@ -1,4 +1,6 @@
-namespace CryptoWatcher.Entities;
+using CryptoWatcher.Shared.Entities;
+
+namespace CryptoWatcher.Entities.Aave;
 
 public class LendingPosition
 {

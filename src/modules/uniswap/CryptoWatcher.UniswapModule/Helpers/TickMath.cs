@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Numerics;
 
-namespace CryptoWatcher.Helpers;
+namespace CryptoWatcher.UniswapModule.Helpers;
 
 /// <summary>
 /// Tick math prot from uniswap TickMath.sol

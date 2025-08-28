@@ -1,4 +1,4 @@
-namespace CryptoWatcher.Entities;
+namespace CryptoWatcher.Entities.Aave;
 
 public class LendingPositionHistory
 {

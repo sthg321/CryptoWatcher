@@ -1,4 +1,4 @@
-namespace CryptoWatcher.Entities;
+namespace CryptoWatcher.UniswapModule.Entities;
 
 public class TokenInfoWithFee
 {

@@ -1,7 +1,5 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Data;
-using CryptoWatcher.Entities;
-using CryptoWatcher.Entities.Uniswap;
 using Microsoft.EntityFrameworkCore;
 
 namespace CryptoWatcher.Host.Extensions;

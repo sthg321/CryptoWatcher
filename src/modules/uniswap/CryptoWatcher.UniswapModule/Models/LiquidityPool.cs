@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace CryptoWatcher.Models;
+namespace CryptoWatcher.UniswapModule.Models;
 
 /// <summary>
 /// Represents the state of an Uniswap V3 liquidity pool.

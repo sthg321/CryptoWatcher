@@ -1,6 +1,7 @@
 using CryptoWatcher.Application;
 using CryptoWatcher.Extensions;
 using CryptoWatcher.Models;
+using CryptoWatcher.UniswapModule.Models;
 using Nethereum.Web3;
 
 namespace CryptoWatcher.Host.Services;

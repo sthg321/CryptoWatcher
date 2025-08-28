@@ -1,4 +1,4 @@
-namespace CryptoWatcher.Models;
+namespace CryptoWatcher.UniswapModule.Models;
 
 /// <summary>
 /// Represents a pair of enriched tokens with additional metadata (symbol, price, etc.).

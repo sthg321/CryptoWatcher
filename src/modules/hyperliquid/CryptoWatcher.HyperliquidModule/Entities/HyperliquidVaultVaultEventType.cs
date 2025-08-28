@@ -1,4 +1,4 @@
-namespace CryptoWatcher.Entities.Hyperliquid;
+namespace CryptoWatcher.HyperliquidModule.Entities;
 
 public enum HyperliquidVaultVaultEventType
 {

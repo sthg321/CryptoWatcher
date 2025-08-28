@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace CryptoWatcher.Models;
+namespace CryptoWatcher.UniswapModule.Models;
 
 /// <summary>
 /// Represents a token with an address and raw balance (e.g., liquidity or fee amount).

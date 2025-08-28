@@ -1,4 +1,4 @@
-using CryptoWatcher.Entities.Hyperliquid;
+using CryptoWatcher.HyperliquidModule.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

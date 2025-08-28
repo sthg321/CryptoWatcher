@@ -1,4 +1,4 @@
-namespace CryptoWatcher.Entities;
+namespace CryptoWatcher.Shared.Entities;
 
 /// <summary>
 /// Represents a cryptocurrency wallet entity within the system.

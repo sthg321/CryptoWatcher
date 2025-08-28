@@ -1,8 +1,7 @@
-using CryptoWatcher.Entities;
-using CryptoWatcher.Entities.Uniswap;
+using CryptoWatcher.UniswapModule.Entities;
 using Nethereum.Web3;
 
-namespace CryptoWatcher.Models;
+namespace CryptoWatcher.UniswapModule.Models;
 
 /// <summary>
 /// Context object containing uniswapNetwork-specific services and dependencies,

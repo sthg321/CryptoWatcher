@@ -1,10 +1,9 @@
-using CryptoWatcher.Entities;
-using CryptoWatcher.Entities.Uniswap;
-using CryptoWatcher.Models;
+using CryptoWatcher.UniswapModule.Entities;
+using CryptoWatcher.UniswapModule.Models;
 using Nethereum.Web3;
 using UniswapClient.Models;
 
-namespace CryptoWatcher.Integrations;
+namespace CryptoWatcher.UniswapModule.Services;
 
 public interface IUniswapPoolProvider<in TPosition> where TPosition : IUniswapPosition
 {

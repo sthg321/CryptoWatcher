@@ -1,7 +1,7 @@
-using CryptoWatcher.Entities;
-using CryptoWatcher.Entities.Uniswap;
+using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.UniswapModule.Entities;
 
-namespace CryptoWatcher.PoolHistorySyncFeature;
+namespace CryptoWatcher.UniswapModule.Services;
 
 /// <summary>
 /// Interface for managing and retrieving data related to pool history synchronization features.

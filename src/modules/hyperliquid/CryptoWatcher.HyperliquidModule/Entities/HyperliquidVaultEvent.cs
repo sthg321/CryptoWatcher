@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using CryptoWatcher.Shared.Entities;
 
-namespace CryptoWatcher.Entities.Hyperliquid;
+namespace CryptoWatcher.HyperliquidModule.Entities;
 
 public class HyperliquidVaultEvent
 {

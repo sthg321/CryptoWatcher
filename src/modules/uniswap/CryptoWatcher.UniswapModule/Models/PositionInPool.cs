@@ -1,4 +1,4 @@
-namespace CryptoWatcher.Models;
+namespace CryptoWatcher.UniswapModule.Models;
 
 public class PositionInPool
 {

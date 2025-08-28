@@ -1,9 +1,11 @@
-using CryptoWatcher.Core;
-using CryptoWatcher.Entities;
-using CryptoWatcher.Entities.Uniswap;
 using CryptoWatcher.Host.Mappers;
 using CryptoWatcher.Integrations;
 using CryptoWatcher.Models;
+using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.UniswapModule;
+using CryptoWatcher.UniswapModule.Entities;
+using CryptoWatcher.UniswapModule.Models;
+using CryptoWatcher.UniswapModule.Services;
 using Nethereum.Web3;
 using UniswapClient.Models;
 using UniswapClient.UniswapV3;

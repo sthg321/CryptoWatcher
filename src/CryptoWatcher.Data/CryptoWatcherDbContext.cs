@@ -1,8 +1,7 @@
-using System.Data;
 using CryptoWatcher.Abstractions;
-using CryptoWatcher.Entities;
-using CryptoWatcher.Entities.Hyperliquid;
-using CryptoWatcher.Entities.Uniswap;
+using CryptoWatcher.HyperliquidModule.Entities;
+using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.UniswapModule.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 

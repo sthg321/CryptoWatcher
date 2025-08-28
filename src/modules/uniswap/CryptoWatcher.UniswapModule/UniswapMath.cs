@@ -1,10 +1,9 @@
 using System.Numerics;
-using CryptoWatcher.Core;
-using CryptoWatcher.Helpers;
-using CryptoWatcher.Models;
+using CryptoWatcher.UniswapModule.Helpers;
+using CryptoWatcher.UniswapModule.Models;
 using UniswapClient.Models;
 
-namespace CryptoWatcher.Application.Uniswap;
+namespace CryptoWatcher.UniswapModule;
 
 // ReSharper disable InconsistentNaming
 public class UniswapMath : IUniswapMath

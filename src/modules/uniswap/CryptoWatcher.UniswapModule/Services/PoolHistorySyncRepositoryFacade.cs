@@ -1,8 +1,8 @@
 using CryptoWatcher.Abstractions;
-using CryptoWatcher.Entities;
-using CryptoWatcher.Entities.Uniswap;
+using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.UniswapModule.Entities;
 
-namespace CryptoWatcher.PoolHistorySyncFeature;
+namespace CryptoWatcher.UniswapModule.Services;
 
 /// <summary>
 /// <see cref="IPoolHistorySyncRepositoryFacade"/>

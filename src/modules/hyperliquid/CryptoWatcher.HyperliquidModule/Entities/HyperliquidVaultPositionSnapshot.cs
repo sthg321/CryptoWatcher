@@ -1,4 +1,6 @@
-namespace CryptoWatcher.Entities.Hyperliquid;
+using CryptoWatcher.Shared.Entities;
+
+namespace CryptoWatcher.HyperliquidModule.Entities;
 
 public class HyperliquidVaultPositionSnapshot
 {

@@ -1,4 +1,5 @@
 using CryptoWatcher.Models;
+using CryptoWatcher.UniswapModule.Models;
 using Riok.Mapperly.Abstractions;
 using UniswapClient.Models;
 

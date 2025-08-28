@@ -1,8 +1,9 @@
 using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
 using CryptoWatcher.Abstractions;
-using CryptoWatcher.Entities;
-using CryptoWatcher.Entities.Hyperliquid;
+using CryptoWatcher.HyperliquidModule.Entities;
+using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.UniswapModule.Entities;
 using EFCore.BulkExtensions;
 
 namespace CryptoWatcher.Data;
