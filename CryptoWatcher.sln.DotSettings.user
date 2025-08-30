@@ -77,5 +77,6 @@
 	<s:String x:Key="/Default/Environment/Hierarchy/Build/BuildTool/DotNetCliExePath/@EntryValue">C:\Program Files\dotnet\dotnet.exe</s:String>
 	
 	
+	
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=hyperliquid/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=usdc/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

@@ -1,12 +1,14 @@
 using CryptoWatcher.Application;
 using CryptoWatcher.Extensions;
 using CryptoWatcher.Models;
+using CryptoWatcher.UniswapModule.Abstractions;
+using CryptoWatcher.UniswapModule.Entities;
 using CryptoWatcher.UniswapModule.Models;
 using Nethereum.Web3;
 
 namespace CryptoWatcher.Host.Services;
 
-public class TokenEnricher
+public class TokenEnricher : ITokenEnricher
 {
     private readonly TokenService _tokenService;
     private readonly CoinNormalizer _coinNormalizer;
@@ -17,17 +19,20 @@ public class TokenEnricher
         _coinNormalizer = coinNormalizer;
     }
 
-    public async ValueTask<TokenInfoPair> EnrichAsync(IWeb3 web3, TokenPair tokenPair, CancellationToken ct = default)
+    public async ValueTask<TokenInfoPair> EnrichAsync(UniswapNetwork network, TokenPair tokenPair,
+        CancellationToken ct = default)
     {
         return new TokenInfoPair
         {
-            Token0 = await EnrichTokenAsync(web3, tokenPair.Token0, ct),
-            Token1 = await EnrichTokenAsync(web3, tokenPair.Token1, ct),
+            Token0 = await EnrichTokenAsync(network, tokenPair.Token0, ct),
+            Token1 = await EnrichTokenAsync(network, tokenPair.Token1, ct),
         };
     }
 
-    public async ValueTask<TokenInfoWithAddress> EnrichTokenAsync(IWeb3 web3, Token token, CancellationToken ct)
+    public async ValueTask<TokenInfoWithAddress> EnrichTokenAsync(UniswapNetwork network, Token token,
+        CancellationToken ct)
     {
+        var web3 = new Web3(network.RpcUrl);
         var tokenDecimals = await _tokenService.GetTokenDecimalsAsync(web3, token.Address, ct);
         var symbol = await _tokenService.GetTokenSymbolAsync(web3, token.Address);
         return new TokenInfoWithAddress

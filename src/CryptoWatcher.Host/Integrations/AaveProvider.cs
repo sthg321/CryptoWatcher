@@ -26,8 +26,8 @@ public class AaveProvider
 
         foreach (var position in positions)
         {
-            var token = await _tokenEnricher.EnrichTokenAsync(new Web3("https://rpc.soniclabs.com"),
-                new Token { Address = position.UnderlyingAsset, Balance = position.ScaledATokenBalance }, ct);
+            // var token = await _tokenEnricher.EnrichTokenAsync(new Web3("https://rpc.soniclabs.com"),
+            //     new Token { Address = position.UnderlyingAsset, Balance = position.ScaledATokenBalance }, ct);
 
         }
 

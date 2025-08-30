@@ -24,14 +24,14 @@ public class TokenService
     public async ValueTask<string> GetTokenSymbolAsync(IWeb3 web3, string tokenAddress)
     {
         var cacheKey = string.Format(CacheKeys.TokenSymbol.TokenSymbolByTokenAddressTemplate, tokenAddress);
-        return await _cache.GetOrCreateAsync(cacheKey, async _ =>
+        return await _cache.GetOrCreateAsync(cacheKey, web3, async (web, _) =>
                 {
                     if (tokenAddress == "0x0000000000000000000000000000000000000000") // ETH in unichain
                     {
                         return "ETH";
                     }
 
-                    var result = await web3.Eth.ERC20.GetContractService(tokenAddress).SymbolQueryAsync();
+                    var result = await web.Eth.ERC20.GetContractService(tokenAddress).SymbolQueryAsync();
 
                     return result;
                 },
@@ -43,15 +43,15 @@ public class TokenService
     public async ValueTask<byte> GetTokenDecimalsAsync(IWeb3 web3, string tokenAddress, CancellationToken ct = default)
     {
         var cacheKey = string.Format(CacheKeys.TokenDecimals.TokenDecimalsByTokenAddressTemplate, tokenAddress);
-        return (byte)await _cache.GetOrCreateAsync(cacheKey,
-            async _ =>
+        return (byte)await _cache.GetOrCreateAsync(cacheKey, web3,
+            async (web, _) =>
             {
                 if (tokenAddress == "0x0000000000000000000000000000000000000000") // ETH in unichain
                 {
                     return 18;
                 }
 
-                return await web3.Eth.ERC20.GetContractService(tokenAddress).DecimalsQueryAsync();
+                return await web.Eth.ERC20.GetContractService(tokenAddress).DecimalsQueryAsync();
             },
             new HybridCacheEntryOptions
                 { Expiration = TimeSpan.FromSeconds(CacheKeys.TokenDecimals.CacheLifetimeInSecond) },
@@ -61,9 +61,9 @@ public class TokenService
     public async ValueTask<decimal> GetTokenPriceByTokenSymbolAsync(string symbol, CancellationToken ct)
     {
         var cacheKey = string.Format(CacheKeys.TokenPrice.TokenPriceInUsdByTokenSymbolCacheKeyTemplate, symbol);
-        return await _cache.GetOrCreateAsync(cacheKey, async token =>
+        return await _cache.GetOrCreateAsync(cacheKey, symbol, async (coinSymbol, token) =>
             {
-                var normalizedSymbol = _coinNormalizer.NormalizeSymbol(symbol);
+                var normalizedSymbol = _coinNormalizer.NormalizeSymbol(coinSymbol);
                 var tokenId = await _coinPriceService.GetTokenIdByTokenSymbolAsync(normalizedSymbol, token);
                 var result = await _coinGeckoCoinPriceProvider.GetTokenPriceInUsdAsync(tokenId, token);
 

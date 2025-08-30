@@ -1,6 +1,7 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.UniswapModule.Entities;
+using CryptoWatcher.UniswapModule.Specifications;
 
 namespace CryptoWatcher.UniswapModule.Services;
 

@@ -2,7 +2,7 @@ using Ardalis.Specification;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.UniswapModule.Entities;
 
-namespace CryptoWatcher.UniswapModule.Services;
+namespace CryptoWatcher.UniswapModule.Specifications;
 
 public sealed class GetPositionsByWalletAndNetworkSpecification : Specification<PoolPosition>
 {

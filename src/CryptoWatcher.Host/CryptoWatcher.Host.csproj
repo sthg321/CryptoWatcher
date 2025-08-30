@@ -27,8 +27,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Hangfire.AspNetCore" Version="1.8.20" />
-      <PackageReference Include="Hangfire.InMemory" Version="1.0.0" />
       <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.5" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.4">
         <PrivateAssets>all</PrivateAssets>
@@ -42,10 +40,6 @@
 
       <PackageReference Include="TickerQ.Dashboard" Version="2.4.4" />
   
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Jobs\" />
     </ItemGroup>
 
 </Project>

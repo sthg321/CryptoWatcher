@@ -78,7 +78,7 @@ public class PoolHistorySyncService
 
                         var positionInPool = _math.CalculatePosition(pool, uniswapPosition);
 
-                        var tokensEnriched = await _enricher.EnrichAsync(web3, positionInPool.TokenInfoPair, ct);
+                        var tokensEnriched = await _enricher.EnrichAsync(network, positionInPool.TokenInfoPair, ct);
 
                         var positionKey = new PositionKey((ulong)uniswapPosition.PositionId, network.Name);
                         if (!existedPositions.TryGetValue(positionKey, out var dbPoolPosition))
@@ -104,7 +104,7 @@ public class PoolHistorySyncService
 
                         var fee = _math.CalculateClaimableFee(pool, uniswapPosition);
 
-                        var feeEnriched = await _enricher.EnrichAsync(web3, fee, ct);
+                        var feeEnriched = await _enricher.EnrichAsync(network, fee, ct);
 
                         var snapshotEntity = MapToLiquidityPoolPositionSnapshot(dbPoolPosition.PositionId,
                             dbPoolPosition.NetworkName, tokensEnriched, feeEnriched, positionInPool.IsInRange);
