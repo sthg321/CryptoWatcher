@@ -15,8 +15,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.6"/>
-        <PackageReference Include="TickerQ.EntityFrameworkCore" Version="2.4.4"/>
-        <PackageReference Include="TickerQ" Version="2.4.4"/>
+
     </ItemGroup>
 
 </Project>

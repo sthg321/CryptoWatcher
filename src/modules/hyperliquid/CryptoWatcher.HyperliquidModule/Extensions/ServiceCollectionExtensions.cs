@@ -8,6 +8,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddHyperliquidModule(this IServiceCollection services)
     {
         services.AddScoped<IHyperliquidPositionsSyncService, HyperliquidPositionsSyncService>();
+        services.AddScoped<IHyperliquidReportService, HyperliquidReportService>();
         return services;
     }
 }

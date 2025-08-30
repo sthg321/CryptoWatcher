@@ -12,6 +12,7 @@ using CryptoWatcher.Host.Integrations;
 using CryptoWatcher.Host.Services;
 using CryptoWatcher.HyperliquidModule.Abstractions;
 using CryptoWatcher.HyperliquidModule.Extensions;
+using CryptoWatcher.Infrastructure.Hyperliquid;
 using CryptoWatcher.Integrations;
 using CryptoWatcher.UniswapModule.Abstractions;
 using CryptoWatcher.UniswapModule.Extensions;

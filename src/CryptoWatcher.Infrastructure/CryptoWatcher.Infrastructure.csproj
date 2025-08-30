@@ -11,6 +11,8 @@
       <PackageReference Include="EFCore.BulkExtensions.PostgreSql" Version="9.0.1" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
         <PackageReference Include="SpreadCheetah" Version="1.21.1" />
+        <PackageReference Include="TickerQ.EntityFrameworkCore" Version="2.4.4"/>
+        <PackageReference Include="TickerQ" Version="2.4.4"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -18,6 +20,10 @@
       <ProjectReference Include="..\CryptoWatcher\CryptoWatcher.csproj" />
       <ProjectReference Include="..\modules\hyperliquid\CryptoWatcher.HyperliquidModule\CryptoWatcher.HyperliquidModule.csproj" />
       <ProjectReference Include="..\modules\uniswap\CryptoWatcher.UniswapModule\CryptoWatcher.UniswapModule.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="CronJobs\" />
     </ItemGroup>
 
 </Project>

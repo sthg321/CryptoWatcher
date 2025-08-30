@@ -3,7 +3,7 @@ using CryptoWatcher.HyperliquidModule.Services;
 using CryptoWatcher.Shared.Entities;
 using TickerQ.Utilities.Base;
 
-namespace CryptoWatcher.Host.Jobs;
+namespace CryptoWatcher.Infrastructure.Hyperliquid;
 
 public class SyncHyperliquidPositions
 {

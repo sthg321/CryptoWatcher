@@ -15,7 +15,7 @@ public class HyperliquidVaultPositionSnapshot
     public DateOnly Day { get; init; }
 
     /// <summary>
-    /// Vault address
+    /// VaultAddress address
     /// </summary>
     public string VaultAddress { get; init; } = null!;
 

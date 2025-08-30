@@ -1,17 +1,16 @@
-using CryptoWatcher.Infrastructure;
-using Microsoft.EntityFrameworkCore;
+using CryptoWatcher.HyperliquidModule.Services;
 using SpreadCheetah;
 using SpreadCheetah.SourceGeneration;
 
-namespace CryptoWatcher.Host.Services;
+namespace CryptoWatcher.Infrastructure.Hyperliquid;
 
 public class HyperliquidExcelService
 {
-    private readonly CryptoWatcherDbContext _context;
+    private readonly IHyperliquidReportService _hyperliquidReportService;
 
-    public HyperliquidExcelService(CryptoWatcherDbContext context)
+    public HyperliquidExcelService(IHyperliquidReportService hyperliquidReportService)
     {
-        _context = context;
+        _hyperliquidReportService = hyperliquidReportService;
     }
 
     public async Task<Stream> CreateReportAsync(DateOnly? from, DateOnly? to, CancellationToken ct = default)
@@ -26,13 +25,7 @@ public class HyperliquidExcelService
             to = DateOnly.FromDateTime(monthEnd);
         }
 
-        var vaultPositions = await _context.HyperliquidVaultPositions
-            .Include(position => position.VaultEvents)
-            .Include(position =>
-                position.PositionSnapshots
-                    .OrderBy(snapshot => snapshot.Day)
-                    .Where(snapshot => snapshot.Day >= from.Value && snapshot.Day <= to.Value))
-            .ToArrayAsync(ct);
+        var vaultReports = await _hyperliquidReportService.CreateReportAsync(from.Value, to.Value, ct);
 
         var ms = new MemoryStream();
 
@@ -43,38 +36,35 @@ public class HyperliquidExcelService
         await sheet.AddHeaderRowAsync(HyperliquidVaultPositionExcelContext.Default.HyperliquidVaultPositionExcelRow,
             token: ct);
 
-        foreach (var vaultPosition in vaultPositions)
+        foreach (var vaultReport in vaultReports)
         {
-            decimal previousBalance = 0;
-            foreach (var vaultPositionSnapshot in vaultPosition.PositionSnapshots)
+            foreach (var vaultReportItem in vaultReport.ReportItems)
             {
                 var row = new HyperliquidVaultPositionExcelRow
                 {
-                    Vault = vaultPosition.VaultAddress,
-                    Balance = Math.Round(vaultPositionSnapshot.Balance, 2),
-                    Day = vaultPositionSnapshot.Day.ToString(),
-                    ChangesForDay =
-                        Math.Round(previousBalance != 0 ? vaultPositionSnapshot.Balance - previousBalance : 0, 2),
-                    ChangesForPercent =
-                        Math.Round(vaultPosition.CalculatePercentageChange(from.Value, vaultPositionSnapshot.Day), 4)
+                    Vault = vaultReportItem.VaultAddress,
+                    Balance = Math.Round(vaultReportItem.Balance, 2),
+                    Day = vaultReportItem.Day.ToString(),
+                    ChangesForDay = Math.Round(vaultReportItem.DailyChange, 2),
+                    ChangesForPercent = Math.Round(vaultReportItem.DailyChangePercent, 4)
                 };
 
                 await sheet.AddAsRowAsync(row,
                     HyperliquidVaultPositionExcelContext.Default.HyperliquidVaultPositionExcelRow, ct);
-
-                previousBalance = vaultPositionSnapshot.Balance;
             }
 
-            await sheet.AddRowAsync([], ct);
-
             await sheet.AddRowAsync([
-                new DataCell("Absolute profit"),
-                new DataCell(vaultPosition.CalculateAbsoluteProfit(from.Value, to.Value))
+                new DataCell("Итого:"),
+                new DataCell(Math.Round(vaultReport.TotalBalance, 2)),
+                new DataCell("-"),
+                new DataCell(Math.Round(vaultReport.TotalAbsoluteProfit, 2)),
+                new DataCell(Math.Round(vaultReport.TotalPercentProfit, 4))
             ], ct);
 
-            await sheet.FinishAsync(ct);
+            await sheet.AddRowAsync([], ct);
         }
 
+        await sheet.FinishAsync(ct);
         ms.Seek(0, SeekOrigin.Begin);
         return ms;
     }
@@ -82,7 +72,7 @@ public class HyperliquidExcelService
 
 public class HyperliquidVaultPositionExcelRow
 {
-    [ColumnHeader("Vault")] public string Vault { get; init; } = null!;
+    [ColumnHeader("VaultAddress")] public string Vault { get; init; } = null!;
 
     [ColumnHeader("День")] public string Day { get; init; } = null!;
 
