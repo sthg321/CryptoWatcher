@@ -55,8 +55,8 @@ public class HyperliquidExcelService
 
             await sheet.AddRowAsync([
                 new DataCell("Итого:"),
-                new DataCell(Math.Round(vaultReport.TotalBalance, 2)),
                 new DataCell("-"),
+                new DataCell(Math.Round(vaultReport.TotalBalance, 2)),
                 new DataCell(Math.Round(vaultReport.TotalAbsoluteProfit, 2)),
                 new DataCell(Math.Round(vaultReport.TotalPercentProfit, 4))
             ], ct);
