@@ -3,7 +3,7 @@ using CryptoWatcher.UniswapModule.Entities;
 using CryptoWatcher.UniswapModule.Models;
 using UniswapClient.Models;
 
-namespace CryptoWatcher.UniswapModule.Services;
+namespace CryptoWatcher.UniswapModule.Abstractions;
 
 public interface IUniswapProvider
 {

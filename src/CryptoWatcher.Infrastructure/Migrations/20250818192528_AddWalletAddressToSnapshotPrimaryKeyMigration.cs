@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace CryptoWatcher.Data.Migrations
+namespace CryptoWatcher.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class AddWalletAddressToSnapshotPrimaryKeyMigration : Migration

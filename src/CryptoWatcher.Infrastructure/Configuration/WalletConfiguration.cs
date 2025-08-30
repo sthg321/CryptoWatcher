@@ -2,7 +2,7 @@ using CryptoWatcher.Shared.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CryptoWatcher.Data.Configuration;
+namespace CryptoWatcher.Infrastructure.Configuration;
 
 public class WalletConfiguration : IEntityTypeConfiguration<Wallet>
 {

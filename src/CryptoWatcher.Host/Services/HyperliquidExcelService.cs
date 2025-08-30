@@ -1,4 +1,4 @@
-using CryptoWatcher.Data;
+using CryptoWatcher.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using SpreadCheetah;
 using SpreadCheetah.SourceGeneration;

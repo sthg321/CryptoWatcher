@@ -2,7 +2,7 @@ using CryptoWatcher.HyperliquidModule.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CryptoWatcher.Data.Configuration.Hyperliquid;
+namespace CryptoWatcher.Infrastructure.Configuration.Hyperliquid;
 
 public class HyperliquidVaultPositionSnapshotConfiguration : IEntityTypeConfiguration<HyperliquidVaultPositionSnapshot>
 {

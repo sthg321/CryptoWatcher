@@ -1,5 +1,5 @@
 using CryptoWatcher.Abstractions;
-using CryptoWatcher.Data;
+using CryptoWatcher.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace CryptoWatcher.Host.Extensions;

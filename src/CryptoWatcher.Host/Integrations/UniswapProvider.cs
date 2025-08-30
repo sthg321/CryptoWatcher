@@ -3,6 +3,7 @@ using CryptoWatcher.Integrations;
 using CryptoWatcher.Models;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.UniswapModule;
+using CryptoWatcher.UniswapModule.Abstractions;
 using CryptoWatcher.UniswapModule.Entities;
 using CryptoWatcher.UniswapModule.Models;
 using CryptoWatcher.UniswapModule.Services;

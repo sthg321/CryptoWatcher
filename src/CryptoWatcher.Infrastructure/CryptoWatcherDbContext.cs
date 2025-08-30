@@ -5,7 +5,7 @@ using CryptoWatcher.UniswapModule.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace CryptoWatcher.Data;
+namespace CryptoWatcher.Infrastructure;
 
 /// <summary>
 /// Represents the Entity Framework Core database context for the CryptoWatcher application.

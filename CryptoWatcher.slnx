@@ -7,8 +7,8 @@
   </Folder>
   <Folder Name="/src/">
     <Project Path="src\CryptoWatcher.Application\CryptoWatcher.Application.csproj" Type="Classic C#" />
-    <Project Path="src\CryptoWatcher.Data\CryptoWatcher.Data.csproj" Type="Classic C#" />
     <Project Path="src\CryptoWatcher.Host\CryptoWatcher.Host.csproj" Type="Classic C#" />
+    <Project Path="src\CryptoWatcher.Infrastructure\CryptoWatcher.Infrastructure.csproj" Type="Classic C#" />
     <Project Path="src\CryptoWatcher.Shared\CryptoWatcher.Shared.csproj" Type="Classic C#" />
     <Project Path="src\CryptoWatcher\CryptoWatcher.csproj" Type="Classic C#" />
   </Folder>

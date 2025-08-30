@@ -6,7 +6,7 @@ using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.UniswapModule.Entities;
 using EFCore.BulkExtensions;
 
-namespace CryptoWatcher.Data;
+namespace CryptoWatcher.Infrastructure;
 
 /// <summary>
 /// <see cref="IRepository{TEntity}"/>
