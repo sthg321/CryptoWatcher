@@ -45,8 +45,8 @@ public class HyperliquidExcelService
                     Vault = vaultReportItem.VaultAddress,
                     Balance = Math.Round(vaultReportItem.Balance, 2),
                     Day = vaultReportItem.Day.ToString(),
-                    ChangesForDay = Math.Round(vaultReportItem.DailyChange, 2),
-                    ChangesForPercent = Math.Round(vaultReportItem.DailyChangePercent, 4)
+                    DailyProfit = Math.Round(vaultReportItem.DailyProfit, 2),
+                    DailyPercentProfit = Math.Round(vaultReportItem.DailyPercentProfit, 4)
                 };
 
                 await sheet.AddAsRowAsync(row,
@@ -78,10 +78,10 @@ public class HyperliquidVaultPositionExcelRow
 
     [ColumnHeader("Баланс")] public decimal Balance { get; init; }
 
-    [ColumnHeader("Изменение за день")] public decimal ChangesForDay { get; init; }
+    [ColumnHeader("Изменение за день")] public decimal DailyProfit { get; init; }
 
     [ColumnHeader("Изменение за день в процентах")]
-    public decimal ChangesForPercent { get; init; }
+    public decimal DailyPercentProfit { get; init; }
 }
 
 [WorksheetRow(typeof(HyperliquidVaultPositionExcelRow))]

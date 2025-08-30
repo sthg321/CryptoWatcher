@@ -39,8 +39,8 @@ public class HyperliquidReportService : IHyperliquidReportService
                     VaultAddress = vaultPosition.VaultAddress,
                     Balance = Math.Round(vaultPositionSnapshot.Balance, 2),
                     Day = vaultPositionSnapshot.Day,
-                    DailyChange = previousBalance != 0 ? vaultPositionSnapshot.Balance - previousBalance : 0,
-                    DailyChangePercent = vaultPosition.CalculatePercentageChange(from, vaultPositionSnapshot.Day),
+                    DailyProfit = previousBalance != 0 ? vaultPositionSnapshot.Balance - previousBalance : 0,
+                    DailyPercentProfit = vaultPosition.CalculatePercentageChange(from, vaultPositionSnapshot.Day),
                 };
 
                 vaultReportItems.Add(reportItem);

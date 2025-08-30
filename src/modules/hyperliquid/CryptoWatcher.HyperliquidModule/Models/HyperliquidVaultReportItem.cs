@@ -8,7 +8,7 @@ public record HyperliquidVaultReportItem
 
     public required decimal Balance { get; init; }
 
-    public required decimal DailyChange { get; init; }
+    public required decimal DailyProfit { get; init; }
 
-    public required decimal DailyChangePercent { get; init; }
+    public required decimal DailyPercentProfit { get; init; }
 }
