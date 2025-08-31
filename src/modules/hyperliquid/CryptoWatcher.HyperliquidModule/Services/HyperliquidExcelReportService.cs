@@ -29,30 +29,28 @@ public class HyperliquidReportService : IHyperliquidReportService
         var result = new List<HyperliquidVaultReport>(vaultPositions.Count);
         foreach (var vaultPosition in vaultPositions)
         {
-            decimal previousBalance = 0;
-
             var vaultReportItems = new List<HyperliquidVaultReportItem>(vaultPosition.PositionSnapshots.Count);
             foreach (var vaultPositionSnapshot in vaultPosition.PositionSnapshots)
             {
                 var reportItem = new HyperliquidVaultReportItem
                 {
                     VaultAddress = vaultPosition.VaultAddress,
-                    Balance = Math.Round(vaultPositionSnapshot.Balance, 2),
+                    Balance = vaultPositionSnapshot.Balance,
                     Day = vaultPositionSnapshot.Day,
-                    DailyProfit = previousBalance != 0 ? vaultPositionSnapshot.Balance - previousBalance : 0,
-                    DailyPercentProfit = vaultPosition.CalculatePercentageChange(from, vaultPositionSnapshot.Day),
+                    DailyProfit = vaultPosition.CalculateAbsoluteProfit(vaultPositionSnapshot.Day.AddDays(-1),
+                        vaultPositionSnapshot.Day),
+                    DailyPercentProfit = vaultPosition.CalculatePercentageProfit(vaultPositionSnapshot.Day.AddDays(-1),
+                        vaultPositionSnapshot.Day),
                 };
 
                 vaultReportItems.Add(reportItem);
-
-                previousBalance = vaultPositionSnapshot.Balance;
             }
 
             var vaultReport = new HyperliquidVaultReport
             {
                 TotalBalance = vaultReportItems.Count != 0 ? vaultReportItems[^1].Balance : 0,
                 TotalAbsoluteProfit = vaultPosition.CalculateAbsoluteProfit(from, to),
-                TotalPercentProfit = vaultPosition.CalculatePercentageChange(from, to),
+                TotalPercentProfit = vaultPosition.CalculatePercentageProfit(from, to),
                 ReportItems = vaultReportItems
             };
 

@@ -7,8 +7,13 @@ public static class DateTimeExtensions
         return DateOnly.FromDateTime(dateTime);
     }
 
-    public static DateTime ToDateTime(this DateOnly date)
+    public static DateTime ToMinDateTime(this DateOnly date)
     {
         return date.ToDateTime(TimeOnly.MinValue);
+    }
+    
+    public static DateTime ToMaxDateTime(this DateOnly date)
+    {
+        return date.ToDateTime(TimeOnly.MaxValue);
     }
 }

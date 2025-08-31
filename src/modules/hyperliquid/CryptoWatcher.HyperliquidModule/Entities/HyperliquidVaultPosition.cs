@@ -35,7 +35,7 @@ public class HyperliquidVaultPosition
     /// <param name="startDate">Начальная дата периода</param>
     /// <param name="endDate">Конечная дата периода</param>
     /// <returns>Процентное изменение позиции за период</returns>
-    public decimal CalculatePercentageChange(DateOnly startDate, DateOnly endDate)
+    public decimal CalculatePercentageProfit(DateOnly startDate, DateOnly endDate)
     {
         // Находим первый и последний снимки за период
         var firstSnapshot = GetNearestSnapshot(startDate, false);
@@ -63,7 +63,7 @@ public class HyperliquidVaultPosition
         
         return percentageChange;
     }
-
+    
     public decimal CalculateAbsoluteProfit(DateOnly startDate, DateOnly endDate)
     {
         var startSnapshot = GetNearestSnapshot(startDate, false);
@@ -97,8 +97,8 @@ public class HyperliquidVaultPosition
     {
         return VaultEvents
             .Where(e => e.EventType == eventType &&
-                        e.Date >= from.ToDateTime() &&
-                        e.Date <= to.ToDateTime())
+                        e.Date >= from.ToMinDateTime() &&
+                        e.Date <= to.ToMaxDateTime())
             .Sum(e => e.Usd);
     }
 
