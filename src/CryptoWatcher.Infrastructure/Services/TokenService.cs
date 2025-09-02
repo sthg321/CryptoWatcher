@@ -3,7 +3,7 @@ using CryptoWatcher.Integrations;
 using Microsoft.Extensions.Caching.Hybrid;
 using Nethereum.Web3;
 
-namespace CryptoWatcher.Host.Services;
+namespace CryptoWatcher.Infrastructure.Services;
 
 public class TokenService
 {

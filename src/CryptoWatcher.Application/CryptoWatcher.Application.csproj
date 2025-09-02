@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\clients\UniswapClient\UniswapClient.csproj"/>
         <ProjectReference Include="..\CryptoWatcher\CryptoWatcher.csproj"/>
         <ProjectReference Include="..\modules\hyperliquid\CryptoWatcher.HyperliquidModule\CryptoWatcher.HyperliquidModule.csproj" />
         <ProjectReference Include="..\modules\uniswap\CryptoWatcher.UniswapModule\CryptoWatcher.UniswapModule.csproj" />
@@ -15,7 +14,6 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.6"/>
-
     </ItemGroup>
 
 </Project>

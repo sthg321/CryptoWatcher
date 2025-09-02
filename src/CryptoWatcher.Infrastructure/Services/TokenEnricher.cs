@@ -1,13 +1,15 @@
 using CryptoWatcher.Application;
 using CryptoWatcher.Extensions;
-using CryptoWatcher.Models;
 using CryptoWatcher.UniswapModule.Abstractions;
 using CryptoWatcher.UniswapModule.Entities;
 using CryptoWatcher.UniswapModule.Models;
 using Nethereum.Web3;
 
-namespace CryptoWatcher.Host.Services;
+namespace CryptoWatcher.Infrastructure.Services;
 
+/// <summary>
+/// <see cref="ITokenEnricher"/>
+/// </summary>
 public class TokenEnricher : ITokenEnricher
 {
     private readonly TokenService _tokenService;
@@ -29,7 +31,7 @@ public class TokenEnricher : ITokenEnricher
         };
     }
 
-    public async ValueTask<TokenInfoWithAddress> EnrichTokenAsync(UniswapNetwork network, Token token,
+    private async ValueTask<TokenInfoWithAddress> EnrichTokenAsync(UniswapNetwork network, Token token,
         CancellationToken ct)
     {
         var web3 = new Web3(network.RpcUrl);

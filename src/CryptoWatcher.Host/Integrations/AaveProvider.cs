@@ -1,6 +1,7 @@
 using AaveClient;
 using CryptoWatcher.Entities.Aave;
 using CryptoWatcher.Host.Services;
+using CryptoWatcher.Infrastructure.Services;
 using CryptoWatcher.Models;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.UniswapModule.Models;

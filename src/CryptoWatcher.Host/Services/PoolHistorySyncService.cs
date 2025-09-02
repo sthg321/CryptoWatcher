@@ -1,4 +1,5 @@
 using System.Numerics;
+using CryptoWatcher.Infrastructure.Services;
 using CryptoWatcher.Integrations;
 using CryptoWatcher.Models;
 using CryptoWatcher.Shared.Entities;

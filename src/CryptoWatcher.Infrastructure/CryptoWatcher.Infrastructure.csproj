@@ -18,6 +18,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\clients\HyperliquidClient\HyperliquidClient.csproj" />
+      <ProjectReference Include="..\CryptoWatcher.Application\CryptoWatcher.Application.csproj" />
       <ProjectReference Include="..\CryptoWatcher.Shared\CryptoWatcher.Shared.csproj" />
       <ProjectReference Include="..\CryptoWatcher\CryptoWatcher.csproj" />
       <ProjectReference Include="..\modules\hyperliquid\CryptoWatcher.HyperliquidModule\CryptoWatcher.HyperliquidModule.csproj" />
