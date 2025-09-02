@@ -15,7 +15,7 @@ public class TokenInfoWithFee
     /// <summary>
     /// 
     /// </summary>
-    public decimal FeeAmount { get; set; }
+    public decimal FeeAmount { get; init; }
     
     /// <summary>
     /// Token price in USD.

@@ -59,17 +59,22 @@ public class UniswapNetwork
     public string MultiCallAddress { get; init; } = null!;
 
     /// <summary>
-    /// 
-    /// </summary>
-    public UniswapProtocolVersion ProtocolVersion { get; init; }
-    
-    /// <summary>
-    /// A collection of historical data records related to liquidity pools within the blockchain uniswapNetwork.
+    /// Specifies the protocol version of the Uniswap network.
     /// </summary>
     /// <remarks>
-    /// This property contains a list of <see cref="PositionFee"/> objects, representing daily snapshots
-    /// of pool states, including token amounts, fees, APR, and activity status. The data is associated
-    /// with the specific blockchain uniswapNetwork and can be used for analytics and historical performance tracking.
+    /// This property determines the specific version of the Uniswap protocol associated with the network,
+    /// such as V3 or V4. It is used to select the appropriate operations or clients for interacting with the network.
+    /// </remarks>
+    public UniswapProtocolVersion ProtocolVersion { get; init; }
+
+    /// <summary>
+    /// Represents the collection of liquidity pool positions associated with the Uniswap network.
+    /// </summary>
+    /// <remarks>
+    /// This property contains a list of liquidity positions within the Uniswap network, providing detailed information
+    /// about each position's associated tokens, wallet, activity status, and their historical snapshots.
+    /// It serves as a navigational property linking pool positions to their respective Uniswap network and
+    /// facilitates data persistence and querying operations.
     /// </remarks>
     public List<PoolPosition> LiquidityPoolPositions { get; init; } = [];
 }

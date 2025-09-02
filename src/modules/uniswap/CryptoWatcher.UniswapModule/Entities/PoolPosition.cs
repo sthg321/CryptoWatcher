@@ -23,13 +23,22 @@ public class PoolPosition
     public ulong PositionId { get; init; }
 
     /// <summary>
-    /// 
+    /// Represents the first token in the liquidity pool pair for a position.
     /// </summary>
+    /// <remarks>
+    /// This property holds information about one of the two tokens in the liquidity pool.
+    /// It is paired with <c>Token1</c> to define the token pair comprising the pool.
+    /// </remarks>
     public TokenInfo Token0 { get; init; } = null!;
-    
+
     /// <summary>
-    /// 
+    /// Represents the second token in a liquidity pool position.
     /// </summary>
+    /// <remarks>
+    /// This property holds details about the second token involved in the liquidity pool.
+    /// It is used in association with <c>Token0</c> to define the token pair within the pool
+    /// and their respective attributes, enabling operations such as valuation and tracking.
+    /// </remarks>
     public TokenInfo Token1 { get; init; } = null!;
 
     /// <summary>

@@ -35,6 +35,18 @@ public static class TickMath
         ParseHex("48a170391f7dc42444e8fa2")
     ];
 
+    /// <summary>
+    /// Calculates and returns the square root ratio at the specified tick.
+    /// </summary>
+    /// <param name="tick">
+    /// The tick value for which the square root ratio is to be calculated.
+    /// </param>
+    /// <returns>
+    /// The square root ratio as a <see cref="BigInteger"/> for the provided tick.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when the tick value is outside the allowed range of ticks (-887272 to 887272).
+    /// </exception>
     public static BigInteger GetSqrtRatioAtTick(int tick)
     {
         if (tick is < MinTick or > MaxTick)

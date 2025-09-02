@@ -1,4 +1,3 @@
-using System.Numerics;
 using CryptoWatcher.UniswapModule.Models;
 using UniswapClient.Models;
 
@@ -9,21 +8,6 @@ namespace CryptoWatcher.UniswapModule;
 /// </summary>
 public interface IUniswapMath
 {
-    /// <summary>
-    /// Calculates the token amounts for given liquidity within a liquidity pool,
-    /// based on the current and range price boundaries.
-    /// </summary>
-    /// <param name="sqrtRatioX96">The current square root price Q64.96 format.</param>
-    /// <param name="sqrtRatioAX96">The lower square root price boundary Q64.96 format.</param>
-    /// <param name="sqrtRatioBX96">The upper square root price boundary Q64.96 format.</param>
-    /// <param name="liquidity">The liquidity value to calculate the token amounts for.</param>
-    /// <returns>A tuple containing the calculated token amounts (amount0, amount1).</returns>
-    (BigInteger amount0, BigInteger amount1) CalculateTokenAmounts(
-        BigInteger sqrtRatioX96,
-        BigInteger sqrtRatioAX96,
-        BigInteger sqrtRatioBX96,
-        BigInteger liquidity);
-
     /// <summary>
     /// Calculates the position details within a specified liquidity pool based on the given token position and pool data.
     /// </summary>
