@@ -1,12 +1,29 @@
+using CryptoWatcher.Extensions;
 using CryptoWatcher.HyperliquidModule.Services;
+using CryptoWatcher.Infrastructure.Excel;
+using CryptoWatcher.Infrastructure.Hyperliquid.ExcelModels;
 using SpreadCheetah;
 using SpreadCheetah.SourceGeneration;
+using SpreadCheetah.Styling;
 
 namespace CryptoWatcher.Infrastructure.Hyperliquid;
 
 public class HyperliquidExcelService
 {
+    private const string TotalName = "Итого:";
+    private const string EmptyValue = "-";
+    private const string ReportSheetName = "Hyperliquid";
+
     private readonly IHyperliquidReportService _hyperliquidReportService;
+
+    private static readonly Dictionary<string, Style> StyleNameToStyleMap = new()
+    {
+        [ExcelStyleRegistry.Number] =
+            new Style { Format = NumberFormat.Standard(StandardNumberFormat.NoDecimalPlaces) },
+        [ExcelStyleRegistry.TwoDecimalPlaces] = new Style
+            { Format = NumberFormat.Standard(StandardNumberFormat.TwoDecimalPlaces) },
+        [ExcelStyleRegistry.Percent] = new Style { Format = NumberFormat.Standard(StandardNumberFormat.Percent) },
+    };
 
     public HyperliquidExcelService(IHyperliquidReportService hyperliquidReportService)
     {
@@ -31,7 +48,13 @@ public class HyperliquidExcelService
 
         var sheet = await Spreadsheet.CreateNewAsync(ms, cancellationToken: ct);
 
-        await sheet.StartWorksheetAsync("report", token: ct);
+        foreach (var (styleName, style) in StyleNameToStyleMap)
+        {
+            sheet.AddStyle(style, styleName);
+        }
+
+        await sheet.StartWorksheetAsync(ReportSheetName,
+            HyperliquidVaultPositionExcelContext.Default.HyperliquidVaultPositionExcelRow, ct);
 
         await sheet.AddHeaderRowAsync(HyperliquidVaultPositionExcelContext.Default.HyperliquidVaultPositionExcelRow,
             token: ct);
@@ -43,23 +66,27 @@ public class HyperliquidExcelService
                 var row = new HyperliquidVaultPositionExcelRow
                 {
                     Vault = vaultReportItem.VaultAddress,
-                    Balance = Math.Round(vaultReportItem.Balance, 2),
-                    Day = vaultReportItem.Day.ToString(),
-                    DailyProfit = Math.Round(vaultReportItem.DailyProfit, 2),
-                    DailyPercentProfit = Math.Round(vaultReportItem.DailyPercentProfit, 4)
+                    Balance = vaultReportItem.Balance,
+                    Day = vaultReportItem.Day,
+                    DailyProfit = vaultReportItem.DailyProfit,
+                    DailyPercentProfit = vaultReportItem.DailyPercentProfit
                 };
 
                 await sheet.AddAsRowAsync(row,
                     HyperliquidVaultPositionExcelContext.Default.HyperliquidVaultPositionExcelRow, ct);
             }
 
-            await sheet.AddRowAsync([
-                new DataCell("Итого:"),
-                new DataCell("-"),
-                new DataCell(Math.Round(vaultReport.TotalBalance, 2)),
-                new DataCell(Math.Round(vaultReport.TotalAbsoluteProfit, 2)),
-                new DataCell(Math.Round(vaultReport.TotalPercentProfit, 4))
-            ], ct);
+            var totalRow = new HyperliquidVaultPositionExcelTotalRow
+            {
+                TotalName = TotalName,
+                Day = EmptyValue,
+                TotalBalance = vaultReport.TotalBalance,
+                TotalAbsolutDailyProfit = vaultReport.TotalAbsoluteProfit,
+                TotalDailyPercentProfit = vaultReport.TotalPercentProfit
+            };
+
+            await sheet.AddAsRowAsync(totalRow,
+                HyperliquidVaultPositionExcelContext.Default.HyperliquidVaultPositionExcelTotalRow, ct);
 
             await sheet.AddRowAsync([], ct);
         }
@@ -70,19 +97,6 @@ public class HyperliquidExcelService
     }
 }
 
-public class HyperliquidVaultPositionExcelRow
-{
-    [ColumnHeader("VaultAddress")] public string Vault { get; init; } = null!;
-
-    [ColumnHeader("День")] public string Day { get; init; } = null!;
-
-    [ColumnHeader("Баланс")] public decimal Balance { get; init; }
-
-    [ColumnHeader("Изменение за день")] public decimal DailyProfit { get; init; }
-
-    [ColumnHeader("Изменение за день в процентах")]
-    public decimal DailyPercentProfit { get; init; }
-}
-
 [WorksheetRow(typeof(HyperliquidVaultPositionExcelRow))]
-public partial class HyperliquidVaultPositionExcelContext : WorksheetRowContext;
+[WorksheetRow(typeof(HyperliquidVaultPositionExcelTotalRow))]
+internal partial class HyperliquidVaultPositionExcelContext : WorksheetRowContext;
