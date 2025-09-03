@@ -1,29 +1,16 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using AaveClient.Extensions;
-using CoinGeckoClient.Extensions;
-using CryptoWatcher.Abstractions;
-using CryptoWatcher.Application;
 using CryptoWatcher.Host.Extensions;
-using CryptoWatcher.HyperliquidModule.Abstractions;
-using CryptoWatcher.HyperliquidModule.Extensions;
 using CryptoWatcher.Infrastructure;
 using CryptoWatcher.Infrastructure.Configs;
 using CryptoWatcher.Infrastructure.Extensions;
 using CryptoWatcher.Infrastructure.Hyperliquid;
-using CryptoWatcher.Infrastructure.Services;
 using CryptoWatcher.Infrastructure.Uniswap;
-using CryptoWatcher.Integrations;
-using CryptoWatcher.UniswapModule.Abstractions;
-using CryptoWatcher.UniswapModule.Extensions;
-using CryptoWatcher.UniswapModule.Services;
-using HyperliquidClient.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using TickerQ.Dashboard.DependencyInjection;
 using TickerQ.DependencyInjection;
 using TickerQ.EntityFrameworkCore.DependencyInjection;
-using UniswapClient.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
