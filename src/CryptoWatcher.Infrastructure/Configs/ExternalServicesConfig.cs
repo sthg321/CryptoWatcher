@@ -1,4 +1,4 @@
-namespace CryptoWatcher.Host.Configs;
+namespace CryptoWatcher.Infrastructure.Configs;
 
 public class ExternalServicesConfig
 {

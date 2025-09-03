@@ -3,7 +3,7 @@ using CryptoWatcher.Entities.Aave;
 using CryptoWatcher.Infrastructure.Services;
 using CryptoWatcher.Shared.Entities;
 
-namespace CryptoWatcher.Host.Integrations;
+namespace CryptoWatcher.Infrastructure.Integrations;
 
 public class AaveProvider
 {

@@ -8,7 +8,22 @@ using SpreadCheetah.Styling;
 
 namespace CryptoWatcher.Infrastructure.Hyperliquid;
 
-public class HyperliquidExcelService
+/// <summary>
+/// Defines methods for generating Excel reports based on Hyperliquid data.
+/// </summary>
+public interface IHyperliquidExcelService
+{
+    /// <summary>
+    /// Generates a report based on the specified date range and returns it as a stream.
+    /// </summary>
+    /// <param name="from">The starting date for the report. If null, the default start date is the first day of the current month.</param>
+    /// <param name="to">The ending date for the report. If null, the default end date is the last day of the current month.</param>
+    /// <param name="ct">A cancellation token to observe while waiting for the task to complete.</param>
+    /// <returns>A stream containing the generated report in Excel format.</returns>
+    Task<Stream> CreateReportAsync(DateOnly? from, DateOnly? to, CancellationToken ct = default);
+}
+
+internal class HyperliquidExcelService : IHyperliquidExcelService
 {
     private const string ReportSheetName = "Hyperliquid";
     private const string TotalName = "Итого:";

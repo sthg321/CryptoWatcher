@@ -4,12 +4,11 @@ using AaveClient.Extensions;
 using CoinGeckoClient.Extensions;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Application;
-using CryptoWatcher.Host.Configs;
 using CryptoWatcher.Host.Extensions;
-using CryptoWatcher.Host.Integrations;
 using CryptoWatcher.HyperliquidModule.Abstractions;
 using CryptoWatcher.HyperliquidModule.Extensions;
 using CryptoWatcher.Infrastructure;
+using CryptoWatcher.Infrastructure.Configs;
 using CryptoWatcher.Infrastructure.Extensions;
 using CryptoWatcher.Infrastructure.Hyperliquid;
 using CryptoWatcher.Infrastructure.Services;
@@ -48,33 +47,7 @@ builder.Services.AddTickerQ(optionsBuilder =>
     });
 });
 
-builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
-
-builder.Services.AddSingleton<TokenService>();
-builder.Services.AddSingleton<TokenEnricher>();
-
-builder.Services.AddUniswapClient();
-
-
-builder.Services.AddScoped<IPoolHistorySyncRepositoryFacade, PoolHistorySyncRepositoryFacade>();
-builder.Services.AddScoped<UniswapExcelReportService>();
-
-builder.Services.AddCoinGeckoClient(provider => provider.GetRequiredService<ExternalServicesConfig>().CoinGecko);
-builder.Services.AddTransient<ICoinPriceProvider, CoinGeckoCoinPriceProvider>();
-
-builder.Services.AddSingleton<CoinPriceService>();
-
-builder.Services.AddAaveClient();
-builder.Services.AddHyperLiquidClient();
-builder.Services.AddScoped<IHyperliquidProvider, HyperliquidApiProvider>();
-builder.Services.AddScoped<HyperliquidExcelService>();
-
-builder.Services.AddSingleton<AaveProvider>();
-
-builder.Services
-    .AddInfrastructure()
-    .AddUniswapModule()
-    .AddHyperliquidModule();
+builder.Services.AddInfrastructure();
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -88,7 +61,7 @@ var app = builder.Build();
 app.UseTickerQ();
 
 app.MapGet("/report",
-    async (UniswapExcelReportService uniswapExcelReportService, HyperliquidExcelService hyperliquidExcelService,
+    async (IUniswapExcelReportService uniswapExcelReportService, IHyperliquidExcelService hyperliquidExcelService,
         [FromQuery] bool poolReport,
         [FromQuery] DateOnly? from,
         [FromQuery] DateOnly? to) =>

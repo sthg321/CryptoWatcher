@@ -6,7 +6,12 @@ using SpreadCheetah.SourceGeneration;
 
 namespace CryptoWatcher.Infrastructure.Uniswap;
 
-public class UniswapExcelReportService
+public interface IUniswapExcelReportService
+{
+    Task<Stream> ExportPoolInfoToExcelAsync(DateOnly? from, DateOnly? to, CancellationToken ct = default);
+}
+
+internal class UniswapExcelReportService : IUniswapExcelReportService
 {
     private const string ReportName = "Uniswap";
     private const string TotalName = "Итого:";

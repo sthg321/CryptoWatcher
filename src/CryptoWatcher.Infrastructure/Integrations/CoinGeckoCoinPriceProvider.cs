@@ -2,7 +2,7 @@ using CoinGeckoClient;
 using CoinGeckoClient.Price;
 using CryptoWatcher.Integrations;
 
-namespace CryptoWatcher.Host.Integrations;
+namespace CryptoWatcher.Infrastructure.Integrations;
 
 public class CoinGeckoCoinPriceProvider : ICoinPriceProvider
 {
