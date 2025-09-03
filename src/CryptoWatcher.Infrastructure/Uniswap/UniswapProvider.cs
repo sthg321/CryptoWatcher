@@ -11,17 +11,18 @@ using UniswapClient.UniswapV4;
 
 namespace CryptoWatcher.Infrastructure.Uniswap;
 
-public class UniswapProvider : IUniswapProvider
+/// <summary>
+/// <see cref="IUniswapProvider"/> 
+/// </summary>
+internal class UniswapProvider : IUniswapProvider
 {
     private readonly UniswapV3Client _uniswapV3Client;
     private readonly UniswapV4Client _uniswapV4Client;
-    private readonly IUniswapMath _uniswapMath;
 
-    public UniswapProvider(UniswapV3Client uniswapV3Client, UniswapV4Client uniswapV4Client, IUniswapMath uniswapMath)
+    public UniswapProvider(UniswapV3Client uniswapV3Client, UniswapV4Client uniswapV4Client)
     {
         _uniswapV3Client = uniswapV3Client;
         _uniswapV4Client = uniswapV4Client;
-        _uniswapMath = uniswapMath;
     }
 
     public async Task<List<IUniswapPosition>> GetPositionsAsync(UniswapNetwork uniswapNetwork, Wallet wallet)
@@ -54,16 +55,6 @@ public class UniswapProvider : IUniswapProvider
         };
 
         return pool.MapToLiquidityPool();
-    }
-
-    public PositionInPool GetPoolPositionAsync(LiquidityPool pool, IUniswapPosition uniswapPosition)
-    {
-        return _uniswapMath.CalculatePosition(pool, uniswapPosition);
-    }
-
-    public TokenPair GetPositionFee(LiquidityPool pool, IUniswapPosition uniswapPosition)
-    {
-        return _uniswapMath.CalculateClaimableFee(pool, uniswapPosition);
     }
 
     private async Task<LiquidityPoolInfo> GetV3PoolAsync(UniswapNetwork uniswapNetwork, IUniswapPosition position)

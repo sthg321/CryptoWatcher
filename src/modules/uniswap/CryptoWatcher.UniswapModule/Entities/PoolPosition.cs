@@ -88,5 +88,13 @@ public class PoolPosition
     /// </remarks>
     public UniswapNetwork UniswapNetwork { get; init; } = null!;
 
+    /// <summary>
+    /// Represents a collection of snapshots associated with a specific liquidity pool position.
+    /// </summary>
+    /// <remarks>
+    /// This property holds historical states or snapshots of a liquidity pool position.
+    /// These snapshots can be used to track changes and analyze the evolution of the position over time,
+    /// including performance metrics, token balances, and other relevant data.
+    /// </remarks>
     public List<PoolPositionSnapshot> PoolPositionSnapshots { get; init; } = [];
 }

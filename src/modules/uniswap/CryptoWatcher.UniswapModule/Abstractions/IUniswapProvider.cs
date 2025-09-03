@@ -5,6 +5,9 @@ using UniswapClient.Models;
 
 namespace CryptoWatcher.UniswapModule.Abstractions;
 
+/// <summary>
+/// Defines methods for interacting with Uniswap to retrieve and manage Uniswap positions and liquidity pools.
+/// </summary>
 public interface IUniswapProvider
 {
     /// <summary>
@@ -22,8 +25,4 @@ public interface IUniswapProvider
     /// <param name="position">The position details used to identify the targeted liquidity pool.</param>
     /// <returns>A task representing the asynchronous operation. The task result contains the liquidity pool associated with the specified network and position.</returns>
     Task<LiquidityPool> GetPoolAsync(UniswapNetwork uniswapNetwork, IUniswapPosition position);
-
-    PositionInPool GetPoolPositionAsync(LiquidityPool pool, IUniswapPosition position);
-
-    TokenPair GetPositionFee(LiquidityPool pool, IUniswapPosition position);
 }

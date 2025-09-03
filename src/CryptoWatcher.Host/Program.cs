@@ -54,7 +54,7 @@ builder.Services.AddSingleton<TokenService>();
 builder.Services.AddSingleton<TokenEnricher>();
 
 builder.Services.AddUniswapClient();
-builder.Services.AddSingleton<IUniswapProvider, UniswapProvider>();
+
 
 builder.Services.AddScoped<IPoolHistorySyncRepositoryFacade, PoolHistorySyncRepositoryFacade>();
 builder.Services.AddScoped<UniswapExcelReportService>();

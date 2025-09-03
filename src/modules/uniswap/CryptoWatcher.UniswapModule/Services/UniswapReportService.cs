@@ -5,13 +5,26 @@ using CryptoWatcher.UniswapModule.Specifications;
 
 namespace CryptoWatcher.UniswapModule.Services;
 
+/// <summary>
+/// Interface that defines methods for generating reports for Uniswap pool positions.
+/// </summary>
 public interface IUniswapReportService
 {
+    /// <summary>
+    /// Creates a report for Uniswap pool positions within a specified date range.
+    /// </summary>
+    /// <param name="from">The start date of the report interval.</param>
+    /// <param name="to">The end date of the report interval.</param>
+    /// <param name="ct">The cancellation token to observe while waiting for the task to complete.</param>
+    /// <returns>A list of Uniswap pool position reports.</returns>
     Task<List<UniswapPoolPositionReport>> CreateReportAsync(DateOnly from, DateOnly to,
         CancellationToken ct = default);
 }
 
-public class UniswapReportService : IUniswapReportService
+/// <summary>
+/// <see cref="IUniswapReportService"/>
+/// </summary>
+internal class UniswapReportService : IUniswapReportService
 {
     private readonly IRepository<PoolPosition> _poolPositionRepository;
 
