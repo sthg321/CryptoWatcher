@@ -3,8 +3,16 @@ using CryptoWatcher.Shared.Entities;
 
 namespace CryptoWatcher.HyperliquidModule.Entities;
 
+/// <summary>
+/// Represents a user's position within a Hyperliquid vault.
+/// This class encapsulates various properties and methods to track and analyze the performance of the vault,
+/// including event history, position snapshots, and profit calculations over specified time periods.
+/// </summary>
 public class HyperliquidVaultPosition
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public string VaultAddress { get; init; } = null!;
 
     /// <summary>
@@ -25,16 +33,27 @@ public class HyperliquidVaultPosition
     /// </remarks>
     public Wallet Wallet { get; init; } = null!;
 
+    /// <summary>
+    /// Represents the collection of events associated with the vault's activity.
+    /// </summary>
+    /// <remarks>
+    /// This property maintains a list of historical events that occurred within the vault.
+    /// Each event describes a specific action, such as deposits or withdrawals, along with relevant details.
+    /// It is utilized to analyze vault performance, track cash flow, and compute metrics like percentage profit or rate of return.
+    /// </remarks>
     public List<HyperliquidVaultEvent> VaultEvents { get; init; } = [];
 
-    public List<HyperliquidVaultPositionSnapshot> PositionSnapshots { get; init; } = [];
-    
     /// <summary>
-    /// Рассчитывает процентное изменение позиции за указанный период
+    /// 
     /// </summary>
-    /// <param name="startDate">Начальная дата периода</param>
-    /// <param name="endDate">Конечная дата периода</param>
-    /// <returns>Процентное изменение позиции за период</returns>
+    public List<HyperliquidVaultPositionSnapshot> PositionSnapshots { get; init; } = [];
+
+    /// <summary>
+    /// Calculates the percentage profit of the vault position within the specified date range.
+    /// </summary>
+    /// <param name="startDate">The start date of the date range for the calculation.</param>
+    /// <param name="endDate">The end date of the date range for the calculation.</param>
+    /// <returns>The percentage profit as a decimal value. Returns 0 if the date range is invalid or no data is available.</returns>
     public decimal CalculatePercentageProfit(DateOnly startDate, DateOnly endDate)
     {
         // Находим первый и последний снимки за период
@@ -63,7 +82,13 @@ public class HyperliquidVaultPosition
         
         return percentageChange;
     }
-    
+
+    /// <summary>
+    /// Calculates the absolute profit of the vault position within the specified date range.
+    /// </summary>
+    /// <param name="startDate">The start date of the date range for the calculation.</param>
+    /// <param name="endDate">The end date of the date range for the calculation.</param>
+    /// <returns>The absolute profit as a decimal value. Returns 0 if the date range is invalid or no data is available.</returns>
     public decimal CalculateAbsoluteProfit(DateOnly startDate, DateOnly endDate)
     {
         var startSnapshot = GetNearestSnapshot(startDate, false);

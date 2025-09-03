@@ -18,6 +18,9 @@ public interface IHyperliquidReportService
         CancellationToken ct = default);
 }
 
+/// <summary>
+/// <see cref="IHyperliquidPositionsSyncService"/>
+/// </summary>
 internal class HyperliquidReportService : IHyperliquidReportService
 {
     private readonly IRepository<HyperliquidVaultPosition> _repository;

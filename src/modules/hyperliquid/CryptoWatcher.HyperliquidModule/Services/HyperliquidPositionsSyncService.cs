@@ -17,6 +17,9 @@ public interface IHyperliquidPositionsSyncService
     Task SyncPositionsAsync(Wallet wallet, DateTime syncDay, CancellationToken ct = default);
 }
 
+/// <summary>
+/// <see cref="IHyperliquidPositionsSyncService"/>
+/// </summary>
 internal class HyperliquidPositionsSyncService : IHyperliquidPositionsSyncService
 {
     private readonly IHyperliquidProvider _hyperliquidProvider;
