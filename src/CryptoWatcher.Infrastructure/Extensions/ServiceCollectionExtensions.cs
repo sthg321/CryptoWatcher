@@ -7,6 +7,7 @@ using CryptoWatcher.Abstractions;
 using CryptoWatcher.Application;
 using CryptoWatcher.HyperliquidModule.Abstractions;
 using CryptoWatcher.HyperliquidModule.Extensions;
+using CryptoWatcher.Infrastructure.Aave;
 using CryptoWatcher.Infrastructure.Configs;
 using CryptoWatcher.Infrastructure.Hyperliquid;
 using CryptoWatcher.Infrastructure.Integrations;

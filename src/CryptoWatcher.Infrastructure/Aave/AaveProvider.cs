@@ -9,7 +9,7 @@ using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.Shared.ValueObjects;
 using AaveNetwork = CryptoWatcher.AaveModule.Models.AaveNetwork;
 
-namespace CryptoWatcher.Infrastructure.Integrations;
+namespace CryptoWatcher.Infrastructure.Aave;
 
 public class AaveProvider : IAaveProvider
 {
