@@ -14,4 +14,6 @@ public interface ICoinPriceProvider
     /// <param name="ct">Cancellation token for the async operation.</param>
     /// <returns>Token price in USD as a decimal.</returns>
     Task<decimal> GetTokenPriceInUsdAsync(string tokenId, CancellationToken ct);
+    
+    Task<decimal> GetTokenPriceInUsdAsync(string platform, string address, CancellationToken ct);
 }

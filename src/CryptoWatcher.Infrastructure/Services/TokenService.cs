@@ -58,6 +58,14 @@ public class TokenService
             cancellationToken: ct);
     }
 
+    public async ValueTask<decimal> GetTokenPriceByTokenAddressAsync(string platform, string address,
+        CancellationToken ct)
+    {
+        var result = await _coinGeckoCoinPriceProvider.GetTokenPriceInUsdAsync(platform, address, ct);
+
+        return result;
+    }
+
     public async ValueTask<decimal> GetTokenPriceByTokenSymbolAsync(string symbol, CancellationToken ct)
     {
         var cacheKey = string.Format(CacheKeys.TokenPrice.TokenPriceInUsdByTokenSymbolCacheKeyTemplate, symbol);

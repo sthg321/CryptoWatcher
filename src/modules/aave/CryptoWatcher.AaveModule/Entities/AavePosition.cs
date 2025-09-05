@@ -114,20 +114,42 @@ public class AavePosition
     /// This property provides a historical view of the position's evolution in the Aave protocol.
     /// </remarks>
     public List<AavePositionSnapshot> PositionSnapshots { get; private set; } = [];
-
-    public void ClosePosition()
+ 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="day"></param>
+    /// <exception cref="InvalidOperationException"></exception>
+    public void ClosePosition(DateOnly day)
     {
-        ClosedAtDay = DateOnly.FromDateTime(DateTime.UtcNow);
+        if (ClosedAtDay.HasValue)
+        {
+            throw new InvalidOperationException("Position is already closed");
+        }
+        
+        ClosedAtDay = day;
     }
 
-    public void AddSnapshot(TokenInfo token, DateOnly day)
+    /// <summary>
+    /// Adds or updates a snapshot for the current position based on the provided token information and date.
+    /// </summary>
+    /// <param name="token">The token information containing details such as symbol, amount, and price in USD.</param>
+    /// <param name="day">The date for which the snapshot is to be added or updated.</param>
+    public void AddOrUpdateSnapshot(TokenInfo token, DateOnly day)
     {
-        PositionSnapshots.Add(new AavePositionSnapshot
+        if (ClosedAtDay.HasValue)
         {
-            PositionId = Id,
-            Day = day,
-            Token = token
-        });
+            throw new InvalidOperationException("Snapshot can't be added to closed position");
+        }
+        
+        var existingSnapshot = PositionSnapshots.FirstOrDefault(s => s.Day == day);
+        if (existingSnapshot != null)
+        {
+            existingSnapshot.SetToken(token);
+            return;
+        }
+        
+        PositionSnapshots.Add(new AavePositionSnapshot(Id, day, token));
     }
 
     private Guid GeneratePositionId()

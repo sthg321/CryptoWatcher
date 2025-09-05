@@ -16,4 +16,7 @@ public interface ITokenEnricher
 
     ValueTask<TokenInfoWithAddress> EnrichTokenAsync(string rpcAddress, Token token,
         CancellationToken ct);
+
+    ValueTask<TokenInfoWithAddress> EnrichTokenAsync(string rpcAddress, string platform, Token token,
+        CancellationToken ct);
 }

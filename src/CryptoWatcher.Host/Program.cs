@@ -1,11 +1,13 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CryptoWatcher.AaveModule.Services;
 using CryptoWatcher.Host.Extensions;
 using CryptoWatcher.Infrastructure;
 using CryptoWatcher.Infrastructure.Configs;
 using CryptoWatcher.Infrastructure.Extensions;
 using CryptoWatcher.Infrastructure.Hyperliquid;
 using CryptoWatcher.Infrastructure.Uniswap;
+using CryptoWatcher.Shared.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using TickerQ.Dashboard.DependencyInjection;
@@ -44,7 +46,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 });
 
 var app = builder.Build();
-
+ 
 app.UseTickerQ();
 
 app.MapGet("/report",

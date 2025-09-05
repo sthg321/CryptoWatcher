@@ -25,5 +25,5 @@ public class AaveNetwork
     
     public static AaveNetwork SonicNetwork() => new(Sonic);
 
-    public static IEnumerable<AaveNetwork> All => [CeloNetwork(), SonicNetwork()];
+    public static IEnumerable<AaveNetwork> All => [CeloNetwork()];
 }

@@ -76,9 +76,9 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
             cancellationToken: ct);
     }
 
-    public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken ct)
+    public TEntity Insert(TEntity entity)
     {
-        await _dbContext.Set<TEntity>().AddAsync(entity, ct);
+        _dbContext.Set<TEntity>().Add(entity);
 
         return entity;
     }

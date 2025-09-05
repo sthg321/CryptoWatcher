@@ -13,9 +13,8 @@ public interface IRepository<TEntity> : IReadRepositoryBase<TEntity> where TEnti
     /// Inserts a new entity asynchronously into the repositoryFacade.
     /// </summary>
     /// <param name="entity">The entity to be inserted.</param>
-    /// <param name="ct">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the inserted entity.</returns>
-    Task<TEntity> InsertAsync(TEntity entity, CancellationToken ct);
+    TEntity Insert(TEntity entity);
 
     /// <summary>
     /// Merges a collection of entities into the repositoryFacade by inserting or updating them as needed.

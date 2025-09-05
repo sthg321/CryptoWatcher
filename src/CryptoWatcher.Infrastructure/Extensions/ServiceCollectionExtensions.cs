@@ -1,5 +1,8 @@
 using AaveClient.Extensions;
 using CoinGeckoClient.Extensions;
+using CryptoWatcher.AaveModule.Abstractions;
+using CryptoWatcher.AaveModule.Extensions;
+using CryptoWatcher.AaveModule.Services;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Application;
 using CryptoWatcher.HyperliquidModule.Abstractions;
@@ -24,6 +27,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services
+            .AddConfiguredAaveModule()
             .AddConfiguredHyperliquidModule()
             .AddConfiguredUniswapModule();
 
@@ -41,14 +45,23 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ICoinPriceProvider, CoinGeckoCoinPriceProvider>();
 
         services.AddSingleton<CoinPriceService>();
-
-        services.AddAaveClient();
  
         services.AddSingleton<AaveProvider>();
         
         return services;
     }
 
+    private static IServiceCollection AddConfiguredAaveModule(this IServiceCollection services)
+    {
+        services.AddAaveClient();
+
+        services
+            .AddAaveModule()
+            .AddScoped<IAaveProvider, AaveProvider>();
+      
+        return services;
+    }
+    
     private static IServiceCollection AddConfiguredHyperliquidModule(this IServiceCollection services)
     {
         services.AddHyperLiquidClient();

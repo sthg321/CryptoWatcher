@@ -1,3 +1,4 @@
+using System.Numerics;
 using AaveClient;
 using CryptoWatcher.AaveModule.Abstractions;
 using CryptoWatcher.AaveModule.Entities;
@@ -39,22 +40,14 @@ public class AaveProvider : IAaveProvider
 
         foreach (var userReserveData in positions)
         {
-            if (userReserveData.ScaledATokenBalance == 0 && userReserveData.ScaledVariableDebt == 0)
-            {
-                continue;
-            }
-            
-            var token = await _tokenEnricher.EnrichTokenAsync(networkInfo.RpcAddress,
-                new Token { Balance = userReserveData.ScaledATokenBalance, Address = userReserveData.UnderlyingAsset },
-                ct);
-
             if (userReserveData.ScaledATokenBalance > 0)
             {
                 var suppliedPosition = new AaveLendingPosition
                 {
                     PositionType = AavePositionType.Supplied,
                     Network = aaveNetwork,
-                    Token = token
+                    Token = await EnrichToken(aaveNetwork.Value, networkInfo.RpcAddress,
+                        userReserveData.ScaledATokenBalance, userReserveData.UnderlyingAsset, ct)
                 };
 
                 result.Add(suppliedPosition);
@@ -66,7 +59,8 @@ public class AaveProvider : IAaveProvider
                 {
                     PositionType = AavePositionType.Borrowed,
                     Network = aaveNetwork,
-                    Token = token
+                    Token = await EnrichToken(aaveNetwork.Value, networkInfo.RpcAddress,
+                        userReserveData.ScaledVariableDebt, userReserveData.UnderlyingAsset, ct)
                 };
 
                 result.Add(borrowedPosition);
@@ -74,5 +68,13 @@ public class AaveProvider : IAaveProvider
         }
 
         return result;
+    }
+
+    private async Task<TokenInfoWithAddress> EnrichToken(string network, string rpcAddress, BigInteger amount,
+        string tokenAddress,
+        CancellationToken ct)
+    {
+        return await _tokenEnricher.EnrichTokenAsync(rpcAddress, network,
+            new Token { Balance = amount, Address = tokenAddress }, ct);
     }
 }

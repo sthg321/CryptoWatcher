@@ -1,4 +1,5 @@
 using CryptoWatcher.Shared.ValueObjects;
+using JetBrains.Annotations;
 
 namespace CryptoWatcher.AaveModule.Entities;
 
@@ -11,6 +12,19 @@ namespace CryptoWatcher.AaveModule.Entities;
 /// </remarks>
 public class AavePositionSnapshot
 {
+    [UsedImplicitly] // for ef core
+    private AavePositionSnapshot()
+    {
+        
+    }
+    
+    public AavePositionSnapshot(Guid positionId, DateOnly day, TokenInfo token)
+    {
+        PositionId = positionId;
+        Day = day;
+        Token = token;
+    }
+    
     /// <summary>
     /// Gets the unique identifier of the Aave position associated with this snapshot.
     /// </summary>
@@ -39,5 +53,10 @@ public class AavePositionSnapshot
     /// the token's symbol, amount, and valuation. This data is essential for analyzing the financial
     /// state and performance of the associated Aave position at the time of the snapshot.
     /// </remarks>
-    public TokenInfo Token { get; init; } = null!;
+    public TokenInfo Token { get; private set; } = null!;
+    
+    public void SetToken(TokenInfo token)
+    {
+        Token = token;
+    }
 }   

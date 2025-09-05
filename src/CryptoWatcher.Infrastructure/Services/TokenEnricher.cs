@@ -25,7 +25,7 @@ public class TokenEnricher : ITokenEnricher
     {
         ArgumentNullException.ThrowIfNull(rpcAddress);
         ArgumentNullException.ThrowIfNull(tokenPair);
-        
+
         return new TokenInfoPair
         {
             Token0 = await EnrichTokenAsync(rpcAddress, tokenPair.Token0, ct),
@@ -45,6 +45,21 @@ public class TokenEnricher : ITokenEnricher
             Symbol = symbol,
             Amount = token.Balance.ToDecimal(tokenDecimals),
             PriceInUsd = await _tokenService.GetTokenPriceByTokenSymbolAsync(symbol, ct)
+        };
+    }
+
+    public async ValueTask<TokenInfoWithAddress> EnrichTokenAsync(string rpcAddress, string platform, Token token,
+        CancellationToken ct)
+    {
+        var web3 = new Web3(rpcAddress);
+        var tokenDecimals = await _tokenService.GetTokenDecimalsAsync(web3, token.Address, ct);
+        var symbol = await _tokenService.GetTokenSymbolAsync(web3, token.Address);
+        return new TokenInfoWithAddress
+        {
+            Address = token.Address,
+            Symbol = symbol,
+            Amount = token.Balance.ToDecimal(tokenDecimals),
+            PriceInUsd = await _tokenService.GetTokenPriceByTokenAddressAsync(platform, token.Address, ct)
         };
     }
 }
