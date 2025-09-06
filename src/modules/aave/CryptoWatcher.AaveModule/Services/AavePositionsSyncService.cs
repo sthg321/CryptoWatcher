@@ -4,6 +4,7 @@ using CryptoWatcher.AaveModule.Models;
 using CryptoWatcher.AaveModule.Specifications;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.Shared.ValueObjects;
 
 namespace CryptoWatcher.AaveModule.Services;
 
@@ -29,19 +30,25 @@ public interface IAavePositionsSyncService
 internal class AavePositionsSyncService : IAavePositionsSyncService
 {
     private readonly IAaveProvider _aaveProvider;
+    private readonly ITokenEnricher _tokenEnricher;
+    private readonly IAaveMainnetProvider _aaveMainnetProvider;
     private readonly IRepository<AavePosition> _aavePositionRepository;
 
-    public AavePositionsSyncService(IAaveProvider aaveProvider, IRepository<AavePosition> aavePositionRepository)
+    public AavePositionsSyncService(IAaveProvider aaveProvider, ITokenEnricher tokenEnricher,
+        IAaveMainnetProvider aaveMainnetProvider,
+        IRepository<AavePosition> aavePositionRepository)
     {
         _aaveProvider = aaveProvider;
+        _tokenEnricher = tokenEnricher;
+        _aaveMainnetProvider = aaveMainnetProvider;
         _aavePositionRepository = aavePositionRepository;
     }
 
     public async Task SyncPositionsAsync(Wallet wallet, DateOnly syncDay, CancellationToken ct = default)
     {
         var existedPositions = await _aavePositionRepository.ListAsync(
-                new AavePositionsWithSnapshotsSpecification(wallet.Address, syncDay, syncDay), ct);
- 
+            new AavePositionsWithSnapshotsSpecification(wallet.Address, syncDay, syncDay), ct);
+
         foreach (var network in AaveNetwork.All)
         {
             var lendingPositions = await _aaveProvider.GetLendingPositionAsync(network, wallet, ct);
@@ -49,30 +56,45 @@ internal class AavePositionsSyncService : IAavePositionsSyncService
             foreach (var lendingPosition in lendingPositions)
             {
                 var currentPosition = existedPositions.FirstOrDefault(position =>
-                    position.TokenAddress == lendingPosition.Token.Address &&
+                    position.TokenAddress == lendingPosition.TokenAddress &&
                     position.PositionType == lendingPosition.PositionType);
 
-                switch (currentPosition)
+                // position is not borrowed and not supplied
+                if (currentPosition is null && lendingPosition.PositionType is null)
                 {
-                    // position is not borrowed and not supplied
-                    case null when lendingPosition.Token.Amount == 0:
-                        continue;
-                    case null:
-                        currentPosition = new AavePosition(network, wallet, lendingPosition.PositionType,
-                            lendingPosition.Token.Address);
-
-                        _aavePositionRepository.Insert(currentPosition);
-                        currentPosition.AddOrUpdateSnapshot(lendingPosition.Token, syncDay);
-                        continue;
+                    continue;
                 }
 
-                if (lendingPosition.Token.Amount == 0)
+                if (currentPosition is not null && lendingPosition.Amount == 0)
                 {
                     currentPosition.ClosePosition(syncDay);
+                    continue;
                 }
+
+                var tokenInfo = await FetchTokenInfoAsync(network, lendingPosition, ct);
+
+                if (currentPosition is null)
+                {
+                    currentPosition = new AavePosition(network, wallet, lendingPosition.PositionType!.Value,
+                        lendingPosition.TokenAddress);
+
+                    _aavePositionRepository.Insert(currentPosition);
+                }
+
+                currentPosition.AddOrUpdateSnapshot(tokenInfo, syncDay);
             }
         }
 
         await _aavePositionRepository.UnitOfWork.SaveChangesAsync(ct);
+    }
+
+    private async Task<TokenInfoWithAddress> FetchTokenInfoAsync(AaveNetwork network, AaveLendingPosition position,
+        CancellationToken ct = default)
+    {
+        var token = new Token { Address = position.TokenAddress, Balance = position.Amount };
+
+        var mainnetAddress = _aaveMainnetProvider.GetMainnetAddressByNetworkName(network);
+
+        return await _tokenEnricher.EnrichTokenAsync(mainnetAddress, network.Name, token, ct);
     }
 }

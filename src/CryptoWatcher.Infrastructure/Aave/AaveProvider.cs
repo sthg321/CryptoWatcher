@@ -1,53 +1,61 @@
-using System.Numerics;
 using AaveClient;
 using CryptoWatcher.AaveModule.Abstractions;
 using CryptoWatcher.AaveModule.Entities;
 using CryptoWatcher.AaveModule.Models;
-using CryptoWatcher.Abstractions;
-using CryptoWatcher.Infrastructure.Services;
 using CryptoWatcher.Shared.Entities;
-using CryptoWatcher.Shared.ValueObjects;
 using AaveNetwork = CryptoWatcher.AaveModule.Models.AaveNetwork;
 
 namespace CryptoWatcher.Infrastructure.Aave;
 
-public class AaveProvider : IAaveProvider
+internal class AaveProvider : IAaveProvider
 {
     private readonly IAaveApiClient _aaveApiClient;
-    private readonly ITokenEnricher _tokenEnricher;
+    private readonly IAaveMainnetProvider _aaveMainnetProvider;
 
-    public AaveProvider(IAaveApiClient aaveApiClient, TokenEnricher tokenEnricher)
+    public AaveProvider(IAaveApiClient aaveApiClient, IAaveMainnetProvider aaveMainnetProvider)
     {
         _aaveApiClient = aaveApiClient;
-        _tokenEnricher = tokenEnricher;
+        _aaveMainnetProvider = aaveMainnetProvider;
     }
 
     public async Task<List<AaveLendingPosition>> GetLendingPositionAsync(AaveNetwork aaveNetwork, Wallet wallet,
         CancellationToken ct = default)
     {
-        _ = Enum.TryParse<AaveNetworkType>(aaveNetwork.Value, out var network)
-            ? network
-            : throw new ArgumentException(
-                $"Network {aaveNetwork.Value} is not supported. Supported networks: {string.Join(", ", Enum.GetNames<AaveNetworkType>())}"
-            );
+        var mainnet = _aaveMainnetProvider.GetMainnetAddressByNetworkName(aaveNetwork);
 
-        var networkInfo = NetworkRegistry.NetworkToRpcUrl[network];
+        var networkInfo = GetNetworkInfo(aaveNetwork);
 
         var positions =
-            await _aaveApiClient.UiPoolDataProviderFetcher.GetUserReservesDataAsync(networkInfo, wallet.Address);
+            await _aaveApiClient.UiPoolDataProviderFetcher.GetUserReservesDataAsync(mainnet, networkInfo,
+                wallet.Address);
 
         var result = new List<AaveLendingPosition>();
 
         foreach (var userReserveData in positions)
         {
+            if (userReserveData.ScaledATokenBalance == 0 && userReserveData.ScaledVariableDebt == 0)
+            {
+                var emptyPosition = new AaveLendingPosition
+                {
+                    TokenAddress = userReserveData.UnderlyingAsset,
+                    Network = aaveNetwork,
+                    Amount = 0,
+                    PositionType = null
+                };
+
+                result.Add(emptyPosition);
+                
+                continue;
+            }
+            
             if (userReserveData.ScaledATokenBalance > 0)
             {
                 var suppliedPosition = new AaveLendingPosition
                 {
+                    Amount = userReserveData.ScaledATokenBalance,
+                    TokenAddress = userReserveData.UnderlyingAsset,
                     PositionType = AavePositionType.Supplied,
                     Network = aaveNetwork,
-                    Token = await EnrichToken(aaveNetwork.Value, networkInfo.RpcAddress,
-                        userReserveData.ScaledATokenBalance, userReserveData.UnderlyingAsset, ct)
                 };
 
                 result.Add(suppliedPosition);
@@ -57,10 +65,10 @@ public class AaveProvider : IAaveProvider
             {
                 var borrowedPosition = new AaveLendingPosition
                 {
+                    Amount = userReserveData.ScaledVariableDebt,
+                    TokenAddress = userReserveData.UnderlyingAsset,
                     PositionType = AavePositionType.Borrowed,
                     Network = aaveNetwork,
-                    Token = await EnrichToken(aaveNetwork.Value, networkInfo.RpcAddress,
-                        userReserveData.ScaledVariableDebt, userReserveData.UnderlyingAsset, ct)
                 };
 
                 result.Add(borrowedPosition);
@@ -70,11 +78,14 @@ public class AaveProvider : IAaveProvider
         return result;
     }
 
-    private async Task<TokenInfoWithAddress> EnrichToken(string network, string rpcAddress, BigInteger amount,
-        string tokenAddress,
-        CancellationToken ct)
+    private NetworkRegistry.NetworkInfo GetNetworkInfo(AaveNetwork aaveNetwork)
     {
-        return await _tokenEnricher.EnrichTokenAsync(rpcAddress, network,
-            new Token { Balance = amount, Address = tokenAddress }, ct);
+        if (!Enum.TryParse<AaveNetworkType>(aaveNetwork.Name, out var network))
+        {
+            throw new ArgumentException(
+                $"Network {aaveNetwork.Name} is not supported. Supported networks: {string.Join(", ", Enum.GetNames<AaveNetworkType>())}");
+        }
+
+        return NetworkRegistry.NetworkToRpcUrl[network];
     }
 }

@@ -1,13 +1,11 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using CryptoWatcher.AaveModule.Services;
 using CryptoWatcher.Host.Extensions;
 using CryptoWatcher.Infrastructure;
 using CryptoWatcher.Infrastructure.Configs;
 using CryptoWatcher.Infrastructure.Extensions;
 using CryptoWatcher.Infrastructure.Hyperliquid;
 using CryptoWatcher.Infrastructure.Uniswap;
-using CryptoWatcher.Shared.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using TickerQ.Dashboard.DependencyInjection;
@@ -16,9 +14,15 @@ using TickerQ.EntityFrameworkCore.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddUserSecrets<Program>();
+
 builder.Services.Configure<ExternalServicesConfig>(builder.Configuration.GetSection(nameof(ExternalServicesConfig)));
 
 builder.Services.AddSingleton(provider => provider.GetRequiredService<IOptions<ExternalServicesConfig>>().Value);
+
+builder.Services.Configure<AaveConfig>(builder.Configuration.GetSection(nameof(AaveConfig)));
+
+builder.Services.AddSingleton(provider => provider.GetRequiredService<IOptions<AaveConfig>>().Value);
 
 builder.Services.AddConfiguredDatabase(builder.Configuration.GetConnectionString("Postgres")!);
 
@@ -46,7 +50,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 });
 
 var app = builder.Build();
- 
+
 app.UseTickerQ();
 
 app.MapGet("/report",

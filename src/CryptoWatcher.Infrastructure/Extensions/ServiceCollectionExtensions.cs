@@ -2,7 +2,6 @@ using AaveClient.Extensions;
 using CoinGeckoClient.Extensions;
 using CryptoWatcher.AaveModule.Abstractions;
 using CryptoWatcher.AaveModule.Extensions;
-using CryptoWatcher.AaveModule.Services;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Application;
 using CryptoWatcher.HyperliquidModule.Abstractions;
@@ -58,6 +57,7 @@ public static class ServiceCollectionExtensions
 
         services
             .AddAaveModule()
+            .AddSingleton<IAaveMainnetProvider, AaveMainnetProvider>()
             .AddScoped<IAaveProvider, AaveProvider>();
       
         return services;

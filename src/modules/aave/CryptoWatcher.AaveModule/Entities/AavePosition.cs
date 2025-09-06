@@ -22,7 +22,7 @@ public class AavePosition
 
     public AavePosition(AaveNetwork network, Wallet wallet, AavePositionType positionType, string tokenAddress)
     {
-        Network = network.Value;
+        Network = network.Name;
         WalletAddress = wallet.Address;
         PositionType = positionType;
         TokenAddress = tokenAddress;

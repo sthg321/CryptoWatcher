@@ -1,13 +1,15 @@
+using System.Numerics;
 using CryptoWatcher.AaveModule.Entities;
-using CryptoWatcher.Shared.ValueObjects;
 
 namespace CryptoWatcher.AaveModule.Models;
 
 public class AaveLendingPosition
 {
     public required AaveNetwork Network { get; set; } = null!;
+ 
+    public required BigInteger Amount { get; init; }
 
-    public required AavePositionType PositionType { get; init; }
+    public required string TokenAddress { get; init; } = null!;
 
-    public required TokenInfoWithAddress Token { get; init; } = null!;
+    public AavePositionType? PositionType { get; init; }
 }

@@ -5,15 +5,18 @@ namespace AaveClient.UiPoolDataProvider;
 
 public interface IUiPoolDataProviderFetcher
 {
-    Task<List<UserReserveData>> GetUserReservesDataAsync(NetworkRegistry.NetworkInfo networkInfo, string userAddress);
+    Task<List<UserReserveData>> GetUserReservesDataAsync(string mainnetAddress, NetworkRegistry.NetworkInfo networkInfo,
+        string userAddress);
 }
 
 public class UiPoolDataProviderFetcher : IUiPoolDataProviderFetcher
 {
-    public async Task<List<UserReserveData>> GetUserReservesDataAsync(NetworkRegistry.NetworkInfo networkInfo,
+    public async Task<List<UserReserveData>> GetUserReservesDataAsync(
+        string mainnetAddress,
+        NetworkRegistry.NetworkInfo networkInfo,
         string userAddress)
     {
-        var web3 = new Web3(networkInfo.RpcAddress);
+        var web3 = new Web3(mainnetAddress);
 
         var contract = web3.Eth.GetContract(UiPoolDataProviderFetcherAbi.Abi, networkInfo.UiPoolDataProviderAddress);
         var function = contract.GetFunction("getUserReservesData");

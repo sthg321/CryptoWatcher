@@ -6,7 +6,7 @@ using TickerQ.Utilities.Base;
 
 namespace CryptoWatcher.Infrastructure.Aave;
 
-public class SyncAavePositionsCronJob
+internal class SyncAavePositionsCronJob
 {
     private readonly IAavePositionsSyncService _positionsSyncService;
     private readonly IRepository<Wallet> _walletRepository;
