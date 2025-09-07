@@ -3,31 +3,52 @@
 #             https://www.jetbrains.com/help/qodana/qodana-yaml.html            #
 #-------------------------------------------------------------------------------#
 version: "1.0"
-
 #Specify IDE code to run analysis without container (Applied in CI/CD pipeline)
 ide: QDNET
-
 #Specify inspection profile for code analysis
 profile:
   name: qodana.starter
+include:
+  - name: AutoPropertyCanBeMadeGetOnly.Global
+  - name: AutoPropertyCanBeMadeGetOnly.Local
+  - name: ClassNeverInstantiated.Global
+  - name: HeapView.ClosureAllocation
+  - name: ConvertToPrimaryConstructor
+  - name: ConvertToLambdaExpression
+  - name: HeapView.DelegateAllocation
+  - name: ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
+  - name: InvertIf
+  - name: MemberCanBePrivate.Global
+  - name: MemberCanBeMadeStatic.Global
+  - name: MemberCanBeMadeStatic.Local
+  - name: UnusedMethodReturnValue.Global
+  - name: HeapView.ObjectAllocation.Possible
+  - name: PropertyCanBeMadeInitOnly.Global
+  - name: RedundantDiscardDesignation
+  - name: RedundantTypeDeclarationBody
+  - name: CA1861
+  - name: CA1859
+  - name: CA1822
+  - name: CA2208
+  - name: UnusedType.Global
+  - name: UnusedMemberInSuper.Global
+  - name: UnusedMember.Global
+  - name: UnusedParameter.Global
+  - name: ArrangeTrailingCommaInMultilineLists
 
 #Enable inspections
 #include:
 #  - name: <SomeEnabledInspectionId>
-
 #Disable inspections
 #exclude:
 #  - name: <SomeDisabledInspectionId>
 #    paths:
 #      - <path/where/not/run/inspection>
-
 #Execute shell command before Qodana execution (Applied in CI/CD pipeline)
 #bootstrap: sh ./prepare-qodana.sh
-
 #Install IDE plugins before Qodana execution (Applied in CI/CD pipeline)
 #plugins:
 #  - id: <plugin.id> #(plugin id can be found at https://plugins.jetbrains.com)
-
 # Quality gate. Will fail the CI/CD pipeline if any condition is not met
 # severityThresholds - configures maximum thresholds for different problem severities
 # testCoverageThresholds - configures minimum code coverage on a whole project and newly added code
