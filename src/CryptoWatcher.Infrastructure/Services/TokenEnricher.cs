@@ -1,3 +1,4 @@
+using System.Numerics;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Application;
 using CryptoWatcher.Extensions;
@@ -48,6 +49,21 @@ public class TokenEnricher : ITokenEnricher
         };
     }
 
+    public async ValueTask<TokenInfoWithAddress> EnrichTokenAsync(string rpcAddress, Token token, decimal priceInUsd,
+        CancellationToken ct)
+    {
+        var web3 = new Web3(rpcAddress);
+        var tokenDecimals = await _tokenService.GetTokenDecimalsAsync(web3, token.Address, ct);
+        var symbol = await _tokenService.GetTokenSymbolAsync(web3, token.Address);
+        return new TokenInfoWithAddress
+        {
+            Address = token.Address,
+            Symbol = symbol,
+            Amount = token.Balance.ToDecimal(tokenDecimals),
+            PriceInUsd = priceInUsd
+        };
+    }
+    
     public async ValueTask<TokenInfoWithAddress> EnrichTokenAsync(string rpcAddress, string platform, Token token,
         CancellationToken ct)
     {

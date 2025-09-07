@@ -1,3 +1,4 @@
+using System.Numerics;
 using CryptoWatcher.AaveModule.Models;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.Shared.ValueObjects;
@@ -106,6 +107,10 @@ public class AavePosition
     /// </remarks>
     public string TokenAddress { get; private set; } = null!;
 
+    // public BigInteger? PreviousScaledATokenBalance { get; set; }
+    //
+    // public BigInteger? PreviousScaledVariableDebt { get; set; }
+    
     /// <summary>
     /// Holds a collection of snapshots representing the state of a position over time.
     /// </summary>

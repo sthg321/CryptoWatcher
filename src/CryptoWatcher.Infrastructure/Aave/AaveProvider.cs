@@ -1,3 +1,4 @@
+using System.Numerics;
 using AaveClient;
 using CryptoWatcher.AaveModule.Abstractions;
 using CryptoWatcher.AaveModule.Entities;
@@ -18,6 +19,34 @@ internal class AaveProvider : IAaveProvider
         _aaveMainnetProvider = aaveMainnetProvider;
     }
 
+    public async Task<BigInteger> GetAssetPriceAsync(AaveNetwork aaveNetwork, string assetAddress)
+    {
+        var mainnet = _aaveMainnetProvider.GetMainnetAddressByNetworkName(aaveNetwork);
+
+        var networkInfo = GetNetworkInfo(aaveNetwork);
+
+        return await _aaveApiClient.OracleFetcher.GetAssetPriceAsync(mainnet, networkInfo.OracleAddress, assetAddress);
+    }
+
+    public async Task<AaveReserveData> GetLiquidityIndex(AaveNetwork aaveNetwork, string assetAddress)
+    {
+        var mainnet = _aaveMainnetProvider.GetMainnetAddressByNetworkName(aaveNetwork);
+
+        var networkInfo = GetNetworkInfo(aaveNetwork);
+
+        var reserveData =
+            await _aaveApiClient.PoolFetcher.GetReserveDataAsync(mainnet, networkInfo.PoolAddress, assetAddress);
+
+        // Преобразуем полученные данные в доменную модель
+        return new AaveReserveData
+        {
+            Network = aaveNetwork,
+            AssetAddress = assetAddress,
+            LiquidityIndex = reserveData.LiquidityIndex,
+            VariableBorrowIndex = reserveData.VariableBorrowIndex,
+        };
+    }
+
     public async Task<List<AaveLendingPosition>> GetLendingPositionAsync(AaveNetwork aaveNetwork, Wallet wallet,
         CancellationToken ct = default)
     {
@@ -30,51 +59,53 @@ internal class AaveProvider : IAaveProvider
                 wallet.Address);
 
         var result = new List<AaveLendingPosition>();
-
-        foreach (var userReserveData in positions)
+        
+        foreach (var positionsChunk in positions.Chunk(3))
         {
-            if (userReserveData.ScaledATokenBalance == 0 && userReserveData.ScaledVariableDebt == 0)
+            var tasksToGetLiquidityIndex = positionsChunk.Select(position => GetLiquidityIndex(aaveNetwork, position.UnderlyingAsset));
+            var liquidityIndexes = await Task.WhenAll(tasksToGetLiquidityIndex);
+
+            foreach (var userReserveData in positionsChunk)    
             {
-                var emptyPosition = new AaveLendingPosition
+                if (userReserveData.ScaledATokenBalance == 0 && userReserveData.ScaledVariableDebt == 0)
                 {
-                    TokenAddress = userReserveData.UnderlyingAsset,
-                    Network = aaveNetwork,
-                    Amount = 0,
-                    PositionType = null
-                };
+                    result.Add(AaveLendingPosition.CreateEmpty(aaveNetwork, userReserveData.UnderlyingAsset));
 
-                result.Add(emptyPosition);
-                
-                continue;
-            }
-            
-            if (userReserveData.ScaledATokenBalance > 0)
-            {
-                var suppliedPosition = new AaveLendingPosition
+                    continue;
+                }
+
+                var reserveData = liquidityIndexes.First(index => index.AssetAddress == userReserveData.UnderlyingAsset);
+
+                if (userReserveData.ScaledATokenBalance > 0)
                 {
-                    Amount = userReserveData.ScaledATokenBalance,
-                    TokenAddress = userReserveData.UnderlyingAsset,
-                    PositionType = AavePositionType.Supplied,
-                    Network = aaveNetwork,
-                };
+                    var suppliedPosition = new AaveLendingPosition
+                    {
+                        ScaleAmount = userReserveData.ScaledATokenBalance,
+                        TokenAddress = userReserveData.UnderlyingAsset,
+                        PositionType = AavePositionType.Supplied,
+                        PoolIndex = reserveData.LiquidityIndex,
+                        Network = aaveNetwork,
+                    };
 
-                result.Add(suppliedPosition);
-            }
+                    result.Add(suppliedPosition);
+                }
 
-            if (userReserveData.ScaledVariableDebt > 0)
-            {
-                var borrowedPosition = new AaveLendingPosition
+                if (userReserveData.ScaledVariableDebt > 0)
                 {
-                    Amount = userReserveData.ScaledVariableDebt,
-                    TokenAddress = userReserveData.UnderlyingAsset,
-                    PositionType = AavePositionType.Borrowed,
-                    Network = aaveNetwork,
-                };
+                    var borrowedPosition = new AaveLendingPosition
+                    {
+                        ScaleAmount = userReserveData.ScaledVariableDebt,
+                        TokenAddress = userReserveData.UnderlyingAsset,
+                        PositionType = AavePositionType.Borrowed,
+                        PoolIndex = reserveData.VariableBorrowIndex,
+                        Network = aaveNetwork,
+                    };
 
-                result.Add(borrowedPosition);
+                    result.Add(borrowedPosition);
+                }
             }
         }
-
+        
         return result;
     }
 

@@ -1,8 +1,10 @@
+using System.Numerics;
 using CryptoWatcher.AaveModule.Abstractions;
 using CryptoWatcher.AaveModule.Entities;
 using CryptoWatcher.AaveModule.Models;
 using CryptoWatcher.AaveModule.Specifications;
 using CryptoWatcher.Abstractions;
+using CryptoWatcher.Extensions;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.Shared.ValueObjects;
 
@@ -64,13 +66,13 @@ internal class AavePositionsSyncService : IAavePositionsSyncService
                 {
                     continue;
                 }
-
-                if (currentPosition is not null && lendingPosition.Amount == 0)
+                
+                if (currentPosition is not null && lendingPosition.ScaleAmount == 0)
                 {
                     currentPosition.ClosePosition(syncDay);
                     continue;
                 }
-
+                
                 var tokenInfo = await FetchTokenInfoAsync(network, lendingPosition, ct);
 
                 if (currentPosition is null)
@@ -80,6 +82,7 @@ internal class AavePositionsSyncService : IAavePositionsSyncService
 
                     _aavePositionRepository.Insert(currentPosition);
                 }
+
 
                 currentPosition.AddOrUpdateSnapshot(tokenInfo, syncDay);
             }
@@ -91,10 +94,12 @@ internal class AavePositionsSyncService : IAavePositionsSyncService
     private async Task<TokenInfoWithAddress> FetchTokenInfoAsync(AaveNetwork network, AaveLendingPosition position,
         CancellationToken ct = default)
     {
-        var token = new Token { Address = position.TokenAddress, Balance = position.Amount };
+        var token = new Token { Address = position.TokenAddress, Balance = position.CalculateAmountWithDebtOrFee() };
 
         var mainnetAddress = _aaveMainnetProvider.GetMainnetAddressByNetworkName(network);
 
-        return await _tokenEnricher.EnrichTokenAsync(mainnetAddress, network.Name, token, ct);
+        var price = await _aaveProvider.GetAssetPriceAsync(network, position.TokenAddress);
+
+        return await _tokenEnricher.EnrichTokenAsync(mainnetAddress, token, price.ToDecimal(8), ct);
     }
 }

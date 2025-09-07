@@ -5,12 +5,12 @@ namespace AaveClient.Pool;
 
 public interface IPoolFetcher
 {
-    Task<ReserveDataOutput> GetReserveData(string blockchainUrl, string poolAddress, string assetAddress);
+    Task<ReserveDataOutput> GetReserveDataAsync(string blockchainUrl, string poolAddress, string assetAddress);
 }
 
 internal class PoolFetcher : IPoolFetcher
 {
-    public async Task<ReserveDataOutput> GetReserveData(string blockchainUrl, string poolAddress, string assetAddress)
+    public async Task<ReserveDataOutput> GetReserveDataAsync(string blockchainUrl, string poolAddress, string assetAddress)
     {
         var web3 = new Web3(blockchainUrl);
         var contract = web3.Eth.GetContract(PoolAbi.Abi, poolAddress);

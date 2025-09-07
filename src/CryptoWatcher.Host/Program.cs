@@ -1,11 +1,14 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using AaveClient.Pool;
+using CryptoWatcher.AaveModule.Services;
 using CryptoWatcher.Host.Extensions;
 using CryptoWatcher.Infrastructure;
 using CryptoWatcher.Infrastructure.Configs;
 using CryptoWatcher.Infrastructure.Extensions;
 using CryptoWatcher.Infrastructure.Hyperliquid;
 using CryptoWatcher.Infrastructure.Uniswap;
+using CryptoWatcher.Shared.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using TickerQ.Dashboard.DependencyInjection;
@@ -50,6 +53,15 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+  
+    var service = scope.ServiceProvider.GetRequiredService<IAavePositionsSyncService>();
+
+    await service.SyncPositionsAsync(new Wallet { Address = "0xeb9191d780c0aB6Ab320C5F05E41ebF81f14255f" },
+        DateOnly.FromDateTime(DateTime.Now));
+}
 
 app.UseTickerQ();
 
