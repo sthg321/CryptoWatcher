@@ -93,6 +93,11 @@
     &lt;TestId&gt;xUnit::E618DD96-ADE4-8734-2245-9492E728A1DB::net9.0::CryptoWatcher.AaveModule.Tests.Services.AavePositionsSyncServiceTest&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ac4bb906_002Dfc72_002D4a79_002Db640_002D1263e5d01621/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="SyncPositionsAsyncTest_WhenPositionInDbExist_AndInAaveClosed_ShouldClosePosition" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::E618DD96-ADE4-8734-2245-9492E728A1DB::net9.0::CryptoWatcher.AaveModule.Tests.Services.AavePositionsSyncServiceTest.SyncPositionsAsyncTest_WhenPositionInDbExist_AndInAaveClosed_ShouldClosePosition&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
 	
 	
 	

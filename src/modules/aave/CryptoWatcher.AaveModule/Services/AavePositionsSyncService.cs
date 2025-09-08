@@ -62,6 +62,7 @@ internal class AavePositionsSyncService : IAavePositionsSyncService
                              position.TokenAddress == lendingPosition.TokenAddress))
                 {
                     position.ClosePosition(syncDay);
+                    result.Add(position);
                 }
 
                 continue;
