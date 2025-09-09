@@ -15,7 +15,6 @@ public class AaveNetwork
 
     private const string Celo = nameof(Celo);
     private const string Sonic = nameof(Sonic);
-    private const string Arbitrum = nameof(Arbitrum);
 
     private AaveNetwork(string network)
     {
@@ -28,8 +27,6 @@ public class AaveNetwork
     public string Name { get; private set; }
 
     public static AaveNetwork CeloNetwork => NetworkNameToAaveNetwork[Celo];
-
-    public static AaveNetwork SonicNetwork => NetworkNameToAaveNetwork[Sonic];
 
     public static IEnumerable<AaveNetwork> All => NetworkNameToAaveNetwork.Values;
 }
