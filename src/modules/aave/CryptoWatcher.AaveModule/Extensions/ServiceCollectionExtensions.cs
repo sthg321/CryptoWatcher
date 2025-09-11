@@ -9,6 +9,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IAavePositionsSyncService, AavePositionsSyncService>();
         services.AddScoped<IAaveTokenEnricher, AaveTokenEnricher>();
+        services.AddScoped<IAaveReportService, AaveReportService>();
         return services;
     }
 }

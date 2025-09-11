@@ -53,15 +53,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 });
 
 var app = builder.Build();
-
-using (var scope = app.Services.CreateScope())
-{
-    var service = scope.ServiceProvider.GetRequiredService<IAavePositionsSyncService>();
-
-    await service.SyncPositionsAsync(AaveNetwork.CeloNetwork, new Wallet { Address = "0xeb9191d780c0aB6Ab320C5F05E41ebF81f14255f" },
-        DateOnly.FromDateTime(DateTime.Now));
-}
-
+ 
 app.UseTickerQ();
 
 app.MapGet("/report",

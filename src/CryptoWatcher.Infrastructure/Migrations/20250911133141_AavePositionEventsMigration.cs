@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CryptoWatcher.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AavePositionEventHistoryMigration : Migration
+    public partial class AavePositionEventsMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,7 +24,9 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     PositionId = table.Column<Guid>(type: "uuid", nullable: false),
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     EventType = table.Column<int>(type: "integer", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false)
+                    Token_Symbol = table.Column<string>(type: "text", nullable: false),
+                    Token_Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    Token_PriceInUsd = table.Column<decimal>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {

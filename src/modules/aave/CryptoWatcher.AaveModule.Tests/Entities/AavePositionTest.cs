@@ -91,7 +91,7 @@ public class AavePositionTest
     [Theory]
     [InlineData(AavePositionType.Borrowed)]
     [InlineData(AavePositionType.Supplied)]
-    public void AddOrUpdateSnapshotTest_WhenScaleNotChange_ShouldAddDepositEvent(AavePositionType type)
+    public void AddOrUpdateSnapshotTest_WhenScaleIsNull_ShouldNotAddAnyEvents(AavePositionType type)
     {
         var syncDate = DateOnly.FromDateTime(DateTime.Now);
         var expectedScaledAmount = _fixture.Create<decimal>();
@@ -99,20 +99,45 @@ public class AavePositionTest
         var token = _fixture.Create<TokenInfo>();
 
         position.AddOrUpdateSnapshot(token, expectedScaledAmount, syncDate, _timeProviderMock.Object);
-        position.AddOrUpdateSnapshot(token, expectedScaledAmount, syncDate.AddDays(1),
+
+        Assert.Empty(position.PositionEvents);
+    }
+
+    [Theory]
+    [InlineData(100, 200, AavePositionType.Borrowed, AavePositionEventType.Deposit)]
+    [InlineData(500, 400, AavePositionType.Supplied, AavePositionEventType.Withdrawal)]
+    [InlineData(100, 50, AavePositionType.Borrowed, AavePositionEventType.Withdrawal)]
+    [InlineData(500, 600, AavePositionType.Supplied, AavePositionEventType.Deposit)]
+    public void AddOrUpdateSnapshotTest_WhenScaleNotChange_ShouldAddSingleDepositEvent(decimal initialScaleAmount,
+        decimal updatedScaleAmount,
+        AavePositionType positionType,
+        AavePositionEventType eventType)
+    {
+        var syncDate = DateOnly.FromDateTime(DateTime.Now);
+        var position = CreatePosition(positionType);
+        var token = _fixture.Create<TokenInfo>();
+
+        position.AddOrUpdateSnapshot(token, initialScaleAmount, syncDate.AddDays(1), _timeProviderMock.Object);
+
+        position.AddOrUpdateSnapshot(token, updatedScaleAmount, syncDate,
+            _timeProviderMock.Object);
+
+        position.AddOrUpdateSnapshot(token, updatedScaleAmount, syncDate.AddDays(1),
             _timeProviderMock.Object);
 
         Assert.Single(position.PositionEvents);
         AssertThatAaveEventCorrect(
+            position,
             position.PositionEvents.First(),
             position.Id,
-            expectedScaledAmount,
-            AavePositionEventType.Deposit);
+            token,
+            initialScaleAmount,
+            eventType);
     }
 
     [Theory]
-    [InlineData(100, 150, AavePositionEventType.Deposit)]
-    [InlineData(100, 50, AavePositionEventType.Withdrawal)]
+    [InlineData(100, 100, AavePositionEventType.Deposit)]
+    [InlineData(100, 100, AavePositionEventType.Withdrawal)]
     public void AddOrUpdateSnapshotTest_WhenScaleChange_ShouldUpdateSnapshot(
         decimal oldScaleAmount,
         decimal newScaleAmount,
@@ -124,15 +149,13 @@ public class AavePositionTest
         position.AddOrUpdateSnapshot(token, oldScaleAmount, TestDate, _timeProviderMock.Object);
         position.AddOrUpdateSnapshot(token, newScaleAmount, TestDate, _timeProviderMock.Object);
 
-        var expectedAmount = eventType == AavePositionEventType.Deposit
-            ? newScaleAmount - oldScaleAmount
-            : oldScaleAmount - newScaleAmount;
-
-        Assert.Equal(2, position.PositionEvents.Count);
+        Assert.Single(position.PositionEvents);
         AssertThatAaveEventCorrect(
+            position,
             position.PositionEvents.Last(),
             position.Id,
-            expectedAmount,
+            token,
+            oldScaleAmount,
             eventType);
     }
 
@@ -147,14 +170,20 @@ public class AavePositionTest
     }
 
     private static void AssertThatAaveEventCorrect(
+        AavePosition position,
         AavePositionEvent @event,
         Guid positionId,
-        decimal amount,
+        TokenInfo eventToken,
+        decimal positionScale,
         AavePositionEventType type)
     {
+        var expectedToken = type == AavePositionEventType.Withdrawal
+            ? eventToken with { Amount = (decimal)(positionScale - position.PreviousScaledAmount)! }
+            : eventToken with { Amount = (decimal)(position.PreviousScaledAmount - positionScale)! };
+
         Assert.Equal(positionId, @event.PositionId);
         Assert.Equal(TestTime, @event.Date);
-        Assert.Equal(amount, @event.Amount);
+        Assert.Equal(expectedToken, @event.Token);
         Assert.Equal(type, @event.EventType);
     }
 }

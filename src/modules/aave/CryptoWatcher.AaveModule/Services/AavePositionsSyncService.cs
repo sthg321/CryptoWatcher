@@ -111,7 +111,7 @@ internal class AavePositionsSyncService : IAavePositionsSyncService
                 _logger.LogUpdateAavePosition(currentPosition.TokenAddress, tokenInfo);
             }
             
-            var positionScaleAmount = calculatableAaveLendingPosition.CalculatePositionScaleAmount();
+            var positionScaleAmount = calculatableAaveLendingPosition.CalculatePositionScaleInToken();
             currentPosition.AddOrUpdateSnapshot(tokenInfo, positionScaleAmount, syncDay, _timeProvider);
             
             result.Add(currentPosition);

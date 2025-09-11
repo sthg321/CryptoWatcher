@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CryptoWatcher.Infrastructure.Migrations
 {
     [DbContext(typeof(CryptoWatcherDbContext))]
-    [Migration("20250909081710_AavePositionEventHistoryMigration")]
-    partial class AavePositionEventHistoryMigration
+    [Migration("20250911133141_AavePositionEventsMigration")]
+    partial class AavePositionEventsMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,9 +75,6 @@ namespace CryptoWatcher.Infrastructure.Migrations
 
                     b.Property<int>("EventType")
                         .HasColumnType("integer");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("numeric");
 
                     b.HasKey("PositionId", "Date", "EventType");
 
@@ -437,6 +434,38 @@ namespace CryptoWatcher.Infrastructure.Migrations
                         .WithMany("PositionEvents")
                         .HasForeignKey("PositionId")
                         .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.OwnsOne("CryptoWatcher.Shared.ValueObjects.TokenInfo", "Token", b1 =>
+                        {
+                            b1.Property<Guid>("AavePositionEventPositionId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<DateTime>("AavePositionEventDate")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<int>("AavePositionEventEventType")
+                                .HasColumnType("integer");
+
+                            b1.Property<decimal>("Amount")
+                                .HasColumnType("numeric");
+
+                            b1.Property<decimal>("PriceInUsd")
+                                .HasColumnType("numeric");
+
+                            b1.Property<string>("Symbol")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.HasKey("AavePositionEventPositionId", "AavePositionEventDate", "AavePositionEventEventType");
+
+                            b1.ToTable("AavePositionEvent");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AavePositionEventPositionId", "AavePositionEventDate", "AavePositionEventEventType");
+                        });
+
+                    b.Navigation("Token")
                         .IsRequired();
                 });
 

@@ -73,9 +73,6 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Property<int>("EventType")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("numeric");
-
                     b.HasKey("PositionId", "Date", "EventType");
 
                     b.ToTable("AavePositionEvent");
@@ -434,6 +431,38 @@ namespace CryptoWatcher.Infrastructure.Migrations
                         .WithMany("PositionEvents")
                         .HasForeignKey("PositionId")
                         .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.OwnsOne("CryptoWatcher.Shared.ValueObjects.TokenInfo", "Token", b1 =>
+                        {
+                            b1.Property<Guid>("AavePositionEventPositionId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<DateTime>("AavePositionEventDate")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<int>("AavePositionEventEventType")
+                                .HasColumnType("integer");
+
+                            b1.Property<decimal>("Amount")
+                                .HasColumnType("numeric");
+
+                            b1.Property<decimal>("PriceInUsd")
+                                .HasColumnType("numeric");
+
+                            b1.Property<string>("Symbol")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.HasKey("AavePositionEventPositionId", "AavePositionEventDate", "AavePositionEventEventType");
+
+                            b1.ToTable("AavePositionEvent");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AavePositionEventPositionId", "AavePositionEventDate", "AavePositionEventEventType");
+                        });
+
+                    b.Navigation("Token")
                         .IsRequired();
                 });
 
