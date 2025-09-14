@@ -43,8 +43,6 @@ public static class ServiceCollectionExtensions
 
         services.AddCoinGeckoClient(provider => provider.GetRequiredService<ExternalServicesConfig>().CoinGecko);
         services.AddTransient<ICoinPriceProvider, CoinGeckoCoinPriceProvider>();
-
-        services.AddSingleton<CoinPriceService>();
  
         services.AddSingleton<AaveProvider>();
         

@@ -9,15 +9,13 @@ public class TokenService
 {
     private readonly ICoinPriceProvider _coinGeckoCoinPriceProvider;
     private readonly HybridCache _cache;
-    private readonly CoinPriceService _coinPriceService;
     private readonly CoinNormalizer _coinNormalizer;
 
     public TokenService(ICoinPriceProvider coinGeckoCoinPriceProvider, HybridCache cache,
-        CoinPriceService coinPriceService, CoinNormalizer coinNormalizer)
+        CoinNormalizer coinNormalizer)
     {
         _coinGeckoCoinPriceProvider = coinGeckoCoinPriceProvider;
         _cache = cache;
-        _coinPriceService = coinPriceService;
         _coinNormalizer = coinNormalizer;
     }
 
@@ -72,8 +70,7 @@ public class TokenService
         return await _cache.GetOrCreateAsync(cacheKey, symbol, async (coinSymbol, token) =>
             {
                 var normalizedSymbol = _coinNormalizer.NormalizeSymbol(coinSymbol);
-                var tokenId = await _coinPriceService.GetTokenIdByTokenSymbolAsync(normalizedSymbol, token);
-                var result = await _coinGeckoCoinPriceProvider.GetTokenPriceInUsdAsync(tokenId, token);
+                var result = await _coinGeckoCoinPriceProvider.GetTokenPriceInUsdAsync(normalizedSymbol, token);
 
                 return result;
             },
