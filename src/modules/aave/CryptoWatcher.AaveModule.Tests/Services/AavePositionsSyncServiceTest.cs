@@ -1,4 +1,3 @@
-using System.Numerics;
 using AutoFixture;
 using CryptoWatcher.AaveModule.Abstractions;
 using CryptoWatcher.AaveModule.Entities;
@@ -201,16 +200,18 @@ public class AavePositionsSyncServiceTest
             _aavePositionRepositoryMock.Object, _timeProviderMock.Object);
     }
 
+    [AssertionMethod]
     private static void AssertThatAavePositionValid(AavePosition actualPosition, AavePositionType expectedPositionType)
     {
         Assert.Equal(SyncDay, actualPosition.CreatedAtDay);
         Assert.Equal(TestNetwork.Name, actualPosition.Network);
-        Assert.Equal(expectedPositionType, actualPosition.PositionType);
+        Assert.Equal(actualPosition.PositionType, expectedPositionType);
         Assert.Null(actualPosition.ClosedAtDay);
 
         Assert.Single(actualPosition.PositionSnapshots);
     }
 
+    [AssertionMethod]
     private static void AssertThatSnapshotValid(TokenInfo expectedSnapshot, AavePositionSnapshot actualSnapshot,
         Guid actualPositionId)
     {
