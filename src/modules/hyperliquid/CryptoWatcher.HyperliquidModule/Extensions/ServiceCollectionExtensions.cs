@@ -16,10 +16,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IHyperliquidPositionsSyncService, HyperliquidPositionsSyncService>();
         services.AddKeyedSingleton<IPlatformDailyReportDataProvider, HyperliquidReportDataService>(HyperliquidModuleKeyedService
             .DailyPlatformKeyService);
-        
-        services.AddSingleton<IPlatformDailyReportDataProvider>(provider =>
-            provider.GetRequiredKeyedService<IPlatformDailyReportDataProvider>(HyperliquidModuleKeyedService
-                .DailyPlatformKeyService));
+ 
         return services;
     }
 }

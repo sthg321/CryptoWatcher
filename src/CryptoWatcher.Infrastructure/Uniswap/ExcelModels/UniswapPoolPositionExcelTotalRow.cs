@@ -10,7 +10,7 @@ internal class UniswapPoolPositionExcelTotalRow
 
     [CellStyle(ExcelStyleRegistry.TwoDecimalPlaces)]
     [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Money>))]
-    public required Money TotalPositionInUsd { get; init; }
+    public required Money PositionInUsd { get; init; }
 
     [CellStyle(ExcelStyleRegistry.TwoDecimalPlaces)]
     [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Money>))]
@@ -18,15 +18,7 @@ internal class UniswapPoolPositionExcelTotalRow
 
     [CellStyle(ExcelStyleRegistry.TwoDecimalPlaces)]
     [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Money>))]
-    public required Money TotalFeeInUsd { get; init; }
-
-    [CellStyle(ExcelStyleRegistry.TwoDecimalPlaces)]
-    [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Money>))]
-    public Money RoiNet => TotalPositionInUsd + TotalFeeInUsd - TotalHoldInUsd;
-    
-    [CellStyle(ExcelStyleRegistry.Percent)]
-    [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Percent>))]
-    public Percent Apy => TotalFeeInUsd / TotalPositionInUsd * 12;
+    public required Money ProfitInUsd { get; init; }
     
     public required string TokenPairSymbols { get; init; } = null!;
 

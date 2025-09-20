@@ -72,7 +72,7 @@ async Task<FileStreamHttpResult> Handler(IUniswapExcelReportService uniswapExcel
     var wallets = await walletRepository.ListAsync();
     var reportStream = platform switch
     {
-        "uniswap" => await uniswapExcelReportService.ExportPoolInfoToExcelAsync(from, to),
+        "uniswap" => await uniswapExcelReportService.CreateReportAsync(wallets, from, to),
         "hyperliquid" => await hyperliquidExcelService.CreateReportAsync(wallets, from, to),
         "aave" => await aaveReportService.CreateReportAsync(wallets, from, to),
         _ => throw new ArgumentOutOfRangeException(nameof(platform), platform, null)

@@ -43,7 +43,7 @@ internal class HyperliquidExcelService : BaseExcelReportService, IHyperliquidExc
         _platformDailyReportDataProvider = platformDailyReportDataProvider;
     }
 
-    public bool CanProcess(PlatformDailyReport dailyReport) => dailyReport is HyperliquidVaultReport;
+    public bool CanProcess(PlatformDailyReport dailyReport) => dailyReport is HyperliquidDailyReport;
 
     public async Task CreateHeaderAsync(Spreadsheet workbook, Wallet wallet, CancellationToken ct = default)
     {
@@ -84,7 +84,7 @@ internal class HyperliquidExcelService : BaseExcelReportService, IHyperliquidExc
         PlatformDailyReport dailyReport,
         CancellationToken ct = default)
     {
-        var hyperliquidDailyReport = dailyReport as HyperliquidVaultReport ??
+        var hyperliquidDailyReport = dailyReport as HyperliquidDailyReport ??
                                      throw new InvalidOperationException(
                                          "Platform daily report must be of type HyperliquidDailyReport");
 

@@ -1,66 +1,96 @@
+using CryptoWatcher.Abstractions;
+using CryptoWatcher.Infrastructure.Aave;
 using CryptoWatcher.Infrastructure.Excel;
 using CryptoWatcher.Infrastructure.Uniswap.ExcelModels;
 using CryptoWatcher.Infrastructure.Uniswap.Mappers;
-using CryptoWatcher.UniswapModule.Services;
+using CryptoWatcher.Models;
+using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.UniswapModule.Extensions;
+using CryptoWatcher.UniswapModule.Models;
+using Microsoft.Extensions.DependencyInjection;
+using SpreadCheetah;
 using SpreadCheetah.SourceGeneration;
 
 namespace CryptoWatcher.Infrastructure.Uniswap;
 
 public interface IUniswapExcelReportService
 {
-    Task<Stream> ExportPoolInfoToExcelAsync(DateOnly? from, DateOnly? to, CancellationToken ct = default);
+    Task<Stream> CreateReportAsync(IReadOnlyCollection<Wallet> wallets, DateOnly? from, DateOnly? to,
+        CancellationToken ct = default);
 }
 
-internal class UniswapExcelReportService : BaseExcelReportService, IUniswapExcelReportService
+internal class UniswapExcelReportService : BaseExcelReportService, IUniswapExcelReportService, IExcelSheetBuilder
 {
-    private const string ReportName = "Uniswap";
+    private readonly IPlatformDailyReportDataProvider _dailyReportDataProvider;
 
-    private readonly IUniswapReportService _uniswapReportService;
-
-    public UniswapExcelReportService(IUniswapReportService uniswapReportService)
+    public UniswapExcelReportService(
+        [FromKeyedServices(UniswapModuleKeyedService.DailyPlatformKeyService)]
+        IPlatformDailyReportDataProvider dailyReportDataProvider)
     {
-        _uniswapReportService = uniswapReportService;
+        _dailyReportDataProvider = dailyReportDataProvider;
     }
 
-    public async Task<Stream> ExportPoolInfoToExcelAsync(DateOnly? from, DateOnly? to, CancellationToken ct = default)
+    public bool CanProcess(PlatformDailyReport dailyReport) => dailyReport is UniswapDailyReport;
+
+    public async Task CreateHeaderAsync(Spreadsheet workbook, Wallet wallet, CancellationToken ct = default)
+    {
+        var rowContext = PoolInfoExcelRowContext.Default.UniswapPoolPositionExcelRow;
+
+        await WriteWalletRow(workbook, wallet, ct);
+
+        await workbook.AddHeaderRowAsync(rowContext, token: ct);
+    }
+
+    public async Task<Stream> CreateReportAsync(
+        IReadOnlyCollection<Wallet> wallets,
+        DateOnly? from, DateOnly? to, CancellationToken ct = default)
     {
         var (fromDate, toDate) = GetDefaultDatesIfNull(from, to);
 
-        var poolPositions = await _uniswapReportService.CreateReportAsync(fromDate, toDate, ct);
+        var dailyReportData = await _dailyReportDataProvider.GetReportDataAsync(wallets, fromDate, toDate, ct);
 
-        var ms = await CreateExcelWorkbookAsync(async sheet =>
+        var rowContext = PoolInfoExcelRowContext.Default.UniswapPoolPositionExcelRow;
+
+        var ms = await CreateExcelWorkbookAsync(dailyReportData.PlatformName, rowContext, async workbook =>
         {
-            var rowContext = PoolInfoExcelRowContext.Default.UniswapPoolPositionExcelRow;
-            var totalContext = PoolInfoExcelRowContext.Default.UniswapPoolPositionExcelTotalRow;
-            await sheet.StartWorksheetAsync(ReportName, rowContext, ct);
-
-            await sheet.AddHeaderRowAsync(rowContext, token: ct);
-
-            foreach (var poolPosition in poolPositions)
+            foreach (var (wallet, poolPositions) in dailyReportData.Reports)
             {
-                foreach (var positionSnapshot in poolPosition.ReportItems)
+                await WriteWalletRow(workbook, wallet, ct);
+                
+                foreach (var poolPosition in poolPositions)
                 {
-                    var excelRow = positionSnapshot.MapToExcelRowModel();
-
-                    await sheet.AddAsRowAsync(excelRow, rowContext, ct);
+                    await WriteDataToWorksheetAsync(workbook, poolPosition, ct);
                 }
-
-                if (poolPosition.ReportItems.Count != 0)
-                {
-                    // pool can contain data only for 1 network and 1 token pair, 
-                    // so we can take just the first item
-                    var item = poolPosition.ReportItems.First();
-                    var totalExcelRow = poolPosition.MapToExcelModel(TotalName, item.TokenPairSymbols, item.Network);
-
-                    await sheet.AddAsRowAsync(totalExcelRow, totalContext, ct);
-                }
-
-                await sheet.AddRowAsync([], ct);
             }
         }, ct);
 
-
         return ms;
+    }
+
+    public async Task WriteDataToWorksheetAsync(Spreadsheet workbook, PlatformDailyReport dailyReport,
+        CancellationToken ct = default)
+    {
+        var hyperliquidDailyReport = dailyReport as UniswapDailyReport ??
+                                     throw new InvalidOperationException(
+                                         "Platform daily report must be of type AaveDailyReport");
+
+        var rowContext = PoolInfoExcelRowContext.Default.UniswapPoolPositionExcelRow;
+        var totalContext = PoolInfoExcelRowContext.Default.UniswapPoolPositionExcelTotalRow;
+
+        foreach (var dailyReportItem in hyperliquidDailyReport.ReportItems)
+        {
+            var row = dailyReportItem.MapToExcelRowModel();
+
+            await workbook.AddAsRowAsync(row, rowContext, ct);
+        }
+
+        var lastItem = hyperliquidDailyReport.ReportItems.Last();
+
+        var totalRow = hyperliquidDailyReport.MapToExcelModel(TotalName, lastItem.TokenPairSymbols, lastItem.Network);
+
+        await workbook.AddAsRowAsync(totalRow, totalContext, ct);
+
+        await workbook.AddRowAsync([], ct);
     }
 }
 

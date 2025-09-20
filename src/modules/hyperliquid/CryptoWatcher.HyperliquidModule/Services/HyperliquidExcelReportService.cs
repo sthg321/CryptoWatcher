@@ -48,7 +48,7 @@ internal class HyperliquidReportDataService : IPlatformDailyReportDataProvider
                     vaultReportItems.Add(reportItem);
                 }
 
-                var vaultReport = new HyperliquidVaultReport
+                var vaultReport = new HyperliquidDailyReport
                 {
                     PositionInUsd = vaultReportItems.Count != 0 ? vaultReportItems[^1].Balance : 0,
                     ProfitInUsd = vaultPosition.CalculateAbsoluteProfit(from, to),

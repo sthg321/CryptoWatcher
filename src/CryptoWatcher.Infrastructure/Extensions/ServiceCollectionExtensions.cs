@@ -55,13 +55,15 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddConfiguredApplication(this IServiceCollection services)
     {
         services
-            .AddScoped<IEnumerable<IPlatformDailyReportDataProvider>>(GetPlatformReportProviders)
+            .AddScoped<IEnumerable<IPlatformDailyReportDataProvider>>(provider => GetPlatformReportProviders(provider))
             .AddScoped<IDailySummaryReportProvider, DailySummaryReportProvider>()
             .AddSingleton<IDailySummaryReportBuilder, DailySummaryReportBuilder>()
             .AddSingleton<IExcelSheetBuilder>(provider =>
                 (IExcelSheetBuilder)provider.GetRequiredService<IAaveReportExcelService>())
             .AddSingleton<IExcelSheetBuilder>(provider =>
-                (IExcelSheetBuilder)provider.GetRequiredService<IHyperliquidExcelService>());
+                (IExcelSheetBuilder)provider.GetRequiredService<IHyperliquidExcelService>())
+            .AddSingleton<IExcelSheetBuilder>(provider =>
+                (IExcelSheetBuilder)provider.GetRequiredService<IUniswapExcelReportService>());
 
         return services;
     }
@@ -108,7 +110,9 @@ public static class ServiceCollectionExtensions
             provider.GetRequiredKeyedService<IPlatformDailyReportDataProvider>(
                 AaveModuleKeyedService.DailyPlatformKeyService),
             provider.GetRequiredKeyedService<IPlatformDailyReportDataProvider>(
-                HyperliquidModuleKeyedService.DailyPlatformKeyService)
+                HyperliquidModuleKeyedService.DailyPlatformKeyService),
+            provider.GetRequiredKeyedService<IPlatformDailyReportDataProvider>(
+                UniswapModuleKeyedService.DailyPlatformKeyService)
         ];
     }
 }
