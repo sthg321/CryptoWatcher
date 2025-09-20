@@ -1,7 +1,13 @@
 using CryptoWatcher.AaveModule.Services;
+using CryptoWatcher.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CryptoWatcher.AaveModule.Extensions;
+
+public static class AaveModuleKeyedService
+{
+    public const string DailyPlatformKeyService = nameof(AaveReportDataService);
+}
 
 public static class ServiceCollectionExtensions
 {
@@ -9,7 +15,14 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IAavePositionsSyncService, AavePositionsSyncService>();
         services.AddScoped<IAaveTokenEnricher, AaveTokenEnricher>();
-        services.AddScoped<IAaveReportService, AaveReportService>();
+
+        services.AddKeyedSingleton<IPlatformDailyReportDataProvider, AaveReportDataService>(AaveModuleKeyedService
+            .DailyPlatformKeyService);
+        
+        services.AddSingleton<IPlatformDailyReportDataProvider>(provider =>
+            provider.GetRequiredKeyedService<IPlatformDailyReportDataProvider>(AaveModuleKeyedService
+                .DailyPlatformKeyService));
+
         return services;
     }
 }

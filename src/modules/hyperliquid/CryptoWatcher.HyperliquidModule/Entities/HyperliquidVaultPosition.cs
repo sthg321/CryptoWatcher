@@ -76,9 +76,7 @@ public class HyperliquidVaultPosition
             return 0;
         }
 
-        var percentageChange = positionChange / startSnapshot.Balance * 100;
-
-        return percentageChange;
+        return positionChange / startSnapshot.Balance;
     }
 
     /// <summary>

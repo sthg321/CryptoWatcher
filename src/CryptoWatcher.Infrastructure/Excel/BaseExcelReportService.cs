@@ -1,4 +1,6 @@
+using CryptoWatcher.Shared.Entities;
 using SpreadCheetah;
+using SpreadCheetah.SourceGeneration;
 using SpreadCheetah.Styling;
 
 namespace CryptoWatcher.Infrastructure.Excel;
@@ -16,7 +18,10 @@ internal abstract class BaseExcelReportService
 
     protected const string TotalName = "Итого:";
 
-    protected static async Task<MemoryStream> CreateExcelWorkbookAsync(Func<Spreadsheet, Task> buildAction,
+    protected static async Task<MemoryStream> CreateExcelWorkbookAsync<TRow>(
+        string sheetName,
+        WorksheetRowTypeInfo<TRow> rowContext,
+        Func<Spreadsheet, Task> buildAction,
         CancellationToken ct = default)
     {
         var ms = new MemoryStream();
@@ -27,12 +32,41 @@ internal abstract class BaseExcelReportService
             spreadsheet.AddStyle(style, styleName);
         }
 
+        await spreadsheet.StartWorksheetAsync(sheetName, rowContext, ct);
+
+        await spreadsheet.AddHeaderRowAsync(rowContext, token: ct);
+
         await buildAction(spreadsheet);
 
         await spreadsheet.FinishAsync(ct);
         ms.Seek(0, SeekOrigin.Begin);
 
         return ms;
+    }
+    
+    protected static async Task<MemoryStream> CreateExcelWorkbookAsync(
+        Func<Spreadsheet, Task> buildAction,
+        CancellationToken ct = default)
+    {
+        var ms = new MemoryStream();
+        await using var spreadsheet = await Spreadsheet.CreateNewAsync(ms, cancellationToken: ct);
+
+        foreach (var (styleName, style) in StyleNameToStyleMap)
+        {
+            spreadsheet.AddStyle(style, styleName);
+        }
+        
+        await buildAction(spreadsheet);
+
+        await spreadsheet.FinishAsync(ct);
+        ms.Seek(0, SeekOrigin.Begin);
+
+        return ms;
+    }
+
+    protected static async Task WriteWalletRow(Spreadsheet workbook, Wallet wallet, CancellationToken ct = default)
+    {
+        await workbook.AddRowAsync([new DataCell("Кошелек:"), new DataCell(wallet.Address)], ct);
     }
 
     protected static (DateOnly from, DateOnly to) GetDefaultDatesIfNull(DateOnly? from, DateOnly? to)

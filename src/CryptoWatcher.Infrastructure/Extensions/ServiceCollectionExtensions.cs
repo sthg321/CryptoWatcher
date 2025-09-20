@@ -4,12 +4,14 @@ using CryptoWatcher.AaveModule.Abstractions;
 using CryptoWatcher.AaveModule.Extensions;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Application;
+using CryptoWatcher.Application.Reports;
 using CryptoWatcher.HyperliquidModule.Abstractions;
 using CryptoWatcher.HyperliquidModule.Extensions;
 using CryptoWatcher.Infrastructure.Aave;
 using CryptoWatcher.Infrastructure.Configs;
 using CryptoWatcher.Infrastructure.Hyperliquid;
 using CryptoWatcher.Infrastructure.Integrations;
+using CryptoWatcher.Infrastructure.Reports;
 using CryptoWatcher.Infrastructure.Services;
 using CryptoWatcher.Infrastructure.Uniswap;
 using CryptoWatcher.Integrations;
@@ -29,7 +31,8 @@ public static class ServiceCollectionExtensions
         services
             .AddConfiguredAaveModule()
             .AddConfiguredHyperliquidModule()
-            .AddConfiguredUniswapModule();
+            .AddConfiguredUniswapModule()
+            .AddConfiguredApplication();
 
         services.AddScoped<ITokenEnricher, TokenEnricher>();
 
@@ -44,7 +47,21 @@ public static class ServiceCollectionExtensions
         services.AddCoinGeckoClient(provider => provider.GetRequiredService<ExternalServicesConfig>().CoinGecko);
         services.AddTransient<ICoinPriceProvider, CoinGeckoCoinPriceProvider>();
 
-        services.AddSingleton<AaveProvider>();
+        services.AddSingleton<IAaveProvider, AaveProvider>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddConfiguredApplication(this IServiceCollection services)
+    {
+        services
+            .AddScoped<IEnumerable<IPlatformDailyReportDataProvider>>(GetPlatformReportProviders)
+            .AddScoped<IDailySummaryReportProvider, DailySummaryReportProvider>()
+            .AddSingleton<IDailySummaryReportBuilder, DailySummaryReportBuilder>()
+            .AddSingleton<IExcelSheetBuilder>(provider =>
+                (IExcelSheetBuilder)provider.GetRequiredService<IAaveReportExcelService>())
+            .AddSingleton<IExcelSheetBuilder>(provider =>
+                (IExcelSheetBuilder)provider.GetRequiredService<IHyperliquidExcelService>());
 
         return services;
     }
@@ -82,5 +99,16 @@ public static class ServiceCollectionExtensions
             .AddScoped<IUniswapExcelReportService, UniswapExcelReportService>();
 
         return services;
+    }
+
+    private static List<IPlatformDailyReportDataProvider> GetPlatformReportProviders(IServiceProvider provider)
+    {
+        return
+        [
+            provider.GetRequiredKeyedService<IPlatformDailyReportDataProvider>(
+                AaveModuleKeyedService.DailyPlatformKeyService),
+            provider.GetRequiredKeyedService<IPlatformDailyReportDataProvider>(
+                HyperliquidModuleKeyedService.DailyPlatformKeyService)
+        ];
     }
 }

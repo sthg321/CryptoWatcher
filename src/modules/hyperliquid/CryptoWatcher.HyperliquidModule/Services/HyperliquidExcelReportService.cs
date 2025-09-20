@@ -2,71 +2,73 @@ using CryptoWatcher.Abstractions;
 using CryptoWatcher.HyperliquidModule.Entities;
 using CryptoWatcher.HyperliquidModule.Models;
 using CryptoWatcher.HyperliquidModule.Specifications;
+using CryptoWatcher.Models;
+using CryptoWatcher.Shared.Entities;
 
 namespace CryptoWatcher.HyperliquidModule.Services;
-
-public interface IHyperliquidReportService
-{
-    /// <summary>
-    /// Generates a report based on the specified date range.
-    /// </summary>
-    /// <param name="from">The start date of the report.</param>
-    /// <param name="to">The end date of the report.</param>
-    /// <param name="ct">An optional cancellation token to cancel the operation.</param>
-    /// <returns>A task that represents the asynchronous operation. Returns a list of <see cref="HyperliquidVaultReport"/> objects containing the report data.</returns>
-    Task<List<HyperliquidVaultReport>> CreateReportAsync(DateOnly from, DateOnly to,
-        CancellationToken ct = default);
-}
 
 /// <summary>
 /// <see cref="IHyperliquidPositionsSyncService"/>
 /// </summary>
-internal class HyperliquidReportService : IHyperliquidReportService
+internal class HyperliquidReportDataService : IPlatformDailyReportDataProvider
 {
     private readonly IRepository<HyperliquidVaultPosition> _repository;
 
-    public HyperliquidReportService(IRepository<HyperliquidVaultPosition> repository)
+    public HyperliquidReportDataService(IRepository<HyperliquidVaultPosition> repository)
     {
         _repository = repository;
     }
 
-    public async Task<List<HyperliquidVaultReport>> CreateReportAsync(DateOnly from, DateOnly to,
-        CancellationToken ct = default)
+    public async Task<PlatformDailyReportData> GetReportDataAsync(IReadOnlyCollection<Wallet> wallets,
+        DateOnly from, DateOnly to, CancellationToken ct = default)
     {
         var vaultPositions =
-            await _repository.ListAsync(new HyperliquidPositionsForReportSpecification(from, to), ct);
+            await _repository.ListAsync(new HyperliquidPositionsForReportSpecification(wallets, from, to), ct);
 
-        var result = new List<HyperliquidVaultReport>(vaultPositions.Count);
-        foreach (var vaultPosition in vaultPositions)
+        var result = new Dictionary<Wallet, List<PlatformDailyReport>>(vaultPositions.Count);
+        foreach (var vaultPositionByWallet in vaultPositions.GroupBy(position => position.WalletAddress))
         {
-            var vaultReportItems = new List<HyperliquidVaultReportItem>(vaultPosition.PositionSnapshots.Count);
-            foreach (var vaultPositionSnapshot in vaultPosition.PositionSnapshots)
+            foreach (var vaultPosition in vaultPositionByWallet)
             {
-                var reportItem = new HyperliquidVaultReportItem
+                var vaultReportItems = new List<HyperliquidVaultReportItem>(vaultPosition.PositionSnapshots.Count);
+                foreach (var vaultPositionSnapshot in vaultPosition.PositionSnapshots)
                 {
-                    VaultAddress = vaultPosition.VaultAddress,
-                    Balance = vaultPositionSnapshot.Balance,
-                    Day = vaultPositionSnapshot.Day,
-                    DailyProfit = vaultPosition.CalculateAbsoluteProfit(vaultPositionSnapshot.Day.AddDays(-1),
-                        vaultPositionSnapshot.Day),
-                    DailyPercentProfit = vaultPosition.CalculatePercentageProfit(vaultPositionSnapshot.Day.AddDays(-1),
-                        vaultPositionSnapshot.Day),
+                    var previousDay = vaultPositionSnapshot.Day.AddDays(-1);
+                    var reportItem = new HyperliquidVaultReportItem
+                    {
+                        VaultAddress = vaultPosition.VaultAddress,
+                        Balance = vaultPositionSnapshot.Balance,
+                        Day = vaultPositionSnapshot.Day,
+                        DailyProfit = vaultPosition.CalculateAbsoluteProfit(previousDay,
+                            vaultPositionSnapshot.Day),
+                        DailyPercentProfit = vaultPosition.CalculatePercentageProfit(previousDay,
+                            vaultPositionSnapshot.Day),
+                    };
+
+                    vaultReportItems.Add(reportItem);
+                }
+
+                var vaultReport = new HyperliquidVaultReport
+                {
+                    PositionInUsd = vaultReportItems.Count != 0 ? vaultReportItems[^1].Balance : 0,
+                    ProfitInUsd = vaultPosition.CalculateAbsoluteProfit(from, to),
+                    ProfitInPercent = vaultPosition.CalculatePercentageProfit(from, to),
+                    ReportItems = vaultReportItems
                 };
 
-                vaultReportItems.Add(reportItem);
+                if (!result.TryGetValue(vaultPosition.Wallet, out var dailyReports))
+                {
+                    result.Add(vaultPosition.Wallet, dailyReports = []);
+                }
+
+                dailyReports.Add(vaultReport);
             }
-
-            var vaultReport = new HyperliquidVaultReport
-            {
-                TotalBalance = vaultReportItems.Count != 0 ? vaultReportItems[^1].Balance : 0,
-                TotalAbsoluteProfit = vaultPosition.CalculateAbsoluteProfit(from, to),
-                TotalPercentProfit = vaultPosition.CalculatePercentageProfit(from, to),
-                ReportItems = vaultReportItems
-            };
-
-            result.Add(vaultReport);
         }
 
-        return result;
+        return new PlatformDailyReportData
+        {
+            PlatformName = "Hyperliquid",
+            Reports = result
+        };
     }
 }

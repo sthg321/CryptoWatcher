@@ -16,4 +16,8 @@
       <ProjectReference Include="..\..\clients\UniswapClient\UniswapClient.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Models\YieldMetrics.cs" />
+    </ItemGroup>
+
 </Project>

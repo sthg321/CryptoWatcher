@@ -11,4 +11,12 @@ public static class PositionSnapshotExtensions
             ? snapshot.Where(s => s.Day <= day).MaxBy(s => s.Day)
             : snapshot.Where(s => s.Day >= day).MinBy(s => s.Day);
     }
+    
+    public static IPositionSnapshot? GetNearestSnapshot(this IEnumerable<IPositionSnapshot> snapshot, DateOnly day,
+        bool findPrevious) 
+    {
+        return findPrevious
+            ? snapshot.Where(s => s.Day <= day).MaxBy(s => s.Day)
+            : snapshot.Where(s => s.Day >= day).MinBy(s => s.Day);
+    }
 }

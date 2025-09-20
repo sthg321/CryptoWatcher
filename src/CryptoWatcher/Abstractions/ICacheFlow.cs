@@ -4,19 +4,19 @@ namespace CryptoWatcher.Abstractions;
 
 public interface ICacheFlow
 {
-    public DateTime Date { get; init; }
+    DateTime Date { get; init; }
 
-    public CacheFlowEvent Event { get; init; }
+    CacheFlowEvent Event { get; init; }
 }
 
 public interface IUsdCacheFlow : ICacheFlow
 {
-    public decimal Usd { get; init; }
+    decimal Usd { get; init; }
 }
 
 public interface ITokenCacheFlow : ICacheFlow
 {
-    public TokenInfo Token { get; init; }
+    TokenInfo Token { get; init; }
 }
 
 public enum CacheFlowEvent

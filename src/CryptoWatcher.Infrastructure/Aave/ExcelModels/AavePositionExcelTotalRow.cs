@@ -12,28 +12,40 @@ internal class AavePositionExcelTotalRow
     
     [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Money>))]
     [CellStyle(ExcelStyleRegistry.TwoDecimalPlaces)]
-    public required Money Balance { get; init; }
+    public required Money PositionInUsd { get; init; }
     
-    [ColumnHeader("Динамика в $")]
+    [ColumnHeader("Рост позиции в $")]
     [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Money>))]
     [CellStyle(ExcelStyleRegistry.TwoDecimalPlaces)]
-    public required Money TotalPositionChange { get; init; }
-
-    [ColumnHeader("Комиссия в $")]
+    public required Money PositionGrowInUsd { get; init; }
+    
     [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Money>))]
     [CellStyle(ExcelStyleRegistry.TwoDecimalPlaces)]
-    public required Money TotalCommissionInUsd { get; init; }
+    public required Money ProfitInUsd { get; init; }
     
-    [ColumnHeader("Комиссия в $/%")]
-    [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Percent>))]
-    [CellStyle(ExcelStyleRegistry.TwoDecimalPlaces)]
-    public required Percent TotalCommissionInUsdPercent { get; init; }
+    public required decimal PositionInToken { get; init; }
+    
+    public required decimal ProfitInToken { get; init; }
+    
+    // [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Money>))]
+    // [CellStyle(ExcelStyleRegistry.TwoDecimal Places)]
+    // public required Money ProfitInUsd { get; init; }
 
-    [ColumnHeader("Комиссия в токена")]
-    public required decimal TotalCommissionInToken { get; init; }
-    
-    [ColumnHeader("Комиссия в $/%")]
-    [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Percent>))]
-    [CellStyle(ExcelStyleRegistry.Percent)]
-    public required Percent TotalCommissionInTokenPercent { get; init; }
+    // [ColumnHeader("Комиссия в $")]
+    // [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Money>))]
+    // [CellStyle(ExcelStyleRegistry.TwoDecimalPlaces)]
+    // public required Money TotalCommissionInUsd { get; init; }
+    //
+    // [ColumnHeader("Комиссия в $/%")]
+    // [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Percent>))]
+    // [CellStyle(ExcelStyleRegistry.TwoDecimalPlaces)]
+    // public required Percent TotalCommissionInUsdPercent { get; init; }
+    //
+    // [ColumnHeader("Комиссия в токена")]
+    // public required decimal TotalCommissionInToken { get; init; }
+    //
+    // [ColumnHeader("Комиссия в $/%")]
+    // [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Percent>))]
+    // [CellStyle(ExcelStyleRegistry.Percent)]
+    // public required Percent TotalCommissionInTokenPercent { get; init; }
 }

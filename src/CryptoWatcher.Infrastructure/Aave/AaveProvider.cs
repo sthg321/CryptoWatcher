@@ -1,9 +1,5 @@
-using System.Numerics;
 using AaveClient;
-using AaveClient.UiPoolDataProvider.Contracts;
-using AaveClient.UiPoolDataProvider.Contracts.ReservesData;
 using CryptoWatcher.AaveModule.Abstractions;
-using CryptoWatcher.AaveModule.Entities;
 using CryptoWatcher.AaveModule.Models;
 using CryptoWatcher.Extensions;
 using CryptoWatcher.Shared.Entities;

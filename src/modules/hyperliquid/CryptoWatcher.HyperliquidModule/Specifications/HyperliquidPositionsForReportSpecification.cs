@@ -1,5 +1,6 @@
 using Ardalis.Specification;
 using CryptoWatcher.HyperliquidModule.Entities;
+using CryptoWatcher.Shared.Entities;
 
 namespace CryptoWatcher.HyperliquidModule.Specifications;
 
@@ -11,9 +12,12 @@ namespace CryptoWatcher.HyperliquidModule.Specifications;
 /// </summary>
 internal sealed class HyperliquidPositionsForReportSpecification : Specification<HyperliquidVaultPosition>
 {
-    public HyperliquidPositionsForReportSpecification(DateOnly from, DateOnly to)
+    public HyperliquidPositionsForReportSpecification(IReadOnlyCollection<Wallet> wallets, DateOnly from, DateOnly to)
     {
+        var valetAddresses = wallets.Select(wallet => wallet.Address).ToArray();
         Query
+            .Where(position => valetAddresses.Contains(position.WalletAddress))
+            .Include(position => position.Wallet)
             .Include(position => position.VaultEvents)
             .Include(position => position.PositionSnapshots
                 .OrderBy(snapshot => snapshot.Day)

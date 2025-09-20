@@ -153,7 +153,7 @@ public class AavePosition
 
         if (startSnapshot.Day == endSnapshot.Day)
         {
-            return endSnapshot.Token.AmountInUsd - netCashFlow;
+            return 0;
         }
 
         if (PositionType == AavePositionType.Borrowed)
@@ -181,7 +181,7 @@ public class AavePosition
 
         if (startSnapshot.Day == endSnapshot.Day)
         {
-            return endSnapshot.Token.Amount - netCashFlow;
+            return 0;
         }
 
         return endSnapshot.Token.Amount - startSnapshot.Token.Amount - netCashFlow;

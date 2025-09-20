@@ -1,14 +1,25 @@
+using CryptoWatcher.Abstractions;
 using CryptoWatcher.HyperliquidModule.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CryptoWatcher.HyperliquidModule.Extensions;
+
+public static class HyperliquidModuleKeyedService
+{
+    public const string DailyPlatformKeyService = nameof(HyperliquidReportDataService);
+}
 
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddHyperliquidModule(this IServiceCollection services)
     {
         services.AddScoped<IHyperliquidPositionsSyncService, HyperliquidPositionsSyncService>();
-        services.AddScoped<IHyperliquidReportService, HyperliquidReportService>();
+        services.AddKeyedSingleton<IPlatformDailyReportDataProvider, HyperliquidReportDataService>(HyperliquidModuleKeyedService
+            .DailyPlatformKeyService);
+        
+        services.AddSingleton<IPlatformDailyReportDataProvider>(provider =>
+            provider.GetRequiredKeyedService<IPlatformDailyReportDataProvider>(HyperliquidModuleKeyedService
+                .DailyPlatformKeyService));
         return services;
     }
 }

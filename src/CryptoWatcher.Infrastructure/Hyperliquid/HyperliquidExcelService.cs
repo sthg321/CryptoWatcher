@@ -1,7 +1,14 @@
-using CryptoWatcher.HyperliquidModule.Services;
+using CryptoWatcher.Abstractions;
+using CryptoWatcher.HyperliquidModule.Extensions;
+using CryptoWatcher.HyperliquidModule.Models;
+using CryptoWatcher.Infrastructure.Aave;
 using CryptoWatcher.Infrastructure.Excel;
 using CryptoWatcher.Infrastructure.Hyperliquid.ExcelModels;
 using CryptoWatcher.Infrastructure.Hyperliquid.Mappers;
+using CryptoWatcher.Models;
+using CryptoWatcher.Shared.Entities;
+using Microsoft.Extensions.DependencyInjection;
+using SpreadCheetah;
 using SpreadCheetah.SourceGeneration;
 
 namespace CryptoWatcher.Infrastructure.Hyperliquid;
@@ -14,55 +21,84 @@ public interface IHyperliquidExcelService
     /// <summary>
     /// Generates a report based on the specified date range and returns it as a stream.
     /// </summary>
+    /// <param name="wallets"></param>
     /// <param name="from">The starting date for the report. If null, the default start date is the first day of the current month.</param>
     /// <param name="to">The ending date for the report. If null, the default end date is the last day of the current month.</param>
     /// <param name="ct">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>A stream containing the generated report in Excel format.</returns>
-    Task<Stream> CreateReportAsync(DateOnly? from, DateOnly? to, CancellationToken ct = default);
+    Task<Stream> CreateReportAsync(IReadOnlyCollection<Wallet> wallets, DateOnly? from, DateOnly? to,
+        CancellationToken ct = default);
 }
 
-internal class HyperliquidExcelService : BaseExcelReportService, IHyperliquidExcelService
+internal class HyperliquidExcelService : BaseExcelReportService, IHyperliquidExcelService, IExcelSheetBuilder
 {
-    private const string ReportSheetName = "Hyperliquid";
     private const string EmptyValue = "-";
 
-    private readonly IHyperliquidReportService _hyperliquidReportService;
+    private readonly IPlatformDailyReportDataProvider _platformDailyReportDataProvider;
 
-    public HyperliquidExcelService(IHyperliquidReportService hyperliquidReportService)
+    public HyperliquidExcelService(
+        [FromKeyedServices(HyperliquidModuleKeyedService.DailyPlatformKeyService)]
+        IPlatformDailyReportDataProvider platformDailyReportDataProvider)
     {
-        _hyperliquidReportService = hyperliquidReportService;
+        _platformDailyReportDataProvider = platformDailyReportDataProvider;
     }
 
-    public async Task<Stream> CreateReportAsync(DateOnly? from, DateOnly? to, CancellationToken ct = default)
+    public bool CanProcess(PlatformDailyReport dailyReport) => dailyReport is HyperliquidVaultReport;
+
+    public async Task CreateHeaderAsync(Spreadsheet workbook, Wallet wallet, CancellationToken ct = default)
+    {
+        await workbook.AddRowAsync([new DataCell("Кошелек:"), new DataCell(wallet.Address)], ct);
+
+        await workbook.AddHeaderRowAsync(
+            HyperliquidVaultPositionExcelContext.Default.HyperliquidVaultPositionExcelRow,
+            token: ct);
+    }
+
+    public async Task<Stream> CreateReportAsync(IReadOnlyCollection<Wallet> wallets, DateOnly? from, DateOnly? to,
+        CancellationToken ct = default)
     {
         var (fromDate, toDate) = GetDefaultDatesIfNull(from, to);
 
-        var vaultReports = await _hyperliquidReportService.CreateReportAsync(fromDate, toDate, ct);
+        var platformDailyReports =
+            await _platformDailyReportDataProvider.GetReportDataAsync(wallets, fromDate, toDate, ct);
 
-        var ms = await CreateExcelWorkbookAsync(async sheet =>
+        var rowContext = HyperliquidVaultPositionExcelContext.Default.HyperliquidVaultPositionExcelRow;
+
+        var ms = await CreateExcelWorkbookAsync(platformDailyReports.PlatformName, rowContext, async workbook =>
         {
-            var rowContext = HyperliquidVaultPositionExcelContext.Default.HyperliquidVaultPositionExcelRow;
-            var totalContext = HyperliquidVaultPositionExcelContext.Default.HyperliquidVaultPositionExcelTotalRow;
-            
-            await sheet.StartWorksheetAsync(ReportSheetName, rowContext, ct);
-
-            await sheet.AddHeaderRowAsync(HyperliquidVaultPositionExcelContext.Default.HyperliquidVaultPositionExcelRow,
-                token: ct);
-
-            foreach (var vaultReport in vaultReports)
+            foreach (var (wallet, dailyReports) in platformDailyReports.Reports)
             {
-                foreach (var vaultReportItem in vaultReport.ReportItems)
+                await WriteWalletRow(workbook, wallet, ct);
+                
+                foreach (var dailyReport in dailyReports)
                 {
-                    await sheet.AddAsRowAsync(vaultReportItem.MapToExcelModel(), rowContext, ct);
+                    await WriteDataToWorksheetAsync(workbook, dailyReport, ct);
                 }
-
-                await sheet.AddAsRowAsync(vaultReport.MapToExcelModel(TotalName, EmptyValue), totalContext, ct);
-
-                await sheet.AddRowAsync([], ct);
             }
         }, ct);
 
         return ms;
+    }
+
+    public async Task WriteDataToWorksheetAsync(Spreadsheet workbook,
+        PlatformDailyReport dailyReport,
+        CancellationToken ct = default)
+    {
+        var hyperliquidDailyReport = dailyReport as HyperliquidVaultReport ??
+                                     throw new InvalidOperationException(
+                                         "Platform daily report must be of type HyperliquidDailyReport");
+
+        var rowContext = HyperliquidVaultPositionExcelContext.Default.HyperliquidVaultPositionExcelRow;
+        var totalContext = HyperliquidVaultPositionExcelContext.Default.HyperliquidVaultPositionExcelTotalRow;
+
+        foreach (var vaultReportItem in hyperliquidDailyReport.ReportItems)
+        {
+            await workbook.AddAsRowAsync(vaultReportItem.MapToExcelModel(), rowContext, ct);
+        }
+
+        await workbook.AddAsRowAsync(hyperliquidDailyReport.MapToExcelModel(TotalName, EmptyValue), totalContext, ct);
+        
+        await workbook.AddRowAsync([], ct);
     }
 }
 

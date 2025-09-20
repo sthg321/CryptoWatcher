@@ -1,4 +1,6 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AAavePositionExcelRowMapper_002Eg_002Ecs_002Fl_003AC_0021_003FUsers_003FAshym_003FAppData_003FLocal_003FTemp_003FSourceGeneratedDocuments_003F80C1EEF8C91E2E3989DE6FD9_003FRiok_002EMapperly_003FRiok_002EMapperly_002EMapperGenerator_003FAavePositionExcelRowMapper_002Eg_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AAavePositionExcelTotalRowMapper_002Eg_002Ecs_002Fl_003AC_0021_003FUsers_003FAshym_003FAppData_003FLocal_003FTemp_003FSourceGeneratedDocuments_003F80C1EEF8C91E2E3989DE6FD9_003FRiok_002EMapperly_003FRiok_002EMapperly_002EMapperGenerator_003FAavePositionExcelTotalRowMapper_002Eg_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AABIEncode_002Ecs_002Fl_003AC_0021_003FUsers_003FAshym_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003F291aa21b1578aadc9b9df65b3af38f3a887698a574dc9c16c112b962bafbc7d_003FABIEncode_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AABITypedRegistry_002Ecs_002Fl_003AC_0021_003FUsers_003FAshym_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003F8abfb8628e5139131b733b75b5a9d8ae3a90416f30a1b31ebc9fbaa149b98619_003FABITypedRegistry_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AAccessorExtensions_002Ecs_002Fl_003AC_0021_003FUsers_003FAshym_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E2_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003Fb13cb16f7e5749269b6922dc6752bd1c291448_003F03_003F03b57749_003FAccessorExtensions_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
@@ -111,6 +113,19 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ec12af25_002Dc199_002D4f9a_002D9b16_002D50b5e6afa438/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from Solution" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;Solution /&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

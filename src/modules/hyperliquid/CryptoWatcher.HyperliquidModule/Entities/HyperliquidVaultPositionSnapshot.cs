@@ -7,7 +7,7 @@ namespace CryptoWatcher.HyperliquidModule.Entities;
 /// Represents a snapshot of a position in a Hyperliquid vault, including balance, day of the snapshot,
 /// vault details, and associated wallet information.
 /// </summary>
-public class HyperliquidVaultPositionSnapshot : IPositionSnapshot
+public class HyperliquidVaultPositionSnapshot : IUsdPositionSnapshot
 {
     /// <summary>
     /// Balance in usd
@@ -18,6 +18,8 @@ public class HyperliquidVaultPositionSnapshot : IPositionSnapshot
     /// The day when the snapshot was taken
     /// </summary>
     public DateOnly Day { get; init; }
+
+    public decimal GetUsdBalance() => Balance;
 
     /// <summary>
     /// VaultAddress address
