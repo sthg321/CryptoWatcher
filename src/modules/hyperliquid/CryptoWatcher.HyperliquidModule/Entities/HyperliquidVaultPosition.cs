@@ -1,6 +1,5 @@
-using CryptoWatcher.Extensions;
+using CryptoWatcher.Abstractions;
 using CryptoWatcher.Shared.Entities;
-using CryptoWatcher.Shared.ValueObjects;
 
 namespace CryptoWatcher.HyperliquidModule.Entities;
 
@@ -9,11 +8,15 @@ namespace CryptoWatcher.HyperliquidModule.Entities;
 /// This class encapsulates various properties and methods to track and analyze the performance of the vault,
 /// including event history, position snapshots, and profit calculations over specified time periods.
 /// </summary>
-public class HyperliquidVaultPosition
+public class HyperliquidVaultPosition : ICalculatablePosition<IUsdPositionSnapshot>
 {
     /// <summary>
-    /// 
+    /// Represents the address of the vault associated with the Hyperliquid platform position.
     /// </summary>
+    /// <remarks>
+    /// This property holds the unique identifier of the vault on the blockchain.
+    /// It is used to track and manage vault-specific data and operations within the Hyperliquid module.
+    /// </remarks>
     public string VaultAddress { get; init; } = null!;
 
     /// <summary>
@@ -45,55 +48,16 @@ public class HyperliquidVaultPosition
     public List<HyperliquidVaultEvent> VaultEvents { get; init; } = [];
 
     /// <summary>
-    /// 
+    /// Contains a collection of snapshots representing the states of a vault's position over time.
     /// </summary>
+    /// <remarks>
+    /// This property holds a list of <see cref="HyperliquidVaultPositionSnapshot"/> instances,
+    /// where each snapshot captures specific details of the vault position at a given point in time.
+    /// It is utilized for analysis, reporting, and tracking historical position data within the Hyperliquid module.
+    /// </remarks>
     public List<HyperliquidVaultPositionSnapshot> PositionSnapshots { get; init; } = [];
 
-    /// <summary>
-    /// Calculates the percentage profit of the vault position within the specified date range.
-    /// </summary>
-    /// <param name="startDate">The start date of the date range for the calculation.</param>
-    /// <param name="endDate">The end date of the date range for the calculation.</param>
-    /// <returns>The percentage profit as a decimal value. Returns 0 if the date range is invalid or no data is available.</returns>
-    public Percent CalculatePercentageProfit(DateOnly startDate, DateOnly endDate)
-    {
-        // Находим первый и последний снимки за период
-        var startSnapshot = PositionSnapshots.GetNearestSnapshot(startDate, false);
+    public IReadOnlyCollection<IUsdPositionSnapshot> GetPositionSnapshots() => PositionSnapshots;
 
-        var endSnapshot = PositionSnapshots.GetNearestSnapshot(endDate, true);
-
-        if (startSnapshot == null || endSnapshot == null || startSnapshot.Day >= endSnapshot.Day)
-        {
-            return 0;
-        }
-
-        var netCashFlow = VaultEvents.CalculateNetCashFlowInUsd(startSnapshot.Day, endSnapshot.Day);
-
-        var positionChange = endSnapshot.Balance - startSnapshot.Balance - netCashFlow;
-
-        if (startSnapshot.Balance == 0)
-        {
-            return 0;
-        }
-
-        return positionChange / startSnapshot.Balance;
-    }
-
-    /// <summary>
-    /// Calculates the absolute profit of the vault position within the specified date range.
-    /// </summary>
-    /// <param name="startDate">The start date of the date range for the calculation.</param>
-    /// <param name="endDate">The end date of the date range for the calculation.</param>
-    /// <returns>The absolute profit as a decimal value. Returns 0 if the date range is invalid or no data is available.</returns>
-    public decimal CalculateAbsoluteProfit(DateOnly startDate, DateOnly endDate)
-    {
-        var startSnapshot = PositionSnapshots.GetNearestSnapshot(startDate, false);
-        var endSnapshot = PositionSnapshots.GetNearestSnapshot(endDate, true);
-
-        if (startSnapshot == null || endSnapshot == null) return 0;
-
-        var netCashFlow = VaultEvents.CalculateNetCashFlowInUsd(startSnapshot.Day, endSnapshot.Day);
-
-        return endSnapshot.Balance - startSnapshot.Balance - netCashFlow;
-    }
+    public IReadOnlyCollection<ICacheFlow> GetCashFlows() => VaultEvents;
 }

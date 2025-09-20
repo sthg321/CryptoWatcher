@@ -15,7 +15,7 @@ internal class AaveReportDataService : IPlatformDailyReportDataProvider
     {
         _repository = repository;
     }
- 
+
     public async Task<PlatformDailyReportData> GetReportDataAsync(IReadOnlyCollection<Wallet> wallets,
         DateOnly from,
         DateOnly to, CancellationToken ct = default)
@@ -32,33 +32,39 @@ internal class AaveReportDataService : IPlatformDailyReportDataProvider
                     .Select(snapshot =>
                     {
                         var previousDay = snapshot.Day.AddDays(-1);
-                        var profitInToken = position.CalculateAbsoluteProfitInToken(previousDay, snapshot.Day);
+                        var profitInUsd = position.CalculateProfitInUsd(from, snapshot.Day);
+                        var profitInToken = position.CalculateProfitInToken(previousDay, snapshot.Day);
+
                         return new AaveDailyReportItem
                         {
                             Day = snapshot.Day,
                             TokenSymbol = snapshot.Token.Symbol,
                             PositionInUsd = snapshot.Token.AmountInUsd,
-                            PositionGrowInUsd = position.CalculateAbsoluteProfitInUsd(previousDay, snapshot.Day),
+                            PositionGrowInUsd = profitInUsd.Amount,
+                            
                             PositionInToken = snapshot.Token.Amount,
-                            DailyProfitInUsd = profitInToken * snapshot.Token.PriceInUsd,
-                            DailyProfitInUsdPercent = position.CalculateAbsoluteProfitInUsd(previousDay, snapshot.Day),
-                            DailyProfitInToken = position.CalculateAbsoluteProfitInToken(previousDay, snapshot.Day)
+                            DailyProfitInUsd = profitInToken.Amount * snapshot.Token.PriceInUsd,
+                            DailyProfitInUsdPercent = profitInUsd.Percent,
+                            DailyProfitInToken = profitInToken.Amount
                         };
                     })
                     .ToArray();
 
                 var lastTokenPrice = position.PositionSnapshots.LastOrDefault()?.Token.PriceInUsd ?? 0;
+                var profitInUsd = position.CalculateProfitInUsd(from, to);
+
+                var profitInToken = position.CalculateProfitInToken(from, to);
                 var dailyReport = new AaveDailyReport
                 {
                     PositionInUsd = reportItems.LastOrDefault()?.PositionInUsd ?? 0,
                     PositionInToken = reportItems.LastOrDefault()?.PositionInToken ?? 0,
-                    ProfitInUsd = position.CalculateAbsoluteProfitInToken(from, to) * lastTokenPrice,
-                    ProfitInPercent = 0,
-                    PositionGrowInUsd = position.CalculateAbsoluteProfitInUsd(from, to),
-                    ProfitInToken = position.CalculateAbsoluteProfitInToken(from, to),
+                    ProfitInUsd = profitInToken.Amount * lastTokenPrice,
+                    ProfitInPercent = profitInUsd.Percent,
+                    PositionGrowInUsd = profitInUsd.Amount,
+                    ProfitInToken = profitInToken.Amount,
                     ReportItems = reportItems
                 };
-                
+
                 if (!result.TryGetValue(position.Wallet, out var dailyReports))
                 {
                     dailyReports = [];
@@ -66,7 +72,6 @@ internal class AaveReportDataService : IPlatformDailyReportDataProvider
                 }
 
                 dailyReports.Add(dailyReport);
-
             }
         }
 

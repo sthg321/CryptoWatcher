@@ -1,0 +1,91 @@
+using CryptoWatcher.Extensions;
+using CryptoWatcher.Models;
+
+namespace CryptoWatcher.Abstractions;
+
+public static class PositionProfitCalculator
+{
+    public static ProfitMetric CalculateProfitInUsd(
+        this ICalculatablePosition<IUsdPositionSnapshot> position, DateOnly from, DateOnly to)
+    {
+        return CalculateProfit(
+            position.GetPositionSnapshots(),
+            position.GetCashFlows(),
+            from,
+            to,
+            snapshot => snapshot.GetUsdBalance(),
+            cashFlow => (cashFlow as IUsdCacheFlow)!.Usd
+        );
+    }
+
+    public static ProfitMetric CalculateProfitInToken(
+        this ICalculatablePosition<ITokenPositionSnapshot> position, DateOnly from, DateOnly to)
+    {
+        return CalculateProfit(
+            position.GetPositionSnapshots(),
+            position.GetCashFlows(),
+            from,
+            to,
+            snapshot => snapshot.GetTokenInfo().Amount,
+            cashFlow => (cashFlow as ITokenCacheFlow)!.Token.Amount
+        );
+    }
+
+    public static ProfitMetric CalculateProfitInUsd(
+        this ICalculatablePosition<ITokenPositionSnapshot> position, DateOnly from, DateOnly to)
+    {
+        return CalculateProfit(
+            position.GetPositionSnapshots(),
+            position.GetCashFlows(),
+            from,
+            to,
+            snapshot => snapshot.GetTokenInfo().AmountInUsd,
+            cashFlow => (cashFlow as ITokenCacheFlow)!.Token.AmountInUsd
+        );
+    }
+
+    private static ProfitMetric CalculateProfit<TSnapshot>(
+        IReadOnlyCollection<TSnapshot> snapshots,
+        IReadOnlyCollection<ICacheFlow> cashFlows,
+        DateOnly from,
+        DateOnly to,
+        Func<TSnapshot, decimal> getValue,
+        Func<ICacheFlow, decimal> getCashFlowAmount)
+        where TSnapshot : IPositionSnapshot
+    {
+        var filteredSnapshots = snapshots
+            .Where(snapshot => snapshot.Day >= from && snapshot.Day <= to)
+            .ToArray();
+
+        if (filteredSnapshots.Length == 0)
+        {
+            return ProfitMetric.Empty();
+        }
+
+        var startSnapshot = filteredSnapshots.GetNearestSnapshot(from, false);
+        var endSnapshot = filteredSnapshots.GetNearestSnapshot(to, true);
+
+        if (startSnapshot == null || endSnapshot == null || startSnapshot.Day == endSnapshot.Day)
+        {
+            return ProfitMetric.Empty();
+        }
+
+        var filteredCashFlows = cashFlows
+            .Where(cashFlow => cashFlow.Date >= from.ToMinDateTime() && cashFlow.Date <= to.ToMaxDateTime())
+            .Sum(getCashFlowAmount);
+
+        var startValue = getValue(startSnapshot);
+        var endValue = getValue(endSnapshot);
+        var profitValue = endValue - startValue - filteredCashFlows;
+
+        if (profitValue == 0)
+        {
+            return ProfitMetric.Empty();
+        }
+
+        var denominator = Math.Abs(startValue + filteredCashFlows);
+        var profitPercent = denominator < 1e-9m ? 0 : profitValue / denominator;
+
+        return new ProfitMetric { Amount = profitValue, Percent = profitPercent };
+    }
+}

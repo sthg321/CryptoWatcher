@@ -25,7 +25,7 @@ internal class HyperliquidReportDataService : IPlatformDailyReportDataProvider
         var vaultPositions =
             await _repository.ListAsync(new HyperliquidPositionsForReportSpecification(wallets, from, to), ct);
 
-        var result = new Dictionary<Wallet, List<PlatformDailyReport>>(vaultPositions.Count);
+        var result = new Dictionary<Wallet, List<PlatformDailyReport>>();
         foreach (var vaultPositionByWallet in vaultPositions.GroupBy(position => position.WalletAddress))
         {
             foreach (var vaultPosition in vaultPositionByWallet)
@@ -33,26 +33,25 @@ internal class HyperliquidReportDataService : IPlatformDailyReportDataProvider
                 var vaultReportItems = new List<HyperliquidVaultReportItem>(vaultPosition.PositionSnapshots.Count);
                 foreach (var vaultPositionSnapshot in vaultPosition.PositionSnapshots)
                 {
-                    var previousDay = vaultPositionSnapshot.Day.AddDays(-1);
+                    var profitInUsd = vaultPosition.CalculateProfitInUsd(from, vaultPositionSnapshot.Day);
                     var reportItem = new HyperliquidVaultReportItem
                     {
                         VaultAddress = vaultPosition.VaultAddress,
                         Balance = vaultPositionSnapshot.Balance,
                         Day = vaultPositionSnapshot.Day,
-                        DailyProfit = vaultPosition.CalculateAbsoluteProfit(previousDay,
-                            vaultPositionSnapshot.Day),
-                        DailyPercentProfit = vaultPosition.CalculatePercentageProfit(previousDay,
-                            vaultPositionSnapshot.Day),
+                        DailyProfit = profitInUsd.Amount,
+                        DailyPercentProfit = profitInUsd.Percent,
                     };
 
                     vaultReportItems.Add(reportItem);
                 }
 
+                var totalProfit = vaultPosition.CalculateProfitInUsd(from, to);
                 var vaultReport = new HyperliquidDailyReport
                 {
                     PositionInUsd = vaultReportItems.Count != 0 ? vaultReportItems[^1].Balance : 0,
-                    ProfitInUsd = vaultPosition.CalculateAbsoluteProfit(from, to),
-                    ProfitInPercent = vaultPosition.CalculatePercentageProfit(from, to),
+                    ProfitInUsd = totalProfit.Amount,
+                    ProfitInPercent = totalProfit.Percent,
                     ReportItems = vaultReportItems
                 };
 

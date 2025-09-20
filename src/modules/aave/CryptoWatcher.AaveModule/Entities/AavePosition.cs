@@ -2,7 +2,6 @@ using System.Security.Cryptography;
 using System.Text;
 using CryptoWatcher.AaveModule.Models;
 using CryptoWatcher.Abstractions;
-using CryptoWatcher.Extensions;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.Shared.ValueObjects;
 using JetBrains.Annotations;
@@ -17,7 +16,7 @@ namespace CryptoWatcher.AaveModule.Entities;
 /// This class maintains the lifecycle of a position, including its creation and optional closure dates,
 /// along with snapshots of token-specific metrics over time.
 /// </remarks>
-public class AavePosition
+public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
 {
     private readonly List<AavePositionSnapshot> _positionSnapshots = [];
     private readonly List<AavePositionEvent> _positionEvents = [];
@@ -136,106 +135,9 @@ public class AavePosition
     /// </remarks>
     public IReadOnlyCollection<AavePositionEvent> PositionEvents => _positionEvents;
 
-    /// <summary>
-    /// Calculates the absolute profit of the vault position within the specified date range.
-    /// </summary>
-    /// <param name="startDate">The start date of the date range for the calculation.</param>
-    /// <param name="endDate">The end date of the date range for the calculation.</param>
-    /// <returns>The absolute profit as a decimal value. Returns 0 if the date range is invalid or no data is available.</returns>
-    public decimal CalculateAbsoluteProfitInUsd(DateOnly startDate, DateOnly endDate)
-    {
-        var startSnapshot = PositionSnapshots.GetNearestSnapshot(startDate, false);
-        var endSnapshot = PositionSnapshots.GetNearestSnapshot(endDate, true);
+    public IReadOnlyCollection<ITokenPositionSnapshot> GetPositionSnapshots() => PositionSnapshots;
 
-        if (startSnapshot == null || endSnapshot == null) return 0;
-
-        var netCashFlow = PositionEvents.CalculateNetCashFlowInUsd(startSnapshot.Day, endSnapshot.Day);
-
-        if (startSnapshot.Day == endSnapshot.Day)
-        {
-            return 0;
-        }
-
-        if (PositionType == AavePositionType.Borrowed)
-        {
-            return startSnapshot.Token.AmountInUsd - endSnapshot.Token.AmountInUsd - netCashFlow;
-        }
-
-        return endSnapshot.Token.AmountInUsd - startSnapshot.Token.AmountInUsd - netCashFlow;
-    }
-
-    /// <summary>
-    /// Calculates the absolute profit of the vault position within the specified date range.
-    /// </summary>
-    /// <param name="startDate">The start date of the date range for the calculation.</param>
-    /// <param name="endDate">The end date of the date range for the calculation.</param>
-    /// <returns>The absolute profit as a decimal value. Returns 0 if the date range is invalid or no data is available.</returns>
-    public decimal CalculateAbsoluteProfitInToken(DateOnly startDate, DateOnly endDate)
-    {
-        var startSnapshot = PositionSnapshots.GetNearestSnapshot(startDate, false);
-        var endSnapshot = PositionSnapshots.GetNearestSnapshot(endDate, true);
-
-        if (startSnapshot == null || endSnapshot == null) return 0;
-
-        var netCashFlow = PositionEvents.CalculateNetCashFlowInToken(startSnapshot.Day, endSnapshot.Day);
-
-        if (startSnapshot.Day == endSnapshot.Day)
-        {
-            return 0;
-        }
-
-        return endSnapshot.Token.Amount - startSnapshot.Token.Amount - netCashFlow;
-    }
-
-    /// <summary>
-    /// Calculates the percentage profit of the vault position within the specified date range.
-    /// </summary>
-    /// <param name="startDate">The start date of the date range for the calculation.</param>
-    /// <param name="endDate">The end date of the date range for the calculation.</param>
-    /// <returns>The percentage profit as a decimal value. Returns 0 if the date range is invalid or no data is available.</returns>
-    public Percent CalculatePositionPercentageProfit(DateOnly startDate, DateOnly endDate)
-    {
-        var startSnapshot = PositionSnapshots.GetNearestSnapshot(startDate, false);
-        var endSnapshot = PositionSnapshots.GetNearestSnapshot(endDate, true);
-
-        if (startSnapshot == null || endSnapshot == null || startSnapshot.Day >= endSnapshot.Day)
-            return 0;
-
-        var netCashFlow = PositionEvents.CalculateNetCashFlowInUsd(startSnapshot.Day, endSnapshot.Day);
-        var initialValue = startSnapshot.Token.AmountInUsd;
-
-        if (initialValue == 0)
-            return 0;
-
-        var growthDecimal = (endSnapshot.Token.AmountInUsd - netCashFlow - initialValue) / initialValue;
-
-        return growthDecimal;
-    }
-
-    /// <summary>
-    /// Calculates the percentage profit of the vault position within the specified date range.
-    /// </summary>
-    /// <param name="startDate">The start date of the date range for the calculation.</param>
-    /// <param name="endDate">The end date of the date range for the calculation.</param>
-    /// <returns>The percentage profit as a decimal value. Returns 0 if the date range is invalid or no data is available.</returns>
-    public Percent CalculatePercentageProfitInToken(DateOnly startDate, DateOnly endDate)
-    {
-        var startSnapshot = PositionSnapshots.GetNearestSnapshot(startDate, false);
-        var endSnapshot = PositionSnapshots.GetNearestSnapshot(endDate, true);
-
-        if (startSnapshot == null || endSnapshot == null || startSnapshot.Day >= endSnapshot.Day)
-            return 0;
-
-        var netCashFlow = PositionEvents.CalculateNetCashFlowInToken(startSnapshot.Day, endSnapshot.Day);
-        var initialValue = startSnapshot.Token.Amount;
-
-        if (initialValue == 0)
-            return 0;
-
-        var growthDecimal = (endSnapshot.Token.Amount - netCashFlow - initialValue) / initialValue;
-
-        return growthDecimal;
-    }
+    public IReadOnlyCollection<ICacheFlow> GetCashFlows() => PositionEvents;
 
     /// <summary>
     /// Closes the position by setting the closure date.
@@ -313,8 +215,7 @@ public class AavePosition
 
         PreviousScaledAmount = positionScale;
     }
-
-
+    
     private Guid GeneratePositionId()
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(Network);

@@ -20,15 +20,15 @@ public class HyperliquidVaultPositionExcelTotalRow
     [ColumnHeader("Баланс")]
     [CellStyle(ExcelStyleRegistry.TwoDecimalPlaces)]
     [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Money>))]
-    public Money TotalBalance { get; init; }
+    public Money PositionInUsd { get; init; }
 
     [ColumnHeader("Изменение за день")]
     [CellStyle(ExcelStyleRegistry.TwoDecimalPlaces)]
     [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Money>))]
-    public Money TotalAbsoluteProfit { get; init; }
+    public Money ProfitInUsd { get; init; }
 
     [ColumnHeader("Изменение за день в процентах")]
     [CellStyle(ExcelStyleRegistry.Percent)]
     [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Percent>))]
-    public Percent TotalPercentProfit { get; init; }
+    public Percent ProfitInPercent { get; init; }
 }
