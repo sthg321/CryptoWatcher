@@ -1,6 +1,7 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Infrastructure.Aave;
+using CryptoWatcher.Infrastructure.Aave.Excel;
 using CryptoWatcher.Infrastructure.Excel;
 using CryptoWatcher.Models;
 
@@ -22,36 +23,29 @@ internal class DailySummaryReportBuilder : BaseExcelReportService, IDailySummary
         {
             foreach (var reportByPlatform in reportsByPlatform)
             {
-                foreach (var (wallet, reportData) in reportByPlatform.Reports)
+                if (reportByPlatform.Reports.Count == 0)
                 {
-                    await workbook.StartWorksheetAsync(reportByPlatform.PlatformName, token: ct);
-
-                    if (reportData.Count == 0)
-                    {
-                        continue;
-                    }
-
-                    var reportItem = reportData[0];
-                    
-                    var sheetBuilder = _spreadCheetahSheetBuilders.FirstOrDefault(builder =>
-                        builder.CanProcess(reportItem));
-                    
-                    if (sheetBuilder is null)
-                    {
-                        throw new InvalidOperationException(
-                            $"For type: {reportData.GetType().Name}  sheet builder was not found");
-                    }
-
-                    await sheetBuilder.CreateHeaderAsync(workbook, wallet, ct);
-                    
-                    foreach (var platformDailyReport in reportData)
-                    {
-                        await sheetBuilder.WriteDataToWorksheetAsync(workbook, platformDailyReport, ct);
-                    }
-
-                    await workbook.AddRowAsync([], ct);
-
+                    continue;
                 }
+
+                var report = reportByPlatform.Reports.First();
+                if (report.Value.Count == 0)
+                {
+                    continue;
+                }
+
+                var reportItem = report.Value.First();
+
+                var sheetBuilder = _spreadCheetahSheetBuilders.FirstOrDefault(builder =>
+                    builder.CanProcess(reportItem));
+
+                if (sheetBuilder is null)
+                {
+                    throw new InvalidOperationException(
+                        $"For type: {reportItem.GetType().Name}  sheet builder was not found");
+                }
+
+                await sheetBuilder.CreateWorksheetAsync(workbook, reportByPlatform, ct);
             }
         }, ct);
 

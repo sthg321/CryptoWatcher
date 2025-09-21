@@ -1,4 +1,3 @@
-using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Models;
 using CryptoWatcher.Shared.Entities;

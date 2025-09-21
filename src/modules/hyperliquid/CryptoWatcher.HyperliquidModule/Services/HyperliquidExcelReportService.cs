@@ -40,10 +40,10 @@ internal class HyperliquidReportDataService : IPlatformDailyReportDataProvider
                         return new HyperliquidVaultReportItem
                         {
                             VaultAddress = vaultPosition.VaultAddress,
-                            Balance = vaultPositionSnapshot.Balance,
                             Day = vaultPositionSnapshot.Day,
-                            DailyProfit = profitInUsd.Amount,
-                            DailyPercentProfit = profitInUsd.Percent,
+                            PositionInUsd = vaultPositionSnapshot.Balance,
+                            DailyProfitInUsd = profitInUsd.Amount,
+                            DailyProfitInUsdPercent = profitInUsd.Percent
                         };
                     })
                     .ToArray();
@@ -51,7 +51,7 @@ internal class HyperliquidReportDataService : IPlatformDailyReportDataProvider
                 var totalProfit = vaultPosition.CalculateProfitInUsd(from, to);
                 var vaultReport = new HyperliquidDailyReport
                 {
-                    PositionInUsd = vaultReportItems.Length != 0 ? vaultReportItems[^1].Balance : 0,
+                    PositionInUsd = vaultReportItems.Length != 0 ? vaultReportItems[^1].PositionInUsd : 0,
                     ProfitInUsd = totalProfit.Amount,
                     ProfitInPercent = totalProfit.Percent,
                     ReportItems = vaultReportItems
