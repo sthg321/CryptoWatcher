@@ -7,7 +7,5 @@ namespace CryptoWatcher.Infrastructure.Aave.Mappers;
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
 internal static partial class AavePositionExcelRowMapper
 {
-    [MapProperty(nameof(@AavePositionReportItem.Position.AmountInUsd), nameof(AavePositionExcelRow.PositionInUsd))]
-    [MapProperty(nameof(@AavePositionReportItem.Position.Symbol), nameof(AavePositionExcelRow.TokenSymbol))]
-    public static partial AavePositionExcelRow MapToExcelRow(this AavePositionReportItem item);
+    public static partial AavePositionExcelRow MapToExcelRow(this AaveDailyReportItem item);
 }

@@ -60,7 +60,7 @@ internal class HyperliquidPositionsSyncService : IHyperliquidPositionsSyncServic
         var vaultEvents = fundingHistory.Select(@event =>
             new HyperliquidVaultEvent
             {
-                EventType = @event.EventType,
+                Event = @event.Event,
                 VaultAddress = @event.VaultAddress,
                 Usd = @event.Usd,
                 Date = @event.Date,

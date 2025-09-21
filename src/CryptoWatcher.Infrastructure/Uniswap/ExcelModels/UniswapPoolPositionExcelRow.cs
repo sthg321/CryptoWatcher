@@ -15,7 +15,7 @@ internal class UniswapPoolPositionExcelRow
     [CellStyle(ExcelStyleRegistry.TwoDecimalPlaces)]
     [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Money>))]
     public required Money PositionInUsd { get; init; }
-
+    
     [ColumnHeader("HOLD $")]
     [ColumnWidth(20)]
     [CellStyle(ExcelStyleRegistry.TwoDecimalPlaces)]
@@ -26,19 +26,8 @@ internal class UniswapPoolPositionExcelRow
     [ColumnWidth(20)]
     [CellStyle(ExcelStyleRegistry.TwoDecimalPlaces)]
     [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Money>))]
-    public required Money FeeInUsd { get; init; }
-
-    [ColumnHeader("Прибыль")]
-    [ColumnWidth(20)]
-    [CellStyle(ExcelStyleRegistry.TwoDecimalPlaces)]
-    [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Money>))]
-    public Money RoiNet => Math.Round(PositionInUsd + FeeInUsd - HoldInUsd, 2);
-
-    [ColumnHeader("APY %")]
-    [CellStyle(ExcelStyleRegistry.Percent)]
-    [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Percent>))]
-    public Percent Apy => FeeInUsd / PositionInUsd * 12;
-
+    public required Money DailyProfitInUsd { get; init; }
+ 
     [ColumnHeader("Пара")] public required string TokenPairSymbols { get; init; } = null!;
 
     [ColumnHeader("Сеть")] public required string Network { get; init; } = null!;

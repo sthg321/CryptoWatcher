@@ -1,3 +1,4 @@
+using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.HyperliquidModule.Abstractions;
 using CryptoWatcher.HyperliquidModule.Entities;
 using CryptoWatcher.Shared.Entities;
@@ -30,14 +31,14 @@ public class HyperliquidApiProvider : IHyperliquidProvider
                     VaultDeposit vaultDeposit => new HyperliquidVaultEvent
                     {
                         Usd = vaultDeposit.Usdc,
-                        EventType = HyperliquidVaultVaultEventType.Deposit,
+                        Event = CacheFlowEvent.Deposit,
                         VaultAddress = vaultDeposit.Vault,
                         Date = day
                     },
                     VaultWithdraw vaultWithdraw => new HyperliquidVaultEvent
                     {
                         Usd = vaultWithdraw.NetWithdrawnUsd,
-                        EventType = HyperliquidVaultVaultEventType.Withdrawal,
+                        Event = CacheFlowEvent.Withdraw,
                         VaultAddress = vaultWithdraw.Vault,
                         Date = day
                     },

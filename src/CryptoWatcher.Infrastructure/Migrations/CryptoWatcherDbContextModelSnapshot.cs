@@ -17,7 +17,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.4")
+                .HasAnnotation("ProductVersion", "9.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -70,10 +70,10 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("EventType")
+                    b.Property<int>("Event")
                         .HasColumnType("integer");
 
-                    b.HasKey("PositionId", "Date", "EventType");
+                    b.HasKey("PositionId", "Date", "Event");
 
                     b.ToTable("AavePositionEvent");
                 });
@@ -104,7 +104,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("EventType")
+                    b.Property<int>("Event")
                         .HasColumnType("integer");
 
                     b.Property<decimal>("Usd")
@@ -441,7 +441,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                             b1.Property<DateTime>("AavePositionEventDate")
                                 .HasColumnType("timestamp with time zone");
 
-                            b1.Property<int>("AavePositionEventEventType")
+                            b1.Property<int>("AavePositionEventEvent")
                                 .HasColumnType("integer");
 
                             b1.Property<decimal>("Amount")
@@ -454,12 +454,12 @@ namespace CryptoWatcher.Infrastructure.Migrations
                                 .IsRequired()
                                 .HasColumnType("text");
 
-                            b1.HasKey("AavePositionEventPositionId", "AavePositionEventDate", "AavePositionEventEventType");
+                            b1.HasKey("AavePositionEventPositionId", "AavePositionEventDate", "AavePositionEventEvent");
 
                             b1.ToTable("AavePositionEvent");
 
                             b1.WithOwner()
-                                .HasForeignKey("AavePositionEventPositionId", "AavePositionEventDate", "AavePositionEventEventType");
+                                .HasForeignKey("AavePositionEventPositionId", "AavePositionEventDate", "AavePositionEventEvent");
                         });
 
                     b.Navigation("Token")

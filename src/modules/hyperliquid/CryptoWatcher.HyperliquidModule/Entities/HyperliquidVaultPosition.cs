@@ -1,6 +1,7 @@
-using CryptoWatcher.Extensions;
+using CryptoWatcher.Abstractions;
+using CryptoWatcher.Abstractions.CacheFlows;
+using CryptoWatcher.Abstractions.PositionSnapshots;
 using CryptoWatcher.Shared.Entities;
-using CryptoWatcher.Shared.ValueObjects;
 
 namespace CryptoWatcher.HyperliquidModule.Entities;
 
@@ -9,11 +10,15 @@ namespace CryptoWatcher.HyperliquidModule.Entities;
 /// This class encapsulates various properties and methods to track and analyze the performance of the vault,
 /// including event history, position snapshots, and profit calculations over specified time periods.
 /// </summary>
-public class HyperliquidVaultPosition
+public class HyperliquidVaultPosition : ICalculatablePosition<IUsdPositionSnapshot>
 {
     /// <summary>
-    /// 
+    /// Represents the address of the vault associated with the Hyperliquid platform position.
     /// </summary>
+    /// <remarks>
+    /// This property holds the unique identifier of the vault on the blockchain.
+    /// It is used to track and manage vault-specific data and operations within the Hyperliquid module.
+    /// </remarks>
     public string VaultAddress { get; init; } = null!;
 
     /// <summary>
@@ -45,102 +50,16 @@ public class HyperliquidVaultPosition
     public List<HyperliquidVaultEvent> VaultEvents { get; init; } = [];
 
     /// <summary>
-    /// 
+    /// Contains a collection of snapshots representing the states of a vault's position over time.
     /// </summary>
+    /// <remarks>
+    /// This property holds a list of <see cref="HyperliquidVaultPositionSnapshot"/> instances,
+    /// where each snapshot captures specific details of the vault position at a given point in time.
+    /// It is utilized for analysis, reporting, and tracking historical position data within the Hyperliquid module.
+    /// </remarks>
     public List<HyperliquidVaultPositionSnapshot> PositionSnapshots { get; init; } = [];
 
-    /// <summary>
-    /// Calculates the percentage profit of the vault position within the specified date range.
-    /// </summary>
-    /// <param name="startDate">The start date of the date range for the calculation.</param>
-    /// <param name="endDate">The end date of the date range for the calculation.</param>
-    /// <returns>The percentage profit as a decimal value. Returns 0 if the date range is invalid or no data is available.</returns>
-    public Percent CalculatePercentageProfit(DateOnly startDate, DateOnly endDate)
-    {
-        // Находим первый и последний снимки за период
-        var firstSnapshot = GetNearestSnapshot(startDate, false);
-        
-        var lastSnapshot = GetNearestSnapshot(endDate, true);
+    public IReadOnlyCollection<IUsdPositionSnapshot> GetPositionSnapshots() => PositionSnapshots;
 
-        if (firstSnapshot == null || lastSnapshot == null || firstSnapshot.Day >= lastSnapshot.Day)
-        {
-            return 0;
-        }
-        
-        var netCashFlow = VaultEvents
-            .Where(e => e.Date >= firstSnapshot.Day.ToDateTime(TimeOnly.MinValue) && 
-                        e.Date <= lastSnapshot.Day.ToDateTime(TimeOnly.MinValue)).Sum(e => 
-            e.EventType == HyperliquidVaultVaultEventType.Deposit ? e.Usd : -e.Usd);
-
-        var positionChange = lastSnapshot.Balance - firstSnapshot.Balance - netCashFlow;
-
-        if (firstSnapshot.Balance == 0)
-        {
-            return 0;
-        }
-        
-        var percentageChange = positionChange / firstSnapshot.Balance * 100;
-        
-        return percentageChange;
-    }
-
-    /// <summary>
-    /// Calculates the absolute profit of the vault position within the specified date range.
-    /// </summary>
-    /// <param name="startDate">The start date of the date range for the calculation.</param>
-    /// <param name="endDate">The end date of the date range for the calculation.</param>
-    /// <returns>The absolute profit as a decimal value. Returns 0 if the date range is invalid or no data is available.</returns>
-    public decimal CalculateAbsoluteProfit(DateOnly startDate, DateOnly endDate)
-    {
-        var startSnapshot = GetNearestSnapshot(startDate, false);
-        var endSnapshot = GetNearestSnapshot(endDate, true);
-
-        if (startSnapshot == null || endSnapshot == null) return 0;
-
-        var deposits = GetEventsSum(HyperliquidVaultVaultEventType.Deposit, startSnapshot.Day, endSnapshot.Day);
-
-        var withdrawals = GetEventsSum(HyperliquidVaultVaultEventType.Withdrawal, startSnapshot.Day, endSnapshot.Day);
-
-        return endSnapshot.Balance - startSnapshot.Balance - deposits + withdrawals;
-    }
-
-    public decimal CalculateRateOfReturn(DateOnly startDate, DateOnly endDate)
-    {
-        var startSnapshot = GetNearestSnapshot(startDate, false);
-        var endSnapshot = GetNearestSnapshot(endDate, true);
-
-        if (startSnapshot == null || endSnapshot == null) return 0;
-
-        var periodEventsNetFlow = VaultEvents
-            .Where(e => e.Date >= startDate.ToDateTime(TimeOnly.MinValue) &&
-                        e.Date <= endDate.ToDateTime(TimeOnly.MinValue))
-            .Sum(e => e.EventType == HyperliquidVaultVaultEventType.Deposit ? e.Usd : -e.Usd);
-
-        return (endSnapshot.Balance - startSnapshot.Balance - periodEventsNetFlow) / startSnapshot.Balance;
-    }
-
-    private decimal GetEventsSum(HyperliquidVaultVaultEventType eventType, DateOnly from, DateOnly to)
-    {
-        return VaultEvents
-            .Where(e => e.EventType == eventType &&
-                        e.Date >= from.ToMinDateTime() &&
-                        e.Date <= to.ToMaxDateTime())
-            .Sum(e => e.Usd);
-    }
-
-    private HyperliquidVaultPositionSnapshot? GetNearestSnapshot(DateOnly date, bool findPrevious)
-    {
-        if (findPrevious)
-        {
-            return PositionSnapshots
-                .Where(s => s.Day <= date)
-                .OrderByDescending(s => s.Day)
-                .FirstOrDefault();
-        }
-
-        return PositionSnapshots
-            .Where(s => s.Day >= date)
-            .OrderBy(s => s.Day)
-            .FirstOrDefault();
-    }
+    public IReadOnlyCollection<ICacheFlow> GetCashFlows() => VaultEvents;
 }

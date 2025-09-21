@@ -7,6 +7,6 @@ namespace CryptoWatcher.Infrastructure.Uniswap.Mappers;
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
 internal static partial class UniswapPoolPositionExcelTotalRowMapper
 {
-    public static partial UniswapPoolPositionExcelTotalRow MapToExcelModel(this UniswapPoolPositionReport report,
+    public static partial UniswapPoolPositionExcelTotalRow MapToExcelModel(this UniswapDailyReport report,
         string totalName, string tokenPairSymbols, string network);
 }

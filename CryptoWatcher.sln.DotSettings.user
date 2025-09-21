@@ -1,4 +1,6 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AAavePositionExcelRowMapper_002Eg_002Ecs_002Fl_003AC_0021_003FUsers_003FAshym_003FAppData_003FLocal_003FTemp_003FSourceGeneratedDocuments_003F80C1EEF8C91E2E3989DE6FD9_003FRiok_002EMapperly_003FRiok_002EMapperly_002EMapperGenerator_003FAavePositionExcelRowMapper_002Eg_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AAavePositionExcelTotalRowMapper_002Eg_002Ecs_002Fl_003AC_0021_003FUsers_003FAshym_003FAppData_003FLocal_003FTemp_003FSourceGeneratedDocuments_003F80C1EEF8C91E2E3989DE6FD9_003FRiok_002EMapperly_003FRiok_002EMapperly_002EMapperGenerator_003FAavePositionExcelTotalRowMapper_002Eg_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AABIEncode_002Ecs_002Fl_003AC_0021_003FUsers_003FAshym_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003F291aa21b1578aadc9b9df65b3af38f3a887698a574dc9c16c112b962bafbc7d_003FABIEncode_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AABITypedRegistry_002Ecs_002Fl_003AC_0021_003FUsers_003FAshym_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003F8abfb8628e5139131b733b75b5a9d8ae3a90416f30a1b31ebc9fbaa149b98619_003FABITypedRegistry_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AAccessorExtensions_002Ecs_002Fl_003AC_0021_003FUsers_003FAshym_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E2_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003Fb13cb16f7e5749269b6922dc6752bd1c291448_003F03_003F03b57749_003FAccessorExtensions_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
@@ -64,6 +66,7 @@
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AJsonSerializerOptions_002Ecs_002Fl_003AC_0021_003FUsers_003FAshym_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003Fbca5329f136e4d9f9f2ec421d92b83ae1b6928_003Fe4_003F48d933d7_003FJsonSerializerOptions_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AJValue_002Ecs_002Fl_003AC_0021_003FUsers_003FAshym_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003Fd32db49e5e3440729da31845c03ddc3aa0400_003Faa_003F78cbad4a_003FJValue_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AList_002Ecs_002Fl_003AC_0021_003FUsers_003FAshym_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E2_003Fresharper_002Dhost_003FSourcesCache_003F1b81cb3be224213a6a73519b6e340a628d9a1fb8629c351a186a26f6376669_003FList_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ALoggerMessage_002Eg_002Ecs_002Fl_003AC_0021_003FUsers_003FAshym_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E2_003Fresharper_002Dhost_003FSourcesCache_003F2cd213d8df12502e1634f1769b64683670a4e314_003FLoggerMessage_002Eg_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AMemoryMarshal_002ECoreCLR_002Ecs_002Fl_003AC_0021_003FUsers_003FAshym_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E2_003Fresharper_002Dhost_003FSourcesCache_003F948494fffd27a44b5c55f2f85972545a315f73df6c6278f9e692cbbad86b0_003FMemoryMarshal_002ECoreCLR_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AMetadataProvider_002Ecs_002Fl_003AC_0021_003FUsers_003FAshym_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E2_003Fresharper_002Dhost_003FSourcesCache_003F96d7856859ae54154473a29ba16b79cd92d18716e38ee394ff55e3d29c9fa7_003FMetadataProvider_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AMethodBase_002ECoreCLR_002Ecs_002Fl_003AC_0021_003FUsers_003FAshym_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E2_003Fresharper_002Dhost_003FSourcesCache_003F5797b08c98f7bb15c2515a5fad969ea9f3e337ec58ebadf54d915df178ee259_003FMethodBase_002ECoreCLR_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
@@ -106,15 +109,23 @@
 	<s:String x:Key="/Default/Environment/Hierarchy/Build/BuildTool/DotNetCliExePath/@EntryValue">C:\Program Files\dotnet\dotnet.exe</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/CreateUnitTestDialog/TestProjectMapping/=5F5BE201_002D0619_002D8178_002D1CF1_002DB54CED2118F7/@EntryIndexedValue">E618DD96-ADE4-8734-2245-9492E728A1DB</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/CreateUnitTestDialog/TestTemplateMapping/=xUnit/@EntryIndexedValue">33ff99d8-b1ad-4ed5-a4fd-376b97c2c841</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=3b2316e6_002D1a76_002D47a5_002Dbc55_002Dd420455c0c69/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="SyncPositionsAsyncTest_WhenAllPositionsEmpty" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::E618DD96-ADE4-8734-2245-9492E728A1DB::net9.0::CryptoWatcher.AaveModule.Tests.Services.AavePositionsSyncServiceTest&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::E618DD96-ADE4-8734-2245-9492E728A1DB::net9.0::CryptoWatcher.AaveModule.Tests.Entities.AavePositionTest.AddOrUpdateSnapshotTest_WhenPositionClosed_ShouldThrowException&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::E618DD96-ADE4-8734-2245-9492E728A1DB::net9.0::CryptoWatcher.AaveModule.Tests.Entities.AavePositionTest.AddOrUpdateSnapshotTest_WhenSnapshotForDayExist_ShouldUpdateSnapshot&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::E618DD96-ADE4-8734-2245-9492E728A1DB::net9.0::CryptoWatcher.AaveModule.Tests.Entities.AavePositionTest.AddOrUpdateSnapshotTest_WhenSnapshotForDayNotExist_ShouldUpdateSnapshot&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::E618DD96-ADE4-8734-2245-9492E728A1DB::net9.0::CryptoWatcher.AaveModule.Tests.Entities.AavePositionTest&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
+	
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ec12af25_002Dc199_002D4f9a_002D9b16_002D50b5e6afa438/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from Solution" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Solution /&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

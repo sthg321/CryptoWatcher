@@ -1,4 +1,7 @@
 using CryptoWatcher.Abstractions;
+using CryptoWatcher.Abstractions.Reports;
+using CryptoWatcher.Models;
+using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.UniswapModule.Entities;
 using CryptoWatcher.UniswapModule.Models;
 using CryptoWatcher.UniswapModule.Specifications;
@@ -6,25 +9,9 @@ using CryptoWatcher.UniswapModule.Specifications;
 namespace CryptoWatcher.UniswapModule.Services;
 
 /// <summary>
-/// Interface that defines methods for generating reports for Uniswap pool positions.
-/// </summary>
-public interface IUniswapReportService
-{
-    /// <summary>
-    /// Creates a report for Uniswap pool positions within a specified date range.
-    /// </summary>
-    /// <param name="from">The start date of the report interval.</param>
-    /// <param name="to">The end date of the report interval.</param>
-    /// <param name="ct">The cancellation token to observe while waiting for the task to complete.</param>
-    /// <returns>A list of Uniswap pool position reports.</returns>
-    Task<List<UniswapPoolPositionReport>> CreateReportAsync(DateOnly from, DateOnly to,
-        CancellationToken ct = default);
-}
-
-/// <summary>
 /// <see cref="IUniswapReportService"/>
 /// </summary>
-internal class UniswapReportService : IUniswapReportService
+internal class UniswapReportService : IPlatformDailyReportDataProvider
 {
     private readonly IRepository<PoolPosition> _poolPositionRepository;
 
@@ -33,48 +20,63 @@ internal class UniswapReportService : IUniswapReportService
         _poolPositionRepository = poolPositionRepository;
     }
 
-    public async Task<List<UniswapPoolPositionReport>> CreateReportAsync(DateOnly from, DateOnly to,
-        CancellationToken ct = default)
+    public async Task<PlatformDailyReportData> GetReportDataAsync(IReadOnlyCollection<Wallet> wallets, DateOnly from,
+        DateOnly to, CancellationToken ct = default)
     {
         var poolPositions =
-            await _poolPositionRepository.ListAsync(new UniswapPositionsForReportSpecification(from, to), ct);
+            await _poolPositionRepository.ListAsync(new UniswapPositionsForReportSpecification(wallets, from, to), ct);
 
-        var result = new List<UniswapPoolPositionReport>(poolPositions.Count);
-        foreach (var poolPosition in poolPositions)
+        var result = new Dictionary<Wallet, List<PlatformDailyReport>>();
+        foreach (var poolPositionByWallet in poolPositions.GroupBy(position => position.WalletAddress))
         {
-            var report = new UniswapPoolPositionReport
+            foreach (var poolPosition in poolPositionByWallet)
             {
-                TotalPositionInUsd = poolPositions
-                    .Select(static position => position.PoolPositionSnapshots.MaxBy(snapshot => snapshot.Day))
-                    .Sum(static snapshot => snapshot!.TokenSumInUsd()),
-                TotalFeeInUsd =
-                    poolPositions.Sum(static position => CalculateActualFee(position.PoolPositionSnapshots)),
-                TotalHoldInUsd = poolPositions
-                    .Sum(static position =>
-                    {
-                        var lastPosition =
-                            position.PoolPositionSnapshots.MaxBy(positionSnapshot => positionSnapshot.Day);
+                var report = new UniswapDailyReport
+                {
+                    PositionInUsd = poolPositions
+                        .Select(static position => position.PoolPositionSnapshots.MaxBy(snapshot => snapshot.Day))
+                        .Sum(static snapshot => snapshot!.TokenSumInUsd()),
+                    ProfitInUsd =
+                        poolPositions.Sum(static position => CalculateActualFee(position.PoolPositionSnapshots)),
+                    ProfitInPercent = 0,
+                    TotalHoldInUsd = poolPositions
+                        .Sum(static position =>
+                        {
+                            var lastPosition =
+                                position.PoolPositionSnapshots.MaxBy(positionSnapshot => positionSnapshot.Day);
 
-                        return position.Token0.Amount * lastPosition!.Token0.PriceInUsd +
-                               position.Token1.Amount * lastPosition.Token1.PriceInUsd;
-                    }),
-                ReportItems = poolPosition.PoolPositionSnapshots.Select(positionSnapshot =>
-                    new UniswapPoolPositionReportItem
-                    {
-                        Network = poolPosition.NetworkName,
-                        Day = positionSnapshot.Day,
-                        PositionInUsd = positionSnapshot.Token0.AmountInUsd + positionSnapshot.Token1.AmountInUsd,
-                        HoldInUsd = poolPosition.Token0.Amount * positionSnapshot.Token0.PriceInUsd +
-                                    poolPosition.Token1.Amount * positionSnapshot.Token1.PriceInUsd,
-                        TokenPairSymbols = $"{positionSnapshot.Token0.Symbol} / {positionSnapshot.Token0.Symbol}",
-                        FeeInUsd = positionSnapshot.FeeInUsd,
-                    }).ToArray()
-            };
+                            return position.Token0.Amount * lastPosition!.Token0.PriceInUsd +
+                                   position.Token1.Amount * lastPosition.Token1.PriceInUsd;
+                        }),
 
-            result.Add(report);
+                    ReportItems = poolPosition.PoolPositionSnapshots.Select(positionSnapshot =>
+                        new UniswapDailyReportItem
+                        {
+                            Network = poolPosition.NetworkName,
+                            Day = positionSnapshot.Day,
+                            PositionInUsd = positionSnapshot.Token0.AmountInUsd + positionSnapshot.Token1.AmountInUsd,
+                            HoldInUsd = poolPosition.Token0.Amount * positionSnapshot.Token0.PriceInUsd +
+                                        poolPosition.Token1.Amount * positionSnapshot.Token1.PriceInUsd,
+                            TokenPairSymbols = $"{positionSnapshot.Token0.Symbol} / {positionSnapshot.Token0.Symbol}",
+                            DailyProfitInUsd = positionSnapshot.FeeInUsd,
+                            DailyProfitInUsdPercent = 0
+                        }).ToArray()
+                };
+
+                if (!result.TryGetValue(poolPosition.Wallet, out var dailyReports))
+                {
+                    result.Add(poolPosition.Wallet, dailyReports = []);
+                }
+
+                dailyReports.Add(report);
+            }
         }
 
-        return result;
+        return new PlatformDailyReportData
+        {
+            PlatformName = "Uniswap",
+            Reports = result
+        };
     }
 
     /// <summary>

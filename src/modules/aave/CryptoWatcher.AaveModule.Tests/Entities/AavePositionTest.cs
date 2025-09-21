@@ -2,6 +2,8 @@ using AutoFixture;
 using CryptoWatcher.AaveModule.Entities;
 using CryptoWatcher.AaveModule.Models;
 using CryptoWatcher.AaveModule.Tests.Customizations;
+using CryptoWatcher.Abstractions;
+using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.Extensions;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.Shared.ValueObjects;
@@ -104,14 +106,14 @@ public class AavePositionTest
     }
 
     [Theory]
-    [InlineData(100, 200, AavePositionType.Borrowed, AavePositionEventType.Deposit)]
-    [InlineData(500, 400, AavePositionType.Supplied, AavePositionEventType.Withdrawal)]
-    [InlineData(100, 50, AavePositionType.Borrowed, AavePositionEventType.Withdrawal)]
-    [InlineData(500, 600, AavePositionType.Supplied, AavePositionEventType.Deposit)]
+    [InlineData(100, 200, AavePositionType.Borrowed, CacheFlowEvent.Deposit)]
+    [InlineData(500, 400, AavePositionType.Supplied, CacheFlowEvent.Withdraw)]
+    [InlineData(100, 50, AavePositionType.Borrowed, CacheFlowEvent.Withdraw)]
+    [InlineData(500, 600, AavePositionType.Supplied, CacheFlowEvent.Deposit)]
     public void AddOrUpdateSnapshotTest_WhenScaleNotChange_ShouldAddSingleDepositEvent(decimal initialScaleAmount,
         decimal updatedScaleAmount,
         AavePositionType positionType,
-        AavePositionEventType eventType)
+        CacheFlowEvent eventType)
     {
         var syncDate = DateOnly.FromDateTime(DateTime.Now);
         var position = CreatePosition(positionType);
@@ -136,12 +138,12 @@ public class AavePositionTest
     }
 
     [Theory]
-    [InlineData(100, 100, AavePositionEventType.Deposit)]
-    [InlineData(100, 100, AavePositionEventType.Withdrawal)]
+    [InlineData(100, 150, CacheFlowEvent.Deposit)]
+    [InlineData(100, 50, CacheFlowEvent.Withdraw)]
     public void AddOrUpdateSnapshotTest_WhenScaleChange_ShouldUpdateSnapshot(
         decimal oldScaleAmount,
         decimal newScaleAmount,
-        AavePositionEventType eventType)
+        CacheFlowEvent eventType)
     {
         var position = CreatePosition(AavePositionType.Borrowed);
         var token = _fixture.Create<TokenInfo>();
@@ -175,15 +177,15 @@ public class AavePositionTest
         Guid positionId,
         TokenInfo eventToken,
         decimal positionScale,
-        AavePositionEventType type)
+        CacheFlowEvent type)
     {
-        var expectedToken = type == AavePositionEventType.Withdrawal
+        var expectedToken = type == CacheFlowEvent.Withdraw
             ? eventToken with { Amount = (decimal)(positionScale - position.PreviousScaledAmount)! }
             : eventToken with { Amount = (decimal)(position.PreviousScaledAmount - positionScale)! };
 
         Assert.Equal(positionId, @event.PositionId);
         Assert.Equal(TestTime, @event.Date);
         Assert.Equal(expectedToken, @event.Token);
-        Assert.Equal(type, @event.EventType);
+        Assert.Equal(type, @event.Event);
     }
 }

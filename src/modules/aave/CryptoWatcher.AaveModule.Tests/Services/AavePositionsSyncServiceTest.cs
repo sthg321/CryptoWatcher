@@ -1,4 +1,3 @@
-using System.Numerics;
 using AutoFixture;
 using CryptoWatcher.AaveModule.Abstractions;
 using CryptoWatcher.AaveModule.Entities;
@@ -67,14 +66,19 @@ public class AavePositionsSyncServiceTest
     public async Task SyncPositionsAsyncTest_WhenOnlyBorrowedOrSuppliedPositions_ShouldReturnAllPositions(
         AavePositionType expectedPositionType, bool positionsExists)
     {
-        var fixture = new Fixture();
+        var fixture = new Fixture().WithTokenDecimalsRange();
         fixture.Customize(new PositiveBigIntegerCustomization());
 
         var expectedPositions = expectedPositionType switch
         {
-            AavePositionType.Borrowed => fixture.CreateMany<BorrowedAaveLendingPosition>().Cast<AaveLendingPosition>()
+            AavePositionType.Borrowed => fixture
+                .CreateMany<BorrowedAaveLendingPosition>()
+                .Cast<AaveLendingPosition>()
                 .ToList(),
-            AavePositionType.Supplied => fixture.CreateMany<SuppliedAaveLendingPosition>().Cast<AaveLendingPosition>()
+
+            AavePositionType.Supplied => fixture
+                .CreateMany<SuppliedAaveLendingPosition>()
+                .Cast<AaveLendingPosition>()
                 .ToList(),
             _ => throw new ArgumentOutOfRangeException(nameof(expectedPositionType), expectedPositionType, null)
         };
@@ -82,7 +86,7 @@ public class AavePositionsSyncServiceTest
         _aaveProviderMock.Setup(provider =>
                 provider.GetLendingPositionAsync(TestNetwork, TestWallet, It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedPositions);
-        
+
         if (positionsExists)
         {
             var existedPositions = expectedPositions.Select(position =>
@@ -122,7 +126,7 @@ public class AavePositionsSyncServiceTest
     [Fact]
     public async Task SyncPositionsAsyncTest_WhenExistAllTypePositions_ShouldReturnNotEmptyPositions()
     {
-        var fixture = new Fixture();
+        var fixture = new Fixture().WithTokenDecimalsRange();
         fixture.Customize(new PositiveBigIntegerCustomization());
 
         AaveLendingPosition emptyPosition = fixture.Create<EmptyAaveLendingPosition>();
@@ -196,16 +200,18 @@ public class AavePositionsSyncServiceTest
             _aavePositionRepositoryMock.Object, _timeProviderMock.Object);
     }
 
+    [AssertionMethod]
     private static void AssertThatAavePositionValid(AavePosition actualPosition, AavePositionType expectedPositionType)
     {
         Assert.Equal(SyncDay, actualPosition.CreatedAtDay);
         Assert.Equal(TestNetwork.Name, actualPosition.Network);
-        Assert.Equal(expectedPositionType, actualPosition.PositionType);
+        Assert.Equal(actualPosition.PositionType, expectedPositionType);
         Assert.Null(actualPosition.ClosedAtDay);
 
         Assert.Single(actualPosition.PositionSnapshots);
     }
 
+    [AssertionMethod]
     private static void AssertThatSnapshotValid(TokenInfo expectedSnapshot, AavePositionSnapshot actualSnapshot,
         Guid actualPositionId)
     {

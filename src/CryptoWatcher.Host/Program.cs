@@ -1,15 +1,19 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using CryptoWatcher.AaveModule.Models;
-using CryptoWatcher.AaveModule.Services;
+using CryptoWatcher.Abstractions;
+using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Host.Extensions;
 using CryptoWatcher.Infrastructure;
 using CryptoWatcher.Infrastructure.Aave;
+using CryptoWatcher.Infrastructure.Aave.Excel;
 using CryptoWatcher.Infrastructure.Configs;
 using CryptoWatcher.Infrastructure.Extensions;
 using CryptoWatcher.Infrastructure.Hyperliquid;
+using CryptoWatcher.Infrastructure.Hyperliquid.Excel;
 using CryptoWatcher.Infrastructure.Uniswap;
+using CryptoWatcher.Infrastructure.Uniswap.Excel;
 using CryptoWatcher.Shared.Entities;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -63,22 +67,47 @@ using (var scope = app.Services.CreateScope())
 
 app.UseTickerQ();
 
-app.MapGet("/report/{platform}",
-    async (IUniswapExcelReportService uniswapExcelReportService, IHyperliquidExcelService hyperliquidExcelService,
-        IAaveReportExcelService aaveReportService,
-        string platform,
-        [FromQuery] DateOnly? from,
-        [FromQuery] DateOnly? to) =>
+async Task<FileStreamHttpResult> Handler(IUniswapExcelReportService uniswapExcelReportService,
+    IHyperliquidExcelService hyperliquidExcelService, IAaveReportExcelService aaveReportService,
+    IRepository<Wallet> walletRepository,
+    string platform,
+    [FromQuery] DateOnly? from, [FromQuery] DateOnly? to)
+{
+    var wallets = await walletRepository.ListAsync();
+    var reportStream = platform switch
     {
-        var reportStream = platform switch
-        {
-            "uniswap" => await uniswapExcelReportService.ExportPoolInfoToExcelAsync(from, to),
-            "hyperliquid" => await hyperliquidExcelService.CreateReportAsync(from, to),
-            "aave" => await aaveReportService.CreateReportAsync(from, to),
-            _ => throw new ArgumentOutOfRangeException(nameof(platform), platform, null)
-        };
+        "uniswap" => await uniswapExcelReportService.CreateReportAsync(wallets, from, to),
+        "hyperliquid" => await hyperliquidExcelService.CreateReportAsync(wallets, from, to),
+        "aave" => await aaveReportService.CreateReportAsync(wallets, from, to),
+        _ => throw new ArgumentOutOfRangeException(nameof(platform), platform, null)
+    };
 
-        return TypedResults.File(reportStream, fileDownloadName: "report.xlsx");
-    });
+    return TypedResults.File(reportStream, fileDownloadName: "report.xlsx");
+}
+
+app.MapGet("/report/{platform}", Handler);
+
+app.MapGet("/report/total", TotalReportHandler);
+
+async Task<FileStreamHttpResult> TotalReportHandler(IDailySummaryReportProvider reportProvider,
+    IRepository<Wallet> walletRepository,
+    [FromQuery] DateOnly? from, [FromQuery] DateOnly? to)
+{
+    var wallets = await walletRepository.ListAsync();
+
+    var now = DateTime.Now;
+    var monthStart = new DateTime(now.Year, now.Month, 1);
+    var monthEnd = monthStart.AddMonths(1).AddDays(-1);
+
+    if (!from.HasValue || !to.HasValue)
+    {
+        from = DateOnly.FromDateTime(monthStart);
+        to = DateOnly.FromDateTime(monthEnd);
+    }
+
+    var result = await reportProvider.CreateDailySummaryReportAsync(wallets, from.Value, to.Value);
+
+    return TypedResults.File(result, fileDownloadName: "report.xlsx");
+}
 
 app.Run();

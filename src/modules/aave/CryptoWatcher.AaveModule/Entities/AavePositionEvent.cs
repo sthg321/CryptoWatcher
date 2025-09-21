@@ -1,3 +1,5 @@
+using CryptoWatcher.Abstractions;
+using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.Shared.ValueObjects;
 
 namespace CryptoWatcher.AaveModule.Entities;
@@ -13,7 +15,7 @@ namespace CryptoWatcher.AaveModule.Entities;
 /// the timestamp when the event occurred. These details are essential for tracking the
 /// lifecycle and changes made to an Aave position.
 /// </remarks>
-public class AavePositionEvent
+public class AavePositionEvent : ITokenCacheFlow
 {
     /// <summary>
     /// Unique identifier for the position associated with the Aave position event.
@@ -40,13 +42,5 @@ public class AavePositionEvent
     /// </remarks>
     public required DateTime Date { get; init; }
 
-    /// <summary>
-    /// Specifies the type of event that occurred for an Aave position.
-    /// </summary>
-    /// <remarks>
-    /// This property indicates whether an event represents a deposit or withdrawal action
-    /// associated with an Aave position. It is a required field and plays a role in uniquely
-    /// identifying events in conjunction with other properties like PositionId and Date.
-    /// </remarks>
-    public required AavePositionEventType EventType { get; init; }
+    public CacheFlowEvent Event { get; init; }
 }

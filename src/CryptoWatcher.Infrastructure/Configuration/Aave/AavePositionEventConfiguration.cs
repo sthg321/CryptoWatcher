@@ -9,7 +9,7 @@ public class AavePositionEventConfiguration : IEntityTypeConfiguration<AavePosit
 {
     public void Configure(EntityTypeBuilder<AavePositionEvent> builder)
     {
-        builder.HasKey(@event => new { @event.PositionId, @event.Date, @event.EventType });
+        builder.HasKey(@event => new { @event.PositionId, @event.Date, EventType = @event.Event });
 
         builder.OwnsOne<TokenInfo>(position => position.Token);
     }
