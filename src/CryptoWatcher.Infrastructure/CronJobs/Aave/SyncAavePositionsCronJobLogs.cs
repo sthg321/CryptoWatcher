@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace CryptoWatcher.Infrastructure.Aave;
+namespace CryptoWatcher.Infrastructure.CronJobs.Aave;
 
 internal static partial class SyncAavePositionsCronJobLogs
 {

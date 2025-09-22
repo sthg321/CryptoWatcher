@@ -6,11 +6,11 @@ using SpreadCheetah;
 
 namespace CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Uniswap;
 
-internal class UniswapExcelSheetBuilder : IExcelSheetBuilder
+internal class UniswapDailyExcelSheetBuilder : IDailyExcelSheetBuilder
 {
     private readonly UniswapDailyReportExcelWorksheetWriter _worksheetWriter;
 
-    public UniswapExcelSheetBuilder(UniswapDailyReportExcelWorksheetWriter worksheetWriter)
+    public UniswapDailyExcelSheetBuilder(UniswapDailyReportExcelWorksheetWriter worksheetWriter)
     {
         _worksheetWriter = worksheetWriter;
     }

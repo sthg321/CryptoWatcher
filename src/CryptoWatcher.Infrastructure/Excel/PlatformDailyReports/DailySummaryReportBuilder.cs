@@ -7,13 +7,13 @@ namespace CryptoWatcher.Infrastructure.Excel.PlatformDailyReports;
 
 internal class DailySummaryReportBuilder : BaseExcelReportService, IDailySummaryReportBuilder
 {
-    private readonly IExcelSheetBuilder[] _spreadCheetahSheetBuilders;
-    private readonly ITotalReportWorksheetBuilder _totalReportWorksheetBuilder;
+    private readonly IDailyExcelSheetBuilder[] _spreadCheetahSheetBuilders;
+    private readonly IDailyTotalReportWorksheetBuilder _dailyTotalReportWorksheetBuilder;
 
-    public DailySummaryReportBuilder(IEnumerable<IExcelSheetBuilder> spreadCheetahSheetBuilders,
-        ITotalReportWorksheetBuilder totalReportWorksheetBuilder)
+    public DailySummaryReportBuilder(IEnumerable<IDailyExcelSheetBuilder> spreadCheetahSheetBuilders,
+        IDailyTotalReportWorksheetBuilder dailyTotalReportWorksheetBuilder)
     {
-        _totalReportWorksheetBuilder = totalReportWorksheetBuilder;
+        _dailyTotalReportWorksheetBuilder = dailyTotalReportWorksheetBuilder;
         _spreadCheetahSheetBuilders = spreadCheetahSheetBuilders.ToArray();
     }
 
@@ -22,7 +22,7 @@ internal class DailySummaryReportBuilder : BaseExcelReportService, IDailySummary
     {
         var result = await CreateExcelWorkbookAsync(async workbook =>
         {
-            await _totalReportWorksheetBuilder.CreateTotalWorksheetAsync(workbook, reportsByPlatform, ct);
+            await _dailyTotalReportWorksheetBuilder.CreateTotalWorksheetAsync(workbook, reportsByPlatform, ct);
             
             foreach (var reportByPlatform in reportsByPlatform)
             {

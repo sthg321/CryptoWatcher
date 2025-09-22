@@ -5,7 +5,7 @@ using CryptoWatcher.UniswapModule.Specifications;
 using Microsoft.Extensions.Logging;
 using TickerQ.Utilities.Base;
 
-namespace CryptoWatcher.Infrastructure.Uniswap;
+namespace CryptoWatcher.Infrastructure.CronJobs.Uniswap;
 
 internal class SyncUniswapPoolPositionsCronJob
 {
@@ -24,7 +24,7 @@ internal class SyncUniswapPoolPositionsCronJob
         _logger = logger;
     }
 
-    [TickerFunction(nameof(SyncUniswapPoolPositionsAsync), "0 */1 * * *")]
+    [TickerFunction(nameof(SyncUniswapPoolPositionsAsync), CronRegistry.Every50Minutes)]
     public async Task SyncUniswapPoolPositionsAsync(CancellationToken ct)
     {
         _logger.StartingPoolSync();

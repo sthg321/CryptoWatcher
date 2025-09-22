@@ -6,11 +6,11 @@ using SpreadCheetah;
 
 namespace CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Aave;
 
-internal class AaveExcelSheetBuilder : IExcelSheetBuilder
+internal class AaveDailyExcelSheetBuilder : IDailyExcelSheetBuilder
 {
     private readonly AaveDailyReportExcelWorksheetWriter _worksheetWriter;
 
-    public AaveExcelSheetBuilder(AaveDailyReportExcelWorksheetWriter worksheetWriter)
+    public AaveDailyExcelSheetBuilder(AaveDailyReportExcelWorksheetWriter worksheetWriter)
     {
         _worksheetWriter = worksheetWriter;
     }

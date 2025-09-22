@@ -6,18 +6,31 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Aave;
 
-public interface IAaveReportExcelService
+/// <summary>
+/// Provides functionality to generate daily report Excel files for the Aave platform.
+/// This service handles the creation of an Excel report containing data relevant to the specified wallets
+/// and time period.
+/// </summary>
+public interface IAaveDailyReportExcelService
 {
+    /// <summary>
+    /// Generates an Excel report for Aave platform based on wallet data and date range.
+    /// </summary>
+    /// <param name="wallets">A collection of wallets to include in the report.</param>
+    /// <param name="from">The start date for the report data range. If null, no start date filter is applied.</param>
+    /// <param name="to">The end date for the report data range. If null, no end date filter is applied.</param>
+    /// <param name="ct">A cancellation token to observe while waiting for the operation to complete.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result is a stream containing the generated Excel report.</returns>
     Task<Stream> CreateReportAsync(IReadOnlyCollection<Wallet> wallets, DateOnly? from, DateOnly? to,
         CancellationToken ct = default);
 }
 
-internal class AaveReportExcelService : BaseExcelReportService, IAaveReportExcelService
+internal class AaveDailyReportExcelService : BaseExcelReportService, IAaveDailyReportExcelService
 {
     private readonly IPlatformDailyReportDataProvider _platformDailyReportDataProvider;
     private readonly AaveDailyReportExcelWorksheetWriter _worksheetWriter;
 
-    public AaveReportExcelService(
+    public AaveDailyReportExcelService(
         [FromKeyedServices(AaveModuleKeyedService.DailyPlatformKeyService)]
         IPlatformDailyReportDataProvider platformDailyReportDataProvider,
         AaveDailyReportExcelWorksheetWriter worksheetWriter)

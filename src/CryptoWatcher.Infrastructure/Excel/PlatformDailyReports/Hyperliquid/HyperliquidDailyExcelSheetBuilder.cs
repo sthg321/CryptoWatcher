@@ -6,11 +6,11 @@ using SpreadCheetah;
 
 namespace CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Hyperliquid;
 
-internal class HyperliquidExcelSheetBuilder : IExcelSheetBuilder
+internal class HyperliquidDailyExcelSheetBuilder : IDailyExcelSheetBuilder
 {
     private readonly HyperliquidDailyReportExcelWorksheetWriter _worksheetWriter;
 
-    public HyperliquidExcelSheetBuilder(HyperliquidDailyReportExcelWorksheetWriter worksheetWriter)
+    public HyperliquidDailyExcelSheetBuilder(HyperliquidDailyReportExcelWorksheetWriter worksheetWriter)
     {
         _worksheetWriter = worksheetWriter;
     }

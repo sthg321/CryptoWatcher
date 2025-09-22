@@ -14,7 +14,7 @@ internal class UniswapDailyReportExcelWorksheetWriter : ExcelSheetDataWriter<Uni
     protected override async Task WriteRowAsync(Spreadsheet workbook, UniswapDailyReportItem dailyReportItem,
         CancellationToken ct)
     {
-        var rowContext = Models.UniswapExcelRowContext.Default.UniswapPoolPositionExcelRow;
+        var rowContext = UniswapExcelRowContext.Default.UniswapPoolPositionExcelRow;
 
         var row = dailyReportItem.MapToExcelRowModel();
 
@@ -24,7 +24,7 @@ internal class UniswapDailyReportExcelWorksheetWriter : ExcelSheetDataWriter<Uni
     protected override async Task WriteTotalRowAsync(Spreadsheet workbook, UniswapDailyReport dailyReport,
         CancellationToken ct)
     {
-        var totalContext = Models.UniswapExcelRowContext.Default.UniswapPoolPositionExcelTotalRow;
+        var totalContext = UniswapExcelRowContext.Default.UniswapPoolPositionExcelTotalRow;
 
         var lastItem = dailyReport.ReportItems.Last();
         var totalRow = dailyReport.MapToExcelModel(TotalName, lastItem.TokenPairSymbols, lastItem.Network);

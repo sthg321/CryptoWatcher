@@ -45,7 +45,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<TokenService>();
         services.AddSingleton<TokenEnricher>();
         services.AddSingleton<CoinNormalizer>();
-        services.AddSingleton<ITotalReportWorksheetBuilder, TotalReportWorksheetBuilder>();
+        services.AddSingleton<IDailyTotalReportWorksheetBuilder, DailyTotalReportWorksheetBuilder>();
 
         services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 
@@ -77,8 +77,8 @@ public static class ServiceCollectionExtensions
             .AddAaveModule()
             .AddSingleton<IAaveMainnetProvider, AaveMainnetProvider>()
             .AddScoped<IAaveProvider, AaveProvider>()
-            .AddScoped<IAaveReportExcelService, AaveReportExcelService>()
-            .AddSingleton<IExcelSheetBuilder, AaveExcelSheetBuilder>()
+            .AddScoped<IAaveDailyReportExcelService, AaveDailyReportExcelService>()
+            .AddSingleton<IDailyExcelSheetBuilder, AaveDailyExcelSheetBuilder>()
             .AddSingleton<AaveDailyReportExcelWorksheetWriter>();
 
         return services;
@@ -91,7 +91,7 @@ public static class ServiceCollectionExtensions
         services.AddHyperliquidModule()
             .AddScoped<IHyperliquidExcelService, HyperliquidExcelService>()
             .AddScoped<IHyperliquidProvider, HyperliquidApiProvider>()
-            .AddSingleton<IExcelSheetBuilder, HyperliquidExcelSheetBuilder>()
+            .AddSingleton<IDailyExcelSheetBuilder, HyperliquidDailyExcelSheetBuilder>()
             .AddSingleton<HyperliquidDailyReportExcelWorksheetWriter>();
 
         return services;
@@ -103,8 +103,8 @@ public static class ServiceCollectionExtensions
 
         services.AddUniswapModule()
             .AddSingleton<IUniswapProvider, UniswapProvider>()
-            .AddScoped<IUniswapExcelReportService, UniswapExcelReportService>()
-            .AddSingleton<IExcelSheetBuilder, UniswapExcelSheetBuilder>()
+            .AddScoped<IUniswapDailyExcelReportService, UniswapDailyExcelReportService>()
+            .AddSingleton<IDailyExcelSheetBuilder, UniswapDailyExcelSheetBuilder>()
             .AddSingleton<UniswapDailyReportExcelWorksheetWriter>();
 
         return services;

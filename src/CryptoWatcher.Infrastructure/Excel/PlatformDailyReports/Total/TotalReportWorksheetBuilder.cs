@@ -6,21 +6,33 @@ using SpreadCheetah.SourceGeneration;
 
 namespace CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Total;
 
-internal interface ITotalReportWorksheetBuilder
+/// <summary>
+/// Defines the interface for building a daily total report worksheet in a spreadsheet.
+/// </summary>
+internal interface IDailyTotalReportWorksheetBuilder
 {
+    /// <summary>
+    /// Creates a total worksheet in the given spreadsheet based on the provided platform daily reports.
+    /// </summary>
+    /// <param name="spreadsheet">The spreadsheet where the total worksheet will be created.</param>
+    /// <param name="platformDailyReports">The collection of platform daily reports used to populate the worksheet.</param>
+    /// <param name="ct">The cancellation token to monitor for cancellation requests.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     Task CreateTotalWorksheetAsync(Spreadsheet spreadsheet,
         IReadOnlyCollection<PlatformDailyReportData> platformDailyReports,
         CancellationToken ct = default);
 }
 
-internal class TotalReportWorksheetBuilder : ITotalReportWorksheetBuilder
+internal class DailyTotalReportWorksheetBuilder : IDailyTotalReportWorksheetBuilder
 {
+    private const string TotalReportSheetName = "Все платформы";
+    
     public async Task CreateTotalWorksheetAsync(Spreadsheet spreadsheet,
         IReadOnlyCollection<PlatformDailyReportData> platformDailyReports,
         CancellationToken ct = default)
     {
         var rowContext = TotalReportExcelRowContext.Default.TotalPlatformDailyReportExcelRow;
-        await spreadsheet.StartWorksheetAsync("Все платформы", rowContext, ct);
+        await spreadsheet.StartWorksheetAsync(TotalReportSheetName, rowContext, ct);
 
         await spreadsheet.AddHeaderRowAsync(rowContext, token: ct);
 

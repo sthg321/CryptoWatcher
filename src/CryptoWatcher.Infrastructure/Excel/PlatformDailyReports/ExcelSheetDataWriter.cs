@@ -3,7 +3,7 @@ using CryptoWatcher.Shared.Entities;
 using SpreadCheetah;
 using SpreadCheetah.SourceGeneration;
 
-namespace CryptoWatcher.Infrastructure;
+namespace CryptoWatcher.Infrastructure.Excel.PlatformDailyReports;
 
 public abstract class ExcelSheetDataWriter<TExcelRowContext, TDailyReport, TDailyReportItem>
     where TDailyReport : PlatformDailyReport

@@ -64,8 +64,8 @@ using (var scope = app.Services.CreateScope())
 
 app.UseTickerQ();
 
-async Task<FileStreamHttpResult> Handler(IUniswapExcelReportService uniswapExcelReportService,
-    IHyperliquidExcelService hyperliquidExcelService, IAaveReportExcelService aaveReportService,
+async Task<FileStreamHttpResult> Handler(IUniswapDailyExcelReportService uniswapDailyExcelReportService,
+    IHyperliquidExcelService hyperliquidExcelService, IAaveDailyReportExcelService aaveDailyReportService,
     IRepository<Wallet> walletRepository,
     string platform,
     [FromQuery] DateOnly? from, [FromQuery] DateOnly? to)
@@ -73,9 +73,9 @@ async Task<FileStreamHttpResult> Handler(IUniswapExcelReportService uniswapExcel
     var wallets = await walletRepository.ListAsync();
     var reportStream = platform switch
     {
-        "uniswap" => await uniswapExcelReportService.CreateReportAsync(wallets, from, to),
+        "uniswap" => await uniswapDailyExcelReportService.CreateReportAsync(wallets, from, to),
         "hyperliquid" => await hyperliquidExcelService.CreateReportAsync(wallets, from, to),
-        "aave" => await aaveReportService.CreateReportAsync(wallets, from, to),
+        "aave" => await aaveDailyReportService.CreateReportAsync(wallets, from, to),
         _ => throw new ArgumentOutOfRangeException(nameof(platform), platform, null)
     };
 

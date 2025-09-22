@@ -28,7 +28,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Reports\" />
       <Folder Include="Uniswap\ExcelModels\" />
       <Folder Include="Uniswap\Excel\" />
       <Folder Include="Uniswap\Mappers\" />

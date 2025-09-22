@@ -1,3 +1,4 @@
+using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports;
 using CryptoWatcher.Models;
 using CryptoWatcher.Shared.Entities;
 using SpreadCheetah;

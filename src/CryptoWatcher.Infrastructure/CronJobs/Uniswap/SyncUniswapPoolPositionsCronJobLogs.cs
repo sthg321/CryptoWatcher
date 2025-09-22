@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace CryptoWatcher.Infrastructure.Uniswap;
+namespace CryptoWatcher.Infrastructure.CronJobs.Uniswap;
 
 internal static partial class SyncUniswapPoolPositionsCronJobLogs
 {
