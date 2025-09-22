@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Nethereum.ABI.ABIDeserialisation;
 using UniswapClient.UniswapV3;
 using UniswapClient.UniswapV3.LiquidityPool;
 using UniswapClient.UniswapV3.LiquidityPoolFactory;
@@ -15,6 +16,7 @@ public static class ServiceCollectionExtensions
 {
     public static void AddUniswapClient(this IServiceCollection services)
     {
+        AbiDeserializationSettings.UseSystemTextJson = true;
         //v3
         services.AddSingleton<UniswapV3Client>();
         services.AddSingleton<IUniswapV3LiquidityPool, UniswapV3LiquidityPool>();
