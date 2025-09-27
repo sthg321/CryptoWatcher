@@ -17,7 +17,7 @@ internal sealed class AavePositionsWithSnapshotsSpecification : Specification<Aa
     {
         Query.Include(position =>
                 position.PositionSnapshots.Where(snapshot => snapshot.Day >= from && snapshot.Day <= to))
-            .Where(position => position.WalletAddress == walletAddress);
+            .Where(position => position.WalletAddress == walletAddress && position.ClosedAtDay == null);
 
     }
 }
