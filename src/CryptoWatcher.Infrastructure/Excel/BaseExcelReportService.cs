@@ -20,7 +20,6 @@ internal abstract class BaseExcelReportService
 
     protected static async Task<MemoryStream> CreateExcelWorkbookAsync<TExcelContext, TDailyReport, TDailyReportItem>(
         ExcelSheetDataWriter<TExcelContext, TDailyReport, TDailyReportItem> dataWriter,
-        WorksheetRowTypeInfo<TExcelContext> rowContext,
         PlatformDailyReportData reportData,
         CancellationToken ct = default) where TDailyReport : PlatformDailyReport
     {
@@ -32,23 +31,12 @@ internal abstract class BaseExcelReportService
             spreadsheet.AddStyle(style, styleName);
         }
 
-        await dataWriter.CreateWorksheetAsync(spreadsheet, reportData, rowContext, ct);
+        await dataWriter.CreateWorksheetAsync(spreadsheet, reportData, ct);
 
         await spreadsheet.FinishAsync(ct);
         ms.Seek(0, SeekOrigin.Begin);
 
         return ms;
-    }
-
-    protected static async Task StartWorksheetAsync<TRow>(
-        string sheetName,
-        WorksheetRowTypeInfo<TRow> rowContext,
-        Spreadsheet spreadsheet,
-        CancellationToken ct = default)
-    {
-        await spreadsheet.StartWorksheetAsync(sheetName, rowContext, ct);
-
-        await spreadsheet.AddHeaderRowAsync(rowContext, token: ct);
     }
 
     protected static async Task<MemoryStream> CreateExcelWorkbookAsync(

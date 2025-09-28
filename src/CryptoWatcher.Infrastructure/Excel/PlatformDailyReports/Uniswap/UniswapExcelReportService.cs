@@ -53,7 +53,7 @@ internal class UniswapDailyExcelReportService : BaseExcelReportService, IUniswap
 
         var rowContext = UniswapExcelRowContext.Default.UniswapPoolPositionExcelRow;
 
-        return await CreateExcelWorkbookAsync(_worksheetWriter, rowContext,
+        return await CreateExcelWorkbookAsync(_worksheetWriter,
             dailyReportData, ct);
     }
 }

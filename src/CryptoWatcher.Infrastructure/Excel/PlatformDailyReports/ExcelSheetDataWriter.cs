@@ -11,9 +11,9 @@ public abstract class ExcelSheetDataWriter<TExcelRowContext, TDailyReport, TDail
     protected const string TotalName = "Итого:";
 
     public async Task CreateWorksheetAsync(Spreadsheet workbook,
-        PlatformDailyReportData platformDailyReportData,
-        WorksheetRowTypeInfo<TExcelRowContext> rowContext, CancellationToken ct = default)
+        PlatformDailyReportData platformDailyReportData,  CancellationToken ct = default)
     {
+        var rowContext = GetWorksheetRow();
         await workbook.StartWorksheetAsync(platformDailyReportData.PlatformName, rowContext, ct);
 
         await workbook.AddHeaderRowAsync(rowContext, token: ct);
@@ -35,6 +35,8 @@ public abstract class ExcelSheetDataWriter<TExcelRowContext, TDailyReport, TDail
             }
         }
     }
+
+    protected abstract WorksheetRowTypeInfo<TExcelRowContext> GetWorksheetRow();
 
     protected abstract IReadOnlyCollection<TDailyReportItem> GetReportItems(TDailyReport report);
 

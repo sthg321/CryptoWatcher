@@ -47,7 +47,7 @@ internal class HyperliquidExcelService : BaseExcelReportService, IHyperliquidExc
 
         var rowContext = HyperliquidVaultPositionExcelContext.Default.HyperliquidVaultPositionExcelRow;
         
-        return await CreateExcelWorkbookAsync(_worksheetWriter, rowContext,
+        return await CreateExcelWorkbookAsync(_worksheetWriter,
             platformDailyReports, ct);
     }
 }

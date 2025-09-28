@@ -47,7 +47,7 @@ internal class AaveDailyReportExcelService : BaseExcelReportService, IAaveDailyR
         var reportData = await _platformDailyReportDataProvider.GetReportDataAsync(wallets, fromDate, toDate, ct);
 
         var rowContext = AaveExcelReportContext.Default.AavePositionExcelRow;
-        var ms = await CreateExcelWorkbookAsync(_worksheetWriter, rowContext, reportData, ct);
+        var ms = await CreateExcelWorkbookAsync(_worksheetWriter, reportData, ct);
 
         return ms;
     }
