@@ -34,9 +34,9 @@ internal class PlatformDailyReportFacade : IPlatformDailyReportFacade
     {
         _excelReportGenerator = excelReportGenerator;
         _serviceProvider = serviceProvider;
-    }
+    }   
 
-    public Task<ExcelReport> CreateHyperliquidReportAsync(IReadOnlyCollection<Wallet> wallets, DateOnly? from,
+    public async Task<ExcelReport> CreateHyperliquidReportAsync(IReadOnlyCollection<Wallet> wallets, DateOnly? from,
         DateOnly? to, CancellationToken ct = default)
     {
         var dataProvider = _serviceProvider.GetRequiredKeyedService<IPlatformDailyReportDataProvider>(
@@ -44,7 +44,7 @@ internal class PlatformDailyReportFacade : IPlatformDailyReportFacade
 
         var worksheetWriter = _serviceProvider.GetRequiredService<HyperliquidDailyReportExcelWorksheetWriter>();
 
-        return _excelReportGenerator.CreatePlatformDailyReportAsync(
+        return await _excelReportGenerator.CreatePlatformDailyReportAsync(
             dataProvider,
             worksheetWriter,
             wallets,
@@ -54,7 +54,7 @@ internal class PlatformDailyReportFacade : IPlatformDailyReportFacade
             ct);
     }
 
-    public Task<ExcelReport> CreateUniswapReportAsync(IReadOnlyCollection<Wallet> wallets, DateOnly? from, DateOnly? to,
+    public async Task<ExcelReport> CreateUniswapReportAsync(IReadOnlyCollection<Wallet> wallets, DateOnly? from, DateOnly? to,
         CancellationToken ct = default)
     {
         var dataProvider = _serviceProvider.GetRequiredKeyedService<IPlatformDailyReportDataProvider>(
@@ -62,7 +62,7 @@ internal class PlatformDailyReportFacade : IPlatformDailyReportFacade
 
         var worksheetWriter = _serviceProvider.GetRequiredService<UniswapDailyReportExcelWorksheetWriter>();
 
-        return _excelReportGenerator.CreatePlatformDailyReportAsync(
+        return await _excelReportGenerator.CreatePlatformDailyReportAsync(
             dataProvider,
             worksheetWriter,
             wallets,
