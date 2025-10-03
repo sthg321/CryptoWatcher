@@ -1,5 +1,4 @@
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Abstractions;
-using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Uniswap.Models;
 using CryptoWatcher.Models;
 using CryptoWatcher.UniswapModule.Models;
 using SpreadCheetah;
@@ -20,8 +19,6 @@ internal class UniswapDailyExcelSheetBuilder : IDailyExcelSheetBuilder
     public async Task CreateWorksheetAsync(Spreadsheet workbook, PlatformDailyReportData platformDailyReportData,
         CancellationToken ct = default)
     {
-        var rowContext = UniswapExcelRowContext.Default.UniswapPoolPositionExcelRow;
-
-        await _worksheetWriter.CreateWorksheetAsync(workbook, platformDailyReportData, rowContext, ct);
+        await _worksheetWriter.CreateWorksheetAsync(workbook, platformDailyReportData, ct);
     }
 }

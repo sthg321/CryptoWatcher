@@ -2,7 +2,6 @@ using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Total.Models;
 using CryptoWatcher.Models;
 using CryptoWatcher.Shared.ValueObjects;
 using SpreadCheetah;
-using SpreadCheetah.SourceGeneration;
 
 namespace CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Total;
 
@@ -66,28 +65,3 @@ internal class DailyTotalReportWorksheetBuilder : IDailyTotalReportWorksheetBuil
         await spreadsheet.AddAsRowAsync(totalRow, totalRowContext, ct);
     }
 }
-
-[WorksheetRow(typeof(TotalPlatformDailyReportExcelRow))]
-[WorksheetRow(typeof(TotalPlatformDailyReportExcelTotalRow))]
-internal partial class TotalReportExcelRowContext : WorksheetRowContext;
-
-// internal class TotalReportSheetWriter : ExcelSheetDataWriter<TotalReportExcelRowContext, PlatformDailyReport,
-//     PlatformDailyReportItem>
-// {
-//     protected override IReadOnlyCollection<PlatformDailyReportItem> GetReportItems(PlatformDailyReport report)
-//     {
-//         throw new NotImplementedException();
-//     }
-//
-//     protected override Task WriteRowAsync(Spreadsheet workbook, PlatformDailyReportItem dailyReportItem,
-//         CancellationToken ct)
-//     {
-//         throw new NotImplementedException();
-//     }
-//
-//     protected override Task WriteTotalRowAsync(Spreadsheet workbook, PlatformDailyReport dailyReport,
-//         CancellationToken ct)
-//     {
-//         throw new NotImplementedException();
-//     }
-// }

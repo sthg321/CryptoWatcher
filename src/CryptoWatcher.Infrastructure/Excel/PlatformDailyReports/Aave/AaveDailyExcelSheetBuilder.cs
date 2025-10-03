@@ -1,5 +1,4 @@
 using CryptoWatcher.AaveModule.Models;
-using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Aave.Models;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Abstractions;
 using CryptoWatcher.Models;
 using SpreadCheetah;
@@ -20,7 +19,6 @@ internal class AaveDailyExcelSheetBuilder : IDailyExcelSheetBuilder
     public async Task CreateWorksheetAsync(Spreadsheet workbook, PlatformDailyReportData platformDailyReportData,
         CancellationToken ct = default)
     {
-        await _worksheetWriter.CreateWorksheetAsync(workbook,
-            platformDailyReportData, AaveExcelReportContext.Default.AavePositionExcelRow, ct);
+        await _worksheetWriter.CreateWorksheetAsync(workbook, platformDailyReportData, ct);
     }
 }

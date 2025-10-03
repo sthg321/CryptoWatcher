@@ -5,9 +5,7 @@ using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Host.Extensions;
 using CryptoWatcher.Infrastructure;
 using CryptoWatcher.Infrastructure.Configs;
-using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Aave;
-using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Hyperliquid;
-using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Uniswap;
+using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports;
 using CryptoWatcher.Infrastructure.Extensions;
 using CryptoWatcher.Shared.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -67,22 +65,21 @@ using (var scope = app.Services.CreateScope())
 
 app.UseTickerQ();
 
-async Task<FileStreamHttpResult> Handler(IUniswapDailyExcelReportService uniswapDailyExcelReportService,
-    IHyperliquidExcelService hyperliquidExcelService, IAaveDailyReportExcelService aaveDailyReportService,
+async Task<FileStreamHttpResult> Handler(IPlatformDailyReportFacade reportFacade,
     IRepository<Wallet> walletRepository,
     string platform,
     [FromQuery] DateOnly? from, [FromQuery] DateOnly? to)
 {
     var wallets = await walletRepository.ListAsync();
-    var reportStream = platform switch
+    var excelReport = platform switch
     {
-        "uniswap" => await uniswapDailyExcelReportService.CreateReportAsync(wallets, from, to),
-        "hyperliquid" => await hyperliquidExcelService.CreateReportAsync(wallets, from, to),
-        "aave" => await aaveDailyReportService.CreateReportAsync(wallets, from, to),
+        "uniswap" => await reportFacade.CreateUniswapReportAsync(wallets, from, to),
+        "hyperliquid" => await reportFacade.CreateHyperliquidReportAsync(wallets, from, to),
+        "aave" => await reportFacade.CreateAaveReportAsync(wallets, from, to),
         _ => throw new ArgumentOutOfRangeException(nameof(platform), platform, null)
     };
 
-    return TypedResults.File(reportStream, fileDownloadName: "report.xlsx");
+    return TypedResults.File(excelReport.Report, fileDownloadName: $"{excelReport.FileName}.xlsx");
 }
 
 app.MapGet("/report/{platform}", Handler);

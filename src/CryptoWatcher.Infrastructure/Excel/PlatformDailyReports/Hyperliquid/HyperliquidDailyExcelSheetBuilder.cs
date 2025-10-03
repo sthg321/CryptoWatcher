@@ -1,6 +1,5 @@
 using CryptoWatcher.HyperliquidModule.Models;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Abstractions;
-using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Hyperliquid.Models;
 using CryptoWatcher.Models;
 using SpreadCheetah;
 
@@ -20,7 +19,6 @@ internal class HyperliquidDailyExcelSheetBuilder : IDailyExcelSheetBuilder
     public async Task CreateWorksheetAsync(Spreadsheet workbook, PlatformDailyReportData platformDailyReportData,
         CancellationToken ct = default)
     {
-        var rowContext = HyperliquidVaultPositionExcelContext.Default.HyperliquidVaultPositionExcelRow;
-        await _worksheetWriter.CreateWorksheetAsync(workbook, platformDailyReportData, rowContext, ct);
+        await _worksheetWriter.CreateWorksheetAsync(workbook, platformDailyReportData, ct);
     }
 }

@@ -1,13 +1,18 @@
+using System.Diagnostics;
 using CryptoWatcher.HyperliquidModule.Models;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Hyperliquid.Mappers;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Hyperliquid.Models;
 using SpreadCheetah;
+using SpreadCheetah.SourceGeneration;
 
 namespace CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Hyperliquid;
 
 internal class HyperliquidDailyReportExcelWorksheetWriter : ExcelSheetDataWriter<HyperliquidVaultPositionExcelRow,
     HyperliquidDailyReport, HyperliquidVaultReportItem>
 {
+    protected override WorksheetRowTypeInfo<HyperliquidVaultPositionExcelRow> GetWorksheetRow() =>
+        HyperliquidVaultPositionExcelContext.Default.HyperliquidVaultPositionExcelRow;
+
     protected override IReadOnlyCollection<HyperliquidVaultReportItem> GetReportItems(HyperliquidDailyReport report) =>
         report.ReportItems;
 

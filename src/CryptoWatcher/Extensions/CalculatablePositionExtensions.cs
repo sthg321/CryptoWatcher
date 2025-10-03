@@ -73,19 +73,19 @@ public static class CalculatablePositionExtensions
         }
 
         var filteredCashFlows = cashFlows
-            .Where(cashFlow => cashFlow.Date >= from.ToMinDateTime() && cashFlow.Date <= to.ToMaxDateTime())
+            .Where(cashFlow => cashFlow.Date > from.ToMinDateTime() && cashFlow.Date <= to.ToMaxDateTime())
             .Sum(getCashFlowAmount);
-        
+
         var startValue = getValue(startSnapshot);
         var endValue = getValue(endSnapshot);
-        var profitValue = endValue - startValue;
+        var profitValue = endValue - startValue - filteredCashFlows;
 
         if (profitValue == 0)
         {
             return ProfitMetric.Empty();
         }
 
-        var denominator = Math.Abs(startValue + filteredCashFlows);
+        var denominator = Math.Abs(startValue);
         var profitPercent = denominator < 1e-9m ? 0 : profitValue / denominator;
 
         return new ProfitMetric { Amount = profitValue, Percent = profitPercent };

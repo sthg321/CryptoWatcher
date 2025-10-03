@@ -2,12 +2,16 @@ using CryptoWatcher.AaveModule.Models;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Aave.Mappers;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Aave.Models;
 using SpreadCheetah;
+using SpreadCheetah.SourceGeneration;
 
 namespace CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Aave;
 
 internal class AaveDailyReportExcelWorksheetWriter : ExcelSheetDataWriter<AavePositionExcelRow, AaveDailyReport,
     AaveDailyReportItem>
 {
+    protected override WorksheetRowTypeInfo<AavePositionExcelRow> GetWorksheetRow() =>
+        AaveExcelReportContext.Default.AavePositionExcelRow;
+
     protected override IReadOnlyCollection<AaveDailyReportItem> GetReportItems(AaveDailyReport report) =>
         report.ReportItems;
 
@@ -15,7 +19,7 @@ internal class AaveDailyReportExcelWorksheetWriter : ExcelSheetDataWriter<AavePo
         CancellationToken ct)
     {
         var row = dailyReportItem.MapToExcelRow();
-        await workbook.AddAsRowAsync(row, AaveExcelReportContext.Default.AavePositionExcelRow, ct);
+        await workbook.AddAsRowAsync(row, GetWorksheetRow(), ct);
     }
 
     protected override async Task WriteTotalRowAsync(Spreadsheet workbook, AaveDailyReport dailyReport,

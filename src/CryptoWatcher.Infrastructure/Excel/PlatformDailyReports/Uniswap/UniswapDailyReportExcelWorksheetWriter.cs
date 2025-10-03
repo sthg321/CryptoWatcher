@@ -2,23 +2,25 @@ using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Uniswap.Mappers;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Uniswap.Models;
 using CryptoWatcher.UniswapModule.Models;
 using SpreadCheetah;
+using SpreadCheetah.SourceGeneration;
 
 namespace CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Uniswap;
 
 internal class UniswapDailyReportExcelWorksheetWriter : ExcelSheetDataWriter<UniswapPoolPositionExcelRow,
     UniswapDailyReport, UniswapDailyReportItem>
 {
+    protected override WorksheetRowTypeInfo<UniswapPoolPositionExcelRow> GetWorksheetRow() =>
+        UniswapExcelRowContext.Default.UniswapPoolPositionExcelRow;
+
     protected override IReadOnlyCollection<UniswapDailyReportItem> GetReportItems(UniswapDailyReport report) =>
         report.ReportItems;
 
     protected override async Task WriteRowAsync(Spreadsheet workbook, UniswapDailyReportItem dailyReportItem,
         CancellationToken ct)
     {
-        var rowContext = UniswapExcelRowContext.Default.UniswapPoolPositionExcelRow;
-
         var row = dailyReportItem.MapToExcelRowModel();
 
-        await workbook.AddAsRowAsync(row, rowContext, ct);
+        await workbook.AddAsRowAsync(row, GetWorksheetRow(), ct);
     }
 
     protected override async Task WriteTotalRowAsync(Spreadsheet workbook, UniswapDailyReport dailyReport,
