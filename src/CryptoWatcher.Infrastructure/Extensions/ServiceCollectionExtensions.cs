@@ -79,7 +79,6 @@ public static class ServiceCollectionExtensions
             .AddAaveModule()
             .AddSingleton<IAaveMainnetProvider, AaveMainnetProvider>()
             .AddScoped<IAaveProvider, AaveProvider>()
-            .AddScoped<IAaveDailyReportExcelService, AaveDailyReportExcelService>()
             .AddSingleton<IDailyExcelSheetBuilder, AaveDailyExcelSheetBuilder>()
             .AddSingleton<AaveDailyReportExcelWorksheetWriter>();
 
@@ -91,7 +90,6 @@ public static class ServiceCollectionExtensions
         services.AddHyperLiquidClient();
 
         services.AddHyperliquidModule()
-            .AddScoped<IHyperliquidExcelService, HyperliquidExcelService>()
             .AddScoped<IHyperliquidProvider, HyperliquidApiProvider>()
             .AddSingleton<IDailyExcelSheetBuilder, HyperliquidDailyExcelSheetBuilder>()
             .AddSingleton<HyperliquidDailyReportExcelWorksheetWriter>();
@@ -105,7 +103,6 @@ public static class ServiceCollectionExtensions
 
         services.AddUniswapModule()
             .AddSingleton<IUniswapProvider, UniswapProvider>()
-            .AddScoped<IUniswapDailyExcelReportService, UniswapDailyExcelReportService>()
             .AddSingleton<IDailyExcelSheetBuilder, UniswapDailyExcelSheetBuilder>()
             .AddSingleton<UniswapDailyReportExcelWorksheetWriter>();
 

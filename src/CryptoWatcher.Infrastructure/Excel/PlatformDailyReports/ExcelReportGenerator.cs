@@ -6,7 +6,7 @@ using SpreadCheetah.Styling;
 
 namespace CryptoWatcher.Infrastructure.Excel.PlatformDailyReports;
 
-public interface IExcelReportGenerator
+internal interface IExcelReportGenerator
 {
     /// <summary>
     /// Creates a platform daily report in Excel format
@@ -18,6 +18,16 @@ public interface IExcelReportGenerator
         DateOnly? from,
         DateOnly? to,
         string reportName,
+        CancellationToken ct = default);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="buildAction"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    Task<MemoryStream> CreateExcelWorkbookAsync(
+        Func<Spreadsheet, Task> buildAction,
         CancellationToken ct = default);
 }
 
@@ -67,6 +77,23 @@ internal class ExcelReportGenerator : IExcelReportGenerator
         return ms;
     }
 
+    public async Task<MemoryStream> CreateExcelWorkbookAsync(
+        Func<Spreadsheet, Task> buildAction,
+        CancellationToken ct = default)
+    {
+        var ms = new MemoryStream();
+        await using var spreadsheet = await Spreadsheet.CreateNewAsync(ms, cancellationToken: ct);
+
+        RegisterStyles(spreadsheet);
+
+        await buildAction(spreadsheet);
+
+        await spreadsheet.FinishAsync(ct);
+        ms.Seek(0, SeekOrigin.Begin);
+
+        return ms;
+    }
+    
     private static void RegisterStyles(Spreadsheet spreadsheet)
     {
         foreach (var (styleName, style) in StyleNameToStyleMap)
