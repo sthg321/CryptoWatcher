@@ -34,7 +34,7 @@ internal class AaveReportDataService : IPlatformDailyReportDataProvider
                     .Select(snapshot =>
                     {
                         var previousDay = snapshot.Day.AddDays(-1);
-                        var profitInUsd = position.CalculateProfitInUsd(from, snapshot.Day);
+                        var profitInUsd = position.CalculateProfitInUsd(previousDay, snapshot.Day);
                         var profitInToken = position.CalculateProfitInToken(previousDay, snapshot.Day);
 
                         return new AaveDailyReportItem
