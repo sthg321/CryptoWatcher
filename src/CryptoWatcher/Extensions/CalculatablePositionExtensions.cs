@@ -72,10 +72,10 @@ public static class CalculatablePositionExtensions
             return ProfitMetric.Empty();
         }
 
-        var filteredCashFlows = cashFlows
-            .Where(cashFlow => cashFlow.Date > from.ToMinDateTime() && cashFlow.Date <= to.ToMaxDateTime())
+        var filteredCashFlows = cashFlows.Where(cacheFlow => cacheFlow.Date.ToDateOnly() > startSnapshot.Day &&
+                                                             cacheFlow.Date.ToDateOnly() <= endSnapshot.Day)
             .Sum(getCashFlowAmount);
-
+        
         var startValue = getValue(startSnapshot);
         var endValue = getValue(endSnapshot);
         var profitValue = endValue - startValue - filteredCashFlows;
