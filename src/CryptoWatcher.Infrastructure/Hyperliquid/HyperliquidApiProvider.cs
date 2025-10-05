@@ -38,7 +38,7 @@ public class HyperliquidApiProvider : IHyperliquidProvider
                     VaultWithdraw vaultWithdraw => new HyperliquidVaultEvent
                     {
                         Usd = vaultWithdraw.NetWithdrawnUsd,
-                        Event = CacheFlowEvent.Withdraw,
+                        Event = CacheFlowEvent.Withdrawal,
                         VaultAddress = vaultWithdraw.Vault,
                         Date = day
                     },

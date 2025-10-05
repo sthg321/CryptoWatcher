@@ -211,7 +211,7 @@ public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
                 PositionId = Id,
                 Date = eventDateTime,
                 Token = token with { Amount = (decimal)(PreviousScaledAmount - positionScale) },
-                Event = CacheFlowEvent.Withdraw
+                Event = CacheFlowEvent.Withdrawal
             });
         }
 

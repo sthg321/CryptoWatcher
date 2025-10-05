@@ -1,6 +1,6 @@
 using CryptoWatcher.Shared.ValueObjects;
 
-namespace CryptoWatcher.UniswapModule.Entities;
+namespace CryptoWatcher.ValueObjects;
 
 /// <summary>
 /// Represents token information with additional fee details.

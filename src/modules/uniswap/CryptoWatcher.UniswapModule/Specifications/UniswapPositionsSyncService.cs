@@ -4,6 +4,7 @@ using CryptoWatcher.Shared.ValueObjects;
 using CryptoWatcher.UniswapModule.Abstractions;
 using CryptoWatcher.UniswapModule.Entities;
 using CryptoWatcher.UniswapModule.Models;
+using CryptoWatcher.ValueObjects;
 using Microsoft.Extensions.Logging;
 using UniswapClient.Models;
 

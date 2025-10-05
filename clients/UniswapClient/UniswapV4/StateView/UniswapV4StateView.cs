@@ -51,8 +51,7 @@ internal class UniswapV4StateView : IUniswapV4StateView
         var poolId = GeneratePoolId(poolId25);
 
         return await contract.GetFunction("getPositionInfo")
-            .CallDeserializingToObjectAsync<GetPositionInfoOutputDTO>(poolId,
-                "0x4529a01c7a0410167c5740c487a8de60232617bf", tickLower, tickUpper,
+            .CallDeserializingToObjectAsync<GetPositionInfoOutputDTO>(poolId, StateViewAddress, tickLower, tickUpper,
                 ConvertTokenIdToBytes32(tokenId));
     }
 

@@ -32,11 +32,11 @@ public static class CacheFlowExtensions
 
     private static decimal ComputeCashFlowEvent(CacheFlowEvent @event, decimal amount)
     {
-        return @event switch
+        if (@event == CacheFlowEvent.Deposit)
         {
-            CacheFlowEvent.Deposit => amount,
-            CacheFlowEvent.Withdraw => -amount,
-            _ => throw new ArgumentOutOfRangeException(nameof(@event))
-        };
+            return amount;
+        }
+
+        return -amount;
     }
 }

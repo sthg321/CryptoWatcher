@@ -5,6 +5,7 @@ using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.UniswapModule.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using SmartEnum.EFCore;
 
 namespace CryptoWatcher.Infrastructure;
 
@@ -85,6 +86,7 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.ConfigureSmartEnum();
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(CryptoWatcherDbContext).Assembly);
     }
 

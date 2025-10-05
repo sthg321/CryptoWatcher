@@ -106,15 +106,16 @@ public class AavePositionTest
     }
 
     [Theory]
-    [InlineData(100, 200, AavePositionType.Borrowed, CacheFlowEvent.Deposit)]
-    [InlineData(500, 400, AavePositionType.Supplied, CacheFlowEvent.Withdraw)]
-    [InlineData(100, 50, AavePositionType.Borrowed, CacheFlowEvent.Withdraw)]
-    [InlineData(500, 600, AavePositionType.Supplied, CacheFlowEvent.Deposit)]
+    [InlineData(100, 200, AavePositionType.Borrowed, nameof(CacheFlowEvent.Deposit))]
+    [InlineData(500, 400, AavePositionType.Supplied, nameof(CacheFlowEvent.Withdrawal))]
+    [InlineData(100, 50, AavePositionType.Borrowed, nameof(CacheFlowEvent.Withdrawal))]
+    [InlineData(500, 600, AavePositionType.Supplied, nameof(CacheFlowEvent.Deposit))]
     public void AddOrUpdateSnapshotTest_WhenScaleNotChange_ShouldAddSingleDepositEvent(decimal initialScaleAmount,
         decimal updatedScaleAmount,
         AavePositionType positionType,
-        CacheFlowEvent eventType)
+        string eventName)
     {
+        var eventType = CacheFlowEvent.FromName(eventName);
         var syncDate = DateOnly.FromDateTime(DateTime.Now);
         var position = CreatePosition(positionType);
         var token = _fixture.Create<TokenInfo>();
@@ -138,13 +139,14 @@ public class AavePositionTest
     }
 
     [Theory]
-    [InlineData(100, 150, CacheFlowEvent.Deposit)]
-    [InlineData(100, 50, CacheFlowEvent.Withdraw)]
+    [InlineData(100, 150, nameof(CacheFlowEvent.Deposit))]
+    [InlineData(100, 50, nameof(CacheFlowEvent.Withdrawal))]
     public void AddOrUpdateSnapshotTest_WhenScaleChange_ShouldUpdateSnapshot(
         decimal oldScaleAmount,
         decimal newScaleAmount,
-        CacheFlowEvent eventType)
+        string eventName)
     {
+        var eventType = CacheFlowEvent.FromName(eventName);
         var position = CreatePosition(AavePositionType.Borrowed);
         var token = _fixture.Create<TokenInfo>();
 
@@ -179,7 +181,7 @@ public class AavePositionTest
         decimal positionScale,
         CacheFlowEvent type)
     {
-        var expectedToken = type == CacheFlowEvent.Withdraw
+        var expectedToken = type == CacheFlowEvent.Withdrawal
             ? eventToken with { Amount = (decimal)(positionScale - position.PreviousScaledAmount)! }
             : eventToken with { Amount = (decimal)(position.PreviousScaledAmount - positionScale)! };
 
