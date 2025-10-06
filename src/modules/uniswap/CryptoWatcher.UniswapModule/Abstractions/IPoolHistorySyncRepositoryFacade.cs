@@ -9,20 +9,6 @@ namespace CryptoWatcher.UniswapModule.Abstractions;
 public interface IPoolHistorySyncRepositoryFacade
 {
     /// <summary>
-    /// Asynchronously retrieves a list of blockchain networks configured in the system.
-    /// </summary>
-    /// <param name="ct">An optional cancellation token to cancel the operation if required.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains a list of <see cref="UniswapNetwork"/> objects representing configured blockchain networks.</returns>
-    Task<List<UniswapNetwork>> GetNetworksAsync(CancellationToken ct = default);
-
-    /// <summary>
-    /// Retrieves a list of wallets.
-    /// </summary>
-    /// <param name="ct">A cancellation token that can be used to observe cancellation requests.</param>
-    /// <returns>A task representing the asynchronous operation. The task result contains a list of <see cref="Wallet"/> objects.</returns>
-    Task<List<Wallet>> GetWalletsAsync(CancellationToken ct = default);
-
-    /// <summary>
     /// Asynchronously retrieves a list of liquidity pool positions for the specified uniswapNetwork and wallet.
     /// </summary>
     /// <param name="uniswapNetwork">The blockchain uniswapNetwork for which liquidity pool positions are being retrieved.</param>

@@ -1,3 +1,4 @@
+using System.Numerics;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.Shared.ValueObjects;
 
@@ -22,6 +23,17 @@ public class PoolPosition
     /// It serves as a key for referencing and managing individual positions across the system.
     /// </remarks>
     public ulong PositionId { get; init; }
+
+    /// <summary>
+    /// Gets the lower tick boundary of the Uniswap liquidity position.
+    /// </summary>
+    public long TickLower { get; init; }
+
+    /// <summary>
+    /// Represents the upper tick of an Uniswap liquidity position, delimiting the price range
+    /// at which the position is active within the liquidity pool.
+    /// </summary>
+    public long TickUpper { get; init; }
 
     /// <summary>
     /// Represents the first token in the liquidity pool pair for a position.
@@ -69,7 +81,7 @@ public class PoolPosition
     /// It includes the wallet's unique identifier and blockchain address for managing assets.
     /// </remarks>
     public Wallet Wallet { get; init; } = null!;
-    
+
     /// <summary>
     /// Specifies the name of the uniswapNetwork associated with the current configuration or operation.
     /// </summary>
@@ -98,4 +110,6 @@ public class PoolPosition
     /// including performance metrics, token balances, and other relevant data.
     /// </remarks>
     public List<PoolPositionSnapshot> PoolPositionSnapshots { get; init; } = [];
+
+    public List<PoolPositionCashFlow> CashFlows { get; init; } = [];
 }

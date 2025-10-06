@@ -1,3 +1,4 @@
+using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.Shared.ValueObjects;
 
 namespace CryptoWatcher.ValueObjects;
@@ -48,5 +49,21 @@ public class TokenInfoWithFee
             FeeAmount = feeAmount,
             PriceInUsd = priceInUsd
         };
+    }
+    
+    // Factory с validation по event
+    public static TokenInfoWithFee CreateForEvent(CacheFlowEvent @event, string symbol, decimal amount, decimal feeAmount, decimal priceInUsd)
+    {
+        if (@event == CacheFlowEvent.FeeClaim && feeAmount <= 0)
+        {
+            throw new InvalidOperationException("FeeAmount must be >0 for FeeClaim");
+        }
+
+        if (@event != CacheFlowEvent.FeeClaim && feeAmount < 0)
+        {
+            throw new InvalidOperationException("FeeAmount cannot be negative");
+        }
+
+        return new TokenInfoWithFee { Symbol = symbol, Amount = amount, FeeAmount = feeAmount, PriceInUsd = priceInUsd };
     }
 }

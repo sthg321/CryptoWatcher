@@ -11,29 +11,14 @@ namespace CryptoWatcher.UniswapModule.Services;
 /// </summary>
 public class PoolHistorySyncRepositoryFacade : IPoolHistorySyncRepositoryFacade
 {
-    private readonly IRepository<UniswapNetwork> _networkRepository;
-    private readonly IRepository<Wallet> _walletRepository;
     private readonly IRepository<PoolPosition> _liquidityPoolPositionRepository;
     private readonly IRepository<PoolPositionSnapshot> _liquidityPoolPositionSnapshotRepository;
 
-    public PoolHistorySyncRepositoryFacade(IRepository<UniswapNetwork> networkRepository,
-        IRepository<Wallet> walletRepository, IRepository<PoolPosition> liquidityPoolPositionRepository,
+    public PoolHistorySyncRepositoryFacade(IRepository<PoolPosition> liquidityPoolPositionRepository,
         IRepository<PoolPositionSnapshot> liquidityPoolPositionSnapshotRepository)
     {
-        _networkRepository = networkRepository;
-        _walletRepository = walletRepository;
         _liquidityPoolPositionRepository = liquidityPoolPositionRepository;
         _liquidityPoolPositionSnapshotRepository = liquidityPoolPositionSnapshotRepository;
-    }
-
-    public async Task<List<UniswapNetwork>> GetNetworksAsync(CancellationToken ct = default)
-    {
-        return await _networkRepository.ListAsync(ct);
-    }
-
-    public async Task<List<Wallet>> GetWalletsAsync(CancellationToken ct = default)
-    {
-        return await _walletRepository.ListAsync(ct);
     }
 
     public async Task<List<PoolPosition>> GetLiquidityPoolPositionsAsync(UniswapNetwork uniswapNetwork, Wallet wallet,

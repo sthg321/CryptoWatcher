@@ -3,7 +3,7 @@ using CryptoWatcher.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CryptoWatcher.Infrastructure.Configuration;
+namespace CryptoWatcher.Infrastructure.Configuration.Uniswap;
 
 public class PoolPositionSnapshotConfiguration : IEntityTypeConfiguration<PoolPositionSnapshot>
 {

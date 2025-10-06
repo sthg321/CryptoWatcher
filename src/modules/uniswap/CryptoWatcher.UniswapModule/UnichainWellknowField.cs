@@ -1,0 +1,12 @@
+namespace CryptoWatcher.UniswapModule;
+
+internal class UnichainWellKnownField
+{
+    public const string V4PositionManagerAddress =
+        "0x0000000000000000000000004529a01c7a0410167c5740c487a8de60232617bf";
+
+    public const string V4ModifyLiquiditySignature =
+        "0xf208f4912782fd25c7f114ca3723a2d5dd6f3bcc3ac8db5af63baa85f711d5ec";
+    
+    public const string EthAddressInUnichain = "0x0000000000000000000000000000000000000000";
+}

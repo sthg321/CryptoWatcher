@@ -1,9 +1,10 @@
+using System.Numerics;
 using CryptoWatcher.Shared.ValueObjects;
 using CryptoWatcher.UniswapModule.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CryptoWatcher.Infrastructure.Configuration;
+namespace CryptoWatcher.Infrastructure.Configuration.Uniswap;
 
 public class PoolPositionConfiguration : IEntityTypeConfiguration<PoolPosition>
 {
@@ -19,7 +20,12 @@ public class PoolPositionConfiguration : IEntityTypeConfiguration<PoolPosition>
             .HasForeignKey(position => position.WalletAddress)
             .IsRequired();
 
+        builder.HasMany(poolPosition => poolPosition.CashFlows)
+            .WithOne()
+            .HasForeignKey(position => new { position.PositionId, position.NetworkName })
+            .IsRequired();
+
         builder.OwnsOne<TokenInfo>(position => position.Token0);
-        builder.OwnsOne<TokenInfo>(position => position.Token1);
+        builder.OwnsOne<TokenInfo>(position => position.Token1); 
     }
 }

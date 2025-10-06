@@ -180,6 +180,12 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<long>("TickLower")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("TickUpper")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("WalletAddress")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -192,6 +198,32 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.HasIndex("WalletAddress");
 
                     b.ToTable("PoolPositions");
+                });
+
+            modelBuilder.Entity("CryptoWatcher.UniswapModule.Entities.PoolPositionCashFlow", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Event")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("NetworkName")
+                        .IsRequired()
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<decimal>("PositionId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PositionId", "NetworkName");
+
+                    b.ToTable("PoolPositionCashFlow");
                 });
 
             modelBuilder.Entity("CryptoWatcher.UniswapModule.Entities.PoolPositionSnapshot", b =>
@@ -311,6 +343,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("LockHolder")
+                        .IsConcurrencyToken()
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("LockedAt")
@@ -629,6 +662,73 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Navigation("Wallet");
                 });
 
+            modelBuilder.Entity("CryptoWatcher.UniswapModule.Entities.PoolPositionCashFlow", b =>
+                {
+                    b.HasOne("CryptoWatcher.UniswapModule.Entities.PoolPosition", null)
+                        .WithMany("CashFlows")
+                        .HasForeignKey("PositionId", "NetworkName")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("CryptoWatcher.ValueObjects.TokenInfoWithFee", "Token0", b1 =>
+                        {
+                            b1.Property<Guid>("PoolPositionCashFlowId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<decimal>("Amount")
+                                .HasColumnType("numeric");
+
+                            b1.Property<decimal>("FeeAmount")
+                                .HasColumnType("numeric");
+
+                            b1.Property<decimal>("PriceInUsd")
+                                .HasColumnType("numeric");
+
+                            b1.Property<string>("Symbol")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.HasKey("PoolPositionCashFlowId");
+
+                            b1.ToTable("PoolPositionCashFlow");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PoolPositionCashFlowId");
+                        });
+
+                    b.OwnsOne("CryptoWatcher.ValueObjects.TokenInfoWithFee", "Token1", b1 =>
+                        {
+                            b1.Property<Guid>("PoolPositionCashFlowId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<decimal>("Amount")
+                                .HasColumnType("numeric");
+
+                            b1.Property<decimal>("FeeAmount")
+                                .HasColumnType("numeric");
+
+                            b1.Property<decimal>("PriceInUsd")
+                                .HasColumnType("numeric");
+
+                            b1.Property<string>("Symbol")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.HasKey("PoolPositionCashFlowId");
+
+                            b1.ToTable("PoolPositionCashFlow");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PoolPositionCashFlowId");
+                        });
+
+                    b.Navigation("Token0")
+                        .IsRequired();
+
+                    b.Navigation("Token1")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("CryptoWatcher.UniswapModule.Entities.PoolPositionSnapshot", b =>
                 {
                     b.HasOne("CryptoWatcher.UniswapModule.Entities.PoolPosition", "PoolPosition")
@@ -637,7 +737,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("CryptoWatcher.UniswapModule.Entities.TokenInfoWithFee", "Token0", b1 =>
+                    b.OwnsOne("CryptoWatcher.ValueObjects.TokenInfoWithFee", "Token0", b1 =>
                         {
                             b1.Property<decimal>("PoolPositionSnapshotPoolPositionId")
                                 .HasColumnType("numeric(20,0)");
@@ -669,7 +769,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                                 .HasForeignKey("PoolPositionSnapshotPoolPositionId", "PoolPositionSnapshotNetworkName", "PoolPositionSnapshotDay");
                         });
 
-                    b.OwnsOne("CryptoWatcher.UniswapModule.Entities.TokenInfoWithFee", "Token1", b1 =>
+                    b.OwnsOne("CryptoWatcher.ValueObjects.TokenInfoWithFee", "Token1", b1 =>
                         {
                             b1.Property<decimal>("PoolPositionSnapshotPoolPositionId")
                                 .HasColumnType("numeric(20,0)");
@@ -747,6 +847,8 @@ namespace CryptoWatcher.Infrastructure.Migrations
 
             modelBuilder.Entity("CryptoWatcher.UniswapModule.Entities.PoolPosition", b =>
                 {
+                    b.Navigation("CashFlows");
+
                     b.Navigation("PoolPositionSnapshots");
                 });
 

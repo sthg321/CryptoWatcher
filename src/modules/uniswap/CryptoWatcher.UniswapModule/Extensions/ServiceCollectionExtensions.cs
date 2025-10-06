@@ -1,5 +1,6 @@
 using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.UniswapModule.Services;
+using CryptoWatcher.UniswapModule.Services.Unichain;
 using CryptoWatcher.UniswapModule.Specifications;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,6 +19,14 @@ public static class ServiceCollectionExtensions
             .DailyPlatformKeyService);
         services.AddSingleton<IUniswapMath, UniswapMath>();
         services.AddScoped<IUniswapPositionsSyncService, UniswapPositionsSyncService>();
+
+        services.AddSingleton<IUnichainInternalTransactionProvider, UnichainInternalTransactionProvider>();
+        services.AddSingleton<IUnichainLogProvider, UnichainLogProvider>();
+        services.AddSingleton<IUnichainLogReader, UnichainLogReader>();
+        services.AddSingleton<ILiquidityPoolEventDecoder, LiquidityPoolEventDecoder>();
+        services.AddScoped<ILastProcessedBlockNumberProvider, LastProcessedBlockNumberProvider>();
+        services.AddScoped<IUnichainEventFetcher, UnichainEventFetcher>();
+        services.AddScoped<UnichainEventEnricher>();
 
         return services;
     }
