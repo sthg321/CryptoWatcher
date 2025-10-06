@@ -1,5 +1,6 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Infrastructure;
+using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.UniswapModule.Entities;
 using Microsoft.EntityFrameworkCore;

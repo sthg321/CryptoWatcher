@@ -1,7 +1,7 @@
+using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.ValueObjects;
-using CryptoWatcher.UniswapModule.Entities;
 
-namespace CryptoWatcher.UniswapModule.Extensions;
+namespace CryptoWatcher.Modules.Uniswap.Application.Extensions;
 
 internal static class TokenInfoPairExtensions
 {

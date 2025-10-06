@@ -12,13 +12,5 @@
       <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
       <PackageReference Include="Nethereum.Web3" Version="5.0.0" />
     </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\..\clients\UniswapClient\UniswapClient.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Remove="Models\YieldMetrics.cs" />
-    </ItemGroup>
-
+  
 </Project>

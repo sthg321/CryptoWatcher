@@ -1,9 +1,12 @@
 using System.Runtime.CompilerServices;
 using CryptoWatcher.Abstractions;
+using CryptoWatcher.Modules.Uniswap.Application.Extensions;
+using CryptoWatcher.Modules.Uniswap.Entities;
+using CryptoWatcher.UniswapModule.Abstractions;
 using CryptoWatcher.UniswapModule.Entities;
-using CryptoWatcher.UniswapModule.Extensions;
+using CryptoWatcher.UniswapModule.Services;
 
-namespace CryptoWatcher.UniswapModule.Services.Unichain;
+namespace CryptoWatcher.Modules.Uniswap.Application.Services.Unichain;
 
 public class UnichainEventEnricher
 {

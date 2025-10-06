@@ -1,8 +1,8 @@
-using System.Numerics;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.Shared.ValueObjects;
+using CryptoWatcher.UniswapModule.Entities;
 
-namespace CryptoWatcher.UniswapModule.Entities;
+namespace CryptoWatcher.Modules.Uniswap.Entities;
 
 /// <summary>
 /// Represents a position in a liquidity pool, tracking the amounts and USD values of tokens,

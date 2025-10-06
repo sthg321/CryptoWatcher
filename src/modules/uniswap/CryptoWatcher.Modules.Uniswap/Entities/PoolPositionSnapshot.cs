@@ -1,8 +1,7 @@
-using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.PositionSnapshots;
 using CryptoWatcher.ValueObjects;
 
-namespace CryptoWatcher.UniswapModule.Entities;
+namespace CryptoWatcher.Modules.Uniswap.Entities;
 
 public class PoolPositionSnapshot : IPositionSnapshot
 {

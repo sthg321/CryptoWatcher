@@ -1,4 +1,4 @@
-namespace CryptoWatcher.UniswapModule.Entities;
+namespace CryptoWatcher.Modules.Uniswap.Entities;
 
 public enum UniswapProtocolVersion
 {

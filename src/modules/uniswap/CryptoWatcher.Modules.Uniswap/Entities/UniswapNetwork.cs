@@ -1,3 +1,5 @@
+using CryptoWatcher.Modules.Uniswap.Entities;
+
 namespace CryptoWatcher.UniswapModule.Entities;
 
 /// <summary>

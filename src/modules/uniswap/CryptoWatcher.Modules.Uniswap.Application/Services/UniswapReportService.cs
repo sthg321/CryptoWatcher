@@ -1,6 +1,7 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Models;
+using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.UniswapModule.Entities;
 using CryptoWatcher.UniswapModule.Models;
@@ -11,7 +12,7 @@ namespace CryptoWatcher.UniswapModule.Services;
 /// <summary>
 /// <see cref="IUniswapReportService"/>
 /// </summary>
-internal class UniswapReportService : IPlatformDailyReportDataProvider
+public class UniswapReportService : IPlatformDailyReportDataProvider
 {
     private readonly IRepository<PoolPosition> _poolPositionRepository;
 

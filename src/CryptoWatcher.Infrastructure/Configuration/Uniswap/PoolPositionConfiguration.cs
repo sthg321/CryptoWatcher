@@ -1,6 +1,5 @@
-using System.Numerics;
+using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.ValueObjects;
-using CryptoWatcher.UniswapModule.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

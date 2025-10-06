@@ -1,4 +1,5 @@
 using Ardalis.Specification;
+using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.UniswapModule.Entities;
 
@@ -17,7 +18,7 @@ namespace CryptoWatcher.UniswapModule.Specifications;
 /// </remarks>
 /// <param name="uniswapNetwork">The Uniswap network to filter positions by.</param>
 /// <param name="wallet">The wallet to filter positions by.</param>
-internal sealed class GetPositionsByWalletAndNetworkSpecification : Specification<PoolPosition>
+public sealed class GetPositionsByWalletAndNetworkSpecification : Specification<PoolPosition>
 {
     public GetPositionsByWalletAndNetworkSpecification(UniswapNetwork uniswapNetwork, Wallet wallet)
     {

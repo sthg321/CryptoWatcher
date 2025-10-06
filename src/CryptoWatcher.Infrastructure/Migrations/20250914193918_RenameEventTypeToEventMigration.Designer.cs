@@ -171,7 +171,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.ToTable("Wallets");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.UniswapModule.Entities.PoolPosition", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Uniswap.Infrastructure.Entities.PoolPosition", b =>
                 {
                     b.Property<decimal>("PositionId")
                         .HasColumnType("numeric(20,0)");
@@ -197,7 +197,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.ToTable("PoolPositions");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.UniswapModule.Entities.PoolPositionSnapshot", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Uniswap.Infrastructure.Entities.PoolPositionSnapshot", b =>
                 {
                     b.Property<decimal>("PoolPositionId")
                         .HasColumnType("numeric(20,0)");
@@ -217,7 +217,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.ToTable("PoolPositionSnapshots");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.UniswapModule.Entities.UniswapNetwork", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Uniswap.Infrastructure.Entities.UniswapNetwork", b =>
                 {
                     b.Property<string>("Name")
                         .HasMaxLength(32)
@@ -555,9 +555,9 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Navigation("Wallet");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.UniswapModule.Entities.PoolPosition", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Uniswap.Infrastructure.Entities.PoolPosition", b =>
                 {
-                    b.HasOne("CryptoWatcher.UniswapModule.Entities.UniswapNetwork", "UniswapNetwork")
+                    b.HasOne("CryptoWatcher.Modules.Uniswap.Infrastructure.Entities.UniswapNetwork", "UniswapNetwork")
                         .WithMany("LiquidityPoolPositions")
                         .HasForeignKey("NetworkName")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -632,15 +632,15 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Navigation("Wallet");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.UniswapModule.Entities.PoolPositionSnapshot", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Uniswap.Infrastructure.Entities.PoolPositionSnapshot", b =>
                 {
-                    b.HasOne("CryptoWatcher.UniswapModule.Entities.PoolPosition", "PoolPosition")
+                    b.HasOne("CryptoWatcher.Modules.Uniswap.Infrastructure.Entities.PoolPosition", "PoolPosition")
                         .WithMany("PoolPositionSnapshots")
                         .HasForeignKey("PoolPositionId", "NetworkName")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("CryptoWatcher.UniswapModule.Entities.TokenInfoWithFee", "Token0", b1 =>
+                    b.OwnsOne("CryptoWatcher.Modules.Uniswap.Infrastructure.Entities.TokenInfoWithFee", "Token0", b1 =>
                         {
                             b1.Property<decimal>("PoolPositionSnapshotPoolPositionId")
                                 .HasColumnType("numeric(20,0)");
@@ -672,7 +672,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                                 .HasForeignKey("PoolPositionSnapshotPoolPositionId", "PoolPositionSnapshotNetworkName", "PoolPositionSnapshotDay");
                         });
 
-                    b.OwnsOne("CryptoWatcher.UniswapModule.Entities.TokenInfoWithFee", "Token1", b1 =>
+                    b.OwnsOne("CryptoWatcher.Modules.Uniswap.Infrastructure.Entities.TokenInfoWithFee", "Token1", b1 =>
                         {
                             b1.Property<decimal>("PoolPositionSnapshotPoolPositionId")
                                 .HasColumnType("numeric(20,0)");
@@ -748,12 +748,12 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Navigation("VaultEvents");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.UniswapModule.Entities.PoolPosition", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Uniswap.Infrastructure.Entities.PoolPosition", b =>
                 {
                     b.Navigation("PoolPositionSnapshots");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.UniswapModule.Entities.UniswapNetwork", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Uniswap.Infrastructure.Entities.UniswapNetwork", b =>
                 {
                     b.Navigation("LiquidityPoolPositions");
                 });

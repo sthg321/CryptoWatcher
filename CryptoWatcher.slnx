@@ -20,7 +20,9 @@
     <Project Path="src\modules\hyperliquid\CryptoWatcher.HyperliquidModule\CryptoWatcher.HyperliquidModule.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/src/modules/uniswap/">
-    <Project Path="src\modules\uniswap\CryptoWatcher.UniswapModule\CryptoWatcher.UniswapModule.csproj" Type="Classic C#" />
+    <Project Path="src\modules\uniswap\CryptoWatcher.Modules.Uniswap.Application\CryptoWatcher.Modules.Uniswap.Application.csproj" Type="Classic C#" />
+    <Project Path="src\modules\uniswap\CryptoWatcher.Modules.Uniswap.Infrastructure\CryptoWatcher.Modules.Uniswap.Infrastructure.csproj" Type="Classic C#" />
+    <Project Path="src\modules\uniswap\CryptoWatcher.Modules.Uniswap\CryptoWatcher.Modules.Uniswap.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/tests/" />
 </Solution>

@@ -24,6 +24,7 @@
         <ProjectReference Include="..\CryptoWatcher.Application\CryptoWatcher.Application.csproj"/>
         <ProjectReference Include="..\CryptoWatcher.Infrastructure\CryptoWatcher.Infrastructure.csproj"/>
         <ProjectReference Include="..\CryptoWatcher\CryptoWatcher.csproj"/>
+        <ProjectReference Include="..\modules\uniswap\CryptoWatcher.Modules.Uniswap.Application\CryptoWatcher.Modules.Uniswap.Application.csproj" />
     </ItemGroup>
 
     <ItemGroup>

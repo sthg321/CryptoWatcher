@@ -1,16 +1,10 @@
 using System.Runtime.CompilerServices;
+using CryptoWatcher.UniswapModule.Abstractions;
 using CryptoWatcher.UniswapModule.Models;
 using Nethereum.Web3;
 
 namespace CryptoWatcher.UniswapModule.Services.Unichain;
 
-public interface IUnichainEventFetcher
-{
-    IAsyncEnumerable<List<LiquidityPoolPositionEvent>> FetchLiquidityPoolEvents(string unichainRpc,
-        ulong fromBlock,
-        ulong toBlock,
-        CancellationToken ct = default);
-}
 
 public class UnichainEventFetcher : IUnichainEventFetcher
 {

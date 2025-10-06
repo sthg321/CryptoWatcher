@@ -1,4 +1,6 @@
 using CryptoWatcher.Abstractions.Reports;
+using CryptoWatcher.Modules.Uniswap.Application.Services.Unichain;
+using CryptoWatcher.UniswapModule.Abstractions;
 using CryptoWatcher.UniswapModule.Services;
 using CryptoWatcher.UniswapModule.Services.Unichain;
 using CryptoWatcher.UniswapModule.Specifications;

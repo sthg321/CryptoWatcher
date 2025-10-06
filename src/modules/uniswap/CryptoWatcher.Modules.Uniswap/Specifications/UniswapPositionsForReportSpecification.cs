@@ -1,4 +1,5 @@
 using Ardalis.Specification;
+using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.UniswapModule.Entities;
 
@@ -11,7 +12,7 @@ namespace CryptoWatcher.UniswapModule.Specifications;
 /// This specification filters <see cref="PoolPosition"/> entities to include only those snapshots
 /// whose date falls within the provided range. The included snapshots are ordered by their date.
 /// </remarks>
-internal sealed class UniswapPositionsForReportSpecification : Specification<PoolPosition>
+public sealed class UniswapPositionsForReportSpecification : Specification<PoolPosition>
 {
     public UniswapPositionsForReportSpecification(IReadOnlyCollection<Wallet> wallet, DateOnly from, DateOnly to)
     {

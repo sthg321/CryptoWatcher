@@ -2,7 +2,7 @@ using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.Shared.ValueObjects;
 using CryptoWatcher.ValueObjects;
 
-namespace CryptoWatcher.UniswapModule.Entities;
+namespace CryptoWatcher.Modules.Uniswap.Entities;
 
 public class PoolPositionCashFlow : ITokenPairCashFlow
 {
