@@ -1,6 +1,6 @@
 using CryptoWatcher.UniswapModule.Models;
 
-namespace CryptoWatcher.UniswapModule.Abstractions;
+namespace CryptoWatcher.Modules.Uniswap.Abstractions;
 
 public interface IUnichainEventFetcher
 {

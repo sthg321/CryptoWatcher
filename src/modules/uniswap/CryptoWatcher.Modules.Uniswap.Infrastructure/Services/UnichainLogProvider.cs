@@ -1,8 +1,9 @@
 using System.Runtime.CompilerServices;
+using CryptoWatcher.UniswapModule;
 using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Web3;
 
-namespace CryptoWatcher.UniswapModule.Services.Unichain;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 
 public interface IUnichainLogProvider
 {

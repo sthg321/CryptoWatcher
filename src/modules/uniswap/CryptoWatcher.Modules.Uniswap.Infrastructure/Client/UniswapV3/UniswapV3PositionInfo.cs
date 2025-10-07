@@ -1,4 +1,5 @@
 using System.Numerics;
+using CryptoWatcher.Modules.Uniswap.Abstractions;
 using UniswapClient.Models;
 
 namespace UniswapClient.UniswapV3;

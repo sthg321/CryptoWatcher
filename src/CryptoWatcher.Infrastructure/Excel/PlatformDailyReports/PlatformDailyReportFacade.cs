@@ -5,8 +5,8 @@ using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Aave;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Hyperliquid;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Uniswap;
 using CryptoWatcher.Models;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Extensions;
 using CryptoWatcher.Shared.Entities;
-using CryptoWatcher.UniswapModule.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CryptoWatcher.Infrastructure.Excel.PlatformDailyReports;

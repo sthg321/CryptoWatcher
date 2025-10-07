@@ -11,7 +11,6 @@ using CryptoWatcher.Modules.Uniswap.Application.Services.Unichain;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.UniswapModule.Entities;
-using CryptoWatcher.UniswapModule.Services.Unichain;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

@@ -1,8 +1,10 @@
+using CryptoWatcher.Modules.Uniswap.Application.Services.Unichain;
 using CryptoWatcher.Shared.ValueObjects;
+using CryptoWatcher.UniswapModule;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.RPC.Eth.DTOs;
 
-namespace CryptoWatcher.UniswapModule.Services.Unichain;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 
 public interface IUnichainLogReader
 {

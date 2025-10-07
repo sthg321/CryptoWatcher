@@ -1,8 +1,8 @@
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Extensions;
 using Nethereum.Contracts;
 using Nethereum.Contracts.QueryHandlers.MultiCall;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Web3;
-using UniswapClient.Extensions;
 using UniswapClient.Models;
 using UniswapClient.UniswapV3.LiquidityPool.Contracts;
 

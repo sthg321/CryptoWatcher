@@ -1,15 +1,13 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
-using CryptoWatcher.UniswapModule.Abstractions;
+using CryptoWatcher.Modules.Uniswap.Abstractions;
+using CryptoWatcher.Modules.Uniswap.Specifications;
+ 
 using CryptoWatcher.UniswapModule.Entities;
-using CryptoWatcher.UniswapModule.Specifications;
-
-namespace CryptoWatcher.UniswapModule.Services;
-
-/// <summary>
-/// <see cref="IPoolHistorySyncRepositoryFacade"/>
-/// </summary>
+ 
+namespace CryptoWatcher.Modules.Uniswap.Application.Services;
+ 
 public class PoolHistorySyncRepositoryFacade : IPoolHistorySyncRepositoryFacade
 {
     private readonly IRepository<PoolPosition> _liquidityPoolPositionRepository;

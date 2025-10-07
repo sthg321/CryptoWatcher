@@ -1,5 +1,6 @@
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Uniswap.Mappers;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Uniswap.Models;
+using CryptoWatcher.Modules.Uniswap.Models;
 using CryptoWatcher.UniswapModule.Models;
 using SpreadCheetah;
 using SpreadCheetah.SourceGeneration;

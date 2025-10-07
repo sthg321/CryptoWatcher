@@ -1,7 +1,8 @@
 using CryptoWatcher.Models;
 using CryptoWatcher.Shared.ValueObjects;
+using CryptoWatcher.UniswapModule.Models;
 
-namespace CryptoWatcher.UniswapModule.Models;
+namespace CryptoWatcher.Modules.Uniswap.Models;
 
 /// <summary>
 /// Represents a report that summarizes the position of a Uniswap pool.

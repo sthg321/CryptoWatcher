@@ -1,5 +1,6 @@
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Abstractions;
 using CryptoWatcher.Models;
+using CryptoWatcher.Modules.Uniswap.Models;
 using CryptoWatcher.UniswapModule.Models;
 using SpreadCheetah;
 

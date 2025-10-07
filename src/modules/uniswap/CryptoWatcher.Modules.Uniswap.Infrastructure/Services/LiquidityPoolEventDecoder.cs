@@ -1,16 +1,11 @@
 using System.Numerics;
+using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Shared.ValueObjects;
 using CryptoWatcher.UniswapModule.Models;
 using Nethereum.ABI.FunctionEncoding;
 using Nethereum.ABI.Model;
 
-namespace CryptoWatcher.UniswapModule.Services;
-
-public interface ILiquidityPoolEventDecoder
-{
-    LiquidityPoolPositionEvent DecodeModifyLiquidityEvent(string fromAddress, string data,
-        TokenPair tokenPair);
-}
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 
 public class LiquidityPoolEventDecoder : ILiquidityPoolEventDecoder
 {

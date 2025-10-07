@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace UniswapClient.Models;
+namespace CryptoWatcher.Modules.Uniswap.Abstractions;
 
 public interface IUniswapPosition
 {

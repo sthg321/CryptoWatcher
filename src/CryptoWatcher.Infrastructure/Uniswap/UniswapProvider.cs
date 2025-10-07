@@ -1,3 +1,5 @@
+using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Uniswap.Mappers;
+using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.UniswapModule.Abstractions;
@@ -7,7 +9,6 @@ using Nethereum.Web3;
 using UniswapClient.Models;
 using UniswapClient.UniswapV3;
 using UniswapClient.UniswapV4;
-using LiquidityPoolMapper = CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Uniswap.Mappers.LiquidityPoolMapper;
 
 namespace CryptoWatcher.Infrastructure.Uniswap;
 
@@ -54,13 +55,13 @@ internal class UniswapProvider : IUniswapProvider
                 "Only v3 and v4 protocol supported")
         };
 
-        return LiquidityPoolMapper.MapToLiquidityPool(pool);
+        return pool.MapToLiquidityPool();
     }
 
     private async Task<LiquidityPoolInfo> GetV3PoolAsync(UniswapNetwork uniswapNetwork, IUniswapPosition position)
     {
         var web3 = new Web3(uniswapNetwork.RpcUrl);
-        
+
         var poolAddress = await _uniswapV3Client.PoolFactory.GetPoolAddressAsync(web3,
             uniswapNetwork.PoolFactoryAddress, position.Token0, position.Token1);
 

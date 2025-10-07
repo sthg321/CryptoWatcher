@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
 using System.Numerics;
 
-namespace CryptoWatcher.UniswapModule.Services.Unichain;
+namespace CryptoWatcher.Modules.Uniswap.Application.Services.Unichain;
 
 public class Item
 {

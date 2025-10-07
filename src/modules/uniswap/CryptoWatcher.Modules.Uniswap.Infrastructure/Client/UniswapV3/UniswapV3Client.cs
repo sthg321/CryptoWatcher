@@ -1,3 +1,4 @@
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.PositionsFetcher;
 using UniswapClient.UniswapV3.LiquidityPool;
 using UniswapClient.UniswapV3.LiquidityPoolFactory;
 using UniswapClient.UniswapV3.PositionsFetcher;

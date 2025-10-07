@@ -1,9 +1,8 @@
 using Ardalis.Specification;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
-using CryptoWatcher.UniswapModule.Entities;
 
-namespace CryptoWatcher.UniswapModule.Specifications;
+namespace CryptoWatcher.Modules.Uniswap.Specifications;
 
 /// <summary>
 /// A specification for querying Uniswap pool positions within a specified date range for reporting purposes.

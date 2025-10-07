@@ -1,4 +1,5 @@
 using System.Numerics;
+using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Shared.ValueObjects;
 using CryptoWatcher.UniswapModule.Helpers;
 using CryptoWatcher.UniswapModule.Models;

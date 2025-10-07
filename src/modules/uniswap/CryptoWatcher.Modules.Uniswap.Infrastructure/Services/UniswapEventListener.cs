@@ -1,9 +1,9 @@
 using System.Runtime.CompilerServices;
-using CryptoWatcher.UniswapModule.Abstractions;
 using CryptoWatcher.UniswapModule.Models;
+using CryptoWatcher.Modules.Uniswap.Abstractions;
 using Nethereum.Web3;
 
-namespace CryptoWatcher.UniswapModule.Services.Unichain;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 
 
 public class UnichainEventFetcher : IUnichainEventFetcher

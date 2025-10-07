@@ -1,3 +1,4 @@
+using CryptoWatcher.Modules.Uniswap.Abstractions;
 using Nethereum.Web3;
 using UniswapClient.Models;
 using UniswapClient.UniswapV4.PositionsFetcher.Contracts;

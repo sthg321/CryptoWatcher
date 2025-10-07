@@ -20,7 +20,6 @@
     <ItemGroup>
         <ProjectReference Include="..\..\clients\AaveClient\AaveClient.csproj"/>
         <ProjectReference Include="..\..\clients\CoinGeckoClient\CoinGeckoClient.csproj"/>
-        <ProjectReference Include="..\..\clients\UniswapClient\UniswapClient.csproj"/>
         <ProjectReference Include="..\CryptoWatcher.Application\CryptoWatcher.Application.csproj"/>
         <ProjectReference Include="..\CryptoWatcher.Infrastructure\CryptoWatcher.Infrastructure.csproj"/>
         <ProjectReference Include="..\CryptoWatcher\CryptoWatcher.csproj"/>
