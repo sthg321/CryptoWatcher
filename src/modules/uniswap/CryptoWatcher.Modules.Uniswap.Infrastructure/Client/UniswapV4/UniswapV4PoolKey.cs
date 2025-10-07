@@ -1,6 +1,6 @@
-namespace UniswapClient.UniswapV4;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4;
 
-public class UniswapV4PoolKey
+internal class UniswapV4PoolKey
 {
     public string Currency0 { get; init; } = null!;
 

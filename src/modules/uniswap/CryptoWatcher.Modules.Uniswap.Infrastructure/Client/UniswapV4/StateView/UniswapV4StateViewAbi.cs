@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace UniswapClient.UniswapV4.StateView;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.StateView;
 
 internal static class UniswapV4StateViewAbi
 {

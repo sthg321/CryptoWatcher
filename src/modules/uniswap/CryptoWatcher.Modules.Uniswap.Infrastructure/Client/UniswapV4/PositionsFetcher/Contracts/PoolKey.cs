@@ -1,8 +1,8 @@
 using Nethereum.ABI.FunctionEncoding.Attributes;
 
-namespace UniswapClient.UniswapV4.PositionsFetcher.Contracts;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.PositionsFetcher.Contracts;
 
-public class PoolKey
+internal class PoolKey
 {
     [Parameter("address", "currency0", 1)] public string Currency0 { get; set; } = null!;
 

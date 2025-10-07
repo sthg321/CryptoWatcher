@@ -1,16 +1,15 @@
-using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Uniswap.Mappers;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Mappers;
 using CryptoWatcher.Shared.Entities;
-using CryptoWatcher.UniswapModule.Abstractions;
 using CryptoWatcher.UniswapModule.Entities;
 using CryptoWatcher.UniswapModule.Models;
 using Nethereum.Web3;
 using UniswapClient.Models;
-using UniswapClient.UniswapV3;
-using UniswapClient.UniswapV4;
 
-namespace CryptoWatcher.Infrastructure.Uniswap;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 
 /// <summary>
 /// <see cref="IUniswapProvider"/> 

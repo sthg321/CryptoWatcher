@@ -1,11 +1,10 @@
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.LiquidityPool;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.LiquidityPoolFactory;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.PositionsFetcher;
-using UniswapClient.UniswapV3.LiquidityPool;
-using UniswapClient.UniswapV3.LiquidityPoolFactory;
-using UniswapClient.UniswapV3.PositionsFetcher;
 
-namespace UniswapClient.UniswapV3;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3;
 
-public class UniswapV3Client
+internal class UniswapV3Client
 {
     public UniswapV3Client(IUniswapV3LiquidityPool liquidityPool, IUniswapV3PoolFactory poolFactory,
         IUniswapV3PositionFetcher positionFetcher)

@@ -1,4 +1,4 @@
-namespace UniswapClient.UniswapV4.UniswapAppApiClient.Contracts;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.UniswapAppApiClient.Contracts;
 
 internal record GetPositionsRequest(
     string Address,

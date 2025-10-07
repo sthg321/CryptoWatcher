@@ -1,11 +1,9 @@
 using System.Numerics;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
-using UniswapClient.Models;
-using UniswapClient.UniswapV4.StateView;
 
-namespace UniswapClient.UniswapV4;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4;
 
-public class UniswapV4PositionInfo : IUniswapPosition
+internal class UniswapV4PositionInfo : IUniswapPosition
 {
     public required string Token0 { get; init; } = null!;
     

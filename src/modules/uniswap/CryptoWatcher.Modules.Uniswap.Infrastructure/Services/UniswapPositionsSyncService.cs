@@ -1,14 +1,14 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
+using CryptoWatcher.Modules.Uniswap.Infrastructure;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.Shared.ValueObjects;
-using CryptoWatcher.UniswapModule.Abstractions;
 using CryptoWatcher.UniswapModule.Entities;
 using CryptoWatcher.UniswapModule.Models;
 using CryptoWatcher.ValueObjects;
 using Microsoft.Extensions.Logging;
-using UniswapClient.Models;
 
 namespace CryptoWatcher.UniswapModule.Specifications;
 

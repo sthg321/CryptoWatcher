@@ -1,3 +1,3 @@
-namespace UniswapClient.UniswapV4.UniswapAppApiClient.Contracts;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.UniswapAppApiClient.Contracts;
 
-public record PoolPosition(string TokenId);
+internal record PoolPosition(string TokenId);

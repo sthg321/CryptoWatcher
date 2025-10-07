@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Numerics;
 
-namespace UniswapClient.UniswapV4.PositionsFetcher;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.PositionsFetcher;
 
 internal struct PositionInfo
 {

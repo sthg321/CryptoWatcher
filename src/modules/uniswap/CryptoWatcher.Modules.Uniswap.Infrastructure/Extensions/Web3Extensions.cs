@@ -3,7 +3,7 @@ using Nethereum.Web3;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Extensions;
 
-public static class Web3Extensions
+internal static class Web3Extensions
 {
     public static async Task<List<byte[]>> MultiCallAsync(
         this IWeb3 web3,

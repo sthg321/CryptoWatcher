@@ -19,12 +19,10 @@ using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Uniswap;
 using CryptoWatcher.Infrastructure.Hyperliquid;
 using CryptoWatcher.Infrastructure.Integrations;
 using CryptoWatcher.Infrastructure.Services;
-using CryptoWatcher.Infrastructure.Uniswap;
 using CryptoWatcher.Integrations;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Services;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Extensions;
-using CryptoWatcher.UniswapModule.Abstractions;
 using CryptoWatcher.UniswapModule.Services;
 using HyperliquidClient.Extensions;
 using Microsoft.Extensions.DependencyInjection;
@@ -101,7 +99,6 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddConfiguredUniswapModule(this IServiceCollection services)
     { 
         services.AddUniswapModule()
-            .AddSingleton<IUniswapProvider, UniswapProvider>()
             .AddSingleton<IDailyExcelSheetBuilder, UniswapDailyExcelSheetBuilder>()
             .AddSingleton<UniswapDailyReportExcelWorksheetWriter>();
 

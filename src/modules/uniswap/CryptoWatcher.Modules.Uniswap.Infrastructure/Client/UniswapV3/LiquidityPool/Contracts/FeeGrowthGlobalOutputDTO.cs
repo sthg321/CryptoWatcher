@@ -1,7 +1,7 @@
 using System.Numerics;
 using Nethereum.ABI.FunctionEncoding.Attributes;
 
-namespace UniswapClient.UniswapV3.LiquidityPool.Contracts;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.LiquidityPool.Contracts;
 
 [FunctionOutput]
 internal class FeeGrowthGlobalOutputDTO : IFunctionOutputDTO

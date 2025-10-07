@@ -1,5 +1,4 @@
 using System.Runtime.CompilerServices;
-using CryptoWatcher.UniswapModule;
 using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Web3;
 
@@ -11,7 +10,7 @@ public interface IUnichainLogProvider
         CancellationToken ct = default);
 }
 
-public class UnichainLogProvider : IUnichainLogProvider
+internal class UnichainLogProvider : IUnichainLogProvider
 {
     private const ulong ChunkSize = 100;
 

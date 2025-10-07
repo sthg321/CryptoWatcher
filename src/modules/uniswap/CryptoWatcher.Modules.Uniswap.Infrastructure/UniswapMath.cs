@@ -1,37 +1,14 @@
 using System.Numerics;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Helpers;
+using CryptoWatcher.Modules.Uniswap.Models;
 using CryptoWatcher.Shared.ValueObjects;
-using CryptoWatcher.UniswapModule.Helpers;
 using CryptoWatcher.UniswapModule.Models;
-using UniswapClient.Models;
 
-namespace CryptoWatcher.UniswapModule;
-
-// ReSharper disable InconsistentNaming
-/// <summary>
-/// Provides mathematical operations and utilities for Uniswap liquidity pools and positions.
-/// </summary>
-public interface IUniswapMath
-{
-    /// <summary>
-    /// Calculates the position details within a specified liquidity pool based on the given token position and pool data.
-    /// </summary>
-    /// <param name="pool">The liquidity pool containing the current state of the pool.</param>
-    /// <param name="position">The Uniswap position information of the token, including its bounds and liquidity.</param>
-    /// <returns>An instance of PositionInPool containing the position ID, associated token pair information, and range status.</returns>
-    PositionInPool CalculatePosition(LiquidityPool pool, IUniswapPosition position);
-
-    /// <summary>
-    /// Calculates the claimable fee for a given liquidity pool position, based on the current and range price boundaries..
-    /// </summary>
-    /// <param name="pool">The liquidity pool object containing the current state of the pool.</param>
-    /// <param name="position">The Uniswap position associated with the liquidity pool.</param>
-    /// <returns>A <see cref="TokenPair"/> object representing the claimable fees for token0 and token1.</returns>
-    TokenPair CalculateClaimableFee(LiquidityPool pool, IUniswapPosition position);
-}
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure;
 
 // ReSharper disable InconsistentNaming
-public class UniswapMath : IUniswapMath
+internal class UniswapMath : IUniswapMath
 {
     private static readonly BigInteger Q96 = BigInteger.Pow(2, 96);
 

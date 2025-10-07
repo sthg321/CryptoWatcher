@@ -1,9 +1,8 @@
-using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.UniswapModule.Entities;
 using CryptoWatcher.UniswapModule.Models;
 
-namespace CryptoWatcher.UniswapModule.Abstractions;
+namespace CryptoWatcher.Modules.Uniswap.Abstractions;
 
 /// <summary>
 /// Defines methods for interacting with Uniswap to retrieve and manage Uniswap positions and liquidity pools.

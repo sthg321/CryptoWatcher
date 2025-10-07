@@ -7,7 +7,7 @@ using Nethereum.ABI.Model;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 
-public class LiquidityPoolEventDecoder : ILiquidityPoolEventDecoder
+internal class LiquidityPoolEventDecoder : ILiquidityPoolEventDecoder
 {
     private static readonly ParameterDecoder Decoder = new();
 

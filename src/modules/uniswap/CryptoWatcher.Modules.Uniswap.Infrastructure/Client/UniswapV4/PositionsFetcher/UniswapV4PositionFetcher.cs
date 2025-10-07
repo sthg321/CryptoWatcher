@@ -1,12 +1,12 @@
 using CryptoWatcher.Modules.Uniswap.Abstractions;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.PositionsFetcher.Contracts;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.StateView;
 using Nethereum.Web3;
 using UniswapClient.Models;
-using UniswapClient.UniswapV4.PositionsFetcher.Contracts;
-using UniswapClient.UniswapV4.StateView;
 
-namespace UniswapClient.UniswapV4.PositionsFetcher;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.PositionsFetcher;
 
-public interface IUniswapV4PositionFetcher
+internal interface IUniswapV4PositionFetcher
 {
     Task<List<IUniswapPosition>> GetPositionsDataAsync(NetworkInfo network,
         string walletAddress);

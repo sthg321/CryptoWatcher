@@ -1,6 +1,6 @@
 using Nethereum.ABI.FunctionEncoding.Attributes;
 
-namespace UniswapClient.UniswapV3.LiquidityPoolFactory.Contracts;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.LiquidityPoolFactory.Contracts;
 
 internal class PoolInfo
 {

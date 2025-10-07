@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace UniswapClient.UniswapV4.PositionsFetcher;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.PositionsFetcher;
 
 internal static class UniswapV4PositionFetcherAbi
 {

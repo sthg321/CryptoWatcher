@@ -1,10 +1,10 @@
 using System.Numerics;
 using Nethereum.ABI.FunctionEncoding.Attributes;
 
-namespace UniswapClient.UniswapV4.StateView.Contracts;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.StateView.Contracts;
 
 [FunctionOutput]
-public class GetFeeGrowthGlobalsOutput : IFunctionOutputDTO
+internal class GetFeeGrowthGlobalsOutput : IFunctionOutputDTO
 {
     [Parameter("uint256", "feeGrowthGlobal0", 1)]
     public BigInteger FeeGrowthGlobal0 { get; set; }

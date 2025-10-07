@@ -1,6 +1,6 @@
 using CryptoWatcher.Shared.ValueObjects;
 
-namespace CryptoWatcher.UniswapModule.Models;
+namespace CryptoWatcher.Modules.Uniswap.Models;
 
 /// <summary>
 /// Represents a position within a liquidity pool in the Uniswap protocol.

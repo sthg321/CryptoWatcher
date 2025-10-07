@@ -1,11 +1,11 @@
 using System.Numerics;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.StateView.Contracts;
 using Nethereum.ABI;
 using Nethereum.Web3;
-using UniswapClient.UniswapV4.StateView.Contracts;
 
-namespace UniswapClient.UniswapV4.StateView;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.StateView;
 
-public interface IUniswapV4StateView
+internal interface IUniswapV4StateView
 {
     Task<GetSlot0OutputDTO> GetSlot0Async(IWeb3 web3, UniswapV4PoolKey poolId25);
   

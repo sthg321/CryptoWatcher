@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace UniswapClient.UniswapV3.LiquidityPoolFactory;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.LiquidityPoolFactory;
 
 internal static class PoolFactoryAbi
 {

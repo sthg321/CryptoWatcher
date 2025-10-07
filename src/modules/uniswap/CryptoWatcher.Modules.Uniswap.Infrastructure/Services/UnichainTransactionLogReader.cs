@@ -1,6 +1,5 @@
 using CryptoWatcher.Modules.Uniswap.Application.Services.Unichain;
 using CryptoWatcher.Shared.ValueObjects;
-using CryptoWatcher.UniswapModule;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.RPC.Eth.DTOs;
 
@@ -12,7 +11,7 @@ public interface IUnichainLogReader
         string transactionHash, FilterLog[] logs, CancellationToken ct = default);
 }
 
-public class UnichainLogReader : IUnichainLogReader
+internal class UnichainLogReader : IUnichainLogReader
 {
     private readonly IUnichainInternalTransactionProvider _internalTransactionProvider;
 

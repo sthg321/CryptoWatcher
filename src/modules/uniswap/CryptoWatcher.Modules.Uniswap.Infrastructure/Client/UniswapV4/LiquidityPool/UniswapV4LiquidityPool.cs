@@ -1,10 +1,10 @@
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.StateView;
 using Nethereum.Web3;
 using UniswapClient.Models;
-using UniswapClient.UniswapV4.StateView;
 
-namespace UniswapClient.UniswapV4.LiquidityPool;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.LiquidityPool;
 
-public interface IUniswapV4LiquidityPool
+internal interface IUniswapV4LiquidityPool
 {
     Task<LiquidityPoolInfo> GetPoolAsync(IWeb3 web3,  UniswapV4PositionInfo position);
 }

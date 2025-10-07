@@ -2,9 +2,9 @@ using System.Net.Http.Json;
 using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
-using UniswapClient.UniswapV4.UniswapAppApiClient.Contracts;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.UniswapAppApiClient.Contracts;
 
-namespace UniswapClient.UniswapV4.UniswapAppApiClient;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.UniswapAppApiClient;
 
 internal class UniswapAppApiClient
 {

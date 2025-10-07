@@ -1,20 +1,20 @@
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.LiquidityPool.Contracts;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Extensions;
 using Nethereum.Contracts;
 using Nethereum.Contracts.QueryHandlers.MultiCall;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Web3;
 using UniswapClient.Models;
-using UniswapClient.UniswapV3.LiquidityPool.Contracts;
 
-namespace UniswapClient.UniswapV3.LiquidityPool;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.LiquidityPool;
 
-public interface IUniswapV3LiquidityPool
+internal interface IUniswapV3LiquidityPool
 {
     Task<LiquidityPoolInfo> GetPoolInfoAsync(IWeb3 web3, string poolAddress,  string multiCallAddress,
         int tickLower, int tickUpper);
 }
 
-public class UniswapV3LiquidityPool : IUniswapV3LiquidityPool
+internal class UniswapV3LiquidityPool : IUniswapV3LiquidityPool
 {
     public async Task<LiquidityPoolInfo> GetPoolInfoAsync(IWeb3 web3, string poolAddress, string multiCallAddress,
         int tickLower, int tickUpper)

@@ -1,14 +1,14 @@
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.LiquidityPoolFactory.Contracts;
 using Nethereum.Web3;
-using UniswapClient.UniswapV3.LiquidityPoolFactory.Contracts;
 
-namespace UniswapClient.UniswapV3.LiquidityPoolFactory;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.LiquidityPoolFactory;
 
-public interface IUniswapV3PoolFactory
+internal interface IUniswapV3PoolFactory
 {
     Task<string> GetPoolAddressAsync(IWeb3 web3, string poolFactoryAddress, string token0, string token1);
 }
 
-public class UniswapV3PoolFactory : IUniswapV3PoolFactory
+internal class UniswapV3PoolFactory : IUniswapV3PoolFactory
 {
     public async Task<string> GetPoolAddressAsync(IWeb3 web3, string poolFactoryAddress, string token0, string token1)
     {

@@ -1,10 +1,10 @@
 using System.Numerics;
 using Nethereum.ABI.FunctionEncoding.Attributes;
 
-namespace UniswapClient.UniswapV3.PositionsFetcher.Contracts;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.PositionsFetcher.Contracts;
 
 [FunctionOutput]
-public class PositionsOutputDTO : IFunctionOutputDTO
+internal class PositionsOutputDTO : IFunctionOutputDTO
 {
     [Parameter("uint96", "nonce", 1)] public BigInteger Nonce { get; set; }
     

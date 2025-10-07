@@ -1,9 +1,9 @@
-using UniswapClient.UniswapV4.LiquidityPool;
-using UniswapClient.UniswapV4.PositionsFetcher;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.LiquidityPool;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.PositionsFetcher;
 
-namespace UniswapClient.UniswapV4;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4;
 
-public class UniswapV4Client
+internal class UniswapV4Client
 {
     public UniswapV4Client(IUniswapV4LiquidityPool liquidityPool, IUniswapV4PositionFetcher positionFetcher)
     {

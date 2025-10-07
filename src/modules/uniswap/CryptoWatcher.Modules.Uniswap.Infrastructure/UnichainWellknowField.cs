@@ -1,6 +1,6 @@
-namespace CryptoWatcher.UniswapModule;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure;
 
-internal class UnichainWellKnownField
+internal static class UnichainWellKnownField
 {
     public const string V4PositionManagerAddress =
         "0x0000000000000000000000004529a01c7a0410167c5740c487a8de60232617bf";

@@ -5,8 +5,7 @@ using Nethereum.Web3;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 
-
-public class UnichainEventFetcher : IUnichainEventFetcher
+internal class UnichainEventFetcher : IUnichainEventFetcher
 {
     private readonly IUnichainLogProvider _unichainLogProvider;
     private readonly ILiquidityPoolEventDecoder _liquidityPoolEventDecoder;

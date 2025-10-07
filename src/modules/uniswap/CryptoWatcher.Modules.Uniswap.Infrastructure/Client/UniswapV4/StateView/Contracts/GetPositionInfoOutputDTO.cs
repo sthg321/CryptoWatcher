@@ -1,10 +1,10 @@
 using System.Numerics;
 using Nethereum.ABI.FunctionEncoding.Attributes;
 
-namespace UniswapClient.UniswapV4.StateView.Contracts;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.StateView.Contracts;
 
 [FunctionOutput]
-public class GetPositionInfoOutputDTO : IFunctionOutputDTO
+internal class GetPositionInfoOutputDTO : IFunctionOutputDTO
 {
     [Parameter("uint128", "liquidity", 1)] public BigInteger Liquidity { get; set; }
 

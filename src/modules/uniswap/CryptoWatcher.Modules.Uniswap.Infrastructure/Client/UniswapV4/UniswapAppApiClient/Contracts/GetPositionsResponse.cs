@@ -1,3 +1,3 @@
-namespace UniswapClient.UniswapV4.UniswapAppApiClient.Contracts;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.UniswapAppApiClient.Contracts;
 
-public record GetPositionsResponse(IReadOnlyCollection<Position> Positions);
+internal record GetPositionsResponse(IReadOnlyCollection<Position> Positions);

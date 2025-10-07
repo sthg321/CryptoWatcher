@@ -1,4 +1,4 @@
-namespace CryptoWatcher.UniswapModule.Abstractions;
+namespace CryptoWatcher.Modules.Uniswap.Abstractions;
 
 public interface ICurrentBlockProvider
 {
