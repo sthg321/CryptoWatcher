@@ -1,5 +1,6 @@
 using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
+using CryptoWatcher.Modules.Uniswap.Application.Services;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Unichain;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.LiquidityPool;

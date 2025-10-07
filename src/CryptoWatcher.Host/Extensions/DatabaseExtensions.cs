@@ -1,8 +1,8 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Infrastructure;
 using CryptoWatcher.Modules.Uniswap.Entities;
+using CryptoWatcher.Modules.Uniswap.ValueObjects;
 using CryptoWatcher.Shared.Entities;
-using CryptoWatcher.UniswapModule.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace CryptoWatcher.Host.Extensions;
@@ -17,19 +17,22 @@ public static class DatabaseExtensions
             optionsBuilder.UseNpgsql(connectionString);
             optionsBuilder.UseSeeding((context, b) =>
             {
-                if (!context.Set<UniswapNetwork>().Any())
+                if (!context.Set<UniswapChainConfiguration>().Any())
                 {
-                    context.Set<UniswapNetwork>().Add(new UniswapNetwork
+                    context.Set<UniswapChainConfiguration>().Add(new UniswapChainConfiguration
                     {
                         Name = "Unichain",
                         RpcUrl = "https://mainnet.unichain.org",
-                        NftManagerAddress = "0x4529a01c7a0410167c5740c487a8de60232617bf",
-                        PoolFactoryAddress = "0x1f98400000000000000000000000000000000004",
-                        MultiCallAddress = "0xb7610f9b733e7d45184be3a1bc966960ccc54f0b",
+                        SmartContractAddresses = new UniswapAddresses
+                        {
+                            NftManager = "0x4529a01c7a0410167c5740c487a8de60232617bf",
+                            PoolFactory = "0x1f98400000000000000000000000000000000004",
+                            MultiCall = "0xb7610f9b733e7d45184be3a1bc966960ccc54f0b",
+                        },
                         ProtocolVersion = UniswapProtocolVersion.V4
                     });
                 }
-                
+
                 if (!context.Set<Wallet>().Any())
                 {
                     context.Set<Wallet>().Add(new Wallet
@@ -37,7 +40,7 @@ public static class DatabaseExtensions
                         Address = "0xeb9191d780c0aB6Ab320C5F05E41ebF81f14255f"
                     });
                 }
-                
+
                 context.SaveChanges();
             });
         });

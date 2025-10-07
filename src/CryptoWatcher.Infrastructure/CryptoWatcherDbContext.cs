@@ -3,7 +3,6 @@ using CryptoWatcher.Abstractions;
 using CryptoWatcher.HyperliquidModule.Entities;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
-using CryptoWatcher.UniswapModule.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using SmartEnum.EFCore;
@@ -52,7 +51,7 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
     /// details such as RPC URLs, contract addresses, and associated historical data, which are
     /// critical for interacting with and monitoring blockchain states.
     /// </remarks>
-    public DbSet<UniswapNetwork> Networks => Set<UniswapNetwork>();
+    public DbSet<UniswapChainConfiguration> UniswapChainConfigurations => Set<UniswapChainConfiguration>();
 
     /// <summary>
     /// Represents the collection of user wallet entities within the application's database context.

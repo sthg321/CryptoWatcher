@@ -1,5 +1,6 @@
 using System.Numerics;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
+using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.PositionsFetcher.Contracts;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Extensions;
 using Nethereum.Contracts;
@@ -13,37 +14,38 @@ namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.Position
 
 public interface IUniswapV3PositionFetcher
 {
-    Task<List<IUniswapPosition>> GetPositionsDataAsync(NetworkInfo network,
+    Task<List<IUniswapPosition>> GetPositionsDataAsync(UniswapChainConfiguration chain,
         string walletAddress);
 }
 
 internal class UniswapV3PositionFetcher : IUniswapV3PositionFetcher
 {
-    public async Task<List<IUniswapPosition>> GetPositionsDataAsync(NetworkInfo network,
+    public async Task<List<IUniswapPosition>> GetPositionsDataAsync(UniswapChainConfiguration chain,
         string walletAddress)
     {
-        var web3 = new Web3(network.NetworkUrl);
-        var balance = await web3.Eth.ERC20.GetContractService(network.NftManagerAddress)
+        var web3 = new Web3(chain.RpcUrl);
+        var balance = await web3.Eth.ERC20.GetContractService(chain.SmartContractAddresses.NftManager)
             .BalanceOfQueryAsync(walletAddress);
 
-        var tokenIds = await GetTokenIdsAsync(web3, network, walletAddress, balance);
+        var tokenIds = await GetTokenIdsAsync(web3, chain, walletAddress, balance);
 
-        return await GetPositionsDataAsync(web3, network, tokenIds);
+        return await GetPositionsDataAsync(web3, chain, tokenIds);
     }
 
-    private static async Task<List<BigInteger>> GetTokenIdsAsync(IWeb3 web3, NetworkInfo network, string walletAddress,
+    private static async Task<List<BigInteger>> GetTokenIdsAsync(IWeb3 web3, UniswapChainConfiguration chain,
+        string walletAddress,
         BigInteger count)
     {
         var calls = Enumerable.Range(0, (int)count).Select(i => new Call
         {
-            Target = network.NftManagerAddress, CallData = new TokenOfOwnerByIndexFunction
+            Target = chain.SmartContractAddresses.NftManager, CallData = new TokenOfOwnerByIndexFunction
             {
                 Owner = walletAddress,
                 Index = i
             }.GetCallData()
         }).ToList();
 
-        return await web3.MultiCallAsync(calls, network.MultiCallAddress,
+        return await web3.MultiCallAsync(calls, chain.SmartContractAddresses.MultiCall,
             bytes =>
             {
                 var response = new TokenOfOwnerByIndexOutputDTO().DecodeOutput(bytes.ToHex());
@@ -51,16 +53,16 @@ internal class UniswapV3PositionFetcher : IUniswapV3PositionFetcher
             });
     }
 
-    private static async Task<List<IUniswapPosition>> GetPositionsDataAsync(IWeb3 web3, NetworkInfo network,
+    private static async Task<List<IUniswapPosition>> GetPositionsDataAsync(IWeb3 web3, UniswapChainConfiguration chain,
         List<BigInteger> tokenIds)
     {
         var calls = tokenIds.Select(tokenId => new Call
             {
-                Target = network.NftManagerAddress, CallData = new PositionsFunction { TokenId = tokenId }.GetCallData()
+                Target = chain.SmartContractAddresses.NftManager, CallData = new PositionsFunction { TokenId = tokenId }.GetCallData()
             })
             .ToList();
 
-        var result = await web3.MultiCallAsync(calls, network.MultiCallAddress,
+        var result = await web3.MultiCallAsync(calls, chain.SmartContractAddresses.NftManager,
             bytes => new PositionsOutputDTO().DecodeOutput(bytes.ToHex()));
 
         return result.Select((output, i) => new UniswapV3PositionInfo

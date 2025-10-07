@@ -3,7 +3,6 @@ using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.Shared.ValueObjects;
-using CryptoWatcher.UniswapModule.Entities;
 using CryptoWatcher.UniswapModule.Models;
 using CryptoWatcher.ValueObjects;
 using Microsoft.Extensions.Logging;
@@ -19,11 +18,11 @@ public interface IUniswapPositionsSyncService
     /// Synchronizes Uniswap positions for a specified wallet and network on a given day.
     /// </summary>
     /// <param name="wallet">The cryptocurrency wallet for which to synchronize Uniswap positions.</param>
-    /// <param name="network">The Uniswap network to connect to for synchronization.</param>
+    /// <param name="chainConfiguration">The Uniswap network to connect to for synchronization.</param>
     /// <param name="syncDay">The date for which the Uniswap positions should be synchronized.</param>
     /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    Task SyncUniswapPositionsAsync(Wallet wallet, UniswapNetwork network, DateOnly syncDay,
+    Task SyncUniswapPositionsAsync(Wallet wallet, UniswapChainConfiguration chainConfiguration, DateOnly syncDay,
         CancellationToken ct = default);
 }
 
@@ -54,20 +53,20 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
         _repositoryFacade = repositoryFacade;
     }
 
-    public async Task SyncUniswapPositionsAsync(Wallet wallet, UniswapNetwork network, DateOnly syncDay,
+    public async Task SyncUniswapPositionsAsync(Wallet wallet, UniswapChainConfiguration chainConfiguration, DateOnly syncDay,
         CancellationToken ct = default)
     {
-        var uniswapPositions = await _providerFactory.GetPositionsAsync(network, wallet);
+        var uniswapPositions = await _providerFactory.GetPositionsAsync(chainConfiguration, wallet);
 
         if (uniswapPositions.Count == 0)
         {
-            _logger.NoPositionsFound(wallet.Address, network.Name);
+            _logger.NoPositionsFound(wallet.Address, chainConfiguration.Name);
             return;
         }
 
-        _logger.PositionsFound(uniswapPositions.Count, wallet.Address, network.Name);
+        _logger.PositionsFound(uniswapPositions.Count, wallet.Address, chainConfiguration.Name);
 
-        var existedPositions = (await _repositoryFacade.GetLiquidityPoolPositionsAsync(network, wallet, ct))
+        var existedPositions = (await _repositoryFacade.GetLiquidityPoolPositionsAsync(chainConfiguration, wallet, ct))
             .ToDictionary(position => new PositionKey(position.PositionId, position.NetworkName));
 
         var positions = new List<PoolPosition>();
@@ -80,20 +79,20 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
 
             try
             {
-                var pool = await _providerFactory.GetPoolAsync(network, uniswapPosition);
+                var pool = await _providerFactory.GetPoolAsync(chainConfiguration, uniswapPosition);
 
                 var positionInPool = _math.CalculatePosition(pool, uniswapPosition);
 
-                var tokensEnriched = await _enricher.EnrichAsync(network.RpcUrl, positionInPool.TokenInfoPair, ct);
+                var tokensEnriched = await _enricher.EnrichAsync(chainConfiguration.RpcUrl, positionInPool.TokenInfoPair, ct);
 
-                var positionKey = new PositionKey((ulong)uniswapPosition.PositionId, network.Name);
+                var positionKey = new PositionKey((ulong)uniswapPosition.PositionId, chainConfiguration.Name);
                 if (!existedPositions.TryGetValue(positionKey, out var dbPoolPosition) ||
                     dbPoolPosition.PoolPositionSnapshots.Count == 1)
                     // for case when position was created
                     // and added liquidity in 1 day
                 {
                     dbPoolPosition =
-                        MapToLiquidityPoolPosition(network, wallet, uniswapPosition, tokensEnriched);
+                        MapToLiquidityPoolPosition(chainConfiguration, wallet, uniswapPosition, tokensEnriched);
                     positions.Add(dbPoolPosition);
                 }
 
@@ -103,7 +102,7 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
                     continue;
                 }
 
-                var feeEnriched = await CalculateFeeAsync(network, pool, uniswapPosition, ct);
+                var feeEnriched = await CalculateFeeAsync(chainConfiguration, pool, uniswapPosition, ct);
 
                 var snapshotEntity = MapToLiquidityPoolPositionSnapshot(dbPoolPosition.PositionId,
                     dbPoolPosition.NetworkName, tokensEnriched, feeEnriched, positionInPool.IsInRange, syncDay);
@@ -114,7 +113,7 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
             }
             catch (Exception ex)
             {
-                _logger.PositionProcessingFailed(uniswapPosition.PositionId, network.Name, wallet.Address, ex);
+                _logger.PositionProcessingFailed(uniswapPosition.PositionId, chainConfiguration.Name, wallet.Address, ex);
             }
         }
 
@@ -122,30 +121,30 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
         {
             await _repositoryFacade.MergePoolPositionsAsync(positions, poolPositionSnapshots, ct);
 
-            _logger.PositionsPersisted(positions.Count, poolPositionSnapshots.Count, network.Name);
+            _logger.PositionsPersisted(positions.Count, poolPositionSnapshots.Count, chainConfiguration.Name);
         }
         catch (Exception ex)
         {
-            _logger.PositionsSaveFailed(network.Name, ex);
+            _logger.PositionsSaveFailed(chainConfiguration.Name, ex);
         }
 
-        _logger.NetworkProcessingCompleted(network.Name, wallet.Address);
+        _logger.NetworkProcessingCompleted(chainConfiguration.Name, wallet.Address);
     }
 
-    private async Task<TokenInfoPair> CalculateFeeAsync(UniswapNetwork network, LiquidityPool pool,
+    private async Task<TokenInfoPair> CalculateFeeAsync(UniswapChainConfiguration chain, LiquidityPool pool,
         IUniswapPosition uniswapPosition, CancellationToken ct)
     {
         var fee = _math.CalculateClaimableFee(pool, uniswapPosition);
 
-        return await _enricher.EnrichAsync(network.RpcUrl, fee, ct);
+        return await _enricher.EnrichAsync(chain.RpcUrl, fee, ct);
     }
 
-    private static PoolPosition MapToLiquidityPoolPosition(UniswapNetwork uniswapNetwork, Wallet wallet,
+    private static PoolPosition MapToLiquidityPoolPosition(UniswapChainConfiguration chain, Wallet wallet,
         IUniswapPosition position, TokenInfoPair tokensEnriched)
     {
         return new PoolPosition
         {
-            NetworkName = uniswapNetwork.Name,
+            NetworkName = chain.Name,
             IsActive = position.Liquidity != 0,
             Token0 = tokensEnriched.Token0,
             Token1 = tokensEnriched.Token1,

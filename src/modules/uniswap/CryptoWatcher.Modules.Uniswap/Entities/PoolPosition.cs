@@ -1,6 +1,5 @@
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.Shared.ValueObjects;
-using CryptoWatcher.UniswapModule.Entities;
 
 namespace CryptoWatcher.Modules.Uniswap.Entities;
 
@@ -91,15 +90,7 @@ public class PoolPosition
     /// </remarks>
     public string NetworkName { get; init; } = null!;
 
-    /// <summary>
-    /// Represents the blockchain uniswapNetwork associated with the liquidity pool position.
-    /// </summary>
-    /// <remarks>
-    /// This property defines the uniswapNetwork on which the liquidity pool position operates. It provides
-    /// details and configurations specific to the blockchain, such as RPC URL, associated addresses,
-    /// and historical data, aiding in uniswapNetwork-specific operations and analytics.
-    /// </remarks>
-    public UniswapNetwork UniswapNetwork { get; init; } = null!;
+    public UniswapProtocolVersion ProtocolVersion { get; init; }
 
     /// <summary>
     /// Represents a collection of snapshots associated with a specific liquidity pool position.

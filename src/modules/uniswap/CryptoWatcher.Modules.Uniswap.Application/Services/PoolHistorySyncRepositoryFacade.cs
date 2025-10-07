@@ -3,11 +3,10 @@ using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Specifications;
- 
-using CryptoWatcher.UniswapModule.Entities;
- 
+
+
 namespace CryptoWatcher.Modules.Uniswap.Application.Services;
- 
+
 public class PoolHistorySyncRepositoryFacade : IPoolHistorySyncRepositoryFacade
 {
     private readonly IRepository<PoolPosition> _liquidityPoolPositionRepository;
@@ -20,11 +19,12 @@ public class PoolHistorySyncRepositoryFacade : IPoolHistorySyncRepositoryFacade
         _liquidityPoolPositionSnapshotRepository = liquidityPoolPositionSnapshotRepository;
     }
 
-    public async Task<List<PoolPosition>> GetLiquidityPoolPositionsAsync(UniswapNetwork uniswapNetwork, Wallet wallet,
+    public async Task<List<PoolPosition>> GetLiquidityPoolPositionsAsync(UniswapChainConfiguration chainConfiguration,
+        Wallet wallet,
         CancellationToken ct = default)
     {
         return await _liquidityPoolPositionRepository.ListAsync(
-            new GetPositionsByWalletAndNetworkSpecification(uniswapNetwork, wallet), ct);
+            new GetPositionsByWalletAndNetworkSpecification(chainConfiguration, wallet), ct);
     }
 
     public async Task MergePoolPositionsAsync(IList<PoolPosition> positions,

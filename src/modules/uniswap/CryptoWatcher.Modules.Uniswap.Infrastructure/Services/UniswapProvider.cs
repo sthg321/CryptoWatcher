@@ -4,7 +4,6 @@ using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Mappers;
 using CryptoWatcher.Shared.Entities;
-using CryptoWatcher.UniswapModule.Entities;
 using CryptoWatcher.UniswapModule.Models;
 using Nethereum.Web3;
 using UniswapClient.Models;
@@ -25,31 +24,26 @@ internal class UniswapProvider : IUniswapProvider
         _uniswapV4Client = uniswapV4Client;
     }
 
-    public async Task<List<IUniswapPosition>> GetPositionsAsync(UniswapNetwork uniswapNetwork, Wallet wallet)
+    public async Task<List<IUniswapPosition>> GetPositionsAsync(UniswapChainConfiguration chainConfiguration,
+        Wallet wallet)
     {
-        var networkInfo = new NetworkInfo
-        {
-            NetworkUrl = uniswapNetwork.RpcUrl,
-            MultiCallAddress = uniswapNetwork.MultiCallAddress,
-            NftManagerAddress = uniswapNetwork.NftManagerAddress
-        };
-
-        return uniswapNetwork.ProtocolVersion switch
+        return chainConfiguration.ProtocolVersion switch
         {
             UniswapProtocolVersion.V3 => await _uniswapV3Client.PositionFetcher.GetPositionsDataAsync(
-                networkInfo, wallet.Address),
+                chainConfiguration, wallet.Address),
             UniswapProtocolVersion.V4 => await _uniswapV4Client.PositionFetcher.GetPositionsDataAsync(
-                networkInfo, wallet.Address),
-            _ => throw new ArgumentOutOfRangeException(nameof(uniswapNetwork))
+                chainConfiguration, wallet.Address),
+            _ => throw new ArgumentOutOfRangeException(nameof(chainConfiguration))
         };
     }
 
-    public async Task<LiquidityPool> GetPoolAsync(UniswapNetwork uniswapNetwork, IUniswapPosition position)
+    public async Task<LiquidityPool> GetPoolAsync(UniswapChainConfiguration chainConfiguration,
+        IUniswapPosition position)
     {
         var pool = position.ProtocolVersion switch
         {
-            3 => await GetV3PoolAsync(uniswapNetwork, position),
-            4 => await GetV4PoolAsync(uniswapNetwork, position),
+            3 => await GetV3PoolAsync(chainConfiguration, position),
+            4 => await GetV4PoolAsync(chainConfiguration, position),
             _ => throw new ArgumentOutOfRangeException(nameof(position), position.ProtocolVersion,
                 "Only v3 and v4 protocol supported")
         };
@@ -57,24 +51,26 @@ internal class UniswapProvider : IUniswapProvider
         return pool.MapToLiquidityPool();
     }
 
-    private async Task<LiquidityPoolInfo> GetV3PoolAsync(UniswapNetwork uniswapNetwork, IUniswapPosition position)
+    private async Task<LiquidityPoolInfo> GetV3PoolAsync(UniswapChainConfiguration chainConfiguration,
+        IUniswapPosition position)
     {
-        var web3 = new Web3(uniswapNetwork.RpcUrl);
+        var web3 = new Web3(chainConfiguration.RpcUrl);
 
         var poolAddress = await _uniswapV3Client.PoolFactory.GetPoolAddressAsync(web3,
-            uniswapNetwork.PoolFactoryAddress, position.Token0, position.Token1);
+            chainConfiguration.SmartContractAddresses.PoolFactory, position.Token0, position.Token1);
 
         var poolInfoV3 = await _uniswapV3Client.LiquidityPool.GetPoolInfoAsync(web3,
             poolAddress,
-            uniswapNetwork.MultiCallAddress,
+            chainConfiguration.SmartContractAddresses.MultiCall,
             position.TickLower, position.TickUpper);
 
         return poolInfoV3;
     }
 
-    private async Task<LiquidityPoolInfo> GetV4PoolAsync(UniswapNetwork uniswapNetwork, IUniswapPosition position)
+    private async Task<LiquidityPoolInfo> GetV4PoolAsync(UniswapChainConfiguration chainConfiguration,
+        IUniswapPosition position)
     {
-        return await _uniswapV4Client.LiquidityPool.GetPoolAsync(new Web3(uniswapNetwork.RpcUrl),
+        return await _uniswapV4Client.LiquidityPool.GetPoolAsync(new Web3(chainConfiguration.RpcUrl),
             (position as UniswapV4PositionInfo)!);
     }
 }

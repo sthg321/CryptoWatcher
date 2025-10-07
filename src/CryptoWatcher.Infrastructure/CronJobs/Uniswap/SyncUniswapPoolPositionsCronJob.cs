@@ -1,7 +1,7 @@
 using CryptoWatcher.Abstractions;
+using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 using CryptoWatcher.Shared.Entities;
-using CryptoWatcher.UniswapModule.Entities;
 using Microsoft.Extensions.Logging;
 using TickerQ.Utilities.Base;
 
@@ -10,12 +10,13 @@ namespace CryptoWatcher.Infrastructure.CronJobs.Uniswap;
 internal class SyncUniswapPoolPositionsCronJob
 {
     private readonly IRepository<Wallet> _walletRepository;
-    private readonly IRepository<UniswapNetwork> _uniswapNetworkRepository;
+    private readonly IRepository<UniswapChainConfiguration> _uniswapNetworkRepository;
     private readonly IUniswapPositionsSyncService _positionsSyncService;
     private readonly ILogger<SyncUniswapPoolPositionsCronJob> _logger;
 
     public SyncUniswapPoolPositionsCronJob(IRepository<Wallet> walletRepository,
-        IRepository<UniswapNetwork> uniswapNetworkRepository, IUniswapPositionsSyncService positionsSyncService,
+        IRepository<UniswapChainConfiguration> uniswapNetworkRepository,
+        IUniswapPositionsSyncService positionsSyncService,
         ILogger<SyncUniswapPoolPositionsCronJob> logger)
     {
         _walletRepository = walletRepository;

@@ -1,4 +1,5 @@
 using CryptoWatcher.Modules.Uniswap.Abstractions;
+using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.PositionsFetcher.Contracts;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.StateView;
 using Nethereum.Web3;
@@ -8,7 +9,7 @@ namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.Position
 
 internal interface IUniswapV4PositionFetcher
 {
-    Task<List<IUniswapPosition>> GetPositionsDataAsync(NetworkInfo network,
+    Task<List<IUniswapPosition>> GetPositionsDataAsync(UniswapChainConfiguration chain,
         string walletAddress);
 }
 
@@ -23,23 +24,25 @@ internal class UniswapV4PositionFetcher : IUniswapV4PositionFetcher
         _stateView = stateView;
     }
 
-    public async Task<List<IUniswapPosition>> GetPositionsDataAsync(NetworkInfo network,
+    public async Task<List<IUniswapPosition>> GetPositionsDataAsync(UniswapChainConfiguration chain,
         string walletAddress)
     {
-        var web3 = new Web3(network.NetworkUrl);
+        var web3 = new Web3(chain.RpcUrl);
         var tokenIds = await _apiClient.GetPoolPositionTokenIdsAsync(walletAddress);
 
-        return await GetPositionsDataAsync(web3, network, tokenIds);
+        return await GetPositionsDataAsync(web3, chain, tokenIds);
     }
 
     private async Task<List<IUniswapPosition>> GetPositionsDataAsync(IWeb3 web3,
-        NetworkInfo network,
+        UniswapChainConfiguration chain,
         IReadOnlyCollection<ulong> tokenIds)
     {
         var result = new List<IUniswapPosition>();
         foreach (var tokenId in tokenIds)
         {
-            var contract = web3.Eth.GetContract(UniswapV4PositionFetcherAbi.Abi, network.NftManagerAddress);
+            var contract =
+                web3.Eth.GetContract(UniswapV4PositionFetcherAbi.Abi, chain.SmartContractAddresses.NftManager);
+            
             var packedData = await contract.GetFunction("getPoolAndPositionInfo")
                 .CallDeserializingToObjectAsync<GetPoolAndPositionInfoOutputDTO>(tokenId);
 

@@ -1,6 +1,5 @@
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
-using CryptoWatcher.UniswapModule.Entities;
 
 namespace CryptoWatcher.Modules.Uniswap.Abstractions;
 
@@ -12,11 +11,11 @@ public interface IPoolHistorySyncRepositoryFacade
     /// <summary>
     /// Asynchronously retrieves a list of liquidity pool positions for the specified uniswapNetwork and wallet.
     /// </summary>
-    /// <param name="uniswapNetwork">The blockchain uniswapNetwork for which liquidity pool positions are being retrieved.</param>
+    /// <param name="chainConfiguration">The blockchain uniswapNetwork for which liquidity pool positions are being retrieved.</param>
     /// <param name="wallet">The wallet for which liquidity pool positions are being retrieved.</param>
     /// <param name="ct">An optional cancellation token to cancel the operation if required.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains a list of <see cref="PoolPosition"/> objects representing the liquidity pool positions.</returns>
-    Task<List<PoolPosition>> GetLiquidityPoolPositionsAsync(UniswapNetwork uniswapNetwork, Wallet wallet,
+    Task<List<PoolPosition>> GetLiquidityPoolPositionsAsync(UniswapChainConfiguration chainConfiguration, Wallet wallet,
         CancellationToken ct = default);
 
     /// <summary>

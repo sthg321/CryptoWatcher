@@ -1,24 +1,30 @@
-using CryptoWatcher.UniswapModule.Entities;
+using CryptoWatcher.Modules.Uniswap.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CryptoWatcher.Infrastructure.Configuration;
 
-public class NetworkConfiguration : IEntityTypeConfiguration<UniswapNetwork>
+public class NetworkConfiguration : IEntityTypeConfiguration<UniswapChainConfiguration>
 {
-    public void Configure(EntityTypeBuilder<UniswapNetwork> builder)
+    private const int AddressMaxLength = 42;
+
+    public void Configure(EntityTypeBuilder<UniswapChainConfiguration> builder)
     {
-        builder.HasKey(network => network.Name);
+        builder.HasKey(network => new { network.Name, network.ProtocolVersion });
 
         builder.Property(network => network.Name).HasMaxLength(32);
         builder.Property(network => network.RpcUrl).HasMaxLength(128);
-        builder.Property(network => network.MultiCallAddress).HasMaxLength(256);
-        builder.Property(network => network.NftManagerAddress).HasMaxLength(266);
-        builder.Property(network => network.PoolFactoryAddress).HasMaxLength(256);
 
-        builder.HasMany(x => x.LiquidityPoolPositions)
-            .WithOne(position => position.UniswapNetwork)
-            .HasForeignKey(position => position.NetworkName)
+        builder.OwnsOne(chain => chain.SmartContractAddresses, navigationBuilder =>
+        {
+            navigationBuilder.Property(addresses => addresses.NftManager).HasMaxLength(AddressMaxLength);
+            navigationBuilder.Property(addresses => addresses.PoolFactory).HasMaxLength(AddressMaxLength);
+            navigationBuilder.Property(addresses => addresses.MultiCall).HasMaxLength(AddressMaxLength);
+        });
+
+        builder.HasMany(chainConfiguration => chainConfiguration.LiquidityPoolPositions)
+            .WithOne()
+            .HasForeignKey(position => new { position.NetworkName, position.ProtocolVersion })
             .IsRequired();
     }
 }

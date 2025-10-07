@@ -3,7 +3,6 @@ using CryptoWatcher.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Extensions;
 using CryptoWatcher.Modules.Uniswap.Entities;
-using CryptoWatcher.UniswapModule.Entities;
 using CryptoWatcher.UniswapModule.Services;
 
 namespace CryptoWatcher.Modules.Uniswap.Application.Services.Unichain;
@@ -25,8 +24,8 @@ public class UnichainEventEnricher
         _lastProcessedBlockNumberProvider = lastProcessedBlockNumberProvider;
     }
 
-    public async IAsyncEnumerable<List<PoolPositionCashFlow>> FetchCashFlowEvents(UniswapNetwork uniswapNetwork,
-        string unichainRpc,
+    public async IAsyncEnumerable<List<PoolPositionCashFlow>> FetchCashFlowEvents(
+        UniswapChainConfiguration uniswapNetwork,
         [EnumeratorCancellation] CancellationToken ct = default)
     {
         var lastBlock = await _lastProcessedBlockNumberProvider.GetLastProcessedBlockNumberAsync(ct);
@@ -37,22 +36,22 @@ public class UnichainEventEnricher
             .ToDictionary(position => position.Key,
                 position => position.ToArray(), StringComparer.OrdinalIgnoreCase);
 
-        await foreach (var events in _unichainEventFetcher.FetchLiquidityPoolEvents(unichainRpc, lastBlock, lastBlock,
+        await foreach (var events in _unichainEventFetcher.FetchLiquidityPoolEvents(uniswapNetwork, lastBlock, lastBlock,
                            ct))
         {
             var result = new List<PoolPositionCashFlow>();
- 
+
             foreach (var poolPositionEvents in events.GroupBy(@event => @event.WalletAddress))
             {
                 if (!walletToPositions.TryGetValue(poolPositionEvents.Key, out var dbPoolPositions))
                 {
                     continue;
                 }
-                
+
                 foreach (var poolPositionEvent in poolPositionEvents)
                 {
                     var enrichedTokenPair =
-                        await _tokenEnricher.EnrichAsync(unichainRpc, poolPositionEvent.TokenPair, ct);
+                        await _tokenEnricher.EnrichAsync(uniswapNetwork.RpcUrl, poolPositionEvent.TokenPair, ct);
 
                     var positionFromUniswap = dbPoolPositions.SingleOrDefault(position =>
                     {
@@ -84,7 +83,7 @@ public class UnichainEventEnricher
                     result.Add(@event);
                 }
             }
- 
+
             yield return result;
         }
     }

@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using CryptoWatcher.UniswapModule.Models;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
+using CryptoWatcher.Modules.Uniswap.Entities;
 using Nethereum.Web3;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
@@ -20,12 +21,13 @@ internal class UnichainEventFetcher : IUnichainEventFetcher
         _unichainLogReader = unichainLogReader;
     }
 
-    public async IAsyncEnumerable<List<LiquidityPoolPositionEvent>> FetchLiquidityPoolEvents(string unichainRpc,
+    public async IAsyncEnumerable<List<LiquidityPoolPositionEvent>> FetchLiquidityPoolEvents(
+        UniswapChainConfiguration chain,
         ulong fromBlock,
         ulong toBlock,
         [EnumeratorCancellation] CancellationToken ct = default)
     {
-        var web3 = new Web3(unichainRpc);
+        var web3 = new Web3(chain.RpcUrl);
 
         await foreach (var unichainLogsBatch in _unichainLogProvider.GetLogsAsync(web3, fromBlock, toBlock, ct))
         {
