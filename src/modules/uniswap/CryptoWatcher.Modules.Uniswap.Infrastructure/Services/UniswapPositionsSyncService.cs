@@ -149,7 +149,10 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
             Token0 = tokensEnriched.Token0,
             Token1 = tokensEnriched.Token1,
             WalletAddress = wallet.Address,
-            PositionId = (ulong)position.PositionId
+            PositionId = (ulong)position.PositionId,
+            ProtocolVersion = chain.ProtocolVersion,
+            TickLower = position.TickLower,
+            TickUpper = position.TickUpper
         };
     }
 

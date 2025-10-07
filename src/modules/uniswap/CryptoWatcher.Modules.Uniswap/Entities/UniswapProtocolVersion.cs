@@ -2,6 +2,6 @@ namespace CryptoWatcher.Modules.Uniswap.Entities;
 
 public enum UniswapProtocolVersion
 {
-    V3,
-    V4
+    V3 = 1,
+    V4 = 2
 }

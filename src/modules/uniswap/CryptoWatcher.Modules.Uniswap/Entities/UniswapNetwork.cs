@@ -7,9 +7,7 @@ namespace CryptoWatcher.Modules.Uniswap.Entities;
 /// </summary>
 /// <remarks>
 /// This entity stores essential deployment details for Uniswap on a specific chain, including RPC endpoints,
-/// core contract addresses, protocol version, and associated liquidity positions. It serves as a domain entity
-/// for database persistence (via EF Core) and client initialization in the Infrastructure layer.
-/// In DDD, this is part of the Uniswap Bounded Context, with Name as the aggregate root identifier.
+/// core contract addresses, protocol version, and associated liquidity positions.
 /// </remarks>
 public class UniswapChainConfiguration
 {

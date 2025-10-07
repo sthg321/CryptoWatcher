@@ -22,7 +22,7 @@ public static class DatabaseExtensions
                     context.Set<UniswapChainConfiguration>().Add(new UniswapChainConfiguration
                     {
                         Name = "Unichain",
-                        RpcUrl = "https://mainnet.unichain.org",
+                        RpcUrl = "https://celo-mainnet.infura.io/v3/8556559626d3455da401e9fd058cc591",
                         SmartContractAddresses = new UniswapAddresses
                         {
                             NftManager = "0x4529a01c7a0410167c5740c487a8de60232617bf",

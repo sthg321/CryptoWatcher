@@ -29,6 +29,11 @@ public class UniswapReportService : IPlatformDailyReportDataProvider
         {
             foreach (var poolPosition in poolPositionByWallet)
             {
+                if (poolPosition.PoolPositionSnapshots.Count == 0)
+                {
+                    continue;
+                }
+                
                 var report = new UniswapDailyReport
                 {
                     PositionInUsd = poolPositions
