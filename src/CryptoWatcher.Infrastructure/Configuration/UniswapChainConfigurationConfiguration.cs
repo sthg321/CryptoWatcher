@@ -18,7 +18,7 @@ public class UniswapChainConfigurationConfiguration : IEntityTypeConfiguration<U
 
         builder.Property(configuration => configuration.LastProcessedBlock)
             .HasConversion(integer => integer.ToString(), bigInterString => BigInteger.Parse(bigInterString));
-
+        
         builder.OwnsOne(chain => chain.SmartContractAddresses, navigationBuilder =>
         {
             navigationBuilder.Property(addresses => addresses.NftManager).HasMaxLength(AddressMaxLength);
@@ -26,6 +26,9 @@ public class UniswapChainConfigurationConfiguration : IEntityTypeConfiguration<U
             navigationBuilder.Property(addresses => addresses.MultiCall).HasMaxLength(AddressMaxLength);
         });
 
+        builder.Navigation(configuration => configuration.LiquidityPoolPositions)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
+        
         builder.HasMany(chainConfiguration => chainConfiguration.LiquidityPoolPositions)
             .WithOne()
             .HasForeignKey(position => new { position.NetworkName, position.ProtocolVersion })

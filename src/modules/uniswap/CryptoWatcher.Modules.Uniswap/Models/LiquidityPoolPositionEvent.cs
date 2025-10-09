@@ -7,12 +7,16 @@ namespace CryptoWatcher.Modules.Uniswap.Models;
 public class LiquidityPoolPositionEvent
 {
     public required string WalletAddress { get; init; } = null!;
+    
+    public required string TransactionHash { get; init; } = null!;
 
     public required BigInteger TickLower { get; init; }
 
     public required BigInteger TickUpper { get; init; }
 
     public required BigInteger LiquidityDelta { get; init; }
+    
+    public required DateTimeOffset TimeStamp { get; init; }
 
     public TokenPair TokenPair { get; init; } = null!;
     

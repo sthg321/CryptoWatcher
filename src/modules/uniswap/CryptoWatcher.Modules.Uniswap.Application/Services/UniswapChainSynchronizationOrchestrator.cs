@@ -2,6 +2,7 @@ using CryptoWatcher.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Modules.Uniswap.Specifications;
+using Microsoft.Extensions.Logging;
 
 namespace CryptoWatcher.Modules.Uniswap.Application.Services;
 
@@ -9,11 +10,13 @@ public class UniswapChainSynchronizationOrchestrator : IUniswapChainSynchronizer
 {
     private readonly IUniswapChainSynchronizer _chainSynchronizer;
     private readonly IRepository<UniswapChainConfiguration> _chainConfigurationRepository;
+    private readonly ILogger<UniswapChainSynchronizationOrchestrator> _logger;
     
-    public UniswapChainSynchronizationOrchestrator(IUniswapChainSynchronizer chainSynchronizer, IRepository<UniswapChainConfiguration> chainConfigurationRepository)
+    public UniswapChainSynchronizationOrchestrator(IUniswapChainSynchronizer chainSynchronizer, IRepository<UniswapChainConfiguration> chainConfigurationRepository, ILogger<UniswapChainSynchronizationOrchestrator> logger)
     {
         _chainSynchronizer = chainSynchronizer;
         _chainConfigurationRepository = chainConfigurationRepository;
+        _logger = logger;
     }
 
     public async Task SynchronizeAllChainsAsync(CancellationToken ct = default)
@@ -23,18 +26,13 @@ public class UniswapChainSynchronizationOrchestrator : IUniswapChainSynchronizer
         
         foreach (var uniswapChainConfiguration in chainsToSynchronize)
         {
-            await _chainConfigurationRepository.UnitOfWork.BeginTransactionAsync(ct);
-            
             try
             {
                 await _chainSynchronizer.SynchronizeChainAsync(uniswapChainConfiguration, ct);
-                
-                await _chainConfigurationRepository.UnitOfWork.CommitTransactionAsync(ct);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await _chainConfigurationRepository.UnitOfWork.RollbackTransactionAsync(ct);
-                throw;
+                _logger.LogError(ex, "An error occured while synchronizing the chain");
             }
         }
     }

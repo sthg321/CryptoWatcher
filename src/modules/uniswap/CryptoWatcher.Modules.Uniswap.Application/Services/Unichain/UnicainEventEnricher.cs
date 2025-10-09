@@ -29,46 +29,48 @@ public class CashFlowEventMatcher : ICashFlowEventMatcher
         BigInteger toBlock,
         [EnumeratorCancellation] CancellationToken ct = default)
     {
-         await foreach (var events in _liquidityEventsProvider.FetchLiquidityPoolEvents(chainConfiguration,
-                               fromBlock, toBlock, ct))
+        await foreach (var events in _liquidityEventsProvider.FetchLiquidityPoolEvents(chainConfiguration,
+                           fromBlock, toBlock, ct))
+        {
+            var result = new List<PoolPositionCashFlow>();
+
+            foreach (var poolPositionEvent in events)
             {
-                var result = new List<PoolPositionCashFlow>();
+                var enrichedTokenPair =
+                    await _tokenEnricher.EnrichAsync(chainConfiguration.RpcUrl, poolPositionEvent.TokenPair, ct);
 
-                // No wallet grouping: assume all events for single wallet (filter in fetcher if needed)
-                foreach (var poolPositionEvent in events)
+                var positionFromDb = chainConfiguration.LiquidityPoolPositions.SingleOrDefault(position =>
                 {
-                    var enrichedTokenPair =
-                        await _tokenEnricher.EnrichAsync(chainConfiguration.RpcUrl, poolPositionEvent.TokenPair, ct);
-
-                    // Direct match on ticks/symbols (SingleOrDefault safe per comment: only 1 per ticks/wallet)
-                    var positionFromDb = chainConfiguration.LiquidityPoolPositions.SingleOrDefault(position =>
+                    var isTickMatch = position.TickLower == poolPositionEvent.TickLower &&
+                                      position.TickUpper == poolPositionEvent.TickUpper;
+                    if (!isTickMatch)
                     {
-                        var isTickMatch = position.TickLower == poolPositionEvent.TickLower &&
-                                          position.TickUpper == poolPositionEvent.TickUpper;
-                        if (!isTickMatch) return false;
-
-                        // Normalize token order (V4 log ambiguity)
-                        var normalizedPair = enrichedTokenPair.NormalizeToPositionOrder(position);
-
-                        return position.Token0.Symbol == normalizedPair.Token0.Symbol &&
-                               position.Token1.Symbol == normalizedPair.Token1.Symbol;
-                    });
-
-                    if (positionFromDb is null)
-                    {
-                        _logger.LogDebug("No match for event ticks {TickLower}-{TickUpper}",
-                            poolPositionEvent.TickLower, poolPositionEvent.TickUpper);
-                        continue;
+                        return false;
                     }
 
-                    var cashFlow = PoolPositionCashFlow.CreateFromEvent(poolPositionEvent.Event,
-                        positionFromDb.PositionId, chainConfiguration.Name, enrichedTokenPair);
-                    result.Add(cashFlow);
+                    var normalizedPair = enrichedTokenPair.NormalizeToPositionOrder(position);
 
-                    _logger.LogInformation("Matched cash flow for position {PositionId}", positionFromDb.PositionId);
+                    return position.Token0.Symbol == normalizedPair.Token0.Symbol &&
+                           position.Token1.Symbol == normalizedPair.Token1.Symbol;
+                });
+
+                if (positionFromDb is null)
+                {
+                    _logger.LogDebug("No match for event ticks {TickLower}-{TickUpper}",
+                        poolPositionEvent.TickLower, poolPositionEvent.TickUpper);
+                    continue;
                 }
 
-                yield return result;
+                var cashFlow = PoolPositionCashFlow.CreateFromEvent(poolPositionEvent.Event,
+                    positionFromDb.PositionId, chainConfiguration.Name, poolPositionEvent.TransactionHash,
+                    enrichedTokenPair, poolPositionEvent.TimeStamp);
+                
+                result.Add(cashFlow);
+
+                _logger.LogInformation("Matched cash flow for position {PositionId}", positionFromDb.PositionId);
             }
+
+            yield return result;
+        }
     }
 }

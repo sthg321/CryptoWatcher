@@ -1,3 +1,4 @@
+using System.Threading.RateLimiting;
 using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
@@ -17,6 +18,8 @@ using CryptoWatcher.Modules.Uniswap.Infrastructure.Services.EventsSynchronizatio
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Services.PositionsSynchronization;
 using Microsoft.Extensions.DependencyInjection;
 using Nethereum.ABI.ABIDeserialisation;
+using Polly;
+using Polly.RateLimiting;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Extensions;
 
@@ -33,6 +36,19 @@ public static class ServiceCollectionExtensions
 
         services.AddMemoryCache();
 
+        services.AddResiliencePipeline("Uniswap", builder =>
+        {
+            builder.AddRateLimiter(new SlidingWindowRateLimiter (new SlidingWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 20,
+                QueueLimit = int.MaxValue,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                SegmentsPerWindow = 10,
+                Window = TimeSpan.FromSeconds(1)
+            }));
+        });
+        
         services.AddScoped<IUniswapChainSynchronizerOrchestrator, UniswapChainSynchronizationOrchestrator>();
         services.AddScoped<IUniswapChainSynchronizer, UniswapChainSynchronizer>();
         services.AddSingleton<IUniswapProvider, UniswapProvider>();
@@ -42,7 +58,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ITransactionDataProvider, Web3TransactionDataProvider>();
         services.AddSingleton<IUnichainInternalTransactionProvider, UnichainInternalTransactionProvider>();
         services.AddSingleton<IBlockchainLogProvider, NethereumLogProvider>();
-        services.AddSingleton<IUnichainLogReader, UnichainLogReader>();
+        services.AddSingleton<ILiquidityEventLogEnricher, LiquidityEventLogEnricher>();
         services.AddSingleton<ILiquidityPoolEventDecoder, LiquidityPoolEventDecoder>();
         services.AddSingleton<IWeb3Factory, Web3Factory>();
         

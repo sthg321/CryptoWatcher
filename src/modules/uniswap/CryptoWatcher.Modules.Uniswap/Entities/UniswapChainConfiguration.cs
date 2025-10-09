@@ -1,5 +1,6 @@
 using System.Numerics;
 using CryptoWatcher.Exceptions;
+using CryptoWatcher.Modules.Uniswap.Models;
 using CryptoWatcher.Modules.Uniswap.ValueObjects;
 
 namespace CryptoWatcher.Modules.Uniswap.Entities;
@@ -13,6 +14,8 @@ namespace CryptoWatcher.Modules.Uniswap.Entities;
 /// </remarks>
 public class UniswapChainConfiguration
 {
+    private readonly List<PoolPosition> _liquidityPoolPositions = [];
+    
     public required string Name { get; init; } = null!;
 
     public required string RpcUrl { get; init; } = null!;
@@ -31,7 +34,7 @@ public class UniswapChainConfiguration
     /// </summary>
     public DateTime LastUpdated { get; private set; } = DateTime.UtcNow;
 
-    public IReadOnlyList<PoolPosition> LiquidityPoolPositions { get; init; } = [];
+    public IReadOnlyCollection<PoolPosition> LiquidityPoolPositions => _liquidityPoolPositions;
 
     public void UpdateLastSynchronizedBlock(BigInteger lastSynchronizedBlock)
     {

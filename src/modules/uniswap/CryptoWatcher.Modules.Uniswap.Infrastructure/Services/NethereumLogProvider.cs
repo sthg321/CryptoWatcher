@@ -34,7 +34,7 @@ internal class NethereumLogProvider : IBlockchainLogProvider
                 new[] { UnichainWellKnownField.V4PositionManagerAddress }
             ],
         };
-
+       
         var logs = await web3.Eth.Filters.GetLogs.SendRequestAsync(filter);
 
         return ConvertToDomainBatch(chainConfiguration, logs);

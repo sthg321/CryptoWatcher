@@ -25,17 +25,25 @@ public class UniswapChainSynchronizer : IUniswapChainSynchronizer
     {
         var web3 = _web3Factory.GetWeb3(chain);
 
-        var lastProcessedBlock = chain.LastProcessedBlock;
         var lastBlockInBlockChain = await web3.Eth.Blocks.GetBlockNumber.SendRequestAsync();
 
-        foreach (var (from, to) in _chunkingStrategy.CreateChunks(lastProcessedBlock, lastBlockInBlockChain))
+        foreach (var (from, to) in _chunkingStrategy.CreateChunks(chain.LastProcessedBlock, lastBlockInBlockChain))
         {
+            await _poolPositionCashFlowRepository.UnitOfWork.BeginTransactionAsync(ct);
+
             await foreach (var cashFlow in _eventMatcher.FetchCashFlowEvents(chain, from, to, ct))
             {
-                await _poolPositionCashFlowRepository.BulkMergeAsync(cashFlow, ct);
+                if (cashFlow.Count != 0)
+                {
+                    await _poolPositionCashFlowRepository.BulkMergeAsync(cashFlow, ct);
+                }
             }
-        }
 
-        chain.UpdateLastSynchronizedBlock(lastBlockInBlockChain);
+            chain.UpdateLastSynchronizedBlock(to);
+
+            await _poolPositionCashFlowRepository.UnitOfWork.SaveChangesAsync(ct);
+
+            await _poolPositionCashFlowRepository.UnitOfWork.CommitTransactionAsync(ct);
+        }
     }
 }

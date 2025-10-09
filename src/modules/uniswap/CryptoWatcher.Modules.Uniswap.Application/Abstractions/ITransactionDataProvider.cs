@@ -5,6 +5,6 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 
 public interface ITransactionDataProvider
 {
-    Task<TransactionData> GetTransactionDataAsync(UniswapChainConfiguration chainConfiguration,
+    Task<TransactionData?> GetTransactionDataAsync(UniswapChainConfiguration chain,
         string transactionHash, CancellationToken ct = default);
 }

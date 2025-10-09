@@ -60,7 +60,7 @@ using (var scope = app.Services.CreateScope())
 {
     var orchestrator = scope.ServiceProvider.GetRequiredService<IUniswapChainSynchronizerOrchestrator>();
     
-    await orchestrator.SynchronizeAllChainsAsync();
+     await orchestrator.SynchronizeAllChainsAsync();
     
     if (!app.Environment.IsDevelopment())
     {

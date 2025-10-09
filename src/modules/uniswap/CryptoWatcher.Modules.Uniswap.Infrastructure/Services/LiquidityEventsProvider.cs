@@ -2,9 +2,11 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
+using CryptoWatcher.Modules.Uniswap.Application.Models;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Modules.Uniswap.Models;
 using Microsoft.Extensions.Logging;
+using Polly.Registry;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 
@@ -14,33 +16,47 @@ internal class LiquidityEventsProvider : ILiquidityEventsProvider
     private readonly ITransactionDataProvider _transactionDataProvider;
     private readonly ILiquidityPoolEventDecoder _eventDecoder;
     private readonly ILogger<LiquidityEventsProvider> _logger;
+    private readonly ResiliencePipelineRegistry<string> _pipelineRegistry;
 
     public LiquidityEventsProvider(IBlockchainLogProvider logProvider, ITransactionDataProvider transactionDataProvider,
-        ILiquidityPoolEventDecoder eventDecoder, ILogger<LiquidityEventsProvider> logger)
+        ILiquidityPoolEventDecoder eventDecoder, ILogger<LiquidityEventsProvider> logger,
+        ResiliencePipelineRegistry<string> pipelineRegistry)
     {
         _logProvider = logProvider;
         _transactionDataProvider = transactionDataProvider;
         _eventDecoder = eventDecoder;
         _logger = logger;
+        _pipelineRegistry = pipelineRegistry;
     }
 
-    public async IAsyncEnumerable<List<LiquidityPoolPositionEvent>> FetchLiquidityPoolEvents(
+    public async IAsyncEnumerable<IEnumerable<LiquidityPoolPositionEvent>> FetchLiquidityPoolEvents(
         UniswapChainConfiguration chain,
         BigInteger fromBlock,
         BigInteger toBlock,
         [EnumeratorCancellation] CancellationToken ct = default)
     {
         var blockchainLogBatch = await _logProvider.GetLogsAsync(chain, fromBlock, toBlock);
-        var result = new List<LiquidityPoolPositionEvent?>();
+
+        var rateLimiter = _pipelineRegistry.GetPipeline("Uniswap");
         var tasks = blockchainLogBatch.Logs.Select(async log =>
         {
             try
             {
-                var transactionData =
-                    await _transactionDataProvider.GetTransactionDataAsync(chain, log.TransactionHash, ct);
+                var transactionData = await rateLimiter.ExecuteAsync<TransactionData?>(
+                        async token =>
+                            await _transactionDataProvider.GetTransactionDataAsync(chain, log.TransactionHash, token),
+                        ct)
+                    .ConfigureAwait(false);
+
+                if (transactionData is null)
+                {
+                    return null;
+                }
 
                 return _eventDecoder.DecodeModifyLiquidityEvent(transactionData.WalletAddress, log.Data,
-                    transactionData.TokenPair);
+                    transactionData.TransactionHash,
+                    transactionData.EventEnrichment.TokenPair, 
+                    transactionData.EventEnrichment.TimeStamp);
             }
             catch (Exception ex)
             {
@@ -49,9 +65,10 @@ internal class LiquidityEventsProvider : ILiquidityEventsProvider
             }
         });
 
-        var events = await Task.WhenAll(tasks);
-        result.AddRange(events.Where(e => e != null));
-
-        yield return result!;
+        foreach (var taskChunk in tasks.Chunk(20))
+        {
+            var events = await Task.WhenAll(taskChunk);
+            yield return events.Where(@event => @event is not null)!;
+        }
     }
 }

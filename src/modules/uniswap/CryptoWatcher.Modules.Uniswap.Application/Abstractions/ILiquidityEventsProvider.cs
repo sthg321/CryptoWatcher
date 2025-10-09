@@ -6,7 +6,7 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 
 public interface ILiquidityEventsProvider
 {
-    IAsyncEnumerable<List<LiquidityPoolPositionEvent>> FetchLiquidityPoolEvents(UniswapChainConfiguration chain,
+    IAsyncEnumerable<IEnumerable<LiquidityPoolPositionEvent>> FetchLiquidityPoolEvents(UniswapChainConfiguration chain,
         BigInteger fromBlock,
         BigInteger toBlock,
         CancellationToken ct = default);

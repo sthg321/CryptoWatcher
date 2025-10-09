@@ -16,6 +16,9 @@
       <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.9" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
       <PackageReference Include="Nethereum.Web3" Version="5.0.0" />
+      <PackageReference Include="Polly" Version="8.6.4" />
+      <PackageReference Include="Polly.Extensions" Version="8.6.4" />
+      <PackageReference Include="Polly.RateLimiting" Version="8.6.4" />
       <PackageReference Include="Riok.Mapperly" Version="4.3.0-next.3" />
     </ItemGroup>
 

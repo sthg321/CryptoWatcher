@@ -19,17 +19,21 @@ internal class LiquidityPoolEventDecoder : ILiquidityPoolEventDecoder
     ];
 
     public LiquidityPoolPositionEvent DecodeModifyLiquidityEvent(string walletAddress, string data,
-        TokenPair tokenPair)
+        string transactionHash,
+        TokenPair tokenPair,
+        DateTimeOffset timestamp)
     {
         var decoded = Decoder.DecodeDefaultData(data, Parameters);
 
         return new LiquidityPoolPositionEvent
         {
             WalletAddress = walletAddress,
+            TransactionHash = transactionHash,
             TickLower = (BigInteger)decoded[0].Result,
             TickUpper = (BigInteger)decoded[1].Result,
             LiquidityDelta = (BigInteger)decoded[2].Result,
-            TokenPair = tokenPair
+            TokenPair = tokenPair,
+            TimeStamp = timestamp
         };
     }
 }
