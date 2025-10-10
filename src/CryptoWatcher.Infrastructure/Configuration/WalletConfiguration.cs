@@ -1,3 +1,4 @@
+using CryptoWatcher.Infrastructure.Extensions;
 using CryptoWatcher.Shared.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -9,6 +10,6 @@ public class WalletConfiguration : IEntityTypeConfiguration<Wallet>
     public void Configure(EntityTypeBuilder<Wallet> builder)
     {
         builder.HasKey(wallet => wallet.Address);
-        builder.Property(wallet => wallet.Address).HasMaxLength(64);
+        builder.Property(wallet => wallet.Address).ConfigureEvmAddress();
     }
 }

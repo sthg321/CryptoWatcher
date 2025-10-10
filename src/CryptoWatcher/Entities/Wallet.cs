@@ -13,5 +13,5 @@ public class Wallet
     /// This address is a unique identifier for blockchain interactions, allowing users or systems
     /// to send and receive cryptocurrency or interact with decentralized applications.
     /// </summary>
-    public required WalletAddress Address { get; init; } = null!;
+    public required EvmAddress Address { get; init; } = null!;
 }

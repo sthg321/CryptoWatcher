@@ -17,7 +17,7 @@ namespace CryptoWatcher.AaveModule.Tests.Entities;
 public class AavePositionTest
 {
     private static readonly Wallet TestWallet = new()
-        { Address = WalletAddress.Create("0xcd94f7499a2A2b850ea75366a8D32C1c2c03aCEC") };
+        { Address = EvmAddress.Create("0xcd94f7499a2A2b850ea75366a8D32C1c2c03aCEC") };
 
     private static readonly DateTimeOffset TestTime = DateTimeOffset.UtcNow;
     private static readonly DateOnly TestDate = TestTime.DateTime.ToDateOnly();

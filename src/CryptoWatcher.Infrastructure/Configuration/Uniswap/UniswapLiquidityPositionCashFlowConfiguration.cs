@@ -13,9 +13,7 @@ public class UniswapLiquidityPositionCashFlowConfiguration : IEntityTypeConfigur
 
         builder.OwnsOne<TokenInfoWithFee>(flow => flow.Token0);
         
-        builder.OwnsOne<TokenInfoWithFee>(flow => flow.Token1);
-        
-        builder.Property(flow => flow.TransactionHash).HasMaxLength(66);
+        builder.OwnsOne<TokenInfoWithFee>(flow => flow.Token1); 
 
         builder.Property(flow => flow.TransactionHash)
             .HasConversion(hash => hash.Value, s => TransactionHash.FromString(s))

@@ -39,7 +39,7 @@ public static class DatabaseExtensions
                 {
                     context.Set<Wallet>().Add(new Wallet
                     {
-                        Address = WalletAddress.Create("0xeb9191d780c0aB6Ab320C5F05E41ebF81f14255f")
+                        Address = EvmAddress.Create("0xeb9191d780c0aB6Ab320C5F05E41ebF81f14255f")
                     });
                 }
 

@@ -1,5 +1,6 @@
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.Shared.ValueObjects;
+using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Uniswap.Entities;
 
@@ -70,7 +71,7 @@ public class UniswapLiquidityPosition
     /// This property holds the blockchain wallet address that is linked to the liquidity pool position.
     /// It is used to identify the owner of the position and manage the related account details.
     /// </remarks>
-    public string WalletAddress { get; init; } = null!;
+    public EvmAddress WalletAddress { get; init; } = null!;
 
     /// <summary>
     /// Represents the wallet associated with a liquidity pool position.

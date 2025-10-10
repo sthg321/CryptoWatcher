@@ -21,7 +21,7 @@ public class AavePositionsSyncServiceTest
     private static readonly AaveNetwork TestNetwork = AaveNetwork.CeloNetwork;
 
     private static readonly Wallet TestWallet = new()
-        { Address = WalletAddress.Create("0xcd94f7499a2A2b850ea75366a8D32C1c2c03aCEC") };
+        { Address = EvmAddress.Create("0xcd94f7499a2A2b850ea75366a8D32C1c2c03aCEC") };
 
     private static readonly DateOnly SyncDay = DateOnly.FromDateTime(DateTime.Now);
     private static readonly DateTimeOffset TestTime = DateTimeOffset.Now;
