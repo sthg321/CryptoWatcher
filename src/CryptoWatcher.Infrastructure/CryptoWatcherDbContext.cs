@@ -112,7 +112,7 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
     /// Each record tracks the financial events associated with a specific liquidity position, including token transactions and associated fees,
     /// enabling precise monitoring and analysis of position profitability over time.
     /// </remarks>
-    public DbSet<UniswapLiquidityPositionCashFlow> LiquidityPositionCashFlows =>
+    public DbSet<UniswapLiquidityPositionCashFlow> UniswapLiquidityPositionCashFlows =>
         Set<UniswapLiquidityPositionCashFlow>();
 
     #endregion

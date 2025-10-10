@@ -247,7 +247,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
 
                     b.HasKey("PositionId", "NetworkName", "TransactionHash");
 
-                    b.ToTable("LiquidityPositionCashFlows");
+                    b.ToTable("UniswapLiquidityPositionCashFlows");
                 });
 
             modelBuilder.Entity("CryptoWatcher.Modules.Uniswap.Entities.UniswapLiquidityPositionSnapshot", b =>
@@ -736,7 +736,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
 
                             b1.HasKey("UniswapLiquidityPositionCashFlowPositionId", "UniswapLiquidityPositionCashFlowNetworkName", "UniswapLiquidityPositionCashFlowTransactionHash");
 
-                            b1.ToTable("LiquidityPositionCashFlows");
+                            b1.ToTable("UniswapLiquidityPositionCashFlows");
 
                             b1.WithOwner()
                                 .HasForeignKey("UniswapLiquidityPositionCashFlowPositionId", "UniswapLiquidityPositionCashFlowNetworkName", "UniswapLiquidityPositionCashFlowTransactionHash");
@@ -768,7 +768,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
 
                             b1.HasKey("UniswapLiquidityPositionCashFlowPositionId", "UniswapLiquidityPositionCashFlowNetworkName", "UniswapLiquidityPositionCashFlowTransactionHash");
 
-                            b1.ToTable("LiquidityPositionCashFlows");
+                            b1.ToTable("UniswapLiquidityPositionCashFlows");
 
                             b1.WithOwner()
                                 .HasForeignKey("UniswapLiquidityPositionCashFlowPositionId", "UniswapLiquidityPositionCashFlowNetworkName", "UniswapLiquidityPositionCashFlowTransactionHash");
