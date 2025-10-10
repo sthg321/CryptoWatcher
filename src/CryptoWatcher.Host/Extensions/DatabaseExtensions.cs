@@ -26,9 +26,9 @@ public static class DatabaseExtensions
                         RpcUrl = "https://celo-mainnet.infura.io/v3/8556559626d3455da401e9fd058cc591",
                         SmartContractAddresses = new UniswapAddresses
                         {
-                            NftManager = "0x4529a01c7a0410167c5740c487a8de60232617bf",
-                            PoolFactory = "0x1f98400000000000000000000000000000000004",
-                            MultiCall = "0xb7610f9b733e7d45184be3a1bc966960ccc54f0b",
+                            NftManager = EvmAddress.Create("0x4529a01c7a0410167c5740c487a8de60232617bf"),
+                            PoolFactory = EvmAddress.Create("0x1f98400000000000000000000000000000000004"),
+                            MultiCall = EvmAddress.Create("0xb7610f9b733e7d45184be3a1bc966960ccc54f0b"),
                         },
                         LastProcessedBlock = 0,
                         ProtocolVersion = UniswapProtocolVersion.V4

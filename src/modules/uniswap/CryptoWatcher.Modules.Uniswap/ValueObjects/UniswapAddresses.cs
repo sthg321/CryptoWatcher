@@ -1,10 +1,12 @@
+using CryptoWatcher.ValueObjects;
+
 namespace CryptoWatcher.Modules.Uniswap.ValueObjects;
 
 public class UniswapAddresses
 {
-    public string NftManager { get; init; } = null!;
+    public EvmAddress NftManager { get; init; } = null!;
         
-    public string PoolFactory { get; init; } = null!;
+    public EvmAddress PoolFactory { get; init; } = null!;
 
-    public string MultiCall { get; init; } = null!;
+    public EvmAddress MultiCall { get; init; } = null!;
 }

@@ -1,4 +1,5 @@
 using System.Numerics;
+using CryptoWatcher.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -7,8 +8,6 @@ namespace CryptoWatcher.Infrastructure.Configuration;
 
 public class UniswapChainConfigurationConfiguration : IEntityTypeConfiguration<UniswapChainConfiguration>
 {
-    private const int AddressMaxLength = 42;
-
     public void Configure(EntityTypeBuilder<UniswapChainConfiguration> builder)
     {
         builder.HasKey(network => new { network.Name, network.ProtocolVersion });
@@ -21,9 +20,9 @@ public class UniswapChainConfigurationConfiguration : IEntityTypeConfiguration<U
         
         builder.OwnsOne(chain => chain.SmartContractAddresses, navigationBuilder =>
         {
-            navigationBuilder.Property(addresses => addresses.NftManager).HasMaxLength(AddressMaxLength);
-            navigationBuilder.Property(addresses => addresses.PoolFactory).HasMaxLength(AddressMaxLength);
-            navigationBuilder.Property(addresses => addresses.MultiCall).HasMaxLength(AddressMaxLength);
+            navigationBuilder.Property(addresses => addresses.NftManager).ConfigureEvmAddress();
+            navigationBuilder.Property(addresses => addresses.PoolFactory).ConfigureEvmAddress();
+            navigationBuilder.Property(addresses => addresses.MultiCall).ConfigureEvmAddress();
         });
 
         builder.Navigation(configuration => configuration.LiquidityPoolPositions)
