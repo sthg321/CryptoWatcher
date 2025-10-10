@@ -14,7 +14,7 @@ namespace CryptoWatcher.Modules.Uniswap.Entities;
 /// </remarks>
 public class UniswapChainConfiguration
 {
-    private readonly List<PoolPosition> _liquidityPoolPositions = [];
+    private readonly List<UniswapLiquidityPosition> _liquidityPoolPositions = [];
     
     public required string Name { get; init; } = null!;
 
@@ -32,9 +32,9 @@ public class UniswapChainConfiguration
     /// <summary>
     /// Timestamp when the synchronization state was last updated
     /// </summary>
-    public DateTime LastUpdated { get; private set; } = DateTime.UtcNow;
+    public DateTime LastProcessedBlockUpdatedAt { get; private set; } = DateTime.UtcNow;
 
-    public IReadOnlyCollection<PoolPosition> LiquidityPoolPositions => _liquidityPoolPositions;
+    public IReadOnlyCollection<UniswapLiquidityPosition> LiquidityPoolPositions => _liquidityPoolPositions;
 
     public void UpdateLastSynchronizedBlock(BigInteger lastSynchronizedBlock)
     {
@@ -44,6 +44,6 @@ public class UniswapChainConfiguration
         }
 
         LastProcessedBlock = lastSynchronizedBlock;
-        LastUpdated = DateTime.UtcNow;
+        LastProcessedBlockUpdatedAt = DateTime.UtcNow;
     }
 }

@@ -8,17 +8,17 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Services;
 
 public class PoolHistorySyncRepositoryFacade : IPoolHistorySyncRepositoryFacade
 {
-    private readonly IRepository<PoolPosition> _liquidityPoolPositionRepository;
-    private readonly IRepository<PoolPositionSnapshot> _liquidityPoolPositionSnapshotRepository;
+    private readonly IRepository<UniswapLiquidityPosition> _liquidityPoolPositionRepository;
+    private readonly IRepository<UniswapLiquidityPositionSnapshot> _liquidityPoolPositionSnapshotRepository;
 
-    public PoolHistorySyncRepositoryFacade(IRepository<PoolPosition> liquidityPoolPositionRepository,
-        IRepository<PoolPositionSnapshot> liquidityPoolPositionSnapshotRepository)
+    public PoolHistorySyncRepositoryFacade(IRepository<UniswapLiquidityPosition> liquidityPoolPositionRepository,
+        IRepository<UniswapLiquidityPositionSnapshot> liquidityPoolPositionSnapshotRepository)
     {
         _liquidityPoolPositionRepository = liquidityPoolPositionRepository;
         _liquidityPoolPositionSnapshotRepository = liquidityPoolPositionSnapshotRepository;
     }
 
-    public async Task<List<PoolPosition>> GetLiquidityPoolPositionsAsync(UniswapChainConfiguration chainConfiguration,
+    public async Task<List<UniswapLiquidityPosition>> GetLiquidityPoolPositionsAsync(UniswapChainConfiguration chainConfiguration,
         Wallet wallet,
         CancellationToken ct = default)
     {
@@ -26,8 +26,8 @@ public class PoolHistorySyncRepositoryFacade : IPoolHistorySyncRepositoryFacade
             new GetPositionsByWalletAndNetworkSpecification(chainConfiguration, wallet), ct);
     }
 
-    public async Task MergePoolPositionsAsync(IList<PoolPosition> positions,
-        IList<PoolPositionSnapshot> snapshots,
+    public async Task MergePoolPositionsAsync(IList<UniswapLiquidityPosition> positions,
+        IList<UniswapLiquidityPositionSnapshot> snapshots,
         CancellationToken ct = default)
     {
         await _liquidityPoolPositionRepository.UnitOfWork.BeginTransactionAsync(ct);

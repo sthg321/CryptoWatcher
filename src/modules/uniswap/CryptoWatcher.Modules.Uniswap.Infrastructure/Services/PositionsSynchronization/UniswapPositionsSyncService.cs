@@ -69,8 +69,8 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
         var existedPositions = (await _repositoryFacade.GetLiquidityPoolPositionsAsync(chainConfiguration, wallet, ct))
             .ToDictionary(position => new PositionKey(position.PositionId, position.NetworkName));
 
-        var positions = new List<PoolPosition>();
-        var poolPositionSnapshots = new List<PoolPositionSnapshot>();
+        var positions = new List<UniswapLiquidityPosition>();
+        var poolPositionSnapshots = new List<UniswapLiquidityPositionSnapshot>();
 
         foreach (var uniswapPosition in uniswapPositions)
         {
@@ -139,10 +139,10 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
         return await _enricher.EnrichAsync(chain.RpcUrl, fee, ct);
     }
 
-    private static PoolPosition MapToLiquidityPoolPosition(UniswapChainConfiguration chain, Wallet wallet,
+    private static UniswapLiquidityPosition MapToLiquidityPoolPosition(UniswapChainConfiguration chain, Wallet wallet,
         IUniswapPosition position, TokenInfoPair tokensEnriched)
     {
-        return new PoolPosition
+        return new UniswapLiquidityPosition
         {
             NetworkName = chain.Name,
             IsActive = position.Liquidity != 0,
@@ -156,7 +156,7 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
         };
     }
 
-    private static PoolPositionSnapshot MapToLiquidityPoolPositionSnapshot(
+    private static UniswapLiquidityPositionSnapshot MapToLiquidityPoolPositionSnapshot(
         ulong positionId,
         string networkName,
         TokenInfoPair poolPosition,
@@ -164,7 +164,7 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
         bool isInRange,
         DateOnly day)
     {
-        return new PoolPositionSnapshot
+        return new UniswapLiquidityPositionSnapshot
         {
             PoolPositionId = positionId,
             NetworkName = networkName,

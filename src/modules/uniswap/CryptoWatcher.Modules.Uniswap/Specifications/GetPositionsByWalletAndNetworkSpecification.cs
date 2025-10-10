@@ -4,7 +4,7 @@ using CryptoWatcher.Shared.Entities;
 
 namespace CryptoWatcher.Modules.Uniswap.Specifications;
 
-public sealed class GetPositionsByWalletAndNetworkSpecification : Specification<PoolPosition>
+public sealed class GetPositionsByWalletAndNetworkSpecification : Specification<UniswapLiquidityPosition>
 {
     public GetPositionsByWalletAndNetworkSpecification(UniswapChainConfiguration uniswapNetwork, Wallet wallet)
     {

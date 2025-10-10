@@ -7,6 +7,7 @@ using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.Extensions;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.Shared.ValueObjects;
+using CryptoWatcher.ValueObjects;
 using JetBrains.Annotations;
 using Moq;
 
@@ -15,7 +16,9 @@ namespace CryptoWatcher.AaveModule.Tests.Entities;
 [TestSubject(typeof(AavePosition))]
 public class AavePositionTest
 {
-    private static readonly Wallet TestWallet = new() { Address = Guid.CreateVersion7().ToString() };
+    private static readonly Wallet TestWallet = new()
+        { Address = WalletAddress.Create("0xcd94f7499a2A2b850ea75366a8D32C1c2c03aCEC") };
+
     private static readonly DateTimeOffset TestTime = DateTimeOffset.UtcNow;
     private static readonly DateOnly TestDate = TestTime.DateTime.ToDateOnly();
     private readonly Fixture _fixture;

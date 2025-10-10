@@ -3,7 +3,7 @@ using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Uniswap.Entities;
 
-public class PoolPositionSnapshot : IPositionSnapshot
+public class UniswapLiquidityPositionSnapshot : IPositionSnapshot
 {
     /// <summary>
     /// Represents the unique identifier for a liquidity pool position from NFT manager.
@@ -70,7 +70,7 @@ public class PoolPositionSnapshot : IPositionSnapshot
     /// view of token balances, fees, and other relevant data for that particular position at a given point in time.
     /// It plays a critical role in connecting historical data to the underlying liquidity pool position.
     /// </remarks>
-    public PoolPosition PoolPosition { get; init; } = null!;
+    public UniswapLiquidityPosition UniswapLiquidityPosition { get; init; } = null!;
 
     /// <summary>
     /// Represents the total fee earned in USD for a specific pool position snapshot.

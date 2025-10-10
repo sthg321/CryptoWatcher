@@ -4,7 +4,7 @@ using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Uniswap.Entities;
 
-public class PoolPositionCashFlow : ITokenPairCashFlow
+public class UniswapLiquidityPositionCashFlow : ITokenPairCashFlow
 {
     public ulong PositionId { get; init; }
 
@@ -12,20 +12,20 @@ public class PoolPositionCashFlow : ITokenPairCashFlow
 
     public DateTime Date { get; init; }
 
+    public TransactionHash TransactionHash { get; init; } = null!;
+    
     public CacheFlowEvent Event { get; init; } = null!;
-
-    public string TransactionHash { get; set; } = null!;
     
     public TokenInfoWithFee Token0 { get; init; } = null!;
 
     public TokenInfoWithFee Token1 { get; init; } = null!;
 
-    public static PoolPositionCashFlow CreateFromEvent(CacheFlowEvent @event, ulong positionId, string networkName,
+    public static UniswapLiquidityPositionCashFlow CreateFromEvent(CacheFlowEvent @event, ulong positionId, string networkName,
         string transactionHash, 
         TokenInfoPair tokenInfoPair,
         DateTimeOffset timeStamp)
     {
-        return new PoolPositionCashFlow
+        return new UniswapLiquidityPositionCashFlow
         {
             PositionId = positionId,
             NetworkName = networkName,

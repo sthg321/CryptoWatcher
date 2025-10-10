@@ -14,7 +14,7 @@ internal sealed class HyperliquidPositionsForReportSpecification : Specification
 {
     public HyperliquidPositionsForReportSpecification(IReadOnlyCollection<Wallet> wallets, DateOnly from, DateOnly to)
     {
-        var valetAddresses = wallets.Select(wallet => wallet.Address).ToArray();
+        var valetAddresses = wallets.Select(wallet => wallet.Address.Value).ToArray();
         Query
             .Where(position => valetAddresses.Contains(position.WalletAddress))
             .Include(position => position.Wallet)

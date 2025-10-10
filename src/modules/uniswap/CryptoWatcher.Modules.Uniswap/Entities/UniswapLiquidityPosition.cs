@@ -12,7 +12,7 @@ namespace CryptoWatcher.Modules.Uniswap.Entities;
 /// and the associated blockchain uniswapNetwork. This class also includes information on whether the
 /// position is currently active and the date it was created.
 /// </remarks>
-public class PoolPosition
+public class UniswapLiquidityPosition
 {
     /// <summary>
     /// Represents the unique identifier for a liquidity pool position from NFT manager.
@@ -100,7 +100,7 @@ public class PoolPosition
     /// These snapshots can be used to track changes and analyze the evolution of the position over time,
     /// including performance metrics, token balances, and other relevant data.
     /// </remarks>
-    public List<PoolPositionSnapshot> PoolPositionSnapshots { get; init; } = [];
+    public List<UniswapLiquidityPositionSnapshot> PoolPositionSnapshots { get; init; } = [];
 
-    public List<PoolPositionCashFlow> CashFlows { get; init; } = [];
+    public List<UniswapLiquidityPositionCashFlow> CashFlows { get; init; } = [];
 }

@@ -5,7 +5,7 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Extensions;
 
 internal static class TokenInfoPairExtensions
 {
-    public static TokenInfoPair NormalizeToPositionOrder(this TokenInfoPair eventTokenPair, PoolPosition dbPosition)
+    public static TokenInfoPair NormalizeToPositionOrder(this TokenInfoPair eventTokenPair, UniswapLiquidityPosition dbPosition)
     {
         if (eventTokenPair.Token0.Symbol == dbPosition.Token0.Symbol &&
             eventTokenPair.Token1.Symbol == dbPosition.Token1.Symbol)

@@ -5,7 +5,7 @@ namespace CryptoWatcher.Modules.Uniswap.Abstractions;
 
 public interface ICashFlowEventMatcher
 {
-    IAsyncEnumerable<List<PoolPositionCashFlow>> FetchCashFlowEvents(
+    IAsyncEnumerable<List<UniswapLiquidityPositionCashFlow>> FetchCashFlowEvents(
         UniswapChainConfiguration chainConfiguration,
         BigInteger fromBlock,
         BigInteger toBlock,

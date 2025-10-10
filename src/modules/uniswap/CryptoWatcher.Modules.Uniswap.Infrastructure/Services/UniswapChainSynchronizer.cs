@@ -10,10 +10,10 @@ public class UniswapChainSynchronizer : IUniswapChainSynchronizer
     private readonly IWeb3Factory _web3Factory;
     private readonly IChainLogChunkingStrategy _chunkingStrategy;
     private readonly ICashFlowEventMatcher _eventMatcher;
-    private readonly IRepository<PoolPositionCashFlow> _poolPositionCashFlowRepository;
+    private readonly IRepository<UniswapLiquidityPositionCashFlow> _poolPositionCashFlowRepository;
 
     public UniswapChainSynchronizer(IWeb3Factory web3Factory, IChainLogChunkingStrategy chunkingStrategy,
-        ICashFlowEventMatcher eventMatcher, IRepository<PoolPositionCashFlow> poolPositionCashFlowRepository)
+        ICashFlowEventMatcher eventMatcher, IRepository<UniswapLiquidityPositionCashFlow> poolPositionCashFlowRepository)
     {
         _web3Factory = web3Factory;
         _chunkingStrategy = chunkingStrategy;

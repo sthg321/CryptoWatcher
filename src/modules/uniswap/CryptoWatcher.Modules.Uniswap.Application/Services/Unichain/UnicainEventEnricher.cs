@@ -23,7 +23,7 @@ public class CashFlowEventMatcher : ICashFlowEventMatcher
         _logger = logger;
     }
 
-    public async IAsyncEnumerable<List<PoolPositionCashFlow>> FetchCashFlowEvents(
+    public async IAsyncEnumerable<List<UniswapLiquidityPositionCashFlow>> FetchCashFlowEvents(
         UniswapChainConfiguration chainConfiguration,
         BigInteger fromBlock,
         BigInteger toBlock,
@@ -32,7 +32,7 @@ public class CashFlowEventMatcher : ICashFlowEventMatcher
         await foreach (var events in _liquidityEventsProvider.FetchLiquidityPoolEvents(chainConfiguration,
                            fromBlock, toBlock, ct))
         {
-            var result = new List<PoolPositionCashFlow>();
+            var result = new List<UniswapLiquidityPositionCashFlow>();
 
             foreach (var poolPositionEvent in events)
             {
@@ -61,7 +61,7 @@ public class CashFlowEventMatcher : ICashFlowEventMatcher
                     continue;
                 }
 
-                var cashFlow = PoolPositionCashFlow.CreateFromEvent(poolPositionEvent.Event,
+                var cashFlow = UniswapLiquidityPositionCashFlow.CreateFromEvent(poolPositionEvent.Event,
                     positionFromDb.PositionId, chainConfiguration.Name, poolPositionEvent.TransactionHash,
                     enrichedTokenPair, poolPositionEvent.TimeStamp);
                 

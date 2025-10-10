@@ -21,14 +21,14 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
         [
             nameof(Wallet.Address)
         ],
-        [typeof(PoolPosition)] =
+        [typeof(UniswapLiquidityPosition)] =
         [
-            nameof(PoolPosition.PositionId), nameof(PoolPosition.NetworkName)
+            nameof(UniswapLiquidityPosition.PositionId), nameof(UniswapLiquidityPosition.NetworkName)
         ],
-        [typeof(PoolPositionSnapshot)] =
+        [typeof(UniswapLiquidityPositionSnapshot)] =
         [
-            nameof(PoolPositionSnapshot.Day), nameof(PoolPositionSnapshot.PoolPositionId),
-            nameof(PoolPositionSnapshot.NetworkName)
+            nameof(UniswapLiquidityPositionSnapshot.Day), nameof(UniswapLiquidityPositionSnapshot.PoolPositionId),
+            nameof(UniswapLiquidityPositionSnapshot.NetworkName)
         ],
         [typeof(HyperliquidVaultPosition)] =
         [

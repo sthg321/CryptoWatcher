@@ -23,6 +23,19 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
     private IDbContextTransaction? _activeTransaction;
 
     /// <summary>
+    /// Represents the collection of user wallet entities within the application's database context.
+    /// </summary>
+    /// <remarks>
+    /// This property defines the entity set for managing wallets in the CryptoWatcher application. Each wallet record
+    /// includes details such as unique identifiers and blockchain addresses, allowing the application to track and
+    /// manage user wallet information effectively. This is essential for associating users with addresses,
+    /// performing transactions, and retrieving relevant blockchain data.
+    /// </remarks>
+    public DbSet<Wallet> Wallets => Set<Wallet>();
+
+    #region Aave
+
+    /// <summary>
     /// Provides access to the set of Aave positions within the application's database context.
     /// </summary>
     /// <remarks>
@@ -44,6 +57,20 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
     public DbSet<AavePositionSnapshot> AavePositionSnapshots => Set<AavePositionSnapshot>();
 
     /// <summary>
+    /// Provides access to the set of Aave position events in the application's database context.
+    /// </summary>
+    /// <remarks>
+    /// This property enables querying and managing event data associated with Aave positions.
+    /// It is designed to store and retrieve transactional information, such as events specific
+    /// to individual position records, including token details and relevant identifiers.
+    /// </remarks>
+    public DbSet<AavePositionEvent> AavePositionEvents => Set<AavePositionEvent>();
+
+    #endregion
+
+    #region Uniswap
+
+    /// <summary>
     /// Represents the collection of blockchain networks as part of the database context in the CryptoWatcher application.
     /// </summary>
     /// <remarks>
@@ -53,17 +80,6 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
     /// critical for interacting with and monitoring blockchain states.
     /// </remarks>
     public DbSet<UniswapChainConfiguration> UniswapChainConfigurations => Set<UniswapChainConfiguration>();
- 
-    /// <summary>
-    /// Represents the collection of user wallet entities within the application's database context.
-    /// </summary>
-    /// <remarks>
-    /// This property defines the entity set for managing wallets in the CryptoWatcher application. Each wallet record
-    /// includes details such as unique identifiers and blockchain addresses, allowing the application to track and
-    /// manage user wallet information effectively. This is essential for associating users with addresses,
-    /// performing transactions, and retrieving relevant blockchain data.
-    /// </remarks>
-    public DbSet<Wallet> Wallets => Set<Wallet>();
 
     /// <summary>
     /// Represents the collection of liquidity pool positions as part of the database context in the CryptoWatcher application.
@@ -74,9 +90,34 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
     /// and metadata regarding the liquidity pool position's activity status. It integrates with other entities such as
     /// networks to ensure comprehensive tracking of liquidity metrics.
     /// </remarks>
-    public DbSet<PoolPosition> PoolPositions => Set<PoolPosition>();
+    public DbSet<UniswapLiquidityPosition> UniswapLiquidityPositions => Set<UniswapLiquidityPosition>();
 
-    public DbSet<PoolPositionSnapshot> PoolPositionSnapshots => Set<PoolPositionSnapshot>();
+    /// <summary>
+    /// Represents the collection of Uniswap liquidity position snapshot entities within the application's database context.
+    /// </summary>
+    /// <remarks>
+    /// This property is used to manage and interact with historical snapshots of Uniswap liquidity positions. Each snapshot
+    /// provides detailed information regarding a specific liquidity position at a given point in time, including the related
+    /// tokens, fee amounts, and valuation metrics. These snapshots facilitate the tracking and analysis of performance
+    /// trends, historical data, and liquidity position changes over time.
+    /// </remarks>
+    public DbSet<UniswapLiquidityPositionSnapshot> UniswapLiquidityPositionSnapshots =>
+        Set<UniswapLiquidityPositionSnapshot>();
+
+    /// <summary>
+    /// Represents the collection of Uniswap liquidity position cash flow records within the application's database context.
+    /// </summary>
+    /// <remarks>
+    /// This property defines the entity set for managing cash flow data related to Uniswap liquidity positions in the CryptoWatcher application.
+    /// Each record tracks the financial events associated with a specific liquidity position, including token transactions and associated fees,
+    /// enabling precise monitoring and analysis of position profitability over time.
+    /// </remarks>
+    public DbSet<UniswapLiquidityPositionCashFlow> LiquidityPositionCashFlows =>
+        Set<UniswapLiquidityPositionCashFlow>();
+
+    #endregion
+
+    #region Hyperliquid
 
     public DbSet<HyperliquidVaultPosition> HyperliquidVaultPositions => Set<HyperliquidVaultPosition>();
 
@@ -84,6 +125,8 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
 
     public DbSet<HyperliquidVaultPositionSnapshot> HyperliquidVaultPositionSnapshots =>
         Set<HyperliquidVaultPositionSnapshot>();
+
+    #endregion
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -98,7 +141,7 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
         {
             throw new DomainException("Can't start a new transaction while another is active.");
         }
-        
+
         _activeTransaction = await Database.BeginTransactionAsync(ct);
     }
 
@@ -123,6 +166,7 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
         finally
         {
             _activeTransaction.Dispose();
+            _activeTransaction = null;
         }
     }
 

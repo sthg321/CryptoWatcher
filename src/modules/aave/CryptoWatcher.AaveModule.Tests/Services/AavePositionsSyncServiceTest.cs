@@ -9,6 +9,7 @@ using CryptoWatcher.AaveModule.Tests.Extensions;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.Shared.ValueObjects;
+using CryptoWatcher.ValueObjects;
 using JetBrains.Annotations;
 using Moq;
 
@@ -18,7 +19,10 @@ namespace CryptoWatcher.AaveModule.Tests.Services;
 public class AavePositionsSyncServiceTest
 {
     private static readonly AaveNetwork TestNetwork = AaveNetwork.CeloNetwork;
-    private static readonly Wallet TestWallet = new() { Address = Guid.CreateVersion7().ToString() };
+
+    private static readonly Wallet TestWallet = new()
+        { Address = WalletAddress.Create("0xcd94f7499a2A2b850ea75366a8D32C1c2c03aCEC") };
+
     private static readonly DateOnly SyncDay = DateOnly.FromDateTime(DateTime.Now);
     private static readonly DateTimeOffset TestTime = DateTimeOffset.Now;
 

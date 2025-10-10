@@ -11,9 +11,9 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Services;
  
 public class UniswapReportService : IPlatformDailyReportDataProvider
 {
-    private readonly IRepository<PoolPosition> _poolPositionRepository;
+    private readonly IRepository<UniswapLiquidityPosition> _poolPositionRepository;
 
-    public UniswapReportService(IRepository<PoolPosition> poolPositionRepository)
+    public UniswapReportService(IRepository<UniswapLiquidityPosition> poolPositionRepository)
     {
         _poolPositionRepository = poolPositionRepository;
     }
@@ -87,7 +87,7 @@ public class UniswapReportService : IPlatformDailyReportDataProvider
     /// </summary>
     /// <param name="positionFees"></param>
     /// <returns></returns>
-    private static decimal CalculateActualFee(IEnumerable<PoolPositionSnapshot> positionFees)
+    private static decimal CalculateActualFee(IEnumerable<UniswapLiquidityPositionSnapshot> positionFees)
     {
         var prevDayFee = 0m;
         var result = 0m;
