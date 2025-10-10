@@ -50,8 +50,7 @@ public class HyperliquidVaultEvent : IUsdCacheFlow
     /// It plays a vital role in tracking and associating vault-related activities such as deposits, withdrawals,
     /// and other events within the system.
     /// </remarks>
-    [MaxLength(64)]
-    public string VaultAddress { get; init; } = null!;
+    public EvmAddress VaultAddress { get; init; } = null!;
 
     /// <summary>
     /// Represents the wallet address associated with the liquidity pool position.

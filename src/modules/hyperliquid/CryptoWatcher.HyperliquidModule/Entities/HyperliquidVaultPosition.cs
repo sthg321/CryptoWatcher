@@ -20,7 +20,7 @@ public class HyperliquidVaultPosition : ICalculatablePosition<IUsdPositionSnapsh
     /// This property holds the unique identifier of the vault on the blockchain.
     /// It is used to track and manage vault-specific data and operations within the Hyperliquid module.
     /// </remarks>
-    public string VaultAddress { get; init; } = null!;
+    public EvmAddress VaultAddress { get; init; } = null!;
 
     /// <summary>
     /// Represents the wallet address associated with the liquidity pool position.

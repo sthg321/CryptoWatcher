@@ -2,6 +2,7 @@ using CryptoWatcher.Abstractions;
 using CryptoWatcher.HyperliquidModule.Abstractions;
 using CryptoWatcher.HyperliquidModule.Entities;
 using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.HyperliquidModule.Services;
 
@@ -74,7 +75,7 @@ internal class HyperliquidPositionsSyncService : IHyperliquidPositionsSyncServic
             Balance = tuple.Equity,
             Day = DateOnly.FromDateTime(syncDay),
             WalletAddress = wallet.Address,
-            VaultAddress = tuple.VaultAddress,
+            VaultAddress = EvmAddress.Create(tuple.VaultAddress),
         }).ToList();
 
         await _snapshotRepository.BulkMergeAsync(vaultPositionSnapshots, ct);

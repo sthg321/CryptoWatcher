@@ -2,6 +2,7 @@ using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.HyperliquidModule.Abstractions;
 using CryptoWatcher.HyperliquidModule.Entities;
 using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.ValueObjects;
 using HyperliquidClient;
 using HyperliquidClient.UserNonFundingLedgerUpdates.Contracts;
 
@@ -32,14 +33,14 @@ public class HyperliquidApiProvider : IHyperliquidProvider
                     {
                         Usd = vaultDeposit.Usdc,
                         Event = CacheFlowEvent.Deposit,
-                        VaultAddress = vaultDeposit.Vault,
+                        VaultAddress = EvmAddress.Create(vaultDeposit.Vault),
                         Date = day
                     },
                     VaultWithdraw vaultWithdraw => new HyperliquidVaultEvent
                     {
                         Usd = vaultWithdraw.NetWithdrawnUsd,
                         Event = CacheFlowEvent.Withdrawal,
-                        VaultAddress = vaultWithdraw.Vault,
+                        VaultAddress = EvmAddress.Create(vaultWithdraw.Vault),
                         Date = day
                     },
                     _ => throw new ArgumentOutOfRangeException(nameof(update.Delta), update.Delta, null)

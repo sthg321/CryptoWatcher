@@ -14,7 +14,7 @@ public class HyperliquidVaultPositionConfiguration : IEntityTypeConfiguration<Hy
 
         builder.Property(wallet => wallet.WalletAddress).ConfigureEvmAddress();
         
-        builder.Property(wallet => wallet.VaultAddress).HasMaxLength(64);
+        builder.Property(wallet => wallet.VaultAddress).ConfigureEvmAddress();
 
         builder.HasMany(position => position.PositionSnapshots)
             .WithOne(snapshot => snapshot.Vault)

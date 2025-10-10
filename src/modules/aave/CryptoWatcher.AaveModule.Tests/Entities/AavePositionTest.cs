@@ -172,7 +172,7 @@ public class AavePositionTest
             AaveNetwork.CeloNetwork,
             TestWallet,
             type,
-            _fixture.Create<string>(),
+            _fixture.Create<EvmAddress>(),
             TestDate);
     }
 

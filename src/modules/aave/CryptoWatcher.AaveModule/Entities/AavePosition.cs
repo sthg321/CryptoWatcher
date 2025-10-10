@@ -6,6 +6,7 @@ using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.Abstractions.PositionSnapshots;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.Shared.ValueObjects;
+using CryptoWatcher.ValueObjects;
 using JetBrains.Annotations;
 
 namespace CryptoWatcher.AaveModule.Entities;
@@ -28,7 +29,7 @@ public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
     {
     }
 
-    public AavePosition(AaveNetwork network, Wallet wallet, AavePositionType positionType, string tokenAddress,
+    public AavePosition(AaveNetwork network, Wallet wallet, AavePositionType positionType, EvmAddress tokenAddress,
         DateOnly createdAtDay)
     {
         Network = network.Name;
@@ -94,7 +95,7 @@ public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
     /// This property holds the blockchain wallet address linked to the liquidity pool position.
     /// It is used to identify the owner of the position and manage the related account details.
     /// </remarks>
-    public string WalletAddress { get; private set; } = null!;
+    public EvmAddress WalletAddress { get; private set; } = null!;
 
     /// <summary>
     /// Represents the wallet associated with a liquidity pool position.
@@ -113,7 +114,7 @@ public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
     /// The token's address acts as a unique identifier on the blockchain, enabling precise tracking
     /// of assets involved in the position.
     /// </remarks>
-    public string TokenAddress { get; private set; } = null!;
+    public EvmAddress TokenAddress { get; private set; } = null!;
 
     public decimal? PreviousScaledAmount { get; set; }
 

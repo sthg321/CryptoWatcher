@@ -20,7 +20,7 @@ public partial class TransactionHash : IEqualityComparer<TransactionHash>
         Value = value.ToLowerInvariant();
     }
 
-    public string Value { get; init; }  
+    public string Value { get;  }  
 
     public static TransactionHash FromString(string value) => new(value);
 

@@ -94,7 +94,7 @@ public class AavePositionsSyncServiceTest
         if (positionsExists)
         {
             var existedPositions = expectedPositions.Select(position =>
-                new AavePosition(TestNetwork, TestWallet, expectedPositionType, position.TokenAddress, SyncDay));
+                new AavePosition(TestNetwork, TestWallet, expectedPositionType, EvmAddress.Create(position.TokenAddress), SyncDay));
 
             _aavePositionRepositoryMock.Setup(repository =>
                     repository.ListAsync(It.IsAny<AavePositionsWithSnapshotsSpecification>(),
@@ -176,7 +176,7 @@ public class AavePositionsSyncServiceTest
         var fixture = new Fixture();
         fixture.Customize(new PositiveBigIntegerCustomization());
 
-        var dbPosition = new AavePosition(TestNetwork, TestWallet, AavePositionType.Borrowed, fixture.Create<string>(),
+        var dbPosition = new AavePosition(TestNetwork, TestWallet, AavePositionType.Borrowed, fixture.Create<EvmAddress>(),
             SyncDay.AddDays(-1));
 
         _aaveProviderMock.Setup(provider =>

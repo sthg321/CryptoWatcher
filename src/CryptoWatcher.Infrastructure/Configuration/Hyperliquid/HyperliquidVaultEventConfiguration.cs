@@ -1,5 +1,5 @@
 using CryptoWatcher.HyperliquidModule.Entities;
-using CryptoWatcher.Infrastructure.Configuration.Converters;
+using CryptoWatcher.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,8 +11,7 @@ public class HyperliquidVaultEventConfiguration : IEntityTypeConfiguration<Hyper
     {
         builder.HasKey(@event => new { @event.VaultAddress, @event.WalletAddress, @event.Date });
         
-        builder.Property(wallet => wallet.WalletAddress)
-            .HasConversion<WalletAddressConverter>()
-            .HasMaxLength(64);
+        builder.Property(wallet => wallet.WalletAddress).ConfigureEvmAddress();
+        builder.Property(wallet => wallet.VaultAddress).ConfigureEvmAddress();
     }
 }

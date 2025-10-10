@@ -26,7 +26,7 @@ public class HyperliquidVaultPositionSnapshot : IUsdPositionSnapshot
     /// <summary>
     /// VaultAddress address
     /// </summary>
-    public string VaultAddress { get; init; } = null!;
+    public EvmAddress VaultAddress { get; init; } = null!;
 
     /// <summary>
     /// Represents the Hyperliquid vault associated with the position snapshot.

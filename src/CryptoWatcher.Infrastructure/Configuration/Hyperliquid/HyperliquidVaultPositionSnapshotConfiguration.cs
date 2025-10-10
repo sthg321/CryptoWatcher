@@ -11,7 +11,7 @@ public class HyperliquidVaultPositionSnapshotConfiguration : IEntityTypeConfigur
     {
         builder.HasKey(snapshot => new { snapshot.VaultAddress, snapshot.WalletAddress, Date = snapshot.Day });
 
-        builder.Property(wallet => wallet.VaultAddress).HasMaxLength(64);
+        builder.Property(wallet => wallet.VaultAddress).ConfigureEvmAddress();
         
         builder.Property(wallet => wallet.WalletAddress).ConfigureEvmAddress();
     }

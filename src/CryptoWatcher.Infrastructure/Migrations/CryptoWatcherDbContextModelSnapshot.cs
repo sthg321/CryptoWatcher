@@ -157,18 +157,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.ToTable("HyperliquidVaultPositionSnapshots");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.Shared.Entities.Wallet", b =>
-                {
-                    b.Property<string>("Address")
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
-
-                    b.HasKey("Address");
-
-                    b.ToTable("Wallets");
-                });
-
-            modelBuilder.Entity("CryptoWatcher.UniswapModule.Entities.PoolPosition", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Uniswap.Entities.PoolPosition", b =>
                 {
                     b.Property<decimal>("PositionId")
                         .HasColumnType("numeric(20,0)");
@@ -180,6 +169,15 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<int>("ProtocolVersion")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("TickLower")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("TickUpper")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("WalletAddress")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -187,14 +185,40 @@ namespace CryptoWatcher.Infrastructure.Migrations
 
                     b.HasKey("PositionId", "NetworkName");
 
-                    b.HasIndex("NetworkName");
-
                     b.HasIndex("WalletAddress");
+
+                    b.HasIndex("NetworkName", "ProtocolVersion");
 
                     b.ToTable("PoolPositions");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.UniswapModule.Entities.PoolPositionSnapshot", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Uniswap.Entities.PoolPositionCashFlow", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Event")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("NetworkName")
+                        .IsRequired()
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<decimal>("PositionId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PositionId", "NetworkName");
+
+                    b.ToTable("PoolPositionCashFlow");
+                });
+
+            modelBuilder.Entity("CryptoWatcher.Modules.Uniswap.Entities.PoolPositionSnapshot", b =>
                 {
                     b.Property<decimal>("PoolPositionId")
                         .HasColumnType("numeric(20,0)");
@@ -214,26 +238,11 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.ToTable("PoolPositionSnapshots");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.UniswapModule.Entities.UniswapNetwork", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Uniswap.Entities.UniswapChainConfiguration", b =>
                 {
                     b.Property<string>("Name")
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
-
-                    b.Property<string>("MultiCallAddress")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("NftManagerAddress")
-                        .IsRequired()
-                        .HasMaxLength(266)
-                        .HasColumnType("character varying(266)");
-
-                    b.Property<string>("PoolFactoryAddress")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
 
                     b.Property<int>("ProtocolVersion")
                         .HasColumnType("integer");
@@ -243,9 +252,20 @@ namespace CryptoWatcher.Infrastructure.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
 
-                    b.HasKey("Name");
+                    b.HasKey("Name", "ProtocolVersion");
 
-                    b.ToTable("Networks");
+                    b.ToTable("UniswapChainConfigurations");
+                });
+
+            modelBuilder.Entity("CryptoWatcher.Shared.Entities.Wallet", b =>
+                {
+                    b.Property<string>("Address")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.HasKey("Address");
+
+                    b.ToTable("Wallets");
                 });
 
             modelBuilder.Entity("TickerQ.EntityFrameworkCore.Entities.CronTickerEntity", b =>
@@ -311,6 +331,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("LockHolder")
+                        .IsConcurrencyToken()
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("LockedAt")
@@ -552,17 +573,17 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Navigation("Wallet");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.UniswapModule.Entities.PoolPosition", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Uniswap.Entities.PoolPosition", b =>
                 {
-                    b.HasOne("CryptoWatcher.UniswapModule.Entities.UniswapNetwork", "UniswapNetwork")
-                        .WithMany("LiquidityPoolPositions")
-                        .HasForeignKey("NetworkName")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("CryptoWatcher.Shared.Entities.Wallet", "Wallet")
                         .WithMany()
                         .HasForeignKey("WalletAddress")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CryptoWatcher.Modules.Uniswap.Entities.UniswapChainConfiguration", null)
+                        .WithMany("LiquidityPoolPositions")
+                        .HasForeignKey("NetworkName", "ProtocolVersion")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -624,20 +645,85 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Navigation("Token1")
                         .IsRequired();
 
-                    b.Navigation("UniswapNetwork");
-
                     b.Navigation("Wallet");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.UniswapModule.Entities.PoolPositionSnapshot", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Uniswap.Entities.PoolPositionCashFlow", b =>
                 {
-                    b.HasOne("CryptoWatcher.UniswapModule.Entities.PoolPosition", "PoolPosition")
+                    b.HasOne("CryptoWatcher.Modules.Uniswap.Entities.PoolPosition", null)
+                        .WithMany("CashFlows")
+                        .HasForeignKey("PositionId", "NetworkName")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("CryptoWatcher.ValueObjects.TokenInfoWithFee", "Token0", b1 =>
+                        {
+                            b1.Property<Guid>("PoolPositionCashFlowId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<decimal>("Amount")
+                                .HasColumnType("numeric");
+
+                            b1.Property<decimal>("FeeAmount")
+                                .HasColumnType("numeric");
+
+                            b1.Property<decimal>("PriceInUsd")
+                                .HasColumnType("numeric");
+
+                            b1.Property<string>("Symbol")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.HasKey("PoolPositionCashFlowId");
+
+                            b1.ToTable("PoolPositionCashFlow");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PoolPositionCashFlowId");
+                        });
+
+                    b.OwnsOne("CryptoWatcher.ValueObjects.TokenInfoWithFee", "Token1", b1 =>
+                        {
+                            b1.Property<Guid>("PoolPositionCashFlowId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<decimal>("Amount")
+                                .HasColumnType("numeric");
+
+                            b1.Property<decimal>("FeeAmount")
+                                .HasColumnType("numeric");
+
+                            b1.Property<decimal>("PriceInUsd")
+                                .HasColumnType("numeric");
+
+                            b1.Property<string>("Symbol")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.HasKey("PoolPositionCashFlowId");
+
+                            b1.ToTable("PoolPositionCashFlow");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PoolPositionCashFlowId");
+                        });
+
+                    b.Navigation("Token0")
+                        .IsRequired();
+
+                    b.Navigation("Token1")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CryptoWatcher.Modules.Uniswap.Entities.PoolPositionSnapshot", b =>
+                {
+                    b.HasOne("CryptoWatcher.Modules.Uniswap.Entities.PoolPosition", "PoolPosition")
                         .WithMany("PoolPositionSnapshots")
                         .HasForeignKey("PoolPositionId", "NetworkName")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("CryptoWatcher.UniswapModule.Entities.TokenInfoWithFee", "Token0", b1 =>
+                    b.OwnsOne("CryptoWatcher.ValueObjects.TokenInfoWithFee", "Token0", b1 =>
                         {
                             b1.Property<decimal>("PoolPositionSnapshotPoolPositionId")
                                 .HasColumnType("numeric(20,0)");
@@ -669,7 +755,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                                 .HasForeignKey("PoolPositionSnapshotPoolPositionId", "PoolPositionSnapshotNetworkName", "PoolPositionSnapshotDay");
                         });
 
-                    b.OwnsOne("CryptoWatcher.UniswapModule.Entities.TokenInfoWithFee", "Token1", b1 =>
+                    b.OwnsOne("CryptoWatcher.ValueObjects.TokenInfoWithFee", "Token1", b1 =>
                         {
                             b1.Property<decimal>("PoolPositionSnapshotPoolPositionId")
                                 .HasColumnType("numeric(20,0)");
@@ -710,6 +796,43 @@ namespace CryptoWatcher.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("CryptoWatcher.Modules.Uniswap.Entities.UniswapChainConfiguration", b =>
+                {
+                    b.OwnsOne("CryptoWatcher.Modules.Uniswap.ValueObjects.UniswapAddresses", "SmartContractAddresses", b1 =>
+                        {
+                            b1.Property<string>("UniswapChainConfigurationName")
+                                .HasColumnType("character varying(32)");
+
+                            b1.Property<int>("UniswapChainConfigurationProtocolVersion")
+                                .HasColumnType("integer");
+
+                            b1.Property<string>("MultiCall")
+                                .IsRequired()
+                                .HasMaxLength(42)
+                                .HasColumnType("character varying(42)");
+
+                            b1.Property<string>("NftManager")
+                                .IsRequired()
+                                .HasMaxLength(42)
+                                .HasColumnType("character varying(42)");
+
+                            b1.Property<string>("PoolFactory")
+                                .IsRequired()
+                                .HasMaxLength(42)
+                                .HasColumnType("character varying(42)");
+
+                            b1.HasKey("UniswapChainConfigurationName", "UniswapChainConfigurationProtocolVersion");
+
+                            b1.ToTable("UniswapChainConfigurations");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UniswapChainConfigurationName", "UniswapChainConfigurationProtocolVersion");
+                        });
+
+                    b.Navigation("SmartContractAddresses")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("TickerQ.EntityFrameworkCore.Entities.CronTickerOccurrenceEntity<TickerQ.EntityFrameworkCore.Entities.CronTickerEntity>", b =>
                 {
                     b.HasOne("TickerQ.EntityFrameworkCore.Entities.CronTickerEntity", "CronTicker")
@@ -745,12 +868,14 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Navigation("VaultEvents");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.UniswapModule.Entities.PoolPosition", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Uniswap.Entities.PoolPosition", b =>
                 {
+                    b.Navigation("CashFlows");
+
                     b.Navigation("PoolPositionSnapshots");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.UniswapModule.Entities.UniswapNetwork", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Uniswap.Entities.UniswapChainConfiguration", b =>
                 {
                     b.Navigation("LiquidityPoolPositions");
                 });
