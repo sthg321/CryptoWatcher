@@ -73,8 +73,10 @@ public static class CalculatablePositionExtensions
         }
 
         var filteredCashFlows = cashFlows
-            .Where(cashFlow => cashFlow.Date > from.ToMinDateTime() && cashFlow.Date <= to.ToMaxDateTime())
-            .Sum(getCashFlowAmount);
+            .Where(cashFlow => cashFlow.Date.ToDateOnly() > from && cashFlow.Date.ToDateOnly() <= to)
+            .Sum(cacheFlow => cacheFlow.Event == CacheFlowEvent.Deposit
+                ? getCashFlowAmount(cacheFlow)
+                : -getCashFlowAmount(cacheFlow));
 
         var startValue = getValue(startSnapshot);
         var endValue = getValue(endSnapshot);
