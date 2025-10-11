@@ -1,4 +1,5 @@
 using Ardalis.Specification;
+using CryptoWatcher.Extensions;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
 
@@ -21,6 +22,10 @@ public sealed class UniswapPositionsForReportSpecification : Specification<Unisw
             .Include(poolPosition => poolPosition.PoolPositionSnapshots
                 .Where(snapshot => snapshot.Day >= from && snapshot.Day <= to)
                 .OrderBy(snapshot => snapshot.Day)
+            )
+            .Include(poolPosition => poolPosition.CashFlows
+                .Where(snapshot =>
+                    snapshot.Date.Date >= from.ToMinDateTime() && snapshot.Date.Date <= to.ToMaxDateTime())
             )
             .Where(position => walletAddresses.Contains(position.WalletAddress));
     }

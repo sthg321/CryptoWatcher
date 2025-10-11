@@ -51,6 +51,8 @@ public static class ServiceCollectionExtensions
         
         services.AddScoped<IUniswapChainSynchronizerOrchestrator, UniswapChainSynchronizationOrchestrator>();
         services.AddScoped<IUniswapChainSynchronizer, UniswapChainSynchronizer>();
+        services.AddScoped<IUniswapCashFlowBlockRangeSynchronizer, UniswapCashFlowBlockRangeSynchronizer>();
+        
         services.AddSingleton<IUniswapProvider, UniswapProvider>();
         services.AddSingleton<IChainLogChunkingStrategy, ChainLogChunkingStrategy>();
         services.AddSingleton<ICashFlowEventMatcher, CashFlowEventMatcher>();

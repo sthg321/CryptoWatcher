@@ -1,4 +1,3 @@
-using CryptoWatcher.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
@@ -9,16 +8,14 @@ public class UniswapChainSynchronizer : IUniswapChainSynchronizer
 {
     private readonly IWeb3Factory _web3Factory;
     private readonly IChainLogChunkingStrategy _chunkingStrategy;
-    private readonly ICashFlowEventMatcher _eventMatcher;
-    private readonly IRepository<UniswapLiquidityPositionCashFlow> _poolPositionCashFlowRepository;
+    private readonly IUniswapCashFlowBlockRangeSynchronizer _blockRangeSynchronizer;
 
     public UniswapChainSynchronizer(IWeb3Factory web3Factory, IChainLogChunkingStrategy chunkingStrategy,
-        ICashFlowEventMatcher eventMatcher, IRepository<UniswapLiquidityPositionCashFlow> poolPositionCashFlowRepository)
+        IUniswapCashFlowBlockRangeSynchronizer blockRangeSynchronizer)
     {
         _web3Factory = web3Factory;
         _chunkingStrategy = chunkingStrategy;
-        _eventMatcher = eventMatcher;
-        _poolPositionCashFlowRepository = poolPositionCashFlowRepository;
+        _blockRangeSynchronizer = blockRangeSynchronizer;
     }
 
     public async Task SynchronizeChainAsync(UniswapChainConfiguration chain, CancellationToken ct = default)
@@ -29,21 +26,7 @@ public class UniswapChainSynchronizer : IUniswapChainSynchronizer
 
         foreach (var (from, to) in _chunkingStrategy.CreateChunks(chain.LastProcessedBlock, lastBlockInBlockChain))
         {
-            await _poolPositionCashFlowRepository.UnitOfWork.BeginTransactionAsync(ct);
-
-            await foreach (var cashFlow in _eventMatcher.FetchCashFlowEvents(chain, from, to, ct))
-            {
-                if (cashFlow.Count != 0)
-                {
-                    await _poolPositionCashFlowRepository.BulkMergeAsync(cashFlow, ct);
-                }
-            }
-
-            chain.UpdateLastSynchronizedBlock(to);
-
-            await _poolPositionCashFlowRepository.UnitOfWork.SaveChangesAsync(ct);
-
-            await _poolPositionCashFlowRepository.UnitOfWork.CommitTransactionAsync(ct);
+            await _blockRangeSynchronizer.SynchronizeBlockRangeAsync(chain, from, to, true, ct);
         }
     }
 }
