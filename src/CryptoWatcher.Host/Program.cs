@@ -1,3 +1,4 @@
+using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using CryptoWatcher.Abstractions;
@@ -54,19 +55,20 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;
 });
 
+builder.Services.AddEndpointsApiExplorer().AddSwaggerGen();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var orchestrator = scope.ServiceProvider.GetRequiredService<IUniswapChainSynchronizerOrchestrator>();
-    
-     //await orchestrator.SynchronizeAllChainsAsync();
-    
     if (!app.Environment.IsDevelopment())
     {
         scope.ServiceProvider.GetRequiredService<CryptoWatcherDbContext>().Database.Migrate();
     }
 }
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseTickerQ();
 
@@ -90,6 +92,18 @@ async Task<FileStreamHttpResult> Handler(IPlatformDailyReportFacade reportFacade
 app.MapGet("/report/{platform}", Handler);
 
 app.MapGet("/report/total", TotalReportHandler);
+
+app.MapPost("/uniswap/sync-block/{blockNumber}", async (IUniswapCashFlowBlockRangeSynchronizer sync,
+    CryptoWatcherDbContext dbContext,
+    BigInteger blockNumber) =>
+{
+    var chain = await dbContext.UniswapChainConfigurations
+        .Include(configuration => configuration.LiquidityPoolPositions)
+        .ThenInclude(positions => positions.Wallet)
+        .FirstAsync();
+
+    await sync.SynchronizeBlockRangeAsync(chain, blockNumber, blockNumber);
+});
 
 async Task<FileStreamHttpResult> TotalReportHandler(IDailySummaryReportProvider reportProvider,
     IRepository<Wallet> walletRepository,
