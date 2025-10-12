@@ -38,10 +38,10 @@ public class UniswapChainConfiguration
 
     public void UpdateLastSynchronizedBlock(BigInteger lastSynchronizedBlock)
     {
-        if (lastSynchronizedBlock <= LastProcessedBlock)
-        {
-            throw new DomainException("Last processed block cannot be less than or equal to the current block");
-        }
+        // if (lastSynchronizedBlock <= LastProcessedBlock)
+        // {
+        //     throw new DomainException("Last processed block cannot be less than or equal to the current block");
+        // }
 
         LastProcessedBlock = lastSynchronizedBlock;
         LastProcessedBlockUpdatedAt = DateTime.UtcNow;

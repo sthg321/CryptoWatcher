@@ -29,7 +29,7 @@ public class UniswapLiquidityPositionConfiguration : IEntityTypeConfiguration<Un
             .HasForeignKey(position => new { position.PositionId, position.NetworkName })
             .IsRequired();
 
-        builder.OwnsOne<TokenInfo>(position => position.Token0);
-        builder.OwnsOne<TokenInfo>(position => position.Token1); 
+        builder.ComplexProperty<TokenInfo>(position => position.Token0);
+        builder.ComplexProperty<TokenInfo>(position => position.Token1); 
     }
 }

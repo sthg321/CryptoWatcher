@@ -23,10 +23,7 @@ public sealed class UniswapPositionsForReportSpecification : Specification<Unisw
                 .Where(snapshot => snapshot.Day >= from && snapshot.Day <= to)
                 .OrderBy(snapshot => snapshot.Day)
             )
-            .Include(poolPosition => poolPosition.CashFlows
-                .Where(snapshot =>
-                    snapshot.Date.Date >= from.ToMinDateTime() && snapshot.Date.Date <= to.ToMaxDateTime())
-            )
+            .Include(poolPosition => poolPosition.CashFlows)
             .Where(position => walletAddresses.Contains(position.WalletAddress));
     }
 }

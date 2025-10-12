@@ -6,6 +6,10 @@ namespace CryptoWatcher.Modules.Uniswap.Entities;
 
 public class UniswapLiquidityPositionCashFlow : ITokenPairCashFlow
 {
+    private UniswapLiquidityPositionCashFlow()
+    {
+    }
+
     public ulong PositionId { get; init; }
 
     public string NetworkName { get; init; } = null!;
@@ -13,15 +17,16 @@ public class UniswapLiquidityPositionCashFlow : ITokenPairCashFlow
     public DateTime Date { get; init; }
 
     public TransactionHash TransactionHash { get; init; } = null!;
-    
+
     public CacheFlowEvent Event { get; init; } = null!;
-    
-    public TokenInfoWithFee Token0 { get; init; } = null!;
 
-    public TokenInfoWithFee Token1 { get; init; } = null!;
+    public TokenInfoWithFee Token0 { get; set; } = null!;
 
-    public static UniswapLiquidityPositionCashFlow CreateFromEvent(CacheFlowEvent @event, ulong positionId, string networkName,
-        string transactionHash, 
+    public TokenInfoWithFee Token1 { get; set; } = null!;
+
+    public static UniswapLiquidityPositionCashFlow CreateFromEvent(CacheFlowEvent @event, ulong positionId,
+        string networkName,
+        string transactionHash,
         TokenInfoPair tokenInfoPair,
         DateTimeOffset timeStamp)
     {
@@ -39,12 +44,10 @@ public class UniswapLiquidityPositionCashFlow : ITokenPairCashFlow
 
     private static TokenInfoWithFee CreateFromEvent(TokenInfoWithAddress infoWithAddress, CacheFlowEvent @event)
     {
-        return new TokenInfoWithFee
-        {
-            Symbol = infoWithAddress.Symbol,
-            Amount = @event != CacheFlowEvent.FeeClaim ? infoWithAddress.Amount : 0,
-            FeeAmount = @event != CacheFlowEvent.FeeClaim ? 0 : infoWithAddress.Amount,
-            PriceInUsd = infoWithAddress.PriceInUsd
-        };
+        var amount = @event != CacheFlowEvent.FeeClaim ? infoWithAddress.Amount : 0;
+        var feeAmount = @event != CacheFlowEvent.FeeClaim ? 0 : infoWithAddress.Amount;
+
+        return TokenInfoWithFee.CreateForEvent(@event, infoWithAddress.Symbol, amount, feeAmount,
+            infoWithAddress.PriceInUsd);
     }
 }
