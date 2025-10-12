@@ -16,6 +16,8 @@ public class UniswapDailyReport : PlatformDailyReport
     /// This value represents the aggregate monetary value of the tokens held in the pool positions.
     /// </summary>
     public required Money TotalHoldInUsd { get; init; }
+    
+    public required Money TotalCommissionInUsd { get; init; }
  
     /// <summary>
     /// Gets the collection of report items that represent individual snapshots of a Uniswap pool position.

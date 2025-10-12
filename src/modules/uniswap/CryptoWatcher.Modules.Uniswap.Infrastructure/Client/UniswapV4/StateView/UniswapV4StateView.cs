@@ -8,7 +8,7 @@ namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.StateVie
 internal interface IUniswapV4StateView
 {
     Task<GetSlot0OutputDTO> GetSlot0Async(IWeb3 web3, UniswapV4PoolKey poolId25);
-  
+
     Task<GetTickFeeGrowthOutsideOutput> GetTickInfoAsync(IWeb3 web3, UniswapV4PoolKey poolId25, int tick);
 
     Task<GetPositionInfoOutputDTO> GetPositionInfoAsync(IWeb3 web3, UniswapV4PoolKey poolId25,
@@ -20,6 +20,7 @@ internal interface IUniswapV4StateView
 internal class UniswapV4StateView : IUniswapV4StateView
 {
     private const string StateViewAddress = "0x86e8631a016f9068c3f085faf484ee3f5fdee8f2";
+    private const string UniswapV4PositionsNft = "0x4529a01c7a0410167c5740c487a8de60232617bf";
 
     public async Task<GetSlot0OutputDTO> GetSlot0Async(IWeb3 web3, UniswapV4PoolKey poolId25)
     {
@@ -51,8 +52,8 @@ internal class UniswapV4StateView : IUniswapV4StateView
         var poolId = GeneratePoolId(poolId25);
 
         return await contract.GetFunction("getPositionInfo")
-            .CallDeserializingToObjectAsync<GetPositionInfoOutputDTO>(poolId, StateViewAddress, tickLower, tickUpper,
-                ConvertTokenIdToBytes32(tokenId));
+            .CallDeserializingToObjectAsync<GetPositionInfoOutputDTO>(poolId, UniswapV4PositionsNft, tickLower,
+                tickUpper, ConvertTokenIdToBytes32(tokenId));
     }
 
     public async Task<GetFeeGrowthGlobalsOutput> GetFeeGrowGlobalAsync(IWeb3 web3, UniswapV4PoolKey poolId25)

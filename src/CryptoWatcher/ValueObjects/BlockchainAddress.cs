@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace CryptoWatcher.ValueObjects;
 
-public sealed partial class EvmAddress : IEquatable<EvmAddress>
+public sealed partial class EvmAddress : IEquatable<EvmAddress>, IEqualityComparer<EvmAddress>
 {
     private static readonly Regex AddressRegex = MyRegex();
 
@@ -29,6 +29,21 @@ public sealed partial class EvmAddress : IEquatable<EvmAddress>
     public override int GetHashCode() => Value.ToLowerInvariant().GetHashCode();
     public override string ToString() => Value;
 
+    public bool Equals(EvmAddress? x, EvmAddress? y)
+    {
+        if (ReferenceEquals(x, y)) return true;
+        if (x is null) return false;
+        if (y is null) return false;
+        if (x.GetType() != y.GetType()) return false;
+
+        return string.Equals(x.Value, y.Value, StringComparison.InvariantCultureIgnoreCase);
+    }
+
+    public int GetHashCode(EvmAddress obj)
+    {
+        return obj.Value.GetHashCode(StringComparison.InvariantCultureIgnoreCase);
+    }
+    
     public static implicit operator string(EvmAddress address) => address.Value;
     public static explicit operator EvmAddress(string value) => Create(value);
 

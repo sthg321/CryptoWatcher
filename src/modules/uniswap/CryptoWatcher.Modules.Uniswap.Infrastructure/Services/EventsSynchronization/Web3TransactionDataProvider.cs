@@ -1,6 +1,7 @@
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Models;
 using CryptoWatcher.Modules.Uniswap.Entities;
+using Nethereum.Hex.HexConvertors.Extensions;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services.EventsSynchronization;
 
@@ -30,15 +31,22 @@ internal class Web3TransactionDataProvider : ITransactionDataProvider
             return null;
         }
 
+        var liquidityEventLogs = receipt.Logs.Select(log => new LiquidityEventLog
+        {
+            Address = log.Address,
+            Data = log.Data.HexToBigInteger(false),
+            Topics = (string[])log.Topics
+        }).ToArray();
+        
         var eventEnrichment =
             await _liquidityEventLogEnricher.EnrichLiquidityEventFromLogsAsync(walletAddress, transactionHash,
-                receipt.Logs, ct);
+                liquidityEventLogs, ct);
 
         if (eventEnrichment is null)
         {
             return null;
-        }        
-        
+        }
+
         return new TransactionData
         {
             WalletAddress = receipt.From,

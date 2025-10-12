@@ -162,15 +162,15 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     NetworkName = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
                     TickLower = table.Column<long>(type: "bigint", nullable: false),
                     TickUpper = table.Column<long>(type: "bigint", nullable: false),
-                    Token0_Symbol = table.Column<string>(type: "text", nullable: false),
-                    Token0_Amount = table.Column<decimal>(type: "numeric", nullable: false),
-                    Token0_PriceInUsd = table.Column<decimal>(type: "numeric", nullable: false),
-                    Token1_Symbol = table.Column<string>(type: "text", nullable: false),
-                    Token1_Amount = table.Column<decimal>(type: "numeric", nullable: false),
-                    Token1_PriceInUsd = table.Column<decimal>(type: "numeric", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     WalletAddress = table.Column<string>(type: "character(42)", fixedLength: true, maxLength: 42, nullable: false),
-                    ProtocolVersion = table.Column<int>(type: "integer", nullable: false)
+                    ProtocolVersion = table.Column<int>(type: "integer", nullable: false),
+                    Token0_Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    Token0_PriceInUsd = table.Column<decimal>(type: "numeric", nullable: false),
+                    Token0_Symbol = table.Column<string>(type: "text", nullable: false),
+                    Token1_Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    Token1_PriceInUsd = table.Column<decimal>(type: "numeric", nullable: false),
+                    Token1_Symbol = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -198,14 +198,14 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     TransactionHash = table.Column<string>(type: "character varying(66)", maxLength: 66, nullable: false),
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Event = table.Column<int>(type: "integer", nullable: false),
-                    Token0_Symbol = table.Column<string>(type: "text", nullable: false),
                     Token0_Amount = table.Column<decimal>(type: "numeric", nullable: false),
                     Token0_FeeAmount = table.Column<decimal>(type: "numeric", nullable: false),
                     Token0_PriceInUsd = table.Column<decimal>(type: "numeric", nullable: false),
-                    Token1_Symbol = table.Column<string>(type: "text", nullable: false),
+                    Token0_Symbol = table.Column<string>(type: "text", nullable: false),
                     Token1_Amount = table.Column<decimal>(type: "numeric", nullable: false),
                     Token1_FeeAmount = table.Column<decimal>(type: "numeric", nullable: false),
-                    Token1_PriceInUsd = table.Column<decimal>(type: "numeric", nullable: false)
+                    Token1_PriceInUsd = table.Column<decimal>(type: "numeric", nullable: false),
+                    Token1_Symbol = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -226,14 +226,14 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     NetworkName = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
                     Day = table.Column<DateOnly>(type: "date", nullable: false),
                     IsInRange = table.Column<bool>(type: "boolean", nullable: false),
-                    Token0_Symbol = table.Column<string>(type: "text", nullable: false),
                     Token0_Amount = table.Column<decimal>(type: "numeric", nullable: false),
                     Token0_FeeAmount = table.Column<decimal>(type: "numeric", nullable: false),
                     Token0_PriceInUsd = table.Column<decimal>(type: "numeric", nullable: false),
-                    Token1_Symbol = table.Column<string>(type: "text", nullable: false),
+                    Token0_Symbol = table.Column<string>(type: "text", nullable: false),
                     Token1_Amount = table.Column<decimal>(type: "numeric", nullable: false),
                     Token1_FeeAmount = table.Column<decimal>(type: "numeric", nullable: false),
-                    Token1_PriceInUsd = table.Column<decimal>(type: "numeric", nullable: false)
+                    Token1_PriceInUsd = table.Column<decimal>(type: "numeric", nullable: false),
+                    Token1_Symbol = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {

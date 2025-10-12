@@ -4,7 +4,6 @@ using CryptoWatcher.Abstractions;
 using CryptoWatcher.HyperliquidModule.Entities;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
-using EFCore.BulkExtensions;
 
 namespace CryptoWatcher.Infrastructure;
 
@@ -69,10 +68,12 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
         {
             return;
         }
-
-        await _dbContext.BulkInsertOrUpdateAsync(entities,
-            operation => operation.UpdateByProperties = Type2PrimaryKeyFields.GetValueOrDefault(typeof(TEntity)),
-            cancellationToken: ct);
+        
+        await _dbContext.BulkMergeAsync(entities, operation =>
+        {
+            operation.ColumnPrimaryKeyNames = Type2PrimaryKeyFields.GetValueOrDefault(typeof(TEntity));
+        }, ct);
+    
     }
 
     public TEntity Insert(TEntity entity)

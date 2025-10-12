@@ -35,10 +35,11 @@ internal class LiquidityEventsProvider : ILiquidityEventsProvider
         BigInteger toBlock,
         [EnumeratorCancellation] CancellationToken ct = default)
     {
-        var blockchainLogBatch = await _logProvider.GetLogsAsync(chain, fromBlock, toBlock);
+        var blockchainLogEntries = await _logProvider.GetLogsAsync(chain, fromBlock, toBlock);
 
         var rateLimiter = _pipelineRegistry.GetPipeline("Uniswap");
-        var tasks = blockchainLogBatch.Logs.Select(async log =>
+        
+        var tasks = blockchainLogEntries.Select(async log =>
         {
             try
             {
@@ -55,7 +56,7 @@ internal class LiquidityEventsProvider : ILiquidityEventsProvider
 
                 return _eventDecoder.DecodeModifyLiquidityEvent(transactionData.WalletAddress, log.Data,
                     transactionData.TransactionHash,
-                    transactionData.EventEnrichment.TokenPair, 
+                    transactionData.EventEnrichment.TokenPair,
                     transactionData.EventEnrichment.TimeStamp);
             }
             catch (Exception ex)

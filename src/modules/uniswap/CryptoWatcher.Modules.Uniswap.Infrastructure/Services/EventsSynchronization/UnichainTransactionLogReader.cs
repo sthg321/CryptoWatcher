@@ -1,16 +1,9 @@
+using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Models;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Unichain;
 using CryptoWatcher.Shared.ValueObjects;
-using Nethereum.Hex.HexConvertors.Extensions;
-using Nethereum.RPC.Eth.DTOs;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services.EventsSynchronization;
-
-internal interface ILiquidityEventLogEnricher
-{
-    Task<LiquidityEventEnrichment?> EnrichLiquidityEventFromLogsAsync(string walletAddress,
-        string transactionHash, FilterLog[] logs, CancellationToken ct = default);
-}
 
 internal class LiquidityEventLogEnricher : ILiquidityEventLogEnricher
 {
@@ -26,7 +19,7 @@ internal class LiquidityEventLogEnricher : ILiquidityEventLogEnricher
 
     public async Task<LiquidityEventEnrichment?> EnrichLiquidityEventFromLogsAsync(string walletAddress,
         string transactionHash,
-        FilterLog[] logs, 
+        LiquidityEventLog[] logs,
         CancellationToken ct = default)
     {
         return logs.Length switch
@@ -47,7 +40,7 @@ internal class LiquidityEventLogEnricher : ILiquidityEventLogEnricher
     private async Task<LiquidityEventEnrichment> CreateTokenPairFromLogsAndInternalTransactionAsync(
         string walletAddress,
         string transactionHash,
-        FilterLog[] logs,
+        LiquidityEventLog[] logs,
         CancellationToken ct)
     {
         var token0 = CreateTokenFromLogs(logs, FirstTokenIndex);
@@ -68,7 +61,8 @@ internal class LiquidityEventLogEnricher : ILiquidityEventLogEnricher
         };
     }
 
-    private async Task<LiquidityEventEnrichment> CreateTokenPairFromLogs(string transactionHash, FilterLog[] logs,
+    private async Task<LiquidityEventEnrichment> CreateTokenPairFromLogs(string transactionHash,
+        LiquidityEventLog[] logs,
         CancellationToken ct)
     {
         var timeStamp = await _internalTransactionProvider.GetTransactionTimestampAsync(transactionHash, ct);
@@ -84,12 +78,12 @@ internal class LiquidityEventLogEnricher : ILiquidityEventLogEnricher
         };
     }
 
-    private static Token CreateTokenFromLogs(FilterLog[] logs, int index)
+    private static Token CreateTokenFromLogs(LiquidityEventLog[] logs, int index)
     {
         return new Token
         {
             Address = logs[index].Address,
-            Balance = logs[index].Data.HexToBigInteger(false)
+            Balance = logs[index].Data
         };
     }
 }

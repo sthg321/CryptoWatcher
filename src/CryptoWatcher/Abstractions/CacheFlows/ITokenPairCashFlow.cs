@@ -4,7 +4,7 @@ namespace CryptoWatcher.Abstractions.CacheFlows;
 
 public interface ITokenPairCashFlow : ICacheFlow
 {
-    TokenInfoWithFee Token0 { get; init; }
+    TokenInfoWithFee Token0 { get; set; }
     
-    TokenInfoWithFee Token1 { get; init; }
+    TokenInfoWithFee Token1 { get; set; }
 }

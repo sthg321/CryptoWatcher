@@ -6,7 +6,7 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 
 public interface IBlockchainLogProvider
 {
-    Task<BlockchainLogBatch> GetLogsAsync(UniswapChainConfiguration chainConfiguration,
+    Task<IReadOnlyCollection<BlockchainLogEntry>> GetLogsAsync(UniswapChainConfiguration chainConfiguration,
         BigInteger fromBlock,
         BigInteger toBlock);
 }

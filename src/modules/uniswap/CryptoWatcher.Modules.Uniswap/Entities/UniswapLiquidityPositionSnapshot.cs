@@ -3,7 +3,7 @@ using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Uniswap.Entities;
 
-public class UniswapLiquidityPositionSnapshot : IPositionSnapshot
+public class UniswapLiquidityPositionSnapshot : ITokenPairPositionSnapshot
 {
     /// <summary>
     /// Represents the unique identifier for a liquidity pool position from NFT manager.
@@ -22,7 +22,7 @@ public class UniswapLiquidityPositionSnapshot : IPositionSnapshot
     /// that the system is interacting with or utilizing for its processes.
     /// </remarks>
     public string NetworkName { get; init; } = null!;
-    
+
     /// <summary>
     /// Represents the date when the liquidity pool position was created.
     /// </summary>
@@ -50,7 +50,7 @@ public class UniswapLiquidityPositionSnapshot : IPositionSnapshot
     /// including its symbol, amount, fee amount, and price in USD. It is used to calculate
     /// the total value and fee-related metrics of the position for reporting and data analysis.
     /// </remarks>
-    public TokenInfoWithFee Token0 { get; init; } = null!;
+    public TokenInfoWithFee Token0 { get; set; } = null!;
 
     /// <summary>
     /// Represents the secondary token of a liquidity pool position along with its associated fee details.
@@ -60,7 +60,7 @@ public class UniswapLiquidityPositionSnapshot : IPositionSnapshot
     /// It includes details such as the token's symbol, amount, fee amount, and price in USD.
     /// This data is critical for accurately calculating the position’s overall performance and associated fees.
     /// </remarks>
-    public TokenInfoWithFee Token1 { get; init; } = null!;
+    public TokenInfoWithFee Token1 { get; set; } = null!;
 
     /// <summary>
     /// Represents the liquidity pool position associated with the snapshot.

@@ -17,7 +17,7 @@ internal class UniswapPoolPositionExcelTotalRow
 
     [CellStyle(ExcelStyleRegistry.TwoDecimalPlaces)]
     [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Money>))]
-    public required Money ProfitInUsd { get; init; }
+    public required Money TotalCommissionInUsd { get; init; }
     
     public required string TokenPairSymbols { get; init; } = null!;
 

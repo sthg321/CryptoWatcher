@@ -16,7 +16,7 @@ internal class NethereumLogProvider : IBlockchainLogProvider
         _web3Factory = web3Factory;
     }
 
-    public async Task<BlockchainLogBatch> GetLogsAsync(
+    public async Task<IReadOnlyCollection<BlockchainLogEntry>> GetLogsAsync(
         UniswapChainConfiguration chainConfiguration,
         BigInteger fromBlock,
         BigInteger toBlock)
@@ -34,20 +34,10 @@ internal class NethereumLogProvider : IBlockchainLogProvider
                 new[] { UnichainWellKnownField.V4PositionManagerAddress }
             ],
         };
-       
+
         var logs = await web3.Eth.Filters.GetLogs.SendRequestAsync(filter);
 
-        return ConvertToDomainBatch(chainConfiguration, logs);
-    }
-
-    private static BlockchainLogBatch ConvertToDomainBatch(UniswapChainConfiguration chainConfiguration,
-        FilterLog[] logs)
-    {
-        return new BlockchainLogBatch
-        {
-            ChainName = chainConfiguration.Name,
-            Logs = logs.Select(log => new BlockchainLogEntry
-                { Address = log.Address, Data = log.Data, TransactionHash = log.TransactionHash }).ToArray()
-        };
+        return logs.Select(log => new BlockchainLogEntry
+            { Address = log.Address, Data = log.Data, TransactionHash = log.TransactionHash }).ToArray();
     }
 }

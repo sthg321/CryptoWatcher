@@ -2,6 +2,7 @@ using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.Abstractions.PositionSnapshots;
 using CryptoWatcher.Models;
+using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Extensions;
 
@@ -11,12 +12,11 @@ public static class CalculatablePositionExtensions
         this ICalculatablePosition<IUsdPositionSnapshot> position, DateOnly from, DateOnly to)
     {
         return CalculateProfit(
-            position.GetPositionSnapshots(),
-            position.GetCashFlows(),
+            position,
             from,
             to,
             snapshot => snapshot.GetUsdBalance(),
-            cashFlow => (cashFlow as IUsdCacheFlow)!.Usd
+            (cashFlow, _) => (cashFlow as IUsdCacheFlow)!.Usd
         );
     }
 
@@ -24,12 +24,11 @@ public static class CalculatablePositionExtensions
         this ICalculatablePosition<ITokenPositionSnapshot> position, DateOnly from, DateOnly to)
     {
         return CalculateProfit(
-            position.GetPositionSnapshots(),
-            position.GetCashFlows(),
+            position,
             from,
             to,
             snapshot => snapshot.GetTokenInfo().Amount,
-            cashFlow => (cashFlow as ITokenCacheFlow)!.Token.Amount
+            (cashFlow, _) => (cashFlow as ITokenCacheFlow)!.Token.Amount
         );
     }
 
@@ -37,24 +36,60 @@ public static class CalculatablePositionExtensions
         this ICalculatablePosition<ITokenPositionSnapshot> position, DateOnly from, DateOnly to)
     {
         return CalculateProfit(
-            position.GetPositionSnapshots(),
-            position.GetCashFlows(),
+            position,
             from,
             to,
             snapshot => snapshot.GetTokenInfo().AmountInUsd,
-            cashFlow => (cashFlow as ITokenCacheFlow)!.Token.AmountInUsd
+            (cashFlow, _) => (cashFlow as ITokenCacheFlow)!.Token.AmountInUsd
         );
     }
 
+    public static ProfitMetric CalculateProfitInUsd(
+        this ICalculatablePosition<ITokenPairPositionSnapshot> position, DateOnly from, DateOnly to)
+    {
+        return CalculateProfit(
+            position,
+            from,
+            to,
+            snapshot => snapshot.Token0.FeeAmount * snapshot.Token0.PriceInUsd +
+                        snapshot.Token1.FeeAmount * snapshot.Token1.PriceInUsd,
+            (cashFlow, snapshot) =>
+            {
+                var cashFlowPair = (cashFlow as ITokenPairCashFlow);
+
+                return cashFlowPair!.Token0.Amount * snapshot.Token0.PriceInUsd +
+                       cashFlowPair.Token1.Amount * snapshot.Token1.PriceInUsd;
+            });
+    }
+
+    public static ProfitMetric CalculateProfitInFee(
+        this ICalculatablePosition<ITokenPairPositionSnapshot> position, DateOnly from, DateOnly to)
+    {
+        return CalculateProfit(
+            position,
+            from,
+            to,
+            snapshot => snapshot.Token0.FeeAmount + snapshot.Token1.FeeAmount,
+            (cashFlow, snapshot) =>
+            {
+                var cashFlowPair = (cashFlow as ITokenPairCashFlow);
+
+                return cashFlowPair!.Token0.FeeAmount * snapshot.Token0.FeeAmount +
+                       cashFlowPair.Token1.FeeAmount * snapshot.Token1.FeeAmount;
+            });
+    }
+
     private static ProfitMetric CalculateProfit<TSnapshot>(
-        IReadOnlyCollection<TSnapshot> snapshots,
-        IReadOnlyCollection<ICacheFlow> cashFlows,
+        ICalculatablePosition<TSnapshot> position,
         DateOnly from,
         DateOnly to,
         Func<TSnapshot, decimal> getValue,
-        Func<ICacheFlow, decimal> getCashFlowAmount)
+        Func<ICacheFlow, TSnapshot, decimal> getCashFlowAmount)
         where TSnapshot : IPositionSnapshot
     {
+        var snapshots = position.GetPositionSnapshots();
+        var cashFlows = position.GetCashFlows();
+
         var filteredSnapshots = snapshots
             .Where(snapshot => snapshot.Day >= from && snapshot.Day <= to)
             .ToArray();
@@ -74,9 +109,14 @@ public static class CalculatablePositionExtensions
 
         var filteredCashFlows = cashFlows
             .Where(cashFlow => cashFlow.Date.ToDateOnly() > from && cashFlow.Date.ToDateOnly() <= to)
-            .Sum(cacheFlow => cacheFlow.Event == CacheFlowEvent.Deposit
-                ? getCashFlowAmount(cacheFlow)
-                : -getCashFlowAmount(cacheFlow));
+            .Sum(cacheFlow =>
+            {
+                var cashFlowDay = cacheFlow.Date.ToDateOnly();
+                var snapshot = startSnapshot.Day == cashFlowDay ? startSnapshot : endSnapshot;
+                return cacheFlow.Event == CacheFlowEvent.Deposit
+                    ? getCashFlowAmount(cacheFlow, snapshot)
+                    : -getCashFlowAmount(cacheFlow, snapshot);
+            });
 
         var startValue = getValue(startSnapshot);
         var endValue = getValue(endSnapshot);

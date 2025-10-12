@@ -6,27 +6,32 @@ namespace CryptoWatcher.ValueObjects;
 /// <summary>
 /// Represents token information with additional fee details.
 /// </summary>
-public class TokenInfoWithFee
+public record TokenInfoWithFee
 {
+    private TokenInfoWithFee()
+    {
+        
+    }
+    
     /// <summary>
     /// Token symbol (e.g., "ETH", "USDC").
     /// </summary>
-    public string Symbol { get; init; } = null!;
+    public string Symbol { get; private init; } = null!;
 
     /// <summary>
     /// Token amount.
     /// </summary>
-    public decimal Amount { get; init; }
+    public decimal Amount { get; private init; }
 
     /// <summary>
     /// Represents the amount of fees associated with the token.
     /// </summary>
-    public decimal FeeAmount { get; init; }
+    public decimal FeeAmount { get; private init; }
     
     /// <summary>
     /// Token price in USD.
     /// </summary>
-    public decimal PriceInUsd { get; init; }
+    public decimal PriceInUsd { get; private init; }
 
     /// <summary>
     /// Represents the total monetary value in USD of a token by multiplying its amount with its price in USD.
