@@ -14,4 +14,8 @@
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Services\Unichain\" />
+    </ItemGroup>
+
 </Project>

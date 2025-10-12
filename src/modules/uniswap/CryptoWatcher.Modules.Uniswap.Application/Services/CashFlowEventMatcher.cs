@@ -9,7 +9,7 @@ using CryptoWatcher.Modules.Uniswap.Models;
 using CryptoWatcher.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
 
-namespace CryptoWatcher.Modules.Uniswap.Application.Services.Unichain;
+namespace CryptoWatcher.Modules.Uniswap.Application.Services;
 
 public class CashFlowEventMatcher : ICashFlowEventMatcher
 {
@@ -34,10 +34,14 @@ public class CashFlowEventMatcher : ICashFlowEventMatcher
         await foreach (var events in _liquidityEventsProvider.FetchLiquidityPoolEvents(chainConfiguration,
                            fromBlock, toBlock, ct))
         {
+            _logger.LogInformation("Fetching {EventsCount} events", events.Count);
+
             var result = new List<UniswapLiquidityPositionCashFlow>();
 
             foreach (var poolPositionEvent in events)
             {
+                _logger.LogInformation("Processing event with type: {EventType}", poolPositionEvent.Event.Name);
+
                 var enrichedTokenPair =
                     await _tokenEnricher.EnrichAsync(chainConfiguration.RpcUrl, poolPositionEvent.TokenPair, ct);
 
@@ -48,10 +52,19 @@ public class CashFlowEventMatcher : ICashFlowEventMatcher
                         return false;
                     }
 
-                    var normalizedPair = enrichedTokenPair.NormalizeToPositionOrder(position);
+                    var normalizeToPositionOrder = enrichedTokenPair.NormalizeToPositionOrder(position);
 
-                    return IsSymbolMatch(position.Token0, normalizedPair.Token0) &&
-                           IsSymbolMatch(position.Token1, normalizedPair.Token1);
+                    if (normalizeToPositionOrder.Token0.Symbol != enrichedTokenPair.Token0.Symbol &&
+                        normalizeToPositionOrder.Token1.Symbol != enrichedTokenPair.Token1.Symbol)
+                    {
+                        _logger.LogInformation(
+                            "Tokens from event are not in the same order as in the position. Swap them");
+                        
+                        enrichedTokenPair = normalizeToPositionOrder;
+                    }
+                    
+                    return IsSymbolMatch(position.Token0, enrichedTokenPair.Token0) &&
+                           IsSymbolMatch(position.Token1, enrichedTokenPair.Token1);
                 });
 
                 if (positionFromDb is null)
@@ -61,10 +74,13 @@ public class CashFlowEventMatcher : ICashFlowEventMatcher
                     continue;
                 }
 
+                _logger.LogInformation("Matched position {PositionId} for event ticks {TickLower}-{TickUpper}",
+                    positionFromDb.PositionId, poolPositionEvent.TickLower, poolPositionEvent.TickUpper);
+
                 var cashFlow = UniswapLiquidityPositionCashFlow.CreateFromEvent(poolPositionEvent.Event,
                     positionFromDb.PositionId, chainConfiguration.Name, poolPositionEvent.TransactionHash,
                     enrichedTokenPair, poolPositionEvent.TimeStamp);
-
+ 
                 result.Add(cashFlow);
 
                 _logger.LogInformation("Matched cash flow for position {PositionId}", positionFromDb.PositionId);

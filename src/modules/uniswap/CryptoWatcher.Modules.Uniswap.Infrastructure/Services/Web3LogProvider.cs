@@ -8,11 +8,11 @@ using Nethereum.RPC.Eth.DTOs;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 
-internal class NethereumLogProvider : IBlockchainLogProvider
+internal class Web3LogProvider : IBlockchainLogProvider
 {
     private readonly IWeb3Factory _web3Factory;
 
-    public NethereumLogProvider(IWeb3Factory web3Factory)
+    public Web3LogProvider(IWeb3Factory web3Factory)
     {
         _web3Factory = web3Factory;
     }
@@ -30,9 +30,9 @@ internal class NethereumLogProvider : IBlockchainLogProvider
             ToBlock = new BlockParameter(toBlock.ToHexBigInteger()),
             Topics =
             [
-                new[] { UnichainWellKnownField.V4ModifyLiquiditySignature },
+                new[] { UniswapWellKnownField.V4ModifyLiquiditySignature },
                 null,
-                new[] { UnichainWellKnownField.V4PositionManagerAddress }
+                new[] { UniswapWellKnownField.V4PositionManagerAddress }
             ],
         };
 

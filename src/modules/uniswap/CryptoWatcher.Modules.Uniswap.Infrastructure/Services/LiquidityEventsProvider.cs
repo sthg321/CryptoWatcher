@@ -29,7 +29,7 @@ internal class LiquidityEventsProvider : ILiquidityEventsProvider
         _pipelineRegistry = pipelineRegistry;
     }
 
-    public async IAsyncEnumerable<IEnumerable<LiquidityPoolPositionEvent>> FetchLiquidityPoolEvents(
+    public async IAsyncEnumerable<IReadOnlyCollection<LiquidityPoolPositionEvent>> FetchLiquidityPoolEvents(
         UniswapChainConfiguration chain,
         BigInteger fromBlock,
         BigInteger toBlock,
@@ -37,17 +37,16 @@ internal class LiquidityEventsProvider : ILiquidityEventsProvider
     {
         var blockchainLogEntries = await _logProvider.GetLogsAsync(chain, fromBlock, toBlock);
 
-        var rateLimiter = _pipelineRegistry.GetPipeline("Uniswap");
+        _logger.LogInformation("Found {LogsCount} logs", blockchainLogEntries.Count);
         
+        var rateLimiter = _pipelineRegistry.GetPipeline("Uniswap");
+
         var tasks = blockchainLogEntries.Select(async log =>
         {
             try
             {
-                var transactionData = await rateLimiter.ExecuteAsync<TransactionData?>(
-                        async token =>
-                            await _transactionDataProvider.GetTransactionDataAsync(chain, log.TransactionHash, token),
-                        ct)
-                    .ConfigureAwait(false);
+                var transactionData = await rateLimiter.ExecuteAsync<TransactionData?>(async token =>
+                        await _transactionDataProvider.GetTransactionDataAsync(chain, log.TransactionHash, token), ct);
 
                 if (transactionData is null)
                 {
@@ -69,7 +68,7 @@ internal class LiquidityEventsProvider : ILiquidityEventsProvider
         foreach (var taskChunk in tasks.Chunk(20))
         {
             var events = await Task.WhenAll(taskChunk);
-            yield return events.Where(@event => @event is not null)!;
+            yield return events.Where(@event => @event is not null).ToArray()!;
         }
     }
 }

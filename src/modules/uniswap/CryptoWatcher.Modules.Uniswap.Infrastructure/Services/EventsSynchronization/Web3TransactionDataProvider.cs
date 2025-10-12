@@ -2,6 +2,7 @@ using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Models;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.ValueObjects;
+using Microsoft.Extensions.Logging;
 using Nethereum.Hex.HexConvertors.Extensions;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services.EventsSynchronization;
@@ -10,11 +11,14 @@ internal class Web3TransactionDataProvider : ITransactionDataProvider
 {
     private readonly IWeb3Factory _web3Factory;
     private readonly ILiquidityEventLogEnricher _liquidityEventLogEnricher;
+    private readonly ILogger<Web3TransactionDataProvider> _logger;
 
-    public Web3TransactionDataProvider(IWeb3Factory web3Factory, ILiquidityEventLogEnricher liquidityEventLogEnricher)
+    public Web3TransactionDataProvider(IWeb3Factory web3Factory, ILiquidityEventLogEnricher liquidityEventLogEnricher,
+        ILogger<Web3TransactionDataProvider> logger)
     {
         _web3Factory = web3Factory;
         _liquidityEventLogEnricher = liquidityEventLogEnricher;
+        _logger = logger;
     }
 
     public async Task<TransactionData?> GetTransactionDataAsync(UniswapChainConfiguration chain,
@@ -33,19 +37,22 @@ internal class Web3TransactionDataProvider : ITransactionDataProvider
             return null;
         }
 
+        _logger.LogInformation("For wallet {WalletAddress} found {LogsCount} logs", walletAddress, receipt.Logs.Length);
+
         var liquidityEventLogs = receipt.Logs.Select(log => new LiquidityEventLog
         {
             Address = log.Address,
             Data = log.Data.HexToBigInteger(false),
             Topics = log.Topics.Select(o => o.ToString()).ToArray()!
         }).ToArray();
-        
+
         var eventEnrichment =
             await _liquidityEventLogEnricher.EnrichLiquidityEventFromLogsAsync(walletAddress, transactionHash,
                 liquidityEventLogs, ct);
 
         if (eventEnrichment is null)
         {
+            _logger.LogWarning("Failed to enrich logs for wallet {WalletAddress}", walletAddress);
             return null;
         }
 

@@ -1,21 +1,26 @@
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Models;
-using CryptoWatcher.Modules.Uniswap.Application.Services.Unichain;
+using CryptoWatcher.Modules.Uniswap.Application.Services;
 using CryptoWatcher.Shared.ValueObjects;
 using CryptoWatcher.ValueObjects;
+using Microsoft.Extensions.Logging;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services.EventsSynchronization;
 
 internal class LiquidityEventLogEnricher : ILiquidityEventLogEnricher
 {
-    private readonly IUnichainInternalTransactionProvider _internalTransactionProvider;
-
     private const int FirstTokenIndex = 1;
     private const int SecondTokenIndex = 2;
 
-    public LiquidityEventLogEnricher(IUnichainInternalTransactionProvider internalTransactionProvider)
+    private readonly IInternalTransactionProvider _internalTransactionProvider;
+
+    private readonly ILogger<LiquidityEventLogEnricher> _logger;
+
+    public LiquidityEventLogEnricher(IInternalTransactionProvider internalTransactionProvider,
+        ILogger<LiquidityEventLogEnricher> logger)
     {
         _internalTransactionProvider = internalTransactionProvider;
+        _logger = logger;
     }
 
     public async Task<LiquidityEventEnrichment?> EnrichLiquidityEventFromLogsAsync(EvmAddress walletAddress,
@@ -32,9 +37,7 @@ internal class LiquidityEventLogEnricher : ILiquidityEventLogEnricher
 
             // For other cases there are 2 ERC-20 tokens in the pool. So we can get the event from the logs.
             3 => await CreateTokenPairFromLogs(transactionHash, logs, ct),
-            _ => null // check later
-            // _ => throw new InvalidOperationException(
-            //     $"Unknown case for logs length. Logs length:{logs.Length}. Transaction hash: {transactionHash}")
+            _ => LogUnknownsLog(logs, transactionHash) // check later
         };
     }
 
@@ -44,6 +47,8 @@ internal class LiquidityEventLogEnricher : ILiquidityEventLogEnricher
         LiquidityEventLog[] logs,
         CancellationToken ct)
     {
+        _logger.LogInformation("Transaction {TransactionHash} has 2 logs and 1 is ETH", transactionHash);
+
         var token0 = CreateTokenFromLogs(logs, FirstTokenIndex);
 
         var ethAmount =
@@ -51,7 +56,7 @@ internal class LiquidityEventLogEnricher : ILiquidityEventLogEnricher
 
         var token1 = new Token
         {
-            Address = UnichainWellKnownField.EthAddressInUnichain,
+            Address = UniswapWellKnownField.EthAddress,
             Balance = ethAmount.Amount
         };
 
@@ -77,6 +82,15 @@ internal class LiquidityEventLogEnricher : ILiquidityEventLogEnricher
             TimeStamp = timeStamp,
             TokenPair = new TokenPair { Token0 = token0, Token1 = token1 }
         };
+    }
+
+    private LiquidityEventEnrichment? LogUnknownsLog(LiquidityEventLog[] logs, TransactionHash hash)
+    {
+        _logger.LogWarning(
+            "Received unknown number of logs. Logs count: {LogsCount}. Transaction hash: Transaction hash: {TransactionHash}",
+            logs.Length, hash);
+
+        return null;
     }
 
     private static Token CreateTokenFromLogs(LiquidityEventLog[] logs, int index)

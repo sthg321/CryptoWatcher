@@ -27,12 +27,16 @@ internal class UniswapChainSynchronizer : IUniswapChainSynchronizer
 
         var lastBlockInBlockChain = await web3.Eth.Blocks.GetBlockNumber.SendRequestAsync();
 
+        _logger.LogInformation("First block to synchronize: {FirstBlock}", chain.LastProcessedBlock);
+
+        _logger.LogInformation("Last block in block chain: {LastBlock}", lastBlockInBlockChain);
+
         foreach (var (from, to) in _chunkingStrategy.CreateChunks(chain.LastProcessedBlock, lastBlockInBlockChain))
         {
             _logger.LogInformation("Synchronizing block range {FromBlock} - {ToBlock}", from, to);
-            
-            await _blockRangeSynchronizer.SynchronizeBlockRangeAsync(chain, from, to, ct);
-            
+
+            await _blockRangeSynchronizer.SynchronizeBlockRangeAsync(chain, from, to, true, ct);
+
             _logger.LogInformation("Block range {FromBlock} - {ToBlock} synchronized", from, to);
         }
     }

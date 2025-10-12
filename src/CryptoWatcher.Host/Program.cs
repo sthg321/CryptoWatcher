@@ -102,7 +102,7 @@ app.MapPost("/uniswap/sync-block/{blockNumber}", async (IUniswapCashFlowBlockRan
         .ThenInclude(positions => positions.Wallet)
         .FirstAsync();
 
-    await sync.SynchronizeBlockRangeAsync(chain, blockNumber, blockNumber);
+    await sync.SynchronizeBlockRangeAsync(chain, blockNumber, blockNumber, false);
 });
 
 async Task<FileStreamHttpResult> TotalReportHandler(IDailySummaryReportProvider reportProvider,

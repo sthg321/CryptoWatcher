@@ -3,7 +3,6 @@ using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Services;
-using CryptoWatcher.Modules.Uniswap.Application.Services.Unichain;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.LiquidityPool;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.LiquidityPoolFactory;
@@ -58,8 +57,8 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ICashFlowEventMatcher, CashFlowEventMatcher>();
         services.AddSingleton<ILiquidityEventsProvider, LiquidityEventsProvider>();
         services.AddSingleton<ITransactionDataProvider, Web3TransactionDataProvider>();
-        services.AddSingleton<IUnichainInternalTransactionProvider, UnichainInternalTransactionProvider>();
-        services.AddSingleton<IBlockchainLogProvider, NethereumLogProvider>();
+        services.AddSingleton<IInternalTransactionProvider, InternalTransactionProvider>();
+        services.AddSingleton<IBlockchainLogProvider, Web3LogProvider>();
         services.AddSingleton<ILiquidityEventLogEnricher, LiquidityEventLogEnricher>();
         services.AddSingleton<ILiquidityPoolEventDecoder, LiquidityPoolEventDecoder>();
         services.AddSingleton<IWeb3Factory, Web3Factory>();

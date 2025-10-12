@@ -6,5 +6,5 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 public interface IUniswapCashFlowBlockRangeSynchronizer
 {
     Task SynchronizeBlockRangeAsync(UniswapChainConfiguration chain, BigInteger fromBlock,
-        BigInteger toBlock, CancellationToken ct = default);
+        BigInteger toBlock, bool updateLastProcessedBlock, CancellationToken ct = default);
 }
