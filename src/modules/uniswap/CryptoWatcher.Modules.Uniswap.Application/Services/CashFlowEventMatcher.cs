@@ -43,7 +43,8 @@ public class CashFlowEventMatcher : ICashFlowEventMatcher
                 _logger.LogInformation("Processing event with type: {EventType}", poolPositionEvent.Event.Name);
 
                 var enrichedTokenPair =
-                    await _tokenEnricher.EnrichAsync(chainConfiguration.RpcUrl, poolPositionEvent.TokenPair, ct);
+                    await _tokenEnricher.EnrichAsync(chainConfiguration.RpcUrlWithAuthToken,
+                        poolPositionEvent.TokenPair, ct);
 
                 var positionFromDb = chainConfiguration.LiquidityPoolPositions.SingleOrDefault(position =>
                 {
@@ -59,10 +60,10 @@ public class CashFlowEventMatcher : ICashFlowEventMatcher
                     {
                         _logger.LogInformation(
                             "Tokens from event are not in the same order as in the position. Swap them");
-                        
+
                         enrichedTokenPair = normalizeToPositionOrder;
                     }
-                    
+
                     return IsSymbolMatch(position.Token0, enrichedTokenPair.Token0) &&
                            IsSymbolMatch(position.Token1, enrichedTokenPair.Token1);
                 });
@@ -78,9 +79,9 @@ public class CashFlowEventMatcher : ICashFlowEventMatcher
                     positionFromDb.PositionId, poolPositionEvent.TickLower, poolPositionEvent.TickUpper);
 
                 var cashFlow = UniswapLiquidityPositionCashFlow.CreateFromEvent(poolPositionEvent.Event,
-                    positionFromDb.PositionId, chainConfiguration.Name, poolPositionEvent.TransactionHash,
+                    positionFromDb.PositionId, chainConfiguration, poolPositionEvent.TransactionHash,
                     enrichedTokenPair, poolPositionEvent.TimeStamp);
- 
+
                 result.Add(cashFlow);
 
                 _logger.LogInformation("Matched cash flow for position {PositionId}", positionFromDb.PositionId);

@@ -72,7 +72,7 @@ internal class UniswapProvider : IUniswapProvider
     private async Task<LiquidityPoolInfo> GetV4PoolAsync(UniswapChainConfiguration chainConfiguration,
         IUniswapPosition position)
     {
-        return await _uniswapV4Client.LiquidityPool.GetPoolAsync(new Web3(chainConfiguration.RpcUrl),
+        return await _uniswapV4Client.LiquidityPool.GetPoolAsync(_web3Factory.GetWeb3(chainConfiguration),
             (position as UniswapV4PositionInfo)!);
     }
 }

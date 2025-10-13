@@ -1,6 +1,7 @@
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Models;
 using CryptoWatcher.Modules.Uniswap.Application.Services;
+using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.ValueObjects;
 using CryptoWatcher.ValueObjects;
 using Microsoft.Extensions.Logging;
@@ -23,7 +24,9 @@ internal class LiquidityEventLogEnricher : ILiquidityEventLogEnricher
         _logger = logger;
     }
 
-    public async Task<LiquidityEventEnrichment?> EnrichLiquidityEventFromLogsAsync(EvmAddress walletAddress,
+    public async Task<LiquidityEventEnrichment?> EnrichLiquidityEventFromLogsAsync(
+        UniswapChainConfiguration chain,
+        EvmAddress walletAddress,
         TransactionHash transactionHash,
         LiquidityEventLog[] logs,
         CancellationToken ct = default)
@@ -33,15 +36,17 @@ internal class LiquidityEventLogEnricher : ILiquidityEventLogEnricher
             // Modify liquidity event occured in pool when 1 token is ETH.
             // Cuz ETH is a native token for unichain network, then it's not included in the logs cuz it's not the ERC-20 token.
             // So we need to manually call block scout to get the internal transaction-by-transaction hash
-            2 => await CreateTokenPairFromLogsAndInternalTransactionAsync(walletAddress, transactionHash, logs, ct),
+            2 => await CreateTokenPairFromLogsAndInternalTransactionAsync(chain, walletAddress, transactionHash, logs,
+                ct),
 
             // For other cases there are 2 ERC-20 tokens in the pool. So we can get the event from the logs.
-            3 => await CreateTokenPairFromLogs(transactionHash, logs, ct),
+            3 => await CreateTokenPairFromLogs(chain, transactionHash, logs, ct),
             _ => LogUnknownsLog(logs, transactionHash) // check later
         };
     }
 
     private async Task<LiquidityEventEnrichment> CreateTokenPairFromLogsAndInternalTransactionAsync(
+        UniswapChainConfiguration chainConfiguration,
         EvmAddress walletAddress,
         TransactionHash transactionHash,
         LiquidityEventLog[] logs,
@@ -52,7 +57,8 @@ internal class LiquidityEventLogEnricher : ILiquidityEventLogEnricher
         var token0 = CreateTokenFromLogs(logs, FirstTokenIndex);
 
         var ethAmount =
-            await _internalTransactionProvider.GetEthAmountFromInternalTransaction(walletAddress, transactionHash, ct);
+            await _internalTransactionProvider.GetEthAmountFromInternalTransaction(chainConfiguration, walletAddress,
+                transactionHash, ct);
 
         var token1 = new Token
         {
@@ -67,11 +73,13 @@ internal class LiquidityEventLogEnricher : ILiquidityEventLogEnricher
         };
     }
 
-    private async Task<LiquidityEventEnrichment> CreateTokenPairFromLogs(TransactionHash transactionHash,
+    private async Task<LiquidityEventEnrichment> CreateTokenPairFromLogs(
+        UniswapChainConfiguration chain,
+        TransactionHash transactionHash,
         LiquidityEventLog[] logs,
         CancellationToken ct)
     {
-        var timeStamp = await _internalTransactionProvider.GetTransactionTimestampAsync(transactionHash, ct);
+        var timeStamp = await _internalTransactionProvider.GetTransactionTimestampAsync(chain, transactionHash, ct);
 
         var token0 = CreateTokenFromLogs(logs, FirstTokenIndex);
 

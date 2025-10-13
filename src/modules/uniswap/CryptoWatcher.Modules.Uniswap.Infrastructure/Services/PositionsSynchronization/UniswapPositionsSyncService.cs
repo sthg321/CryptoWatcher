@@ -53,7 +53,8 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
         _repositoryFacade = repositoryFacade;
     }
 
-    public async Task SyncUniswapPositionsAsync(Wallet wallet, UniswapChainConfiguration chainConfiguration, DateOnly syncDay,
+    public async Task SyncUniswapPositionsAsync(Wallet wallet, UniswapChainConfiguration chainConfiguration,
+        DateOnly syncDay,
         CancellationToken ct = default)
     {
         var uniswapPositions = await _providerFactory.GetPositionsAsync(chainConfiguration, wallet);
@@ -83,7 +84,8 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
 
                 var positionInPool = _math.CalculatePosition(pool, uniswapPosition);
 
-                var tokensEnriched = await _enricher.EnrichAsync(chainConfiguration.RpcUrl, positionInPool.TokenInfoPair, ct);
+                var tokensEnriched = await _enricher.EnrichAsync(chainConfiguration.RpcUrlWithAuthToken,
+                    positionInPool.TokenInfoPair, ct);
 
                 var positionKey = new PositionKey((ulong)uniswapPosition.PositionId, chainConfiguration.Name);
                 if (!existedPositions.TryGetValue(positionKey, out var dbPoolPosition) ||
@@ -113,7 +115,8 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
             }
             catch (Exception ex)
             {
-                _logger.PositionProcessingFailed(uniswapPosition.PositionId, chainConfiguration.Name, wallet.Address, ex);
+                _logger.PositionProcessingFailed(uniswapPosition.PositionId, chainConfiguration.Name, wallet.Address,
+                    ex);
             }
         }
 
@@ -136,7 +139,7 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
     {
         var fee = _math.CalculateClaimableFee(pool, uniswapPosition);
 
-        return await _enricher.EnrichAsync(chain.RpcUrl, fee, ct);
+        return await _enricher.EnrichAsync(chain.RpcUrlWithAuthToken, fee, ct);
     }
 
     private static UniswapLiquidityPosition MapToLiquidityPoolPosition(UniswapChainConfiguration chain, Wallet wallet,

@@ -2,8 +2,8 @@ using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.PositionsFetcher.Contracts;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.StateView;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 using Nethereum.Web3;
-using UniswapClient.Models;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.PositionsFetcher;
 
@@ -17,17 +17,20 @@ internal class UniswapV4PositionFetcher : IUniswapV4PositionFetcher
 {
     private readonly UniswapAppApiClient.UniswapAppApiClient _apiClient;
     private readonly IUniswapV4StateView _stateView;
+    private readonly IWeb3Factory _web3Factory;
 
-    public UniswapV4PositionFetcher(UniswapAppApiClient.UniswapAppApiClient apiClient, IUniswapV4StateView stateView)
+    public UniswapV4PositionFetcher(UniswapAppApiClient.UniswapAppApiClient apiClient, IUniswapV4StateView stateView,
+        IWeb3Factory web3Factory)
     {
         _apiClient = apiClient;
         _stateView = stateView;
+        _web3Factory = web3Factory;
     }
 
     public async Task<List<IUniswapPosition>> GetPositionsDataAsync(UniswapChainConfiguration chain,
         string walletAddress)
     {
-        var web3 = new Web3(chain.RpcUrl);
+        var web3 = _web3Factory.GetWeb3(chain);
         var tokenIds = await _apiClient.GetPoolPositionTokenIdsAsync(walletAddress);
 
         return await GetPositionsDataAsync(web3, chain, tokenIds);
@@ -42,7 +45,7 @@ internal class UniswapV4PositionFetcher : IUniswapV4PositionFetcher
         {
             var contract =
                 web3.Eth.GetContract(UniswapV4PositionFetcherAbi.Abi, chain.SmartContractAddresses.NftManager);
-            
+
             var packedData = await contract.GetFunction("getPoolAndPositionInfo")
                 .CallDeserializingToObjectAsync<GetPoolAndPositionInfoOutputDTO>(tokenId);
 

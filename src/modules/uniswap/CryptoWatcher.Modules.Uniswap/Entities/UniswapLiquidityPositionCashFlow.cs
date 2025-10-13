@@ -25,15 +25,15 @@ public class UniswapLiquidityPositionCashFlow : ITokenPairCashFlow
     public TokenInfoWithFee Token1 { get; set; } = null!;
 
     public static UniswapLiquidityPositionCashFlow CreateFromEvent(CacheFlowEvent @event, ulong positionId,
-        string networkName,
-        string transactionHash,
+        UniswapChainConfiguration chain,
+        TransactionHash transactionHash,
         TokenInfoPair tokenInfoPair,
         DateTimeOffset timeStamp)
     {
         return new UniswapLiquidityPositionCashFlow
         {
             PositionId = positionId,
-            NetworkName = networkName,
+            NetworkName = chain.Name,
             Date = timeStamp.UtcDateTime,
             Event = @event,
             TransactionHash = transactionHash,

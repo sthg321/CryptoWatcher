@@ -47,7 +47,7 @@ internal class Web3TransactionDataProvider : ITransactionDataProvider
         }).ToArray();
 
         var eventEnrichment =
-            await _liquidityEventLogEnricher.EnrichLiquidityEventFromLogsAsync(walletAddress, transactionHash,
+            await _liquidityEventLogEnricher.EnrichLiquidityEventFromLogsAsync(chain, walletAddress, transactionHash,
                 liquidityEventLogs, ct);
 
         if (eventEnrichment is null)

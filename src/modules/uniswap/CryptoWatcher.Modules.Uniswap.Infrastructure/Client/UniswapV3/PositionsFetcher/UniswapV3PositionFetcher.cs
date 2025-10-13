@@ -3,6 +3,7 @@ using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.PositionsFetcher.Contracts;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Extensions;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 using Nethereum.Contracts;
 using Nethereum.Contracts.QueryHandlers.MultiCall;
 using Nethereum.Contracts.Standards.ERC721.ContractDefinition;
@@ -20,10 +21,18 @@ public interface IUniswapV3PositionFetcher
 
 internal class UniswapV3PositionFetcher : IUniswapV3PositionFetcher
 {
+    private readonly IWeb3Factory _web3Factory;
+
+    public UniswapV3PositionFetcher(IWeb3Factory web3Factory)
+    {
+        _web3Factory = web3Factory;
+    }
+
     public async Task<List<IUniswapPosition>> GetPositionsDataAsync(UniswapChainConfiguration chain,
         string walletAddress)
     {
-        var web3 = new Web3(chain.RpcUrl);
+        var web3 = _web3Factory.GetWeb3(chain);
+        
         var balance = await web3.Eth.ERC20.GetContractService(chain.SmartContractAddresses.NftManager)
             .BalanceOfQueryAsync(walletAddress);
 

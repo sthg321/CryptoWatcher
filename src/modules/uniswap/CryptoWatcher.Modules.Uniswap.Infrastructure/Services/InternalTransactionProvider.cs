@@ -2,6 +2,7 @@ using System.Net.Http.Json;
 using System.Numerics;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Models;
+using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
@@ -35,7 +36,7 @@ public class TransactionInfoResponse
 public class InternalTransactionProvider : IInternalTransactionProvider
 {
     private const string CallType = "call";
-    
+
     private readonly HttpClient _httpClient;
 
     public InternalTransactionProvider(HttpClient httpClient)
@@ -43,11 +44,13 @@ public class InternalTransactionProvider : IInternalTransactionProvider
         _httpClient = httpClient;
     }
 
-    public async Task<DateTimeOffset> GetTransactionTimestampAsync(TransactionHash transactionHash,
+    public async Task<DateTimeOffset> GetTransactionTimestampAsync(
+        UniswapChainConfiguration chainConfiguration,
+        TransactionHash transactionHash,
         CancellationToken ct = default)
     {
         var internalTransactionsResponse = await _httpClient.GetFromJsonAsync<TransactionInfoResponse>(
-            $"https://unichain.blockscout.com/api/v2/transactions/{transactionHash}", ct);
+            $"{chainConfiguration.BlockscoutUrl}/api/v2/transactions/{transactionHash}", ct);
 
         if (internalTransactionsResponse is null)
         {
@@ -58,17 +61,19 @@ public class InternalTransactionProvider : IInternalTransactionProvider
         return internalTransactionsResponse.TimeStamp;
     }
 
-    public async Task<EthTransaction> GetEthAmountFromInternalTransaction(EvmAddress walletAddress,
+    public async Task<EthTransaction> GetEthAmountFromInternalTransaction(
+        UniswapChainConfiguration chainConfiguration,
+        EvmAddress walletAddress,
         TransactionHash transactionHash,
         CancellationToken ct = default)
     {
         var internalTransactionsResponse = await _httpClient.GetFromJsonAsync<Root>(
-            $"https://unichain.blockscout.com/api/v2/transactions/{transactionHash}/internal-transactions", ct);
+            $"{chainConfiguration}/api/v2/transactions/{transactionHash}/internal-transactions", ct);
 
         //there should be only one internal transaction with a call and not 0 value for wallet address
         var internalTransactionsWithEth = internalTransactionsResponse!.Items.SingleOrDefault(item =>
-                item.To.Hash == walletAddress &&
-                item.Value != "0" && item.Type == CallType);
+            item.To.Hash == walletAddress &&
+            item.Value != "0" && item.Type == CallType);
 
         if (internalTransactionsWithEth is null)
         {
