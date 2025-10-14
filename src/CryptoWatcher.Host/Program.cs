@@ -1,3 +1,4 @@
+using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using CryptoWatcher.Abstractions;
@@ -7,6 +8,7 @@ using CryptoWatcher.Infrastructure;
 using CryptoWatcher.Infrastructure.Configs;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports;
 using CryptoWatcher.Infrastructure.Extensions;
+using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Shared.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -53,6 +55,8 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;
 });
 
+builder.Services.AddEndpointsApiExplorer().AddSwaggerGen();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -62,6 +66,9 @@ using (var scope = app.Services.CreateScope())
         scope.ServiceProvider.GetRequiredService<CryptoWatcherDbContext>().Database.Migrate();
     }
 }
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseTickerQ();
 
@@ -85,6 +92,45 @@ async Task<FileStreamHttpResult> Handler(IPlatformDailyReportFacade reportFacade
 app.MapGet("/report/{platform}", Handler);
 
 app.MapGet("/report/total", TotalReportHandler);
+
+app.MapPost("/uniswap/sync-block/{blockNumber}", async (IUniswapCashFlowBlockRangeSynchronizer sync,
+    CryptoWatcherDbContext dbContext,
+    BigInteger blockNumber) =>
+{
+    var chain = await dbContext.UniswapChainConfigurations
+        .Include(configuration => configuration.LiquidityPoolPositions)
+        .ThenInclude(positions => positions.Wallet)
+        .FirstAsync();
+
+    await sync.SynchronizeBlockRangeAsync(chain, blockNumber, blockNumber, false);
+});
+
+app.MapPatch("/uniswap/sync-block/{blockNumber}", async (IUniswapCashFlowBlockRangeSynchronizer sync,
+    CryptoWatcherDbContext dbContext,
+    BigInteger blockNumber) =>
+{
+    await using var tr = await dbContext.Database.BeginTransactionAsync();
+    try
+    {
+        var now = DateTime.UtcNow;
+        
+        await dbContext.UniswapChainConfigurations
+            .ExecuteUpdateAsync(calls =>
+                calls.SetProperty(configuration => configuration.LastProcessedBlock, blockNumber));
+        
+        await dbContext.UniswapChainConfigurations
+            .ExecuteUpdateAsync(calls =>
+                calls.SetProperty(configuration => configuration.LastProcessedBlockUpdatedAt, now));
+
+        await tr.CommitAsync();
+    }
+    catch (Exception)
+    {
+        await tr.RollbackAsync();
+        throw;
+    }
+ 
+});
 
 async Task<FileStreamHttpResult> TotalReportHandler(IDailySummaryReportProvider reportProvider,
     IRepository<Wallet> walletRepository,

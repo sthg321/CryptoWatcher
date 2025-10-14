@@ -1,0 +1,120 @@
+using System.Diagnostics.CodeAnalysis;
+
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.StateView;
+
+internal static class UniswapV4StateViewAbi
+{
+    [StringSyntax(StringSyntaxAttribute.Json)]
+    public const string Abi = """
+                              [
+                              {
+                                "inputs": [
+                                  { "internalType": "PoolId", "name": "poolId", "type": "bytes32" }
+                                ],
+                                "name": "getSlot0",
+                                "outputs": [
+                                  { "internalType": "uint160", "name": "sqrtPriceX96", "type": "uint160" },
+                                  { "internalType": "int24", "name": "tick", "type": "int24" },
+                                  { "internalType": "uint24", "name": "protocolFee", "type": "uint24" },
+                                  { "internalType": "uint24", "name": "lpFee", "type": "uint24" }
+                                ],
+                                "stateMutability": "view",
+                                "type": "function"
+                              },
+                              {
+                                 "inputs": [
+                                   { "internalType": "PoolId", "name": "poolId", "type": "bytes32" }
+                                 ],
+                                 "name": "getFeeGrowthGlobals",
+                                 "outputs": [
+                                   {
+                                     "internalType": "uint256",
+                                     "name": "feeGrowthGlobal0",
+                                     "type": "uint256"
+                                   },
+                                   {
+                                     "internalType": "uint256",
+                                     "name": "feeGrowthGlobal1",
+                                     "type": "uint256"
+                                   }
+                                 ],
+                                 "stateMutability": "view",
+                                 "type": "function"
+                               },
+                               {
+                                "inputs": [
+                                  { "internalType": "PoolId", "name": "poolId", "type": "bytes32" },
+                                  { "internalType": "int24", "name": "tickLower", "type": "int24" },
+                                  { "internalType": "int24", "name": "tickUpper", "type": "int24" }
+                                ],
+                                "name": "getFeeGrowthInside",
+                                "outputs": [
+                                  {
+                                    "internalType": "uint256",
+                                    "name": "feeGrowthInside0X128",
+                                    "type": "uint256"
+                                  },
+                                  {
+                                    "internalType": "uint256",
+                                    "name": "feeGrowthInside1X128",
+                                    "type": "uint256"
+                                  }
+                                ],
+                                "stateMutability": "view",
+                                "type": "function"
+                              },
+                              {
+                                 "inputs": [
+                                   { "internalType": "PoolId", "name": "poolId", "type": "bytes32" },
+                                   { "internalType": "int24", "name": "tick", "type": "int24" }
+                                 ],
+                                 "name": "getTickInfo",
+                                 "outputs": [
+                                   {
+                                     "internalType": "uint128",
+                                     "name": "liquidityGross",
+                                     "type": "uint128"
+                                   },
+                                   { "internalType": "int128", "name": "liquidityNet", "type": "int128" },
+                                   {
+                                     "internalType": "uint256",
+                                     "name": "feeGrowthOutside0X128",
+                                     "type": "uint256"
+                                   },
+                                   {
+                                     "internalType": "uint256",
+                                     "name": "feeGrowthOutside1X128",
+                                     "type": "uint256"
+                                   }
+                                 ],
+                                 "stateMutability": "view",
+                                 "type": "function"
+                               },
+                              {
+                                "inputs": [
+                                  { "internalType": "PoolId", "name": "poolId", "type": "bytes32" },
+                                  { "internalType": "address", "name": "owner", "type": "address" },
+                                  { "internalType": "int24", "name": "tickLower", "type": "int24" },
+                                  { "internalType": "int24", "name": "tickUpper", "type": "int24" },
+                                  { "internalType": "bytes32", "name": "salt", "type": "bytes32" }
+                                ],
+                                "name": "getPositionInfo",
+                                "outputs": [
+                                  { "internalType": "uint128", "name": "liquidity", "type": "uint128" },
+                                  {
+                                    "internalType": "uint256",
+                                    "name": "feeGrowthInside0LastX128",
+                                    "type": "uint256"
+                                  },
+                                  {
+                                    "internalType": "uint256",
+                                    "name": "feeGrowthInside1LastX128",
+                                    "type": "uint256"
+                                  }
+                                ],
+                                "stateMutability": "view",
+                                "type": "function"
+                              }
+                              ]
+                              """;
+}

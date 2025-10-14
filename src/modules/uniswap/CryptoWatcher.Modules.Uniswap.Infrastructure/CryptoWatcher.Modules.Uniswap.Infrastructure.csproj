@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AssemblyName>CryptoWatcher.Modules.Uniswap.Infrastructure</AssemblyName>
+        <RootNamespace>CryptoWatcher.Modules.Uniswap.Infrastructure</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\CryptoWatcher.Modules.Uniswap.Application\CryptoWatcher.Modules.Uniswap.Application.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.9" />
+      <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.9.0" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
+      <PackageReference Include="Nethereum.Web3" Version="5.0.0" />
+      <PackageReference Include="Polly" Version="8.6.4" />
+      <PackageReference Include="Polly.Extensions" Version="8.6.4" />
+      <PackageReference Include="Polly.RateLimiting" Version="8.6.4" />
+      <PackageReference Include="Riok.Mapperly" Version="4.3.0-next.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Client\" />
+    </ItemGroup>
+
+</Project>

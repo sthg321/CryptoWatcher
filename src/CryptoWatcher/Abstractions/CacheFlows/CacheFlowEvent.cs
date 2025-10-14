@@ -1,7 +1,14 @@
+using Ardalis.SmartEnum;
+
 namespace CryptoWatcher.Abstractions.CacheFlows;
 
-public enum CacheFlowEvent
+public class CacheFlowEvent : SmartEnum<CacheFlowEvent>
 {
-    Deposit = 1,
-    Withdraw = 2
+    private CacheFlowEvent(string name, int value) : base(name, value) { }
+
+    public static readonly CacheFlowEvent Deposit = new(nameof(Deposit), 1);
+    
+    public static readonly CacheFlowEvent Withdrawal = new(nameof(Withdrawal), 2);
+    
+    public static readonly CacheFlowEvent FeeClaim = new(nameof(FeeClaim), 3);
 }

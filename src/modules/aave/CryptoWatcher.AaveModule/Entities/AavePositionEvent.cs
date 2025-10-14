@@ -42,5 +42,5 @@ public class AavePositionEvent : ITokenCacheFlow
     /// </remarks>
     public required DateTime Date { get; init; }
 
-    public CacheFlowEvent Event { get; init; }
+    public CacheFlowEvent Event { get; init; } = null!;
 }

@@ -11,6 +11,6 @@ public class AavePositionSnapshotConfiguration : IEntityTypeConfiguration<AavePo
     {
         builder.HasKey(snapshot => new { snapshot.PositionId, snapshot.Day });
 
-        builder.OwnsOne<TokenInfo>(snapshot => snapshot.Token).Property(info => info.Symbol).HasMaxLength(16);
+        builder.ComplexProperty<TokenInfo>(snapshot => snapshot.Token).Property(info => info.Symbol).HasMaxLength(16);
     }
 }

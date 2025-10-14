@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.HyperliquidModule.Entities;
 
@@ -39,7 +40,7 @@ public class HyperliquidVaultEvent : IUsdCacheFlow
     /// within the Hyperliquid platform. It is used to classify and track the different types of interactions
     /// occurring in the context of vault operations.
     /// </remarks>
-    public CacheFlowEvent Event { get; init; }
+    public CacheFlowEvent Event { get; init; } = null!;
 
     /// <summary>
     /// Represents the unique address identifier for a Hyperliquid vault.
@@ -49,8 +50,7 @@ public class HyperliquidVaultEvent : IUsdCacheFlow
     /// It plays a vital role in tracking and associating vault-related activities such as deposits, withdrawals,
     /// and other events within the system.
     /// </remarks>
-    [MaxLength(64)]
-    public string VaultAddress { get; init; } = null!;
+    public EvmAddress VaultAddress { get; init; } = null!;
 
     /// <summary>
     /// Represents the wallet address associated with the liquidity pool position.
@@ -59,8 +59,7 @@ public class HyperliquidVaultEvent : IUsdCacheFlow
     /// This property holds the blockchain wallet address linked to the liquidity pool position.
     /// It is used to identify the owner of the position and manage the related account details.
     /// </remarks>
-    [MaxLength(64)]
-    public string WalletAddress { get; init; } = null!;
+    public EvmAddress WalletAddress { get; init; } = null!;
 
     /// <summary>
     /// Represents the wallet associated with a liquidity pool position.

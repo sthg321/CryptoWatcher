@@ -1,4 +1,6 @@
-namespace CryptoWatcher.Shared.ValueObjects;
+using CryptoWatcher.Shared.ValueObjects;
+
+namespace CryptoWatcher.ValueObjects;
 
 /// <summary>
 /// Represents a pair of enriched tokens with additional metadata (symbol, price, etc.).

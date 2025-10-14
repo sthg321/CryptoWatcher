@@ -2,9 +2,8 @@ using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.HyperliquidModule.Entities;
+using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
-using CryptoWatcher.UniswapModule.Entities;
-using EFCore.BulkExtensions;
 
 namespace CryptoWatcher.Infrastructure;
 
@@ -21,15 +20,14 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
         [
             nameof(Wallet.Address)
         ],
-
-        [typeof(PoolPosition)] =
+        [typeof(UniswapLiquidityPosition)] =
         [
-            nameof(PoolPosition.PositionId), nameof(PoolPosition.NetworkName)
+            nameof(UniswapLiquidityPosition.PositionId), nameof(UniswapLiquidityPosition.NetworkName)
         ],
-        [typeof(PoolPositionSnapshot)] =
+        [typeof(UniswapLiquidityPositionSnapshot)] =
         [
-            nameof(PoolPositionSnapshot.Day), nameof(PoolPositionSnapshot.PoolPositionId),
-            nameof(PoolPositionSnapshot.NetworkName)
+            nameof(UniswapLiquidityPositionSnapshot.Day), nameof(UniswapLiquidityPositionSnapshot.PoolPositionId),
+            nameof(UniswapLiquidityPositionSnapshot.NetworkName)
         ],
         [typeof(HyperliquidVaultPosition)] =
         [
@@ -70,10 +68,12 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
         {
             return;
         }
-
-        await _dbContext.BulkInsertOrUpdateAsync(entities,
-            operation => operation.UpdateByProperties = Type2PrimaryKeyFields.GetValueOrDefault(typeof(TEntity)),
-            cancellationToken: ct);
+        
+        await _dbContext.BulkMergeAsync(entities, operation =>
+        {
+            operation.ColumnPrimaryKeyNames = Type2PrimaryKeyFields.GetValueOrDefault(typeof(TEntity));
+        }, ct);
+    
     }
 
     public TEntity Insert(TEntity entity)

@@ -2,6 +2,7 @@ using CryptoWatcher.Abstractions;
 using CryptoWatcher.HyperliquidModule.Abstractions;
 using CryptoWatcher.HyperliquidModule.Entities;
 using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.HyperliquidModule.Services;
 
@@ -39,7 +40,7 @@ internal class HyperliquidPositionsSyncService : IHyperliquidPositionsSyncServic
 
     public async Task SyncPositionsAsync(Wallet wallet, DateTime syncDay, CancellationToken ct = default)
     {
-        await using var transaction = await _repository.UnitOfWork.BeginTransactionAsync(ct);
+        await _repository.UnitOfWork.BeginTransactionAsync(ct);
 
         var fundingHistory = await _hyperliquidProvider.GetVaultsFundingHistory(wallet, ct);
 
@@ -74,11 +75,11 @@ internal class HyperliquidPositionsSyncService : IHyperliquidPositionsSyncServic
             Balance = tuple.Equity,
             Day = DateOnly.FromDateTime(syncDay),
             WalletAddress = wallet.Address,
-            VaultAddress = tuple.VaultAddress,
+            VaultAddress = EvmAddress.Create(tuple.VaultAddress),
         }).ToList();
 
         await _snapshotRepository.BulkMergeAsync(vaultPositionSnapshots, ct);
-
-        await _repository.UnitOfWork.SaveChangesAsync(ct);
+        
+        await _repository.UnitOfWork.CommitTransactionAsync(ct);
     }
 }

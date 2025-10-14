@@ -2,6 +2,7 @@ using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.Abstractions.PositionSnapshots;
 using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.HyperliquidModule.Entities;
 
@@ -19,7 +20,7 @@ public class HyperliquidVaultPosition : ICalculatablePosition<IUsdPositionSnapsh
     /// This property holds the unique identifier of the vault on the blockchain.
     /// It is used to track and manage vault-specific data and operations within the Hyperliquid module.
     /// </remarks>
-    public string VaultAddress { get; init; } = null!;
+    public EvmAddress VaultAddress { get; init; } = null!;
 
     /// <summary>
     /// Represents the wallet address associated with the liquidity pool position.
@@ -28,7 +29,7 @@ public class HyperliquidVaultPosition : ICalculatablePosition<IUsdPositionSnapsh
     /// This property holds the blockchain wallet address linked to the liquidity pool position.
     /// It is used to identify the owner of the position and manage the related account details.
     /// </remarks>
-    public string WalletAddress { get; init; } = null!;
+    public EvmAddress WalletAddress { get; init; } = null!;
 
     /// <summary>
     /// Represents the wallet associated with a liquidity pool position.

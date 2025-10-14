@@ -20,10 +20,10 @@
     <ItemGroup>
         <ProjectReference Include="..\..\clients\AaveClient\AaveClient.csproj"/>
         <ProjectReference Include="..\..\clients\CoinGeckoClient\CoinGeckoClient.csproj"/>
-        <ProjectReference Include="..\..\clients\UniswapClient\UniswapClient.csproj"/>
         <ProjectReference Include="..\CryptoWatcher.Application\CryptoWatcher.Application.csproj"/>
         <ProjectReference Include="..\CryptoWatcher.Infrastructure\CryptoWatcher.Infrastructure.csproj"/>
         <ProjectReference Include="..\CryptoWatcher\CryptoWatcher.csproj"/>
+        <ProjectReference Include="..\modules\uniswap\CryptoWatcher.Modules.Uniswap.Application\CryptoWatcher.Modules.Uniswap.Application.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -36,6 +36,8 @@
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.9" />
         <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.9" />
         <PackageReference Include="Serilog.AspNetCore" Version="9.0.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="9.0.6" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.6" />
         <PackageReference Include="TickerQ.Dashboard" Version="2.5.3" />
     </ItemGroup>
 </Project>

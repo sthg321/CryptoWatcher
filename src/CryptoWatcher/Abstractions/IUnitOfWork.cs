@@ -11,7 +11,7 @@ public interface IUnitOfWork
     /// </summary>
     /// <param name="ct">Cancellation token to observe while waiting for the operation to complete.</param>
     /// <returns>A task that represents the asynchronous operation and provides a disposable object for managing the transaction's lifetime.</returns>
-    Task<IAsyncDisposable> BeginTransactionAsync(CancellationToken ct);
+    Task BeginTransactionAsync(CancellationToken ct);
 
     /// <summary>
     /// Rolls back a pending transaction asynchronously.
@@ -19,6 +19,13 @@ public interface IUnitOfWork
     /// <param name="ct">Cancellation token to observe while waiting for the operation to complete.</param>
     /// <returns>A task that represents the asynchronous rollback operation.</returns>
     Task RollbackTransactionAsync(CancellationToken ct);
+
+    /// <summary>
+    /// Begins a new database transaction asynchronously.
+    /// </summary>
+    /// <param name="ct">Cancellation token to observe while waiting for the operation to complete.</param>
+    /// <returns>A task that represents the asynchronous operation and provides a disposable object for managing the transaction's lifetime.</returns>
+    Task CommitTransactionAsync(CancellationToken ct);
 
     /// <summary>
     /// Saves all changes made in the context to the database asynchronously.

@@ -3,6 +3,7 @@ using CryptoWatcher.Abstractions;
 using CryptoWatcher.Application;
 using CryptoWatcher.Extensions;
 using CryptoWatcher.Shared.ValueObjects;
+using CryptoWatcher.ValueObjects;
 using Nethereum.Web3;
 
 namespace CryptoWatcher.Infrastructure.Services;

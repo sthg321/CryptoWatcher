@@ -11,6 +11,6 @@ public class AavePositionEventConfiguration : IEntityTypeConfiguration<AavePosit
     {
         builder.HasKey(@event => new { @event.PositionId, @event.Date, EventType = @event.Event });
 
-        builder.OwnsOne<TokenInfo>(position => position.Token);
+        builder.ComplexProperty<TokenInfo>(position => position.Token);
     }
 }

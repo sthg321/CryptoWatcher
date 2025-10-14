@@ -9,6 +9,7 @@ using CryptoWatcher.AaveModule.Tests.Extensions;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.Shared.ValueObjects;
+using CryptoWatcher.ValueObjects;
 using JetBrains.Annotations;
 using Moq;
 
@@ -18,7 +19,10 @@ namespace CryptoWatcher.AaveModule.Tests.Services;
 public class AavePositionsSyncServiceTest
 {
     private static readonly AaveNetwork TestNetwork = AaveNetwork.CeloNetwork;
-    private static readonly Wallet TestWallet = new() { Address = Guid.CreateVersion7().ToString() };
+
+    private static readonly Wallet TestWallet = new()
+        { Address = EvmAddress.Create("0xcd94f7499a2A2b850ea75366a8D32C1c2c03aCEC") };
+
     private static readonly DateOnly SyncDay = DateOnly.FromDateTime(DateTime.Now);
     private static readonly DateTimeOffset TestTime = DateTimeOffset.Now;
 
@@ -90,7 +94,7 @@ public class AavePositionsSyncServiceTest
         if (positionsExists)
         {
             var existedPositions = expectedPositions.Select(position =>
-                new AavePosition(TestNetwork, TestWallet, expectedPositionType, position.TokenAddress, SyncDay));
+                new AavePosition(TestNetwork, TestWallet, expectedPositionType, EvmAddress.Create(position.TokenAddress), SyncDay));
 
             _aavePositionRepositoryMock.Setup(repository =>
                     repository.ListAsync(It.IsAny<AavePositionsWithSnapshotsSpecification>(),
@@ -172,7 +176,7 @@ public class AavePositionsSyncServiceTest
         var fixture = new Fixture();
         fixture.Customize(new PositiveBigIntegerCustomization());
 
-        var dbPosition = new AavePosition(TestNetwork, TestWallet, AavePositionType.Borrowed, fixture.Create<string>(),
+        var dbPosition = new AavePosition(TestNetwork, TestWallet, AavePositionType.Borrowed, fixture.Create<EvmAddress>(),
             SyncDay.AddDays(-1));
 
         _aaveProviderMock.Setup(provider =>

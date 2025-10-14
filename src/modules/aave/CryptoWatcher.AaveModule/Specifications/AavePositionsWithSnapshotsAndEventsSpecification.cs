@@ -9,7 +9,7 @@ internal class AavePositionsWithSnapshotsAndEventsSpecification : Specification<
 {
     public AavePositionsWithSnapshotsAndEventsSpecification(IEnumerable<Wallet> wallets, DateOnly from, DateOnly to)
     {
-        var walletAddresses = wallets.Select(wallet => wallet.Address).ToArray();
+        var walletAddresses = wallets.Select(wallet => wallet.Address.Value).ToArray();
         Query
             .Include(position => position.Wallet)
             .Include(position => position.PositionEvents.Where(@event =>
