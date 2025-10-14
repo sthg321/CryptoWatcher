@@ -34,12 +34,13 @@ public class UniswapReportService : IPlatformDailyReportDataProvider
                     continue;
                 }
 
+                var profit = poolPosition.CalculateProfitInUsd(from, to);
                 var report = new UniswapDailyReport
                 {
                     PositionInUsd = poolPosition.PoolPositionSnapshots.MaxBy(snapshot => snapshot.Day)!.TokenSumInUsd(),
-                    ProfitInUsd = poolPosition.CalculateProfitInUsd(from, to).Amount,
-                    TotalCommissionInUsd =  poolPosition.CalculateFeeInUsd(from, to),
-                    ProfitInPercent = 0,
+                    ProfitInUsd = profit.Amount,
+                    TotalCommissionInUsd =  poolPosition.CalculateTotalFeeInUsd(from, to),
+                    ProfitInPercent = profit.Percent,
                     TotalHoldInUsd = poolPosition.CalculateHoldValueInUsd(from, to),
                     ReportItems = poolPosition.PoolPositionSnapshots.Select(positionSnapshot =>
                     {

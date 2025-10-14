@@ -154,6 +154,31 @@ public class UniswapLiquidityPosition : ICalculatablePosition<ITokenPairPosition
 
         return fee;
     }
+    
+    public Money CalculateTotalFeeInUsd(DateOnly from, DateOnly to)
+    {
+        if (PoolPositionSnapshots.Count == 0)
+        {
+            return 0;
+        }
+
+        var cashFlows = CalculateDailyFeesFromCashFlows(from, to);
+
+        var claimed = 0M;
+
+        var lastSnapshot = PoolPositionSnapshots.GetNearestSnapshot(to, true)!;
+        
+        foreach (var snapshot in PoolPositionSnapshots.Where(snapshot => snapshot.Day >= from && snapshot.Day <= to))
+        {
+            if (cashFlows.TryGetValue(snapshot.Day, out var positionCashFlows))
+            {
+                claimed += positionCashFlows.Sum(flow => flow.Token0.FeeAmount * snapshot.Token0.PriceInUsd +
+                                                     flow.Token1.FeeAmount * snapshot.Token1.PriceInUsd);
+            }
+        }
+
+        return claimed + lastSnapshot.FeeInUsd;
+    }
 
     private Dictionary<DateOnly, UniswapLiquidityPositionCashFlow[]> CalculateDailyFeesFromCashFlows(
         DateOnly from, DateOnly to)
