@@ -1,7 +1,7 @@
 using CryptoWatcher.AaveModule.Entities;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Exceptions;
-using CryptoWatcher.HyperliquidModule.Entities;
+using CryptoWatcher.Modules.Hyperliquid.Entities;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
 using Microsoft.EntityFrameworkCore;

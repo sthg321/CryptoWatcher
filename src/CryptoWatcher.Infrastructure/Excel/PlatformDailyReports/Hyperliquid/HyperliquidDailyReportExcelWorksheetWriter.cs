@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using CryptoWatcher.HyperliquidModule.Models;
+using CryptoWatcher.Modules.Hyperliquid.Models;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Hyperliquid.Mappers;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Hyperliquid.Models;
 using SpreadCheetah;

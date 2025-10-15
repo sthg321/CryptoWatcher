@@ -125,7 +125,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.ToTable("AavePositionSnapshots");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.HyperliquidModule.Entities.HyperliquidVaultEvent", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Hyperliquid.Entities.HyperliquidVaultEvent", b =>
                 {
                     b.Property<string>("VaultAddress")
                         .HasMaxLength(42)
@@ -153,7 +153,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.ToTable("HyperliquidVaultEvents");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.HyperliquidModule.Entities.HyperliquidVaultPosition", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Hyperliquid.Entities.HyperliquidVaultPosition", b =>
                 {
                     b.Property<string>("VaultAddress")
                         .HasMaxLength(42)
@@ -172,7 +172,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.ToTable("HyperliquidVaultPositions");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.HyperliquidModule.Entities.HyperliquidVaultPositionSnapshot", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Hyperliquid.Entities.HyperliquidVaultPositionSnapshot", b =>
                 {
                     b.Property<string>("VaultAddress")
                         .HasMaxLength(42)
@@ -624,7 +624,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CryptoWatcher.HyperliquidModule.Entities.HyperliquidVaultEvent", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Hyperliquid.Entities.HyperliquidVaultEvent", b =>
                 {
                     b.HasOne("CryptoWatcher.Shared.Entities.Wallet", "Wallet")
                         .WithMany()
@@ -632,7 +632,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CryptoWatcher.HyperliquidModule.Entities.HyperliquidVaultPosition", null)
+                    b.HasOne("CryptoWatcher.Modules.Hyperliquid.Entities.HyperliquidVaultPosition", null)
                         .WithMany("VaultEvents")
                         .HasForeignKey("VaultAddress", "WalletAddress")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -641,7 +641,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Navigation("Wallet");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.HyperliquidModule.Entities.HyperliquidVaultPosition", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Hyperliquid.Entities.HyperliquidVaultPosition", b =>
                 {
                     b.HasOne("CryptoWatcher.Shared.Entities.Wallet", "Wallet")
                         .WithMany()
@@ -652,7 +652,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Navigation("Wallet");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.HyperliquidModule.Entities.HyperliquidVaultPositionSnapshot", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Hyperliquid.Entities.HyperliquidVaultPositionSnapshot", b =>
                 {
                     b.HasOne("CryptoWatcher.Shared.Entities.Wallet", "Wallet")
                         .WithMany()
@@ -660,7 +660,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CryptoWatcher.HyperliquidModule.Entities.HyperliquidVaultPosition", "Vault")
+                    b.HasOne("CryptoWatcher.Modules.Hyperliquid.Entities.HyperliquidVaultPosition", "Vault")
                         .WithMany("PositionSnapshots")
                         .HasForeignKey("VaultAddress", "WalletAddress")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -781,7 +781,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Navigation("PositionSnapshots");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.HyperliquidModule.Entities.HyperliquidVaultPosition", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Hyperliquid.Entities.HyperliquidVaultPosition", b =>
                 {
                     b.Navigation("PositionSnapshots");
 

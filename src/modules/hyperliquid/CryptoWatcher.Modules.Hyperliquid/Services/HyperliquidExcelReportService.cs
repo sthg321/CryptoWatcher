@@ -1,13 +1,13 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Extensions;
-using CryptoWatcher.HyperliquidModule.Entities;
-using CryptoWatcher.HyperliquidModule.Models;
-using CryptoWatcher.HyperliquidModule.Specifications;
 using CryptoWatcher.Models;
+using CryptoWatcher.Modules.Hyperliquid.Entities;
+using CryptoWatcher.Modules.Hyperliquid.Models;
+using CryptoWatcher.Modules.Hyperliquid.Specifications;
 using CryptoWatcher.Shared.Entities;
 
-namespace CryptoWatcher.HyperliquidModule.Services;
+namespace CryptoWatcher.Modules.Hyperliquid.Services;
 
 /// <summary>
 /// <see cref="IHyperliquidPositionsSyncService"/>

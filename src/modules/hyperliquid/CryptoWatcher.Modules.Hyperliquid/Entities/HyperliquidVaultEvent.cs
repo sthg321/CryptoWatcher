@@ -4,7 +4,7 @@ using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.ValueObjects;
 
-namespace CryptoWatcher.HyperliquidModule.Entities;
+namespace CryptoWatcher.Modules.Hyperliquid.Entities;
 
 /// <summary>
 /// Represents an event associated with a Hyperliquid vault. These events track interactions such as deposits or withdrawals on specific vaults

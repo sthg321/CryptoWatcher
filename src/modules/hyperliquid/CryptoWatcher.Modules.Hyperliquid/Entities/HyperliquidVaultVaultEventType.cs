@@ -1,4 +1,4 @@
-namespace CryptoWatcher.HyperliquidModule.Entities;
+namespace CryptoWatcher.Modules.Hyperliquid.Entities;
 
 /// <summary>
 /// Represents the type of an event performed in a Hyperliquid Vault.

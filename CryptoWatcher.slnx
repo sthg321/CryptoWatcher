@@ -16,7 +16,9 @@
     <Project Path="src\modules\aave\CryptoWatcher.AaveModule\CryptoWatcher.AaveModule.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/src/modules/hyperliquid/">
-    <Project Path="src\modules\hyperliquid\CryptoWatcher.HyperliquidModule\CryptoWatcher.HyperliquidModule.csproj" Type="Classic C#" />
+    <Project Path="src\modules\hyperliquid\CryptoWatcher.Modules.Hyperliquid.Application\CryptoWatcher.Modules.Hyperliquid.Application.csproj" Type="Classic C#" />
+    <Project Path="src\modules\hyperliquid\CryptoWatcher.Modules.Hyperliquid.Infrastructure\CryptoWatcher.Modules.Hyperliquid.Infrastructure.csproj" Type="Classic C#" />
+    <Project Path="src\modules\hyperliquid\CryptoWatcher.Modules.Hyperliquid\CryptoWatcher.Modules.Hyperliquid.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/src/modules/uniswap/">
     <Project Path="src\modules\uniswap\CryptoWatcher.Modules.Uniswap.Application\CryptoWatcher.Modules.Uniswap.Application.csproj" Type="Classic C#" />

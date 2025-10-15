@@ -4,7 +4,7 @@ using CryptoWatcher.Abstractions.PositionSnapshots;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.ValueObjects;
 
-namespace CryptoWatcher.HyperliquidModule.Entities;
+namespace CryptoWatcher.Modules.Hyperliquid.Entities;
 
 /// <summary>
 /// Represents a user's position within a Hyperliquid vault.

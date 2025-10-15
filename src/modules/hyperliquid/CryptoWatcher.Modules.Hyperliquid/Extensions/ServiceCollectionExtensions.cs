@@ -1,8 +1,8 @@
 using CryptoWatcher.Abstractions.Reports;
-using CryptoWatcher.HyperliquidModule.Services;
+using CryptoWatcher.Modules.Hyperliquid.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CryptoWatcher.HyperliquidModule.Extensions;
+namespace CryptoWatcher.Modules.Hyperliquid.Extensions;
 
 public static class HyperliquidModuleKeyedService
 {

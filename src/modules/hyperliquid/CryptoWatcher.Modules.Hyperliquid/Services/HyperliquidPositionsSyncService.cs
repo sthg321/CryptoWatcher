@@ -1,10 +1,10 @@
 using CryptoWatcher.Abstractions;
-using CryptoWatcher.HyperliquidModule.Abstractions;
-using CryptoWatcher.HyperliquidModule.Entities;
+using CryptoWatcher.Modules.Hyperliquid.Abstractions;
+using CryptoWatcher.Modules.Hyperliquid.Entities;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.ValueObjects;
 
-namespace CryptoWatcher.HyperliquidModule.Services;
+namespace CryptoWatcher.Modules.Hyperliquid.Services;
 
 public interface IHyperliquidPositionsSyncService
 {

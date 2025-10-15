@@ -1,8 +1,8 @@
 using Ardalis.Specification;
-using CryptoWatcher.HyperliquidModule.Entities;
+using CryptoWatcher.Modules.Hyperliquid.Entities;
 using CryptoWatcher.Shared.Entities;
 
-namespace CryptoWatcher.HyperliquidModule.Specifications;
+namespace CryptoWatcher.Modules.Hyperliquid.Specifications;
 
 /// <summary>
 /// Represents a specification to retrieve Hyperliquid vault positions within a specific date range

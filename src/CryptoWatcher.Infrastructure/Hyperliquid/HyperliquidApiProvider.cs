@@ -1,6 +1,6 @@
 using CryptoWatcher.Abstractions.CacheFlows;
-using CryptoWatcher.HyperliquidModule.Abstractions;
-using CryptoWatcher.HyperliquidModule.Entities;
+using CryptoWatcher.Modules.Hyperliquid.Abstractions;
+using CryptoWatcher.Modules.Hyperliquid.Entities;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.ValueObjects;
 using HyperliquidClient;

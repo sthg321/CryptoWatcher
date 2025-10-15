@@ -1,7 +1,7 @@
-using CryptoWatcher.HyperliquidModule.Entities;
+using CryptoWatcher.Modules.Hyperliquid.Entities;
 using CryptoWatcher.Shared.Entities;
 
-namespace CryptoWatcher.HyperliquidModule.Abstractions;
+namespace CryptoWatcher.Modules.Hyperliquid.Abstractions;
 
 public interface IHyperliquidProvider
 {
