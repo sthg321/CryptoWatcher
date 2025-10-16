@@ -1,7 +1,7 @@
 using AaveClient.Extensions;
 using CoinGeckoClient.Extensions;
-using CryptoWatcher.AaveModule.Abstractions;
-using CryptoWatcher.AaveModule.Extensions;
+using CryptoWatcher.Modules.Aave.Abstractions;
+using CryptoWatcher.Modules.Aave.Extensions;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Application;

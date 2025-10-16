@@ -11,8 +11,10 @@
   </Folder>
   <Folder Name="/src/modules/" />
   <Folder Name="/src/modules/aave/">
-    <Project Path="src\modules\aave\CryptoWatcher.AaveModule.Tests\CryptoWatcher.AaveModule.Tests.csproj" Type="Classic C#" />
-    <Project Path="src\modules\aave\CryptoWatcher.AaveModule\CryptoWatcher.AaveModule.csproj" Type="Classic C#" />
+    <Project Path="src\modules\aave\CryptoWatcher.Modules.Aave.Application\CryptoWatcher.Modules.Aave.Application.csproj" Type="Classic C#" />
+    <Project Path="src\modules\aave\CryptoWatcher.Modules.Aave.Infrastructure\CryptoWatcher.Modules.Aave.Infrastructure.csproj" Type="Classic C#" />
+    <Project Path="src\modules\aave\CryptoWatcher.Modules.Aave.Tests\CryptoWatcher.Modules.Aave.Tests.csproj" Type="Classic C#" />
+    <Project Path="src\modules\aave\CryptoWatcher.Modules.Aave\CryptoWatcher.Modules.Aave.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/src/modules/hyperliquid/">
     <Project Path="src\modules\hyperliquid\CryptoWatcher.Modules.Hyperliquid.Application\CryptoWatcher.Modules.Hyperliquid.Application.csproj" Type="Classic C#" />

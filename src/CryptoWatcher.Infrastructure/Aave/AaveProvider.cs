@@ -1,8 +1,9 @@
 using AaveClient;
-using CryptoWatcher.AaveModule.Abstractions;
-using CryptoWatcher.AaveModule.Models;
+using CryptoWatcher.Modules.Aave.Abstractions;
+using CryptoWatcher.Modules.Aave.Models;
 using CryptoWatcher.Extensions;
 using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Infrastructure.Aave;
 
@@ -39,7 +40,7 @@ internal class AaveProvider : IAaveProvider
             {
                 result.Add(new EmptyAaveLendingPosition
                 {
-                    TokenAddress = userReserveData.UnderlyingAsset
+                    TokenAddress = EvmAddress.Create(userReserveData.UnderlyingAsset)
                 });
 
                 continue;
@@ -57,7 +58,7 @@ internal class AaveProvider : IAaveProvider
                 var suppliedPosition = new SuppliedAaveLendingPosition
                 {
                     ScaleAmount = userReserveData.ScaledATokenBalance,
-                    TokenAddress = userReserveData.UnderlyingAsset,
+                    TokenAddress = EvmAddress.Create(userReserveData.UnderlyingAsset),
                     LiquidityIndex = reserveData.LiquidityIndex,
                     TokenPriceInUsd = reserveData.PriceInMarketReferenceCurrency.ToDecimal(decimals),
                     TokenDecimals = (byte)reserveData.Decimals
@@ -71,7 +72,7 @@ internal class AaveProvider : IAaveProvider
                 var borrowedPosition = new BorrowedAaveLendingPosition
                 {
                     ScaleAmount = userReserveData.ScaledVariableDebt,
-                    TokenAddress = userReserveData.UnderlyingAsset,
+                    TokenAddress = EvmAddress.Create(userReserveData.UnderlyingAsset),
                     VariableBorrowIndex = reserveData.VariableBorrowIndex,
                     TokenPriceInUsd = reserveData.PriceInMarketReferenceCurrency.ToDecimal(decimals),
                     TokenDecimals = (byte)reserveData.Decimals

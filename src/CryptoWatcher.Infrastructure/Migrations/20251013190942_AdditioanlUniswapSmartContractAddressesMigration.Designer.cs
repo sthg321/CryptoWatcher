@@ -26,7 +26,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("CryptoWatcher.AaveModule.Entities.AavePosition", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Aave.Entities.AavePosition", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -68,7 +68,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.ToTable("AavePositions");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.AaveModule.Entities.AavePositionEvent", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Aave.Entities.AavePositionEvent", b =>
                 {
                     b.Property<Guid>("PositionId")
                         .HasColumnType("uuid");
@@ -79,7 +79,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Property<int>("Event")
                         .HasColumnType("integer");
 
-                    b.ComplexProperty<Dictionary<string, object>>("Token", "CryptoWatcher.AaveModule.Entities.AavePositionEvent.Token#TokenInfo", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("Token", "CryptoWatcher.Modules.Aave.Entities.AavePositionEvent.Token#TokenInfo", b1 =>
                         {
                             b1.IsRequired();
 
@@ -99,7 +99,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.ToTable("AavePositionEvents");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.AaveModule.Entities.AavePositionSnapshot", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Aave.Entities.AavePositionSnapshot", b =>
                 {
                     b.Property<Guid>("PositionId")
                         .HasColumnType("uuid");
@@ -107,7 +107,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Property<DateOnly>("Day")
                         .HasColumnType("date");
 
-                    b.ComplexProperty<Dictionary<string, object>>("Token", "CryptoWatcher.AaveModule.Entities.AavePositionSnapshot.Token#TokenInfo", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("Token", "CryptoWatcher.Modules.Aave.Entities.AavePositionSnapshot.Token#TokenInfo", b1 =>
                         {
                             b1.IsRequired();
 
@@ -595,7 +595,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.ToTable("TimeTickers", "ticker");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.AaveModule.Entities.AavePosition", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Aave.Entities.AavePosition", b =>
                 {
                     b.HasOne("CryptoWatcher.Shared.Entities.Wallet", "Wallet")
                         .WithMany()
@@ -606,18 +606,18 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Navigation("Wallet");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.AaveModule.Entities.AavePositionEvent", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Aave.Entities.AavePositionEvent", b =>
                 {
-                    b.HasOne("CryptoWatcher.AaveModule.Entities.AavePosition", null)
+                    b.HasOne("CryptoWatcher.Modules.Aave.Entities.AavePosition", null)
                         .WithMany("PositionEvents")
                         .HasForeignKey("PositionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CryptoWatcher.AaveModule.Entities.AavePositionSnapshot", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Aave.Entities.AavePositionSnapshot", b =>
                 {
-                    b.HasOne("CryptoWatcher.AaveModule.Entities.AavePosition", null)
+                    b.HasOne("CryptoWatcher.Modules.Aave.Entities.AavePosition", null)
                         .WithMany("PositionSnapshots")
                         .HasForeignKey("PositionId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -775,7 +775,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Navigation("ParentJob");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.AaveModule.Entities.AavePosition", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Aave.Entities.AavePosition", b =>
                 {
                     b.Navigation("PositionEvents");
 

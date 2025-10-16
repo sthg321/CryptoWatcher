@@ -1,4 +1,4 @@
-using CryptoWatcher.AaveModule.Entities;
+using CryptoWatcher.Modules.Aave.Entities;
 using CryptoWatcher.Shared.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

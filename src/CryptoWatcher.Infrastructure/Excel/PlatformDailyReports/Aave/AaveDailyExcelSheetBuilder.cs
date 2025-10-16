@@ -1,4 +1,4 @@
-using CryptoWatcher.AaveModule.Models;
+using CryptoWatcher.Modules.Aave.Models;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Abstractions;
 using CryptoWatcher.Models;
 using SpreadCheetah;

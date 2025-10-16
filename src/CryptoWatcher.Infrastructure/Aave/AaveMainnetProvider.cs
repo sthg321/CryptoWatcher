@@ -1,6 +1,6 @@
 using AaveClient;
-using CryptoWatcher.AaveModule.Abstractions;
-using CryptoWatcher.AaveModule.Models;
+using CryptoWatcher.Modules.Aave.Abstractions;
+using CryptoWatcher.Modules.Aave.Models;
 using CryptoWatcher.Infrastructure.Configs;
 using CryptoWatcher.Infrastructure.Extensions;
 

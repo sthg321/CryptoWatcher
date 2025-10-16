@@ -1,4 +1,4 @@
-using CryptoWatcher.AaveModule.Entities;
+using CryptoWatcher.Modules.Aave.Entities;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Exceptions;
 using CryptoWatcher.Modules.Hyperliquid.Entities;

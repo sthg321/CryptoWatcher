@@ -25,7 +25,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("CryptoWatcher.AaveModule.Entities.AavePosition", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Aave.Entities.AavePosition", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -65,7 +65,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.ToTable("AavePositions");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.AaveModule.Entities.AavePositionEvent", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Aave.Entities.AavePositionEvent", b =>
                 {
                     b.Property<Guid>("PositionId")
                         .HasColumnType("uuid");
@@ -81,7 +81,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.ToTable("AavePositionEvent");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.AaveModule.Entities.AavePositionSnapshot", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Aave.Entities.AavePositionSnapshot", b =>
                 {
                     b.Property<Guid>("PositionId")
                         .HasColumnType("uuid");
@@ -251,7 +251,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.ToTable("Networks");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.AaveModule.Entities.AavePosition", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Aave.Entities.AavePosition", b =>
                 {
                     b.HasOne("CryptoWatcher.Shared.Entities.Wallet", "Wallet")
                         .WithMany()
@@ -262,9 +262,9 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Navigation("Wallet");
                 });
 
-            modelBuilder.Entity("CryptoWatcher.AaveModule.Entities.AavePositionEvent", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Aave.Entities.AavePositionEvent", b =>
                 {
-                    b.HasOne("CryptoWatcher.AaveModule.Entities.AavePosition", null)
+                    b.HasOne("CryptoWatcher.Modules.Aave.Entities.AavePosition", null)
                         .WithMany("PositionEvents")
                         .HasForeignKey("PositionId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -303,9 +303,9 @@ namespace CryptoWatcher.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CryptoWatcher.AaveModule.Entities.AavePositionSnapshot", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Aave.Entities.AavePositionSnapshot", b =>
                 {
-                    b.HasOne("CryptoWatcher.AaveModule.Entities.AavePosition", null)
+                    b.HasOne("CryptoWatcher.Modules.Aave.Entities.AavePosition", null)
                         .WithMany("PositionSnapshots")
                         .HasForeignKey("PositionId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -547,7 +547,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CryptoWatcher.AaveModule.Entities.AavePosition", b =>
+            modelBuilder.Entity("CryptoWatcher.Modules.Aave.Entities.AavePosition", b =>
                 {
                     b.Navigation("PositionEvents");
 
