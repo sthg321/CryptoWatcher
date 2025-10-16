@@ -6,4 +6,13 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Models\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\CryptoWatcher.Modules.Hyperliquid\CryptoWatcher.Modules.Hyperliquid.csproj" />
+    </ItemGroup>
+
+
 </Project>

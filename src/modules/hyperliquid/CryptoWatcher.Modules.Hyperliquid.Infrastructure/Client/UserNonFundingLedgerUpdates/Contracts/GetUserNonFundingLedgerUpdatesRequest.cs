@@ -1,4 +1,4 @@
-namespace HyperliquidClient.UserNonFundingLedgerUpdates.Contracts;
+namespace CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.UserNonFundingLedgerUpdates.Contracts;
 
 /// <summary>
 /// Retrieve a user's vault deposits

@@ -7,12 +7,12 @@ using CryptoWatcher.Modules.Hyperliquid.Models;
 using CryptoWatcher.Modules.Hyperliquid.Specifications;
 using CryptoWatcher.Shared.Entities;
 
-namespace CryptoWatcher.Modules.Hyperliquid.Services;
+namespace CryptoWatcher.Modules.Hyperliquid.Application.Services;
 
 /// <summary>
 /// <see cref="IHyperliquidPositionsSyncService"/>
 /// </summary>
-internal class HyperliquidReportDataService : IPlatformDailyReportDataProvider
+public class HyperliquidReportDataService : IPlatformDailyReportDataProvider
 {
     private readonly IRepository<HyperliquidVaultPosition> _repository;
 

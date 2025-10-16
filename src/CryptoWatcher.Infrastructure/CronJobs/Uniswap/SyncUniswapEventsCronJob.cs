@@ -15,6 +15,6 @@ public class SyncUniswapEventsCronJob
     [TickerFunction(nameof(SyncUniswapEventsAsync), "* * * * *")]
     public async Task SyncUniswapEventsAsync()
     {
-        await _chainSynchronizerOrchestrator.SynchronizeAllChainsAsync();
+       // await _chainSynchronizerOrchestrator.SynchronizeAllChainsAsync();
     }
 }

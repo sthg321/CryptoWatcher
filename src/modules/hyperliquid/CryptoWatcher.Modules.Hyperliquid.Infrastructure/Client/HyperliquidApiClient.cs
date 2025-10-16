@@ -1,7 +1,7 @@
-using HyperliquidClient.UserNonFundingLedgerUpdates;
-using HyperliquidClient.UserVaultEquities;
+using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.UserNonFundingLedgerUpdates;
+using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.UserVaultEquities;
 
-namespace HyperliquidClient;
+namespace CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client;
 
 public interface IHyperliquidApiClient
 {

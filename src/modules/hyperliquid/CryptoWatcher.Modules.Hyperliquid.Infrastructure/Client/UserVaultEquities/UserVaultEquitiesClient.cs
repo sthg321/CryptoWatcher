@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
-using HyperliquidClient.UserVaultEquities.Contracts;
+using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.UserVaultEquities.Contracts;
 
-namespace HyperliquidClient.UserVaultEquities;
+namespace CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.UserVaultEquities;
 
 public interface IUserVaultEquitiesClient
 {

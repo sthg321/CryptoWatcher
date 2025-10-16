@@ -4,7 +4,7 @@ using CryptoWatcher.Modules.Hyperliquid.Entities;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.ValueObjects;
 
-namespace CryptoWatcher.Modules.Hyperliquid.Services;
+namespace CryptoWatcher.Modules.Hyperliquid.Application.Services;
 
 public interface IHyperliquidPositionsSyncService
 {
@@ -21,7 +21,7 @@ public interface IHyperliquidPositionsSyncService
 /// <summary>
 /// <see cref="IHyperliquidPositionsSyncService"/>
 /// </summary>
-internal class HyperliquidPositionsSyncService : IHyperliquidPositionsSyncService
+public class HyperliquidPositionsSyncService : IHyperliquidPositionsSyncService
 {
     private readonly IHyperliquidProvider _hyperliquidProvider;
     private readonly IRepository<HyperliquidVaultPosition> _repository;

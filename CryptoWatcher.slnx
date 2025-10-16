@@ -2,7 +2,6 @@
   <Folder Name="/clients/">
     <Project Path="clients\AaveClient\AaveClient.csproj" Type="Classic C#" />
     <Project Path="clients\CoinGeckoClient\CoinGeckoClient.csproj" Type="Classic C#" />
-    <Project Path="clients\HyperliquidClient\HyperliquidClient.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src\CryptoWatcher.Application\CryptoWatcher.Application.csproj" Type="Classic C#" />

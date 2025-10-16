@@ -1,8 +1,10 @@
-using HyperliquidClient.UserNonFundingLedgerUpdates;
-using HyperliquidClient.UserVaultEquities;
+using CryptoWatcher.Modules.Hyperliquid.Abstractions;
+using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.UserNonFundingLedgerUpdates;
+using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.UserVaultEquities;
+using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace HyperliquidClient.Extensions;
+namespace CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.Extensions;
 
 public static class ServiceCollectionExtensions
 {
@@ -12,16 +14,14 @@ public static class ServiceCollectionExtensions
         Func<IServiceProvider, Uri>? hyperliquidUriFactory = null)
     {
         services.AddHttpClient<IUserNonFundingLedgerUpdatesClient, UserNonFundingLedgerUpdatesClient>((provider,
-            client) =>
-        {
-            client.BaseAddress = hyperliquidUriFactory?.Invoke(provider) ?? new Uri(BaseUrl);
-        });
+                client) => client.BaseAddress = hyperliquidUriFactory?.Invoke(provider) ?? new Uri(BaseUrl))
+            .AddStandardResilienceHandler();
 
         services.AddHttpClient<IUserVaultEquitiesClient, UserVaultEquitiesClient>((provider, client) =>
-        {
-            client.BaseAddress = hyperliquidUriFactory?.Invoke(provider) ?? new Uri(BaseUrl);
-        });
+                client.BaseAddress = hyperliquidUriFactory?.Invoke(provider) ?? new Uri(BaseUrl))
+            .AddStandardResilienceHandler();
 
+        services.AddScoped<IHyperliquidProvider, HyperliquidApiProvider>();
         services.AddScoped<IHyperliquidApiClient, HyperliquidApiClient>();
         services.AddScoped<HyperliquidApiClient>(provider =>
             (HyperliquidApiClient)provider.GetRequiredService<IHyperliquidApiClient>());

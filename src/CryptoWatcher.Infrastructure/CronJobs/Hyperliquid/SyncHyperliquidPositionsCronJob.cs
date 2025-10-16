@@ -1,12 +1,12 @@
 using CryptoWatcher.Abstractions;
-using CryptoWatcher.Modules.Hyperliquid.Services;
+using CryptoWatcher.Modules.Hyperliquid.Application.Services;
 using CryptoWatcher.Shared.Entities;
 using Microsoft.Extensions.Logging;
 using TickerQ.Utilities.Base;
 
 namespace CryptoWatcher.Infrastructure.CronJobs.Hyperliquid;
 
-internal class SyncHyperliquidPositionsCronJob
+public class SyncHyperliquidPositionsCronJob
 {
     private readonly IHyperliquidPositionsSyncService _hyperliquidPositionsSyncService;
     private readonly IRepository<Wallet> _walletRepository;
@@ -20,7 +20,7 @@ internal class SyncHyperliquidPositionsCronJob
         _logger = logger;
     }
 
-    [TickerFunction(nameof(SyncHyperliquidPositionsAsync), CronRegistry.Every50Minutes)]
+    [TickerFunction(nameof(SyncHyperliquidPositionsAsync), "0,50 * * * *")]
     public async Task SyncHyperliquidPositionsAsync(CancellationToken ct)
     {
         using var scope = _logger.BeginScope("Syncing {SynchronizationPlatform} positions", "Hyperliquid");

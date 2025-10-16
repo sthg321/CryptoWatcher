@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace HyperliquidClient.UserNonFundingLedgerUpdates.Contracts;
+namespace CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.UserNonFundingLedgerUpdates.Contracts;
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type", IgnoreUnrecognizedTypeDiscriminators = true)]
 [JsonDerivedType(typeof(VaultDeposit), "vaultDeposit")]

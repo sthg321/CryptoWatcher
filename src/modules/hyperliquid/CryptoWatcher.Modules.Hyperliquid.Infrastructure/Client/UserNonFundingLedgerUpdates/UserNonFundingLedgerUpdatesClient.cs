@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
-using HyperliquidClient.UserNonFundingLedgerUpdates.Contracts;
+using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.UserNonFundingLedgerUpdates.Contracts;
 
-namespace HyperliquidClient.UserNonFundingLedgerUpdates;
+namespace CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.UserNonFundingLedgerUpdates;
 
 public interface IUserNonFundingLedgerUpdatesClient
 {

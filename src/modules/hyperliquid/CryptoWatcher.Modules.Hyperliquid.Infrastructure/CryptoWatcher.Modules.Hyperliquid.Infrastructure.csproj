@@ -6,4 +6,20 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\CryptoWatcher.Modules.Hyperliquid.Application\CryptoWatcher.Modules.Hyperliquid.Application.csproj" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.10.0" />
+        <PackageReference Include="Polly.Extensions" Version="8.6.4" />
+        <PackageReference Include="TickerQ.Utilities" Version="2.5.3" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <Folder Include="CronJobs\" />
+    </ItemGroup>
+
 </Project>

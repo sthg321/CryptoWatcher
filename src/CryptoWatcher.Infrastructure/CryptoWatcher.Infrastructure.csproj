@@ -20,10 +20,10 @@
     <ItemGroup>
         <ProjectReference Include="..\..\clients\AaveClient\AaveClient.csproj"/>
         <ProjectReference Include="..\..\clients\CoinGeckoClient\CoinGeckoClient.csproj"/>
-        <ProjectReference Include="..\..\clients\HyperliquidClient\HyperliquidClient.csproj"/>
         <ProjectReference Include="..\CryptoWatcher.Application\CryptoWatcher.Application.csproj"/>
         <ProjectReference Include="..\CryptoWatcher\CryptoWatcher.csproj"/>
         <ProjectReference Include="..\modules\aave\CryptoWatcher.AaveModule\CryptoWatcher.AaveModule.csproj"/>
+        <ProjectReference Include="..\modules\hyperliquid\CryptoWatcher.Modules.Hyperliquid.Infrastructure\CryptoWatcher.Modules.Hyperliquid.Infrastructure.csproj" />
         <ProjectReference Include="..\modules\hyperliquid\CryptoWatcher.Modules.Hyperliquid\CryptoWatcher.Modules.Hyperliquid.csproj" />
         <ProjectReference Include="..\modules\uniswap\CryptoWatcher.Modules.Uniswap.Application\CryptoWatcher.Modules.Uniswap.Application.csproj" />
         <ProjectReference Include="..\modules\uniswap\CryptoWatcher.Modules.Uniswap.Infrastructure\CryptoWatcher.Modules.Uniswap.Infrastructure.csproj" />
@@ -31,6 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Hyperliquid\" />
       <Folder Include="Uniswap\ExcelModels\" />
       <Folder Include="Uniswap\Excel\" />
     </ItemGroup>
