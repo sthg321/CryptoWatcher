@@ -29,6 +29,11 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
             nameof(UniswapLiquidityPositionSnapshot.Day), nameof(UniswapLiquidityPositionSnapshot.PoolPositionId),
             nameof(UniswapLiquidityPositionSnapshot.NetworkName)
         ],
+        [typeof(UniswapLiquidityPositionCashFlow)] =
+        [
+            nameof(UniswapLiquidityPositionCashFlow.PositionId), nameof(UniswapLiquidityPositionCashFlow.NetworkName),
+            nameof(UniswapLiquidityPositionCashFlow.TransactionHash)
+        ],
         [typeof(HyperliquidVaultPosition)] =
         [
             nameof(HyperliquidVaultPosition.VaultAddress), nameof(HyperliquidVaultPosition.WalletAddress)
