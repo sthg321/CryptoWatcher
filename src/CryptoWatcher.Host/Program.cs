@@ -10,7 +10,9 @@ using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports;
 using CryptoWatcher.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Aave;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
+using CryptoWatcher.Modules.Uniswap.Application.Services;
 using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.ValueObjects;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -61,7 +63,7 @@ builder.Services.AddEndpointsApiExplorer().AddSwaggerGen();
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
-{
+{   
     if (!app.Environment.IsDevelopment())
     {
         scope.ServiceProvider.GetRequiredService<CryptoWatcherDbContext>().Database.Migrate();
@@ -105,7 +107,7 @@ app.MapPost("/uniswap/sync-block/{blockNumber}", async (IUniswapCashFlowBlockRan
         .ThenInclude(positions => positions.Wallet)
         .FirstAsync();
 
-    await sync.SynchronizeBlockRangeAsync(chain, blockNumber, blockNumber, false);
+    await sync.SynchronizeBlockRangeAsync(chain, blockNumber, blockNumber);
 });
 
 app.MapPatch("/uniswap/sync-block/{blockNumber}", async (

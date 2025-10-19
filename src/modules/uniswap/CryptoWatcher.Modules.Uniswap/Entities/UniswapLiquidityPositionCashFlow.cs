@@ -34,7 +34,7 @@ public class UniswapLiquidityPositionCashFlow : ITokenPairCashFlow
         {
             PositionId = positionId,
             NetworkName = chain.Name,
-            Date = timeStamp.UtcDateTime,
+            Date = timeStamp.DateTime.ToUniversalTime(),
             Event = @event,
             TransactionHash = transactionHash,
             Token0 = CreateFromEvent(tokenInfoPair.Token0, @event),

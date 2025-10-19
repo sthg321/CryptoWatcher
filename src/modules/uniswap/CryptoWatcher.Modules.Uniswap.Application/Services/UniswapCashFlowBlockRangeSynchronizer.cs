@@ -25,12 +25,16 @@ public class UniswapCashFlowBlockRangeSynchronizer : IUniswapCashFlowBlockRangeS
 
     public async Task SynchronizeBlockRangeAsync(UniswapChainConfiguration chain, BigInteger fromBlock,
         BigInteger toBlock,
-        bool updateLastProcessedBlock,
         CancellationToken ct = default)
     {
         using var scope = _logger.BeginScope("Synchronizing cash flow events for chain {ChainName}", chain.Name);
 
-        await _poolPositionCashFlowRepository.UnitOfWork.BeginTransactionAsync(ct);
+        bool isTransactionHolder = false;
+        if (!_poolPositionCashFlowRepository.UnitOfWork.HasActiveTransaction)
+        {
+            await _poolPositionCashFlowRepository.UnitOfWork.BeginTransactionAsync(ct);
+            isTransactionHolder = true;
+        }
 
         try
         {
@@ -42,16 +46,12 @@ public class UniswapCashFlowBlockRangeSynchronizer : IUniswapCashFlowBlockRangeS
 
                 _logger.LogInformation("Cash flow events synchronized");
             }
-            
-            if (updateLastProcessedBlock)
-            {
-                _logger.LogInformation("Updating last processed block to {BlockNumber}", toBlock);
-                
-                chain.UpdateLastSynchronizedBlock(toBlock);    
-            }
-            
+
             await _poolPositionCashFlowRepository.UnitOfWork.SaveChangesAsync(ct);
-            await _poolPositionCashFlowRepository.UnitOfWork.CommitTransactionAsync(ct);
+            if (isTransactionHolder)
+            {
+                await _poolPositionCashFlowRepository.UnitOfWork.CommitTransactionAsync(ct);
+            }
         }
         catch
         {

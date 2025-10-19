@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CryptoWatcher.Infrastructure.Extensions;
 
-internal static class WalletAddressExtensions
+internal static class EvmAddressExtensions
 {
     private const int WalletAddressLength = 42;
     
