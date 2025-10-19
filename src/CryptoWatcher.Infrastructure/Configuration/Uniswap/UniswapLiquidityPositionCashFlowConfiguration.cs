@@ -1,3 +1,4 @@
+using CryptoWatcher.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.ValueObjects;
 using Microsoft.EntityFrameworkCore;
@@ -11,9 +12,7 @@ public class UniswapLiquidityPositionCashFlowConfiguration : IEntityTypeConfigur
     {
         builder.HasKey(flow => new { flow.PositionId, flow.NetworkName, flow.TransactionHash });
 
-        builder.Property(flow => flow.TransactionHash)
-            .HasConversion(hash => hash.Value, s => TransactionHash.FromString(s))
-            .HasMaxLength(66);
+        builder.Property(flow => flow.TransactionHash).ConfigureTransactionHash();
 
         builder.ComplexProperty<TokenInfoWithFee>(flow => flow.Token0);
 

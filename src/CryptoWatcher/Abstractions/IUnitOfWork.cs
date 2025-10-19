@@ -21,6 +21,15 @@ public interface IUnitOfWork
     Task RollbackTransactionAsync(CancellationToken ct);
 
     /// <summary>
+    /// Indicates whether there is an active database transaction.
+    /// </summary>
+    /// <remarks>
+    /// This property returns true if a transaction is currently active.
+    /// A transaction is considered active if it has been started and has neither been committed nor rolled back.
+    /// </remarks>
+    bool HasActiveTransaction { get; }
+
+    /// <summary>
     /// Begins a new database transaction asynchronously.
     /// </summary>
     /// <param name="ct">Cancellation token to observe while waiting for the operation to complete.</param>

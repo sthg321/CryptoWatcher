@@ -29,9 +29,18 @@ public class TokenService
                         return "ETH";
                     }
 
-                    var result = await web.Eth.ERC20.GetContractService(tokenAddress).SymbolQueryAsync();
-
-                    return result;
+                    try
+                    {
+                        var result = await web.Eth.ERC20.GetContractService(tokenAddress).SymbolQueryAsync();
+                        return result;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        Console.WriteLine(cacheKey);
+                        Console.WriteLine(tokenAddress);
+                        throw;
+                    }
                 },
                 new HybridCacheEntryOptions
                     { Expiration = TimeSpan.FromSeconds(CacheKeys.TokenSymbol.CacheLifetimeInSecond) })
@@ -48,8 +57,19 @@ public class TokenService
                 {
                     return 18;
                 }
-
-                return await web.Eth.ERC20.GetContractService(tokenAddress).DecimalsQueryAsync();
+                
+                try
+                {
+                    var result = await web.Eth.ERC20.GetContractService(tokenAddress).DecimalsQueryAsync();
+                    return result;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    Console.WriteLine(cacheKey);
+                    Console.WriteLine(tokenAddress);
+                    throw;
+                }
             },
             new HybridCacheEntryOptions
                 { Expiration = TimeSpan.FromSeconds(CacheKeys.TokenDecimals.CacheLifetimeInSecond) },

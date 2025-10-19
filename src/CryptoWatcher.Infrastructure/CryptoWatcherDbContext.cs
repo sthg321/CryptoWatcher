@@ -44,7 +44,7 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
     /// for interaction with various Aave-supported blockchains within the CryptoWatcher application.
     /// </remarks>
     public DbSet<AaveChainConfiguration> AaveChainConfigurations => Set<AaveChainConfiguration>();
-    
+
     /// <summary>
     /// Provides access to the set of Aave positions within the application's database context.
     /// </summary>
@@ -158,9 +158,25 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
     /// <inheritdoc/>
     public async Task RollbackTransactionAsync(CancellationToken ct)
     {
-        ArgumentNullException.ThrowIfNull(_activeTransaction);
-        await _activeTransaction.RollbackAsync(ct);
+        var transaction = _activeTransaction;
+        if (transaction is null)
+        {
+            return;
+        }
+
+        _activeTransaction = null;
+
+        try
+        {
+            await transaction.RollbackAsync(ct);
+        }
+        finally
+        {
+            await transaction.DisposeAsync();
+        }
     }
+
+    public bool HasActiveTransaction => _activeTransaction is not null;
 
     public async Task CommitTransactionAsync(CancellationToken ct)
     {

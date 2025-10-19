@@ -10,16 +10,16 @@ public class UniswapChainSynchronizationOrchestrator : IUniswapChainSynchronizer
 {
     private static int _isRunning;
 
-    private readonly IUniswapChainSynchronizer _chainSynchronizer;
     private readonly IRepository<UniswapChainConfiguration> _chainConfigurationRepository;
+    private readonly IBlockscoutTransactionSynchronizer _blockscoutTransactionSynchronizer;
     private readonly ILogger<UniswapChainSynchronizationOrchestrator> _logger;
 
-    public UniswapChainSynchronizationOrchestrator(IUniswapChainSynchronizer chainSynchronizer,
-        IRepository<UniswapChainConfiguration> chainConfigurationRepository,
+    public UniswapChainSynchronizationOrchestrator(IRepository<UniswapChainConfiguration> chainConfigurationRepository,
+        IBlockscoutTransactionSynchronizer blockscoutTransactionSynchronizer,
         ILogger<UniswapChainSynchronizationOrchestrator> logger)
     {
-        _chainSynchronizer = chainSynchronizer;
         _chainConfigurationRepository = chainConfigurationRepository;
+        _blockscoutTransactionSynchronizer = blockscoutTransactionSynchronizer;
         _logger = logger;
     }
 
@@ -36,18 +36,30 @@ public class UniswapChainSynchronizationOrchestrator : IUniswapChainSynchronizer
             _isRunning = 1;
 
             var chainsToSynchronize =
-                await _chainConfigurationRepository.ListAsync(new GetUniswapChainWithStateAndActivePositions(), ct);
+                await _chainConfigurationRepository.ListAsync(new GetUniswapChainWithStateAndActivePositionsAndWallets(), ct);
 
             foreach (var uniswapChainConfiguration in chainsToSynchronize)
             {
+                _logger.LogInformation("Begin synchronization for uniswap chain: {UniswapChain}",
+                    uniswapChainConfiguration.Name);
+
                 try
                 {
-                    await _chainSynchronizer.SynchronizeChainAsync(uniswapChainConfiguration, ct);
+                    foreach (var position in uniswapChainConfiguration.LiquidityPoolPositions.GroupBy(position =>
+                                 position.Wallet))
+                    {
+                        await _blockscoutTransactionSynchronizer.SyncAsync(uniswapChainConfiguration,
+                            position.Key,
+                            ct);
+                    }
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "An error occured while synchronizing the chain");
                 }
+                
+                _logger.LogInformation("Finished synchronization for uniswap chain: {UniswapChain}",
+                    uniswapChainConfiguration.Name);
             }
         }
         finally

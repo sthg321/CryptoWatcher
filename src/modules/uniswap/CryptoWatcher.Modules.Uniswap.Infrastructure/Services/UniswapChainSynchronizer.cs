@@ -37,7 +37,7 @@ internal class UniswapChainSynchronizer : IUniswapChainSynchronizer
         {
             _logger.LogInformation("Synchronizing block range {FromBlock} - {ToBlock}", from, to);
 
-            await _blockRangeSynchronizer.SynchronizeBlockRangeAsync(chain, from, to, true, ct);
+            await _blockRangeSynchronizer.SynchronizeBlockRangeAsync(chain, from, to, ct);
 
             _logger.LogInformation("Block range {FromBlock} - {ToBlock} synchronized", from, to);
         }

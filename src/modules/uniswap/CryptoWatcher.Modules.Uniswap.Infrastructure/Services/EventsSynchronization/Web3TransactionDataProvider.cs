@@ -39,6 +39,12 @@ internal class Web3TransactionDataProvider : ITransactionDataProvider
 
         _logger.LogInformation("For wallet {WalletAddress} found {LogsCount} logs", walletAddress, receipt.Logs.Length);
 
+        // this is marker for mint(still liquidity event) support later.
+        if (receipt.Logs[0].Data == "0x")
+        {
+            return null;
+        }
+        
         var liquidityEventLogs = receipt.Logs.Select(log => new LiquidityEventLog
         {
             Address = log.Address,

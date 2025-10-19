@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace CryptoWatcher.ValueObjects;
 
-public partial class TransactionHash : IEqualityComparer<TransactionHash>
+public partial class TransactionHash : IEquatable<TransactionHash>, IEqualityComparer<TransactionHash>
 {
     private const int TransactionHashLength = 66;
 
@@ -20,7 +20,7 @@ public partial class TransactionHash : IEqualityComparer<TransactionHash>
         Value = value.ToLowerInvariant();
     }
 
-    public string Value { get;  }  
+    public string Value { get; }
 
     public static TransactionHash FromString(string value) => new(value);
 
@@ -29,6 +29,7 @@ public partial class TransactionHash : IEqualityComparer<TransactionHash>
     public static implicit operator TransactionHash(string value) => FromString(value);
 
     public override string ToString() => Value;
+
 
     public bool Equals(TransactionHash? x, TransactionHash? y)
     {
@@ -44,8 +45,19 @@ public partial class TransactionHash : IEqualityComparer<TransactionHash>
     {
         return obj.Value.GetHashCode(StringComparison.OrdinalIgnoreCase);
     }
-    
+
     private static bool IsValid(string value) =>
         HashValidator().IsMatch(value) && value.Length == TransactionHashLength;
 
+    public bool Equals(TransactionHash? other)
+    {
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return Value == other.Value;
+    }
+
+    public override int GetHashCode()
+    {
+        return Value.GetHashCode();
+    }
 }

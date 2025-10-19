@@ -48,6 +48,8 @@ public static class ServiceCollectionExtensions
             }));
         });
 
+        services.AddScoped<IBlockscoutTransactionSynchronizer, BlockscoutTransactionSynchronizer>();
+        services.AddSingleton<IBlockscoutTransactionFetcher, BlockscoutTransactionFetcher>();
         services.AddScoped<IUniswapChainSynchronizerOrchestrator, UniswapChainSynchronizationOrchestrator>();
         services.AddScoped<IUniswapChainSynchronizer, UniswapChainSynchronizer>();
         services.AddScoped<IUniswapCashFlowBlockRangeSynchronizer, UniswapCashFlowBlockRangeSynchronizer>();
@@ -57,7 +59,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ICashFlowEventMatcher, CashFlowEventMatcher>();
         services.AddSingleton<ILiquidityEventsProvider, LiquidityEventsProvider>();
         services.AddSingleton<ITransactionDataProvider, Web3TransactionDataProvider>();
-        services.AddHttpClient<IInternalTransactionProvider, InternalTransactionProvider>()
+        services.AddHttpClient<IBlockscoutProvider, BlockscoutProvider>()
             .AddStandardResilienceHandler();
 
         services.AddSingleton<IBlockchainLogProvider, Web3LogProvider>();

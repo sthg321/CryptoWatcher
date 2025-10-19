@@ -13,14 +13,14 @@ internal class LiquidityEventLogEnricher : ILiquidityEventLogEnricher
     private const int FirstTokenIndex = 1;
     private const int SecondTokenIndex = 2;
 
-    private readonly IInternalTransactionProvider _internalTransactionProvider;
+    private readonly IBlockscoutProvider _blockscoutProvider;
 
     private readonly ILogger<LiquidityEventLogEnricher> _logger;
 
-    public LiquidityEventLogEnricher(IInternalTransactionProvider internalTransactionProvider,
+    public LiquidityEventLogEnricher(IBlockscoutProvider blockscoutProvider,
         ILogger<LiquidityEventLogEnricher> logger)
     {
-        _internalTransactionProvider = internalTransactionProvider;
+        _blockscoutProvider = blockscoutProvider;
         _logger = logger;
     }
 
@@ -57,7 +57,7 @@ internal class LiquidityEventLogEnricher : ILiquidityEventLogEnricher
         var token0 = CreateTokenFromLogs(logs, FirstTokenIndex);
 
         var ethAmount =
-            await _internalTransactionProvider.GetEthAmountFromInternalTransaction(chainConfiguration, walletAddress,
+            await _blockscoutProvider.GetEthAmountFromInternalTransaction(chainConfiguration, walletAddress,
                 transactionHash, ct);
 
         var token1 = new Token
@@ -79,7 +79,7 @@ internal class LiquidityEventLogEnricher : ILiquidityEventLogEnricher
         LiquidityEventLog[] logs,
         CancellationToken ct)
     {
-        var timeStamp = await _internalTransactionProvider.GetTransactionTimestampAsync(chain, transactionHash, ct);
+        var timeStamp = await _blockscoutProvider.GetTransactionTimestampAsync(chain, transactionHash, ct);
 
         var token0 = CreateTokenFromLogs(logs, FirstTokenIndex);
 
