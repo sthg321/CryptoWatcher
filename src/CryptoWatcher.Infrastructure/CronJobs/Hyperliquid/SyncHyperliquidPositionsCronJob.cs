@@ -1,5 +1,5 @@
 using CryptoWatcher.Abstractions;
-using CryptoWatcher.Modules.Hyperliquid.Application.Services;
+using CryptoWatcher.Modules.Hyperliquid.Application.Abstractions;
 using CryptoWatcher.Shared.Entities;
 using Microsoft.Extensions.Logging;
 using TickerQ.Utilities.Base;

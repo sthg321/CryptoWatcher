@@ -8,10 +8,7 @@ using CryptoWatcher.Modules.Hyperliquid.Specifications;
 using CryptoWatcher.Shared.Entities;
 
 namespace CryptoWatcher.Modules.Hyperliquid.Application.Services;
-
-/// <summary>
-/// <see cref="IHyperliquidPositionsSyncService"/>
-/// </summary>
+ 
 public class HyperliquidReportDataService : IPlatformDailyReportDataProvider
 {
     private readonly IRepository<HyperliquidVaultPosition> _repository;
