@@ -1,4 +1,5 @@
 using CryptoWatcher.Abstractions.PositionSnapshots;
+using CryptoWatcher.Exceptions;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.ValueObjects;
 
@@ -10,23 +11,37 @@ namespace CryptoWatcher.Modules.Hyperliquid.Entities;
 /// </summary>
 public class HyperliquidVaultPositionSnapshot : IUsdPositionSnapshot
 {
+    private HyperliquidVaultPositionSnapshot()
+    {
+        
+    }
+    
+    public HyperliquidVaultPositionSnapshot(Wallet wallet, EvmAddress vaultAddress, decimal balance,
+        DateOnly day)
+    {
+        WalletAddress = wallet.Address;
+        VaultAddress = vaultAddress;
+        Balance = balance;
+        Day = day;
+    }
+
     /// <summary>
     /// Balance in usd
     /// </summary>
-    public decimal Balance { get; init; }
-    
+    public decimal Balance { get; private set; }
+
     /// <summary>
     /// The day when the snapshot was taken
     /// </summary>
-    public DateOnly Day { get; init; }
+    public DateOnly Day { get; private set; }
 
     public decimal GetUsdBalance() => Balance;
 
     /// <summary>
     /// VaultAddress address
     /// </summary>
-    public EvmAddress VaultAddress { get; init; } = null!; 
-    
+    public EvmAddress VaultAddress { get; init; }
+
     /// <summary>
     /// Represents the wallet address associated with the liquidity pool position.
     /// </summary>
@@ -34,5 +49,25 @@ public class HyperliquidVaultPositionSnapshot : IUsdPositionSnapshot
     /// This property holds the blockchain wallet address linked to the liquidity pool position.
     /// It is used to identify the owner of the position and manage the related account details.
     /// </remarks>
-    public EvmAddress WalletAddress { get; init; } = null!;
+    public EvmAddress WalletAddress { get; init; }
+
+    public void UpdateFrom(HyperliquidVaultPositionSnapshot newSnapshot)
+    {
+        if (!newSnapshot.VaultAddress.Equals(newSnapshot.VaultAddress))
+        {
+            throw new DomainException("Vault address does not match");
+        }
+
+        if (!newSnapshot.WalletAddress.Equals(newSnapshot.WalletAddress))
+        {
+            throw new DomainException("Wallet address does not match");
+        }
+
+        if (Day != newSnapshot.Day)
+        {
+            throw new DomainException("Day does not match");
+        }
+
+        Balance = newSnapshot.Balance;
+    }
 }

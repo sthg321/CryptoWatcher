@@ -33,7 +33,7 @@ public class UserVaultEquitiesClient : IUserVaultEquitiesClient
             new GetUserVaultEquitiesRequest("userVaultEquities", user), cancellationToken: ct);
 
         response.EnsureSuccessStatusCode();
-
+ 
         return (await response.Content.ReadFromJsonAsync<UserVaultEquity[]>(cancellationToken: ct))!;
     }
 }

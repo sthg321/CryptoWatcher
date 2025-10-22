@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Extensions;
@@ -7,7 +8,7 @@ using CryptoWatcher.Modules.Aave.Models;
 using CryptoWatcher.Modules.Aave.Specifications;
 using CryptoWatcher.Shared.Entities;
 
-namespace CryptoWatcher.Modules.Aave.Services;
+namespace CryptoWatcher.Modules.Aave.Application.Services;
 
 public class AaveReportDataService : IPlatformDailyReportDataProvider
 {
@@ -26,11 +27,12 @@ public class AaveReportDataService : IPlatformDailyReportDataProvider
             await _repository.ListAsync(new AavePositionsWithSnapshotsAndEventsSpecification(wallets, from, to), ct);
 
         var result = new Dictionary<Wallet, List<PlatformDailyReport>>();
-        foreach (var positionsByWallet in positions.GroupBy(position => position.WalletAddress))
+        foreach (var positionsByWallet in positions.GroupBy(static position => position.WalletAddress))
         {
             foreach (var position in positionsByWallet)
             {
-                var reportItems = position.PositionSnapshots.OrderBy(snapshot => snapshot.Day)
+                var sign = position.PositionType == AavePositionType.Borrowed ? -1 : 1;
+                var reportItems = position.PositionSnapshots.OrderBy(static snapshot => snapshot.Day)
                     .Select(snapshot =>
                     {
                         var previousDay = snapshot.Day.AddDays(-1);
@@ -41,13 +43,13 @@ public class AaveReportDataService : IPlatformDailyReportDataProvider
                         {
                             Day = snapshot.Day,
                             TokenSymbol = snapshot.Token.Symbol,
-                            PositionInUsd = snapshot.Token.AmountInUsd,
-                            PositionGrowInUsd = profitInUsd.Amount,
+                            PositionInUsd = snapshot.Token.AmountInUsd * sign,
+                            PositionGrowInUsd = profitInUsd.Amount * sign,
                             
-                            PositionInToken = snapshot.Token.Amount,
-                            DailyProfitInUsd = profitInToken.Amount * snapshot.Token.PriceInUsd,
-                            DailyProfitInUsdPercent = profitInUsd.Percent,
-                            DailyProfitInToken = profitInToken.Amount
+                            PositionInToken = snapshot.Token.Amount * sign,
+                            DailyProfitInUsd = profitInToken.Amount * snapshot.Token.PriceInUsd * sign,
+                            DailyProfitInUsdPercent = profitInUsd.Percent * sign,
+                            DailyProfitInToken = profitInToken.Amount * sign
                         };
                     })
                     .ToArray();
@@ -58,12 +60,12 @@ public class AaveReportDataService : IPlatformDailyReportDataProvider
                 var profitInToken = position.CalculateProfitInToken(from, to);
                 var dailyReport = new AaveDailyReport
                 {
-                    PositionInUsd = reportItems.LastOrDefault()?.PositionInUsd ?? 0,
-                    PositionInToken = reportItems.LastOrDefault()?.PositionInToken ?? 0,
-                    ProfitInUsd = profitInToken.Amount * lastTokenPrice,
-                    ProfitInPercent = profitInUsd.Percent,
-                    PositionGrowInUsd = profitInUsd.Amount,
-                    ProfitInToken = profitInToken.Amount,
+                    PositionInUsd = reportItems.LastOrDefault()?.PositionInUsd ?? 0 * sign,
+                    PositionInToken = reportItems.LastOrDefault()?.PositionInToken ?? 0 * sign,
+                    ProfitInUsd = profitInToken.Amount * lastTokenPrice * sign,
+                    ProfitInPercent = profitInUsd.Percent * sign,
+                    PositionGrowInUsd = profitInUsd.Amount * sign,
+                    ProfitInToken = profitInToken.Amount * sign,
                     ReportItems = reportItems
                 };
 

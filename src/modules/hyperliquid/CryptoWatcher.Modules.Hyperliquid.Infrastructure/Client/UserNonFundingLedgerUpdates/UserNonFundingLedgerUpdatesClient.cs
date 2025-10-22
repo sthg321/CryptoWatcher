@@ -9,10 +9,13 @@ public interface IUserNonFundingLedgerUpdatesClient
     /// Retrieve a user's funding history or non-funding ledger updates
     /// </summary>
     /// <param name="user">user(wallet) address</param>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
     /// <param name="ct"></param>
     /// <remarks>https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals#request-body-4</remarks>
     /// <returns></returns>
     Task<UserNonFundingLedgerUpdate[]> GetUserNonFundingLedgerUpdates(string user,
+        DateTime from, DateTime to,
         CancellationToken ct = default);
 }
 
@@ -29,10 +32,12 @@ public class UserNonFundingLedgerUpdatesClient : IUserNonFundingLedgerUpdatesCli
     }
 
     public async Task<UserNonFundingLedgerUpdate[]> GetUserNonFundingLedgerUpdates(string user,
+        DateTime from, DateTime to,
         CancellationToken ct = default)
     {
         using var response = await _client.PostAsJsonAsync("info",
-            new GetUserNonFundingLedgerUpdatesRequest("userNonFundingLedgerUpdates", user), cancellationToken: ct);
+            new GetUserNonFundingLedgerUpdatesRequest("userNonFundingLedgerUpdates", user, from.Millisecond,
+                to.Millisecond), cancellationToken: ct);
 
         response.EnsureSuccessStatusCode();
 

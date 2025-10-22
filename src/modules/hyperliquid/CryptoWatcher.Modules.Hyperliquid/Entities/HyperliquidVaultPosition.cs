@@ -1,6 +1,7 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.Abstractions.PositionSnapshots;
+using CryptoWatcher.Exceptions;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.ValueObjects;
 
@@ -13,6 +14,15 @@ namespace CryptoWatcher.Modules.Hyperliquid.Entities;
 /// </summary>
 public class HyperliquidVaultPosition : ICalculatablePosition<IUsdPositionSnapshot>
 {
+    private readonly List<HyperliquidVaultPositionSnapshot> _positionSnapshots = [];
+    private readonly List<HyperliquidVaultEvent> _vaultEvents = [];
+
+    public decimal InitialBalance { get; init; }
+
+    public DateOnly CreatedAt { get; init; }
+
+    public DateOnly? ClosedAt { get; private set; }
+
     /// <summary>
     /// Represents the address of the vault associated with the Hyperliquid platform position.
     /// </summary>
@@ -58,9 +68,47 @@ public class HyperliquidVaultPosition : ICalculatablePosition<IUsdPositionSnapsh
     /// where each snapshot captures specific details of the vault position at a given point in time.
     /// It is utilized for analysis, reporting, and tracking historical position data within the Hyperliquid module.
     /// </remarks>
-    public List<HyperliquidVaultPositionSnapshot> PositionSnapshots { get; init; } = [];
+    public IReadOnlyCollection<HyperliquidVaultPositionSnapshot> PositionSnapshots => _positionSnapshots;
 
     public IReadOnlyCollection<IUsdPositionSnapshot> GetPositionSnapshots() => PositionSnapshots;
 
     public IReadOnlyCollection<ICacheFlow> GetCashFlows() => VaultEvents;
+
+    public void AddOrUpdateSnapshot(HyperliquidVaultPositionSnapshot snapshot)
+    {
+        var existedSnapshot =
+            _positionSnapshots.FirstOrDefault(positionSnapshot => positionSnapshot.Day == snapshot.Day);
+
+        if (existedSnapshot is null)
+        {
+            _positionSnapshots.Add(snapshot);
+            return;
+        }
+
+        existedSnapshot.UpdateFrom(snapshot);
+    }
+
+    public void AddCashFlowIfNotExists(HyperliquidVaultEvent vaultEvent)
+    {
+        var existedSnapshot =
+            _vaultEvents.FirstOrDefault(positionSnapshot => positionSnapshot.Date == vaultEvent.Date &&
+                                                            positionSnapshot.Usd == vaultEvent.Usd);
+
+        if (existedSnapshot is not null)
+        {
+            return;
+        }
+
+        _vaultEvents.Add(vaultEvent);
+    }
+
+    public void ClosePosition(DateOnly closedAt)
+    {
+        if (ClosedAt.HasValue)
+        {
+            throw new DomainException("Cannot close closed position");
+        }
+
+        ClosedAt = closedAt;
+    }
 }

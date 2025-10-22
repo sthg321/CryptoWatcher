@@ -5,7 +5,7 @@ using CryptoWatcher.Shared.Entities;
 
 namespace CryptoWatcher.Modules.Aave.Specifications;
 
-internal class AavePositionsWithSnapshotsAndEventsSpecification : Specification<AavePosition>
+public class AavePositionsWithSnapshotsAndEventsSpecification : Specification<AavePosition>
 {
     public AavePositionsWithSnapshotsAndEventsSpecification(IEnumerable<Wallet> wallets, DateOnly from, DateOnly to)
     {

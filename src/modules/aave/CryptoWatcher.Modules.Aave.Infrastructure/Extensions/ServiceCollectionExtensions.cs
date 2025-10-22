@@ -6,7 +6,6 @@ using CryptoWatcher.Modules.Aave.Application.Services;
 using CryptoWatcher.Modules.Aave.Infrastructure.Client;
 using CryptoWatcher.Modules.Aave.Infrastructure.Client.UiPoolDataProvider;
 using CryptoWatcher.Modules.Aave.Infrastructure.Services;
-using CryptoWatcher.Modules.Aave.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Nethereum.ABI.ABIDeserialisation;
 

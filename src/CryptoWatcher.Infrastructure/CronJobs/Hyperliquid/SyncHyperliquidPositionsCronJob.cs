@@ -1,5 +1,5 @@
 using CryptoWatcher.Abstractions;
-using CryptoWatcher.Modules.Hyperliquid.Application.Services;
+using CryptoWatcher.Modules.Hyperliquid.Application.Abstractions;
 using CryptoWatcher.Shared.Entities;
 using Microsoft.Extensions.Logging;
 using TickerQ.Utilities.Base;
@@ -27,7 +27,7 @@ public class SyncHyperliquidPositionsCronJob
 
         var wallets = await _walletRepository.ListAsync(ct);
 
-        var now = DateTime.Now;
+        var now = DateOnly.FromDateTime(DateTime.Now);
 
         _logger.LogInformation("Found: {WalletsCount} wallets", wallets.Count);
 
@@ -37,7 +37,7 @@ public class SyncHyperliquidPositionsCronJob
             {
                 _logger.LogInformation("Processing positions for wallet: {WalletAddress}", wallet.Address);
 
-                await _hyperliquidPositionsSyncService.SyncPositionsAsync(wallet, now, ct);
+                await _hyperliquidPositionsSyncService.SyncPositionsAsync(wallet, now, now, ct);
 
                 _logger.LogInformation("Positions for wallet: {WalletAddress} processed", wallet.Address);
             }

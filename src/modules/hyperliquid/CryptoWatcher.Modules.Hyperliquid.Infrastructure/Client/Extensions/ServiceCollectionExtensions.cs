@@ -1,4 +1,4 @@
-using CryptoWatcher.Modules.Hyperliquid.Abstractions;
+using CryptoWatcher.Modules.Hyperliquid.Application.Abstractions;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.UserNonFundingLedgerUpdates;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.UserVaultEquities;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Services;

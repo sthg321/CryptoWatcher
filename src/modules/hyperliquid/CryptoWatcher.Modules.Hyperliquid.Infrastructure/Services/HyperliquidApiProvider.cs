@@ -1,5 +1,7 @@
 using CryptoWatcher.Abstractions.CacheFlows;
-using CryptoWatcher.Modules.Hyperliquid.Abstractions;
+using CryptoWatcher.Extensions;
+using CryptoWatcher.Modules.Hyperliquid.Application.Abstractions;
+using CryptoWatcher.Modules.Hyperliquid.Application.Models;
 using CryptoWatcher.Modules.Hyperliquid.Entities;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.UserNonFundingLedgerUpdates.Contracts;
@@ -10,32 +12,38 @@ namespace CryptoWatcher.Modules.Hyperliquid.Infrastructure.Services;
 
 public class HyperliquidApiProvider : IHyperliquidProvider
 {
-    private readonly HyperliquidApiClient _client;
+    private readonly IHyperliquidApiClient _client;
 
-    public HyperliquidApiProvider(HyperliquidApiClient client)
+    public HyperliquidApiProvider(IHyperliquidApiClient client)
     {
         _client = client;
     }
 
-    public async Task<HyperliquidVaultEvent[]> GetVaultsFundingHistory(Wallet wallet,
+    public async Task<HyperliquidVaultEvent[]> GetCashFlowEventsAsync(Wallet wallet,
+        DateOnly from, DateOnly to,
         CancellationToken ct = default)
     {
-        var result = await _client.UserNonFundingLedgerUpdates.GetUserNonFundingLedgerUpdates(wallet.Address, ct);
-        
+        var result = await _client.UserNonFundingLedgerUpdates.GetUserNonFundingLedgerUpdates(wallet.Address,
+            from.ToMinDateTime(), to.ToMaxDateTime(), ct);
+
         return result
             .Where(update => update.Delta is VaultDeposit or VaultWithdraw)
             .Select(MapToVaultEvent)
             .ToArray();
     }
 
-    public async Task<(string VaultAddress, decimal Equity)[]> GetVaultsPositionsEquityAsync(Wallet wallet,
+    public async Task<IReadOnlyCollection<HyperliquidVault>> GetVaultsPositionsEquityAsync(Wallet wallet,
         CancellationToken ct = default)
     {
         var balance = await _client.UserVaultEquities.GetUserVaultEquities(wallet.Address, ct);
 
-        return balance.Select(equity => (equity.VaultAddress, equity.Equity)).ToArray();
+        return balance.Select(equity => new HyperliquidVault
+            {
+                Balance = equity.Equity,
+                Address = EvmAddress.Create(equity.VaultAddress)
+            }).ToArray();
     }
-    
+
     private static HyperliquidVaultEvent MapToVaultEvent(UserNonFundingLedgerUpdate update)
     {
         var day = DateTime.UnixEpoch.AddMilliseconds(update.Time);

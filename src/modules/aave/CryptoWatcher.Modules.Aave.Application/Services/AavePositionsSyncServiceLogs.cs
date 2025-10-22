@@ -1,4 +1,3 @@
-using CryptoWatcher.Modules.Aave.Services;
 using CryptoWatcher.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
 
