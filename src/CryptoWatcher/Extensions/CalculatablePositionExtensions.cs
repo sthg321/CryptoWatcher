@@ -2,7 +2,6 @@ using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.Abstractions.PositionSnapshots;
 using CryptoWatcher.Models;
-using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Extensions;
 
@@ -61,24 +60,7 @@ public static class CalculatablePositionExtensions
                        cashFlowPair.Token1.Amount * snapshot.Token1.PriceInUsd;
             });
     }
-
-    public static ProfitMetric CalculateProfitInFee(
-        this ICalculatablePosition<ITokenPairPositionSnapshot> position, DateOnly from, DateOnly to)
-    {
-        return CalculateProfit(
-            position,
-            from,
-            to,
-            snapshot => snapshot.Token0.FeeAmount + snapshot.Token1.FeeAmount,
-            (cashFlow, snapshot) =>
-            {
-                var cashFlowPair = (cashFlow as ITokenPairCashFlow);
-
-                return cashFlowPair!.Token0.FeeAmount * snapshot.Token0.FeeAmount +
-                       cashFlowPair.Token1.FeeAmount * snapshot.Token1.FeeAmount;
-            });
-    }
-
+    
     private static ProfitMetric CalculateProfit<TSnapshot>(
         ICalculatablePosition<TSnapshot> position,
         DateOnly from,

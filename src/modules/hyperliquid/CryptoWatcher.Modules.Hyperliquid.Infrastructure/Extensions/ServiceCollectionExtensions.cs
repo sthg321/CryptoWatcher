@@ -20,6 +20,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddHyperliquidModule(this IServiceCollection services,
         Func<IServiceProvider, Uri>? hyperliquidUriFactory = null)
     {
+        services.AddScoped<IHyperliquidBalanceChangeOrchestrator, HyperliquidBalanceChangeOrchestrator>();
+        services.AddScoped<IHyperliquidBalanceChangeService, HyperliquidBalanceChangeService>();
         services.AddScoped<IHyperliquidPositionsSyncService, HyperliquidPositionsSyncService>();
         services.AddKeyedScoped<IPlatformDailyReportDataProvider, HyperliquidReportDataService>(
             HyperliquidModuleKeyedService.DailyPlatformKeyService);
