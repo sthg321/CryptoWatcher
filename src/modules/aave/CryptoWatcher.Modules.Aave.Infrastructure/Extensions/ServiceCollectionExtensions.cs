@@ -27,7 +27,7 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<IAaveApiClient, AaveApiClient>();
         
-        services.AddScoped<IDailyBalanceChangeSynchronizer, AaveDailyBalanceChangeSynchronizer>();
+        services.AddScoped<IDailyPositionPerformanceSynchronizer, AaveDailyPositionPerformanceSynchronizer>();
         
         services.AddScoped<IAavePositionsSyncService, AavePositionsSyncService>();
         services.AddScoped<IAaveTokenEnricher, AaveTokenEnricher>();

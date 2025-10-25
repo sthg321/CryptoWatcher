@@ -5,12 +5,12 @@ using TickerQ.Utilities.Base;
 
 namespace CryptoWatcher.Infrastructure.CronJobs;
 
-public class SyncDailyBalanceChangeCronJob
+public class SyncDailyPositionPerformanceCronJob
 {
     private readonly IRepository<Wallet> _walletRepository;
-    private readonly IEnumerable<IDailyBalanceChangeSynchronizer> _synchronizers;
+    private readonly IEnumerable<IDailyPositionPerformanceSynchronizer> _synchronizers;
 
-    public SyncDailyBalanceChangeCronJob(IRepository<Wallet> walletRepository, IEnumerable<IDailyBalanceChangeSynchronizer> synchronizers)
+    public SyncDailyPositionPerformanceCronJob(IRepository<Wallet> walletRepository, IEnumerable<IDailyPositionPerformanceSynchronizer> synchronizers)
     {
         _walletRepository = walletRepository;
         _synchronizers = synchronizers;

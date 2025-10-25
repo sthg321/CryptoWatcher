@@ -4,13 +4,13 @@ using Microsoft.Extensions.Logging;
 
 namespace CryptoWatcher.Application.Abstractions;
 
-public abstract class BaseDailyBalanceChangeSynchronizer<TBalanceChange>
+public abstract class BaseDailyPositionPerformanceSynchronizer<TBalanceChange>
     where TBalanceChange : class
 {
     private readonly IRepository<TBalanceChange> _balanceChangeRepository;
     private readonly ILogger _logger;
 
-    protected BaseDailyBalanceChangeSynchronizer(
+    protected BaseDailyPositionPerformanceSynchronizer(
         IRepository<TBalanceChange> balanceChangeRepository,
         ILogger logger)
     {

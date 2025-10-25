@@ -49,7 +49,7 @@ public static class ServiceCollectionExtensions
             }));
         });
 
-        services.AddScoped<IDailyBalanceChangeSynchronizer, UniswapDailyBalanceChangeSynchronizer>();
+        services.AddScoped<IDailyPositionPerformanceSynchronizer, UniswapDailyPositionPerformanceSynchronizer>();
         
         services.AddScoped<IBlockscoutTransactionSynchronizer, BlockscoutTransactionSynchronizer>();
         services.AddSingleton<IBlockscoutTransactionFetcher, BlockscoutTransactionFetcher>();

@@ -2,7 +2,7 @@ using CryptoWatcher.Shared.Entities;
 
 namespace CryptoWatcher.Application.Abstractions;
 
-public interface IDailyBalanceChangeSynchronizer
+public interface IDailyPositionPerformanceSynchronizer
 {
     string Name { get; }
 

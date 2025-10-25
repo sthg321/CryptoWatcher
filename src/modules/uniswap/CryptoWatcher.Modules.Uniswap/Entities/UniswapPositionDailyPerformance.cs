@@ -3,9 +3,9 @@ using CryptoWatcher.Extensions;
 
 namespace CryptoWatcher.Modules.Uniswap.Entities;
 
-public class UniswapDailyBalanceChange
+public class UniswapPositionDailyPerformance
 {
-    private UniswapDailyBalanceChange()
+    private UniswapPositionDailyPerformance()
     {
         
     }
@@ -72,7 +72,7 @@ public class UniswapDailyBalanceChange
     /// </remarks>
     public bool IsInRange { get; set; }
 
-    public static UniswapDailyBalanceChange Create(UniswapLiquidityPosition position,
+    public static UniswapPositionDailyPerformance Create(UniswapLiquidityPosition position,
         UniswapLiquidityPositionSnapshot previous, UniswapLiquidityPositionSnapshot current)
     {
         if (previous.Day > current.Day)
@@ -80,7 +80,7 @@ public class UniswapDailyBalanceChange
             throw new DomainException("Previous day cannot be greater than current day");
         }
         
-        return new UniswapDailyBalanceChange
+        return new UniswapPositionDailyPerformance
         {
             PoolPositionId = position.PositionId,
             NetworkName = position.NetworkName,

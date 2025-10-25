@@ -7,13 +7,14 @@ using Microsoft.Extensions.Logging;
 
 namespace CryptoWatcher.Modules.Aave.Application.Services;
 
-public class AaveDailyBalanceChangeSynchronizer : BaseDailyBalanceChangeSynchronizer<AaveDailyBalanceChange>,
-    IDailyBalanceChangeSynchronizer
+public class AaveDailyPositionPerformanceSynchronizer :
+    BaseDailyPositionPerformanceSynchronizer<AaveDailyBalanceChange>,
+    IDailyPositionPerformanceSynchronizer
 {
     private readonly IRepository<AavePosition> _positionRepository;
 
-    public AaveDailyBalanceChangeSynchronizer(IRepository<AaveDailyBalanceChange> balanceChangeRepository,
-        ILogger<AaveDailyBalanceChangeSynchronizer> logger,
+    public AaveDailyPositionPerformanceSynchronizer(IRepository<AaveDailyBalanceChange> balanceChangeRepository,
+        ILogger<AaveDailyPositionPerformanceSynchronizer> logger,
         IRepository<AavePosition> positionRepository) : base(balanceChangeRepository, logger)
     {
         _positionRepository = positionRepository;

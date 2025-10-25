@@ -7,15 +7,15 @@ using Microsoft.Extensions.Logging;
 
 namespace CryptoWatcher.Modules.Hyperliquid.Application.Services;
 
-public class HyperliquidDailyBalanceChangeSynchronizer :
-    BaseDailyBalanceChangeSynchronizer<HyperliquidDailyBalanceChange>,
-    IDailyBalanceChangeSynchronizer
+public class HyperliquidDailyPositionPerformanceSynchronizer :
+    BaseDailyPositionPerformanceSynchronizer<HyperliquidDailyBalanceChange>,
+    IDailyPositionPerformanceSynchronizer
 {
     private readonly IRepository<HyperliquidVaultPosition> _positionRepository;
 
-    public HyperliquidDailyBalanceChangeSynchronizer(IRepository<HyperliquidDailyBalanceChange> balanceChangeRepository,
+    public HyperliquidDailyPositionPerformanceSynchronizer(IRepository<HyperliquidDailyBalanceChange> balanceChangeRepository,
         IRepository<HyperliquidVaultPosition> positionRepository,
-        ILogger<HyperliquidDailyBalanceChangeSynchronizer> logger) : base(balanceChangeRepository, logger)
+        ILogger<HyperliquidDailyPositionPerformanceSynchronizer> logger) : base(balanceChangeRepository, logger)
     {
         _positionRepository = positionRepository;
     }

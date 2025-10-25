@@ -8,11 +8,11 @@ namespace CryptoWatcher.Application;
 public class DailyBalanceChangeCoordinator : IDailyBalanceChangeCoordinator
 {
     private readonly IRepository<Wallet> _walletRepository;
-    private readonly IEnumerable<IDailyBalanceChangeSynchronizer> _synchronizers;
+    private readonly IEnumerable<IDailyPositionPerformanceSynchronizer> _synchronizers;
     private readonly ILogger<DailyBalanceChangeCoordinator> _logger;
 
     public DailyBalanceChangeCoordinator(IRepository<Wallet> walletRepository,
-        IEnumerable<IDailyBalanceChangeSynchronizer> synchronizers,
+        IEnumerable<IDailyPositionPerformanceSynchronizer> synchronizers,
         ILogger<DailyBalanceChangeCoordinator> logger)
     {
         _walletRepository = walletRepository;

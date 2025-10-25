@@ -7,27 +7,29 @@ using Microsoft.Extensions.Logging;
 
 namespace CryptoWatcher.Modules.Uniswap.Application.Services;
 
-public class UniswapDailyBalanceChangeSynchronizer : BaseDailyBalanceChangeSynchronizer<UniswapDailyBalanceChange>,
-    IDailyBalanceChangeSynchronizer
+public class UniswapDailyPositionPerformanceSynchronizer :
+    BaseDailyPositionPerformanceSynchronizer<UniswapPositionDailyPerformance>,
+    IDailyPositionPerformanceSynchronizer
 {
     private readonly IRepository<UniswapLiquidityPosition> _liquidityPositionRepository;
-    
-    public UniswapDailyBalanceChangeSynchronizer(IRepository<UniswapDailyBalanceChange> balanceChangeRepository,
+
+    public UniswapDailyPositionPerformanceSynchronizer(
+        IRepository<UniswapPositionDailyPerformance> balanceChangeRepository,
         IRepository<UniswapLiquidityPosition> liquidityPositionRepository,
-        ILogger<UniswapDailyBalanceChangeSynchronizer> logger) : base(balanceChangeRepository, logger)
+        ILogger<UniswapDailyPositionPerformanceSynchronizer> logger) : base(balanceChangeRepository, logger)
     {
         _liquidityPositionRepository = liquidityPositionRepository;
     }
 
     public string Name => "Uniswap";
- 
-    protected override async Task<List<UniswapDailyBalanceChange>> GetDailyBalanceChangesAsync(
+
+    protected override async Task<List<UniswapPositionDailyPerformance>> GetDailyBalanceChangesAsync(
         IReadOnlyCollection<Wallet> wallets, DateOnly from, DateOnly to, CancellationToken ct)
     {
         var positions = await _liquidityPositionRepository.ListAsync(
             new UniswapPositionsForReportSpecification(wallets, from, to), ct);
 
-        var result = new List<UniswapDailyBalanceChange>();
+        var result = new List<UniswapPositionDailyPerformance>();
         foreach (var uniswapLiquidityPosition in positions)
         {
             if (uniswapLiquidityPosition.PoolPositionSnapshots.Count == 0)
@@ -41,7 +43,7 @@ public class UniswapDailyBalanceChangeSynchronizer : BaseDailyBalanceChangeSynch
             {
                 previousPositionSnapshot ??= currentSnapshot;
 
-                var dailyBalanceChanged = UniswapDailyBalanceChange.Create(uniswapLiquidityPosition,
+                var dailyBalanceChanged = UniswapPositionDailyPerformance.Create(uniswapLiquidityPosition,
                     previousPositionSnapshot, currentSnapshot);
 
                 result.Add(dailyBalanceChanged);

@@ -21,7 +21,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddHyperliquidModule(this IServiceCollection services,
         Func<IServiceProvider, Uri>? hyperliquidUriFactory = null)
     {
-        services.AddScoped<IDailyBalanceChangeSynchronizer, HyperliquidDailyBalanceChangeSynchronizer>();
+        services.AddScoped<IDailyPositionPerformanceSynchronizer, HyperliquidDailyPositionPerformanceSynchronizer>();
         services.AddScoped<IHyperliquidPositionsSyncService, HyperliquidPositionsSyncService>();
         services.AddKeyedScoped<IPlatformDailyReportDataProvider, HyperliquidReportDataService>(
             HyperliquidModuleKeyedService.DailyPlatformKeyService);
