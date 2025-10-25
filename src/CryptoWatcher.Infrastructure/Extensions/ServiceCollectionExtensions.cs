@@ -2,6 +2,7 @@ using CoinGeckoClient.Extensions;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Application;
+using CryptoWatcher.Application.Abstractions;
 using CryptoWatcher.Application.Reports;
 using CryptoWatcher.Infrastructure.Configs;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports;
@@ -51,6 +52,9 @@ public static class ServiceCollectionExtensions
  
         services.AddSingleton<IExcelReportGenerator, ExcelReportGenerator>();
         services.AddScoped<IPlatformDailyReportFacade, PlatformDailyReportFacade>();
+
+        services.AddScoped<IDailyBalanceChangeCoordinator, DailyBalanceChangeCoordinator>();
+        
         return services;
     }
 
