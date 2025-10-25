@@ -7,14 +7,14 @@ using Microsoft.Extensions.Logging;
 
 namespace CryptoWatcher.Modules.Uniswap.Application.Services;
 
-public class UniswapDailyBalanceChangeService : BaseDailyBalanceChangeSynchronizer<UniswapDailyBalanceChange>,
+public class UniswapDailyBalanceChangeSynchronizer : BaseDailyBalanceChangeSynchronizer<UniswapDailyBalanceChange>,
     IDailyBalanceChangeSynchronizer
 {
     private readonly IRepository<UniswapLiquidityPosition> _liquidityPositionRepository;
     
-    public UniswapDailyBalanceChangeService(IRepository<UniswapDailyBalanceChange> balanceChangeRepository,
+    public UniswapDailyBalanceChangeSynchronizer(IRepository<UniswapDailyBalanceChange> balanceChangeRepository,
         IRepository<UniswapLiquidityPosition> liquidityPositionRepository,
-        ILogger<UniswapDailyBalanceChangeService> logger) : base(balanceChangeRepository, logger)
+        ILogger<UniswapDailyBalanceChangeSynchronizer> logger) : base(balanceChangeRepository, logger)
     {
         _liquidityPositionRepository = liquidityPositionRepository;
     }
