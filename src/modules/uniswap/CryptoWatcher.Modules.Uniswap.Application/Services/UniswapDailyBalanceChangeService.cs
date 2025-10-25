@@ -14,8 +14,7 @@ public class UniswapDailyBalanceChangeService : BaseDailyBalanceChangeSynchroniz
     
     public UniswapDailyBalanceChangeService(IRepository<UniswapDailyBalanceChange> balanceChangeRepository,
         IRepository<UniswapLiquidityPosition> liquidityPositionRepository,
-        ILogger<BaseDailyBalanceChangeSynchronizer<UniswapDailyBalanceChange>> logger) : base(balanceChangeRepository,
-        logger)
+        ILogger<UniswapDailyBalanceChangeService> logger) : base(balanceChangeRepository, logger)
     {
         _liquidityPositionRepository = liquidityPositionRepository;
     }

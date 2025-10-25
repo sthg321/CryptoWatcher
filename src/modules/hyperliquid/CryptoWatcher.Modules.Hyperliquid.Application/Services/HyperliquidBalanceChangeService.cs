@@ -14,15 +14,14 @@ public class HyperliquidBalanceChangeService :
     private readonly IRepository<HyperliquidVaultPosition> _positionRepository;
 
     public HyperliquidBalanceChangeService(IRepository<HyperliquidDailyBalanceChange> balanceChangeRepository,
-        ILogger<BaseDailyBalanceChangeSynchronizer<HyperliquidDailyBalanceChange>> logger,
-        IRepository<HyperliquidVaultPosition> positionRepository) : base(
-        balanceChangeRepository, logger)
+        IRepository<HyperliquidVaultPosition> positionRepository,
+        ILogger<HyperliquidBalanceChangeService> logger) : base(balanceChangeRepository, logger)
     {
         _positionRepository = positionRepository;
     }
 
     public string Name => "Hyperliquid";
- 
+
     protected override async Task<List<HyperliquidDailyBalanceChange>> GetDailyBalanceChangesAsync(
         IReadOnlyCollection<Wallet> wallets, DateOnly from, DateOnly to, CancellationToken ct)
     {

@@ -8,11 +8,11 @@ public abstract class BaseDailyBalanceChangeSynchronizer<TBalanceChange>
     where TBalanceChange : class
 {
     private readonly IRepository<TBalanceChange> _balanceChangeRepository;
-    private readonly ILogger<BaseDailyBalanceChangeSynchronizer<TBalanceChange>> _logger;
+    private readonly ILogger _logger;
 
     protected BaseDailyBalanceChangeSynchronizer(
         IRepository<TBalanceChange> balanceChangeRepository,
-        ILogger<BaseDailyBalanceChangeSynchronizer<TBalanceChange>> logger)
+        ILogger logger)
     {
         _balanceChangeRepository = balanceChangeRepository;
         _logger = logger;
