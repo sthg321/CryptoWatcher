@@ -1,4 +1,5 @@
 using CryptoWatcher.Extensions;
+using CryptoWatcher.Shared.ValueObjects;
 using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Aave.Entities;
@@ -45,7 +46,7 @@ public class AavePositionDailyPerformance
     /// Represents the specific network on which the Aave position exists, such as Ethereum or Polygon.
     /// This property is used to categorize and differentiate positions based on their network.
     /// </remarks>
-    public string NetworkName { get; set; } = null!;
+    public string NetworkName { get; private set; } = null!;
 
     /// <summary>
     /// Specifies the type of position in the Aave protocol, such as whether it represents a supply or borrow activity.
@@ -58,34 +59,14 @@ public class AavePositionDailyPerformance
     public AavePositionType PositionType { get; private set; }
 
     /// <summary>
-    /// Gets the symbol of the token associated with the Aave position.
+    /// Gets the token information related to the Aave position snapshot.
     /// </summary>
     /// <remarks>
-    /// Represents the ticker or abbreviated designation of the token. This value is used
-    /// to identify the token across various financial data representations and calculations
-    /// within the daily performance metrics of an Aave position.
+    /// Represents the specific token details captured in the snapshot, including properties such as
+    /// the token's symbol, amount, and valuation. This data is essential for analyzing the financial
+    /// state and performance of the associated Aave position at the time of the snapshot.
     /// </remarks>
-    public string TokenSymbol { get; private set; } = null!;
-
-    /// <summary>
-    /// Gets the monetary representation of the position's value in USD.
-    /// </summary>
-    /// <remarks>
-    /// Reflects the equivalent value of the position in United States Dollars
-    /// based on the associated token's amount and its price in USD. This property
-    /// provides a standardized way to evaluate the position's worth in fiat currency.
-    /// </remarks>
-    public decimal PositionInUsd { get; private set; }
-
-    /// <summary>
-    /// Represents the quantity of the token held in the Aave position for a given snapshot.
-    /// </summary>
-    /// <remarks>
-    /// Reflects the token amount at the specific time captured by the snapshot.
-    /// This value is critical for calculating performance metrics, such as changes in token holdings and profits,
-    /// and provides a foundation for analyzing changes in value and trading decisions.
-    /// </remarks>
-    public decimal PositionInToken { get; private set; }
+    public TokenInfo Token { get; private set; } = null!; 
 
     /// <summary>
     /// Represents the profit, in USD, derived from a specific Aave position over the course of a day.
@@ -119,10 +100,8 @@ public class AavePositionDailyPerformance
             WalletAddress = position.WalletAddress,
             NetworkName = position.Network,
             PositionType = position.PositionType,
-            TokenSymbol = current.Token.Symbol,
-            PositionInUsd = current.Token.AmountInUsd,
+            Token = current.Token,
             ProfitInUsd = profitInUsd.Amount,
-            PositionInToken = current.Token.Amount,
             ProfitInToken = profitInToken.Amount,
             SnapshotPositionId = current.PositionId
         };

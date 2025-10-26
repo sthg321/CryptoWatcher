@@ -18,7 +18,10 @@ public class UniswapLiquidityPositionSnapshotConfiguration : IEntityTypeConfigur
             .HasForeignKey(fee => new { fee.PoolPositionId, fee.NetworkName })
             .IsRequired();
         
-        builder.ComplexProperty<TokenInfoWithFee>(snapshot => snapshot.Token0);
-        builder.ComplexProperty<TokenInfoWithFee>(snapshot => snapshot.Token1);
+        builder.ComplexProperty<TokenInfoWithFee>(snapshot => snapshot.Token0,
+            propertyBuilder => propertyBuilder.Property(info => info.Symbol).HasMaxLength(16));
+        
+        builder.ComplexProperty<TokenInfoWithFee>(snapshot => snapshot.Token1,
+            propertyBuilder => propertyBuilder.Property(info => info.Symbol).HasMaxLength(16));
     }
 }

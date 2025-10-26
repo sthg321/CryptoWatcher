@@ -1,5 +1,7 @@
 using CryptoWatcher.Exceptions;
 using CryptoWatcher.Extensions;
+using CryptoWatcher.Shared.ValueObjects;
+using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Uniswap.Entities;
 
@@ -64,17 +66,10 @@ public class UniswapPositionDailyPerformance
     /// for a given time range. It is useful for assessing the profitability through fees over a specific period.
     /// </remarks>
     public decimal CommissionInUsd { get; private set; }
-
-    /// <summary>
-    /// Represents the quantity of token0 held in the Uniswap liquidity position for a specific day.
-    /// </summary>
-    /// <remarks>
-    /// This property reflects the amount of the first token (token0) associated with the liquidity position
-    /// during the specified daily performance period.
-    /// It is used to track and evaluate the position's performance
-    /// in terms of token0 holdings over time.
-    /// </remarks>
-    public decimal PositionInToken0 { get; private set; }
+    
+    public TokenInfoWithFee Token0 { get; private set; }
+    
+    public TokenInfoWithFee Token1 { get; private set; }
 
     /// <summary>
     /// Represents the quantity of token1 held in the Uniswap liquidity position for a specific day.
@@ -113,8 +108,8 @@ public class UniswapPositionDailyPerformance
             CommissionInUsd = position.CalculateFeeInUsd(previous.Day, current.Day),
             CurrentValueInUsd = position.CalculateProfitInUsd(previous.Day, current.Day).Amount,
             Day = current.Day,
-            PositionInToken0 = current.Token0.Amount,
-            PositionInToken1 = current.Token1.Amount,
+            Token0 = current.Token0,
+            Token1 = current.Token1,
             IsInRange = current.IsInRange
         };
     }

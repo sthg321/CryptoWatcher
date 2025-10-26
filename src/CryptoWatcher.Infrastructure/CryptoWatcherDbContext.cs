@@ -66,8 +66,17 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
     /// </remarks>
     public DbSet<AavePositionSnapshot> AavePositionSnapshots => Set<AavePositionSnapshot>();
 
-    public DbSet<AavePositionDailyPerformance> Type { get; set; }
-    
+    /// <summary>
+    /// Represents the daily performance data for Aave positions in the application's database context.
+    /// </summary>
+    /// <remarks>
+    /// This property defines the entity set for managing records of daily performance metrics related to Aave positions.
+    /// Each record captures details such as the position's snapshot ID, wallet address, date, network name, and position type.
+    /// It is instrumental in tracking and analyzing daily performance trends of Aave positions, enabling enhanced monitoring
+    /// and performance reporting within the CryptoWatcher application.
+    /// </remarks>
+    public DbSet<AavePositionDailyPerformance> AavePositionDailyPerformances => Set<AavePositionDailyPerformance>();
+
     /// <summary>
     /// Provides access to the set of Aave position events in the application's database context.
     /// </summary>
@@ -105,6 +114,19 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
     public DbSet<UniswapLiquidityPosition> UniswapLiquidityPositions => Set<UniswapLiquidityPosition>();
 
     /// <summary>
+    /// Represents the daily performance metrics of Uniswap liquidity pool positions.
+    /// </summary>
+    /// <remarks>
+    /// This property defines the entity set for managing daily performance data of Uniswap liquidity positions
+    /// in the application's database context. Each record includes details such as the associated pool position
+    /// ID, network name, and the specific day of the performance metrics. This allows the application to track
+    /// and analyze the historical performance of Uniswap positions over time, supporting features like data
+    /// visualization, profit calculation, and trend analysis.
+    /// </remarks>
+    public DbSet<UniswapPositionDailyPerformance> UniswapPositionDailyPerformances =>
+        Set<UniswapPositionDailyPerformance>();
+
+    /// <summary>
     /// Represents the collection of Uniswap liquidity position snapshot entities within the application's database context.
     /// </summary>
     /// <remarks>
@@ -133,10 +155,13 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
 
     public DbSet<HyperliquidVaultPosition> HyperliquidVaultPositions => Set<HyperliquidVaultPosition>();
 
-    public DbSet<HyperliquidVaultEvent> HyperliquidVaultEvents => Set<HyperliquidVaultEvent>();
-
     public DbSet<HyperliquidVaultPositionSnapshot> HyperliquidVaultPositionSnapshots =>
         Set<HyperliquidVaultPositionSnapshot>();
+
+    public DbSet<HyperliquidPositionDailyPerformance> HyperliquidPositionDailyPerformances =>
+        Set<HyperliquidPositionDailyPerformance>();
+    
+    public DbSet<HyperliquidVaultEvent> HyperliquidVaultEvents => Set<HyperliquidVaultEvent>();
 
     #endregion
 
