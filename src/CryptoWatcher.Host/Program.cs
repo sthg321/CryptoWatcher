@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.Reports;
+using CryptoWatcher.Application.Abstractions;
 using CryptoWatcher.Host.Extensions;
 using CryptoWatcher.Infrastructure;
 using CryptoWatcher.Infrastructure.Configs;
@@ -63,7 +64,7 @@ builder.Services.AddEndpointsApiExplorer().AddSwaggerGen();
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
-{   
+{
     if (!app.Environment.IsDevelopment())
     {
         scope.ServiceProvider.GetRequiredService<CryptoWatcherDbContext>().Database.Migrate();
@@ -95,6 +96,14 @@ async Task<FileStreamHttpResult> Handler(IPlatformDailyReportFacade reportFacade
 app.MapGet("/report/{platform}", Handler);
 
 app.MapGet("/report/total", TotalReportHandler);
+
+app.MapPost("/sync-daily-performance",
+    async (IDailyPositionPerformanceCoordinator coordinator, DateOnly from, DateOnly to, CancellationToken ct) =>
+    {
+        await coordinator.SynchronizeDailyBalanceChangesAsync(from, to, ct);
+
+        return TypedResults.Ok();
+    });
 
 app.MapPost("/uniswap/sync-block/{blockNumber}", async (IUniswapCashFlowBlockRangeSynchronizer sync,
     CryptoWatcherDbContext dbContext,

@@ -53,7 +53,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IExcelReportGenerator, ExcelReportGenerator>();
         services.AddScoped<IPlatformDailyReportFacade, PlatformDailyReportFacade>();
 
-        services.AddScoped<IDailyBalanceChangeCoordinator, DailyBalanceChangeCoordinator>();
+        services.AddScoped<IDailyPositionPerformanceCoordinator, DailyPositionPerformanceCoordinator>();
         
         return services;
     }

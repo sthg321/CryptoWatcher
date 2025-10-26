@@ -1,6 +1,4 @@
-using CryptoWatcher.Abstractions;
 using CryptoWatcher.Application.Abstractions;
-using CryptoWatcher.Shared.Entities;
 using TickerQ.Utilities.Base;
 
 namespace CryptoWatcher.Infrastructure.CronJobs;
@@ -9,16 +7,13 @@ public class SyncDailyPositionPerformanceCronJob
 {
     private static int _isRunning;
 
-    private readonly IRepository<Wallet> _walletRepository;
-    private readonly IEnumerable<IDailyPositionPerformanceSynchronizer> _synchronizers;
+    private readonly IDailyPositionPerformanceCoordinator _dailyPositionPerformanceCoordinator;
 
-    public SyncDailyPositionPerformanceCronJob(IRepository<Wallet> walletRepository,
-        IEnumerable<IDailyPositionPerformanceSynchronizer> synchronizers)
+    public SyncDailyPositionPerformanceCronJob(IDailyPositionPerformanceCoordinator dailyPositionPerformanceCoordinator)
     {
-        _walletRepository = walletRepository;
-        _synchronizers = synchronizers;
+        _dailyPositionPerformanceCoordinator = dailyPositionPerformanceCoordinator;
     }
-
+    
     [TickerFunction(nameof(SyncDailyPositionPerformanceAsync), "* * * * *")]
     public async Task SyncDailyPositionPerformanceAsync(CancellationToken ct = default)
     {
@@ -29,15 +24,11 @@ public class SyncDailyPositionPerformanceCronJob
 
         try
         {
-            var wallets = await _walletRepository.ListAsync(ct);
-
             var now = DateTime.Now;
 
             var nowDateOnly = DateOnly.FromDateTime(now);
-            foreach (var synchronizer in _synchronizers)
-            {
-                await synchronizer.SynchronizeAsync(wallets, nowDateOnly, nowDateOnly, ct);
-            }
+            await _dailyPositionPerformanceCoordinator.SynchronizeDailyBalanceChangesAsync(nowDateOnly, nowDateOnly,
+                ct);
         }
         finally
         {

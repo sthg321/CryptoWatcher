@@ -5,15 +5,15 @@ using Microsoft.Extensions.Logging;
 
 namespace CryptoWatcher.Application;
 
-public class DailyBalanceChangeCoordinator : IDailyBalanceChangeCoordinator
+public class DailyPositionPerformanceCoordinator : IDailyPositionPerformanceCoordinator
 {
     private readonly IRepository<Wallet> _walletRepository;
     private readonly IEnumerable<IDailyPositionPerformanceSynchronizer> _synchronizers;
-    private readonly ILogger<DailyBalanceChangeCoordinator> _logger;
+    private readonly ILogger<DailyPositionPerformanceCoordinator> _logger;
 
-    public DailyBalanceChangeCoordinator(IRepository<Wallet> walletRepository,
+    public DailyPositionPerformanceCoordinator(IRepository<Wallet> walletRepository,
         IEnumerable<IDailyPositionPerformanceSynchronizer> synchronizers,
-        ILogger<DailyBalanceChangeCoordinator> logger)
+        ILogger<DailyPositionPerformanceCoordinator> logger)
     {
         _walletRepository = walletRepository;
         _synchronizers = synchronizers;
@@ -45,5 +45,7 @@ public class DailyBalanceChangeCoordinator : IDailyBalanceChangeCoordinator
                 throw;
             }
         }
+        
+        await _walletRepository.UnitOfWork.CommitTransactionAsync(ct);
     }
 }
