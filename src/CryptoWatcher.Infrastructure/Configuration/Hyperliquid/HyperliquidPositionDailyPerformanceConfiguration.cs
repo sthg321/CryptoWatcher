@@ -14,4 +14,4 @@ public class HyperliquidPositionDailyPerformanceConfiguration : IEntityTypeConfi
         builder.Property(performance => performance.VaultAddress).ConfigureEvmAddress();
         builder.Property(performance => performance.WalletAddress).ConfigureEvmAddress();
     }
-}
+}   

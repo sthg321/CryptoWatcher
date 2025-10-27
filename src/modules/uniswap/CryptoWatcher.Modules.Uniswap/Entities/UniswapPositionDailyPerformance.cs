@@ -47,6 +47,8 @@ public class UniswapPositionDailyPerformance
     /// the defined time range of the position's snapshots in the pool.
     /// </remarks>
     public decimal HoldValueInUsd { get; private set; }
+    
+    public decimal PositionValueInUsd { get; private set; }
 
     /// <summary>
     /// Represents the current value of a Uniswap liquidity position in USD.
@@ -56,7 +58,7 @@ public class UniswapPositionDailyPerformance
     /// within a specified time frame. It is used to monitor financial changes and evaluate
     /// the performance of the position in the given period.
     /// </remarks>
-    public decimal CurrentValueInUsd { get; private set; }
+    public decimal ProfitInUsd { get; private set; }
 
     /// <summary>
     /// Represents the amount of commission earned, expressed in USD.
@@ -67,20 +69,11 @@ public class UniswapPositionDailyPerformance
     /// </remarks>
     public decimal CommissionInUsd { get; private set; }
     
+    public decimal CumulativeCommissionInUsd { get; private set; }
+    
     public TokenInfoWithFee Token0 { get; private set; }
     
     public TokenInfoWithFee Token1 { get; private set; }
-
-    /// <summary>
-    /// Represents the quantity of token1 held in the Uniswap liquidity position for a specific day.
-    /// </summary>
-    /// <remarks>
-    /// This property reflects the amount of the second token (token1) associated with the liquidity position
-    /// during the specified daily performance period.
-    /// It is used to track and evaluate the position's performance
-    /// in terms of token1 holdings over time.
-    /// </remarks>
-    public decimal PositionInToken1 { get; private set; }
 
     /// <summary>
     /// Indicates whether the associated liquidity position was actively within the range during the defined period.
@@ -104,9 +97,11 @@ public class UniswapPositionDailyPerformance
         {
             PoolPositionId = position.PositionId,
             NetworkName = position.NetworkName,
+            PositionValueInUsd = current.TokenSumInUsd(),
             HoldValueInUsd = position.CalculateHoldValueInUsd(previous.Day, current.Day),
             CommissionInUsd = position.CalculateFeeInUsd(previous.Day, current.Day),
-            CurrentValueInUsd = position.CalculateProfitInUsd(previous.Day, current.Day).Amount,
+            CumulativeCommissionInUsd = position.CalculateLifetimeTotalFeeInUsd(current.Day),
+            ProfitInUsd = position.CalculateProfitInUsd(previous.Day, current.Day).Amount,
             Day = current.Day,
             Token0 = current.Token0,
             Token1 = current.Token1,

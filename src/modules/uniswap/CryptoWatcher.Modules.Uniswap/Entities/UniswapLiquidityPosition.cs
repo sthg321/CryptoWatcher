@@ -154,7 +154,7 @@ public class UniswapLiquidityPosition : ICalculatablePosition<ITokenPairPosition
 
         return fee;
     }
-    
+
     public Money CalculateTotalFeeInUsd(DateOnly from, DateOnly to)
     {
         if (PoolPositionSnapshots.Count == 0)
@@ -167,17 +167,54 @@ public class UniswapLiquidityPosition : ICalculatablePosition<ITokenPairPosition
         var claimed = 0M;
 
         var lastSnapshot = PoolPositionSnapshots.GetNearestSnapshot(to, true)!;
-        
+
         foreach (var snapshot in PoolPositionSnapshots.Where(snapshot => snapshot.Day >= from && snapshot.Day <= to))
         {
             if (cashFlows.TryGetValue(snapshot.Day, out var positionCashFlows))
             {
                 claimed += positionCashFlows.Sum(flow => flow.Token0.FeeAmount * snapshot.Token0.PriceInUsd +
-                                                     flow.Token1.FeeAmount * snapshot.Token1.PriceInUsd);
+                                                         flow.Token1.FeeAmount * snapshot.Token1.PriceInUsd);
             }
         }
 
         return claimed + lastSnapshot.FeeInUsd;
+    }
+
+    /// <summary>
+    /// Calculates the total lifetime fees in USD for the position, including all claimed fees from cash flows
+    /// and the current unclaimed fees from the latest snapshot.
+    /// </summary>
+    /// <remarks>
+    /// This method assumes that PoolPositionSnapshots contain daily unclaimed fees (owed but not collected),
+    /// and CashFlows record all historical fee claims (collections). The total is the sum of all claimed fees
+    /// valued in USD at the time of claim (using the nearest snapshot's token prices) plus the unclaimed fees
+    /// from the most recent snapshot. This provides the aggregate fees earned over the entire position lifetime,
+    /// adhering to DDD principles by encapsulating calculation logic within the entity.
+    /// If no snapshots exist, returns 0. Assumes GetNearestSnapshot extension handles finding the closest
+    /// snapshot for price valuation, preferring exact matches or previous days if specified.
+    /// </remarks>
+    /// <returns>The total lifetime fees as a Money value in USD.</returns>
+    public Money CalculateLifetimeTotalFeeInUsd(DateOnly to)
+    {
+        if (PoolPositionSnapshots.Count == 0)
+        {
+            return 0;
+        }
+ 
+        var lastSnapshot = PoolPositionSnapshots.GetNearestSnapshot(to, true);
+
+        if (lastSnapshot == null)
+        {
+            return 0;
+        }
+
+        var claimedEvents = CalculateDailyFeesFromCashFlows(DateOnly.MinValue, to);
+ 
+        return claimedEvents.Values
+                   .SelectMany(flows => flows)
+                   .Sum(flow => flow.Token0.Amount * lastSnapshot.Token0.PriceInUsd +
+                                flow.Token1.Amount * lastSnapshot.Token1.PriceInUsd) +
+               lastSnapshot.FeeInUsd;
     }
 
     private Dictionary<DateOnly, UniswapLiquidityPositionCashFlow[]> CalculateDailyFeesFromCashFlows(

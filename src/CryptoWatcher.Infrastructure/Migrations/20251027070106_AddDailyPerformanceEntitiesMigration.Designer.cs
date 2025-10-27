@@ -14,7 +14,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CryptoWatcher.Infrastructure.Migrations
 {
     [DbContext(typeof(CryptoWatcherDbContext))]
-    [Migration("20251026091331_AddDailyPerformanceEntitiesMigration")]
+    [Migration("20251027070106_AddDailyPerformanceEntitiesMigration")]
     partial class AddDailyPerformanceEntitiesMigration
     {
         /// <inheritdoc />
@@ -585,7 +585,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Property<decimal>("CommissionInUsd")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("CurrentValueInUsd")
+                    b.Property<decimal>("CumulativeCommissionInUsd")
                         .HasColumnType("numeric");
 
                     b.Property<decimal>("HoldValueInUsd")
@@ -594,7 +594,10 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Property<bool>("IsInRange")
                         .HasColumnType("boolean");
 
-                    b.Property<decimal>("PositionInToken1")
+                    b.Property<decimal>("PositionValueInUsd")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("ProfitInUsd")
                         .HasColumnType("numeric");
 
                     b.ComplexProperty<Dictionary<string, object>>("Token0", "CryptoWatcher.Modules.Uniswap.Entities.UniswapPositionDailyPerformance.Token0#TokenInfoWithFee", b1 =>

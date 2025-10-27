@@ -582,7 +582,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Property<decimal>("CommissionInUsd")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("CurrentValueInUsd")
+                    b.Property<decimal>("CumulativeCommissionInUsd")
                         .HasColumnType("numeric");
 
                     b.Property<decimal>("HoldValueInUsd")
@@ -591,7 +591,10 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Property<bool>("IsInRange")
                         .HasColumnType("boolean");
 
-                    b.Property<decimal>("PositionInToken1")
+                    b.Property<decimal>("PositionValueInUsd")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("ProfitInUsd")
                         .HasColumnType("numeric");
 
                     b.ComplexProperty<Dictionary<string, object>>("Token0", "CryptoWatcher.Modules.Uniswap.Entities.UniswapPositionDailyPerformance.Token0#TokenInfoWithFee", b1 =>
