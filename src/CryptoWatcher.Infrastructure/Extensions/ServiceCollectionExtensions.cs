@@ -4,6 +4,7 @@ using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Application;
 using CryptoWatcher.Application.Abstractions;
 using CryptoWatcher.Application.Reports;
+using CryptoWatcher.Infrastructure.BackgroundServices;
 using CryptoWatcher.Infrastructure.Configs;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Aave;
@@ -13,6 +14,7 @@ using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Total;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Uniswap;
 using CryptoWatcher.Infrastructure.Integrations;
 using CryptoWatcher.Infrastructure.Services;
+using CryptoWatcher.Infrastructure.Telegram;
 using CryptoWatcher.Integrations;
 using CryptoWatcher.Modules.Aave.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Hyperliquid.Application.Abstractions;
@@ -21,12 +23,33 @@ using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Services;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Extensions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Telegram.Bot;
 
 namespace CryptoWatcher.Infrastructure.Extensions;
 
 public static class ServiceCollectionExtensions
 {
+    public static IServiceCollection AddTelegram(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<TelegramConfig>(configuration.GetSection(nameof(TelegramConfig)));
+        services.AddSingleton(provider => provider.GetRequiredService<IOptions<TelegramConfig>>().Value);
+        services.AddSingleton<TelegramReportHandler>();
+        
+        services.AddHostedService<TelegramBackgroundService>();
+      
+        services.AddSingleton<TelegramBotClient>(provider =>
+        {
+            var client = new TelegramBotClient(provider.GetRequiredService<TelegramConfig>().BotToken);
+
+            return client;
+        });
+
+        return services;
+    }
+
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services
@@ -49,18 +72,18 @@ public static class ServiceCollectionExtensions
 
         services.AddCoinGeckoClient(provider => provider.GetRequiredService<ExternalServicesConfig>().CoinGecko);
         services.AddTransient<ICoinPriceProvider, CoinGeckoCoinPriceProvider>();
- 
+
         services.AddSingleton<IExcelReportGenerator, ExcelReportGenerator>();
         services.AddScoped<IPlatformDailyReportFacade, PlatformDailyReportFacade>();
 
         services.AddScoped<IDailyPositionPerformanceCoordinator, DailyPositionPerformanceCoordinator>();
-        
+
         return services;
     }
 
     private static IServiceCollection AddConfiguredApplication(this IServiceCollection services)
     {
-        services 
+        services
             .AddScoped<IEnumerable<IPlatformDailyReportDataProvider>>(GetPlatformReportProviders)
             .AddScoped<IDailySummaryReportProvider, DailySummaryReportProvider>()
             .AddSingleton<IDailySummaryReportBuilder, DailySummaryReportBuilder>();
@@ -89,7 +112,7 @@ public static class ServiceCollectionExtensions
     }
 
     private static IServiceCollection AddConfiguredUniswapModule(this IServiceCollection services)
-    { 
+    {
         services.AddUniswapModule()
             .AddSingleton<IDailyExcelSheetBuilder, UniswapDailyExcelSheetBuilder>()
             .AddSingleton<UniswapDailyReportExcelWorksheetWriter>();

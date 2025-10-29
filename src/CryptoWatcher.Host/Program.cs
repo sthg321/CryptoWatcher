@@ -11,9 +11,7 @@ using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports;
 using CryptoWatcher.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Aave;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
-using CryptoWatcher.Modules.Uniswap.Application.Services;
 using CryptoWatcher.Shared.Entities;
-using CryptoWatcher.ValueObjects;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -51,6 +49,7 @@ builder.Services.AddTickerQ(optionsBuilder =>
 });
 
 builder.Services.AddInfrastructure();
+builder.Services.AddTelegram(builder.Configuration);
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
