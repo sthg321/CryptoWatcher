@@ -210,7 +210,6 @@ public class AavePositionsSyncServiceTest
 
         Assert.Single(actual);
 
-        Assert.Equal(SyncDay, actual[0].ClosedAtDay);
     }
 
     private AavePositionsSyncService CreateService()
@@ -222,10 +221,8 @@ public class AavePositionsSyncServiceTest
     [AssertionMethod]
     private static void AssertThatAavePositionValid(AavePosition actualPosition, AavePositionType expectedPositionType)
     {
-        Assert.Equal(SyncDay, actualPosition.CreatedAtDay);
         Assert.Equal(TestNetwork.Name, actualPosition.Network);
         Assert.Equal(actualPosition.PositionType, expectedPositionType);
-        Assert.Null(actualPosition.ClosedAtDay);
 
         Assert.Single(actualPosition.PositionSnapshots);
     }

@@ -9,6 +9,7 @@
     <ItemGroup>
         <PackageReference Include="Ardalis.SmartEnum.EFCore" Version="8.2.0" />
         <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="9.3.1" />
+        <PackageReference Include="EntityFrameworkCore.Projectables" Version="4.0.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4"/>
         <PackageReference Include="Riok.Mapperly" Version="4.3.0-next.3"/>
         <PackageReference Include="SpreadCheetah" Version="1.23.0" />

@@ -1,12 +1,11 @@
-using System.Security.Cryptography;
-using System.Text;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.Abstractions.PositionSnapshots;
-using CryptoWatcher.Modules.Aave.Models;
+using CryptoWatcher.Exceptions;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.Shared.ValueObjects;
 using CryptoWatcher.ValueObjects;
+using EntityFrameworkCore.Projectables;
 using JetBrains.Annotations;
 
 namespace CryptoWatcher.Modules.Aave.Entities;
@@ -23,6 +22,7 @@ public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
 {
     private readonly List<AavePositionSnapshot> _positionSnapshots = [];
     private readonly List<AavePositionEvent> _positionEvents = [];
+    private readonly List<AavePositionPeriod> _positionPeriods = [];
 
     [UsedImplicitly] // for ef core
     private AavePosition()
@@ -36,8 +36,9 @@ public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
         WalletAddress = wallet.Address;
         PositionType = positionType;
         TokenAddress = tokenAddress;
-        CreatedAtDay = createdAtDay;
         Id = Guid.CreateVersion7();
+
+        _positionPeriods.Add(new AavePositionPeriod(Id, createdAtDay));
     }
 
     /// <summary>
@@ -69,25 +70,7 @@ public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
     /// It plays a critical role in classifying and managing position-related data.
     /// </remarks>
     public AavePositionType PositionType { get; private set; }
-
-    /// <summary>
-    /// Represents the day on which the Aave position was created.
-    /// </summary>
-    /// <remarks>
-    /// This property records the creation date of the position in the Aave protocol. It is used to
-    /// track when the position was initially established on the specified network for the associated wallet.
-    /// </remarks>
-    public DateOnly CreatedAtDay { get; private set; }
-
-    /// <summary>
-    /// Represents the day on which the Aave position was closed, if applicable.
-    /// </summary>
-    /// <remarks>
-    /// This property stores the closure date of the position in the Aave protocol. It will have a value
-    /// if the position has been closed; otherwise, it remains null, indicating the position is still active.
-    /// </remarks>
-    public DateOnly? ClosedAtDay { get; private set; }
-
+ 
     /// <summary>
     /// Represents the wallet address associated with the liquidity pool position.
     /// </summary>
@@ -137,11 +120,16 @@ public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
     /// transactional or state changes tied to the position over time.
     /// </remarks>
     public IReadOnlyCollection<AavePositionEvent> PositionEvents => _positionEvents;
+    
+    public IReadOnlyCollection<AavePositionPeriod> PositionPeriods => _positionPeriods;
 
     public IReadOnlyCollection<ITokenPositionSnapshot> GetPositionSnapshots() => PositionSnapshots;
 
     public IReadOnlyCollection<ICacheFlow> GetCashFlows() => PositionEvents;
 
+    [Projectable]
+    public  bool IsActive() => PositionPeriods.Any(period => !period.ClosedAtDay.HasValue);
+    
     /// <summary>
     /// Closes the position by setting the closure date.
     /// </summary>
@@ -149,12 +137,13 @@ public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
     /// <exception cref="InvalidOperationException">Thrown if the position is already closed.</exception>
     public void ClosePosition(DateOnly day)
     {
-        if (ClosedAtDay.HasValue)
+        var activePeriod = _positionPeriods.SingleOrDefault(period => !period.ClosedAtDay.HasValue);
+        if (activePeriod is null)
         {
-            throw new InvalidOperationException("Position is already closed");
+            throw new DomainException("No active period found for the given day");
         }
 
-        ClosedAtDay = day;
+        activePeriod.Close(day);
     }
 
     /// <summary>
@@ -167,9 +156,10 @@ public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
     /// <exception cref="InvalidOperationException">Thrown if the position is already closed.</exception>
     public void AddOrUpdateSnapshot(TokenInfo token, decimal positionScale, DateOnly day, TimeProvider provider)
     {
-        if (ClosedAtDay.HasValue)
+        var activePeriod = _positionPeriods.SingleOrDefault(period => !period.ClosedAtDay.HasValue);
+        if (activePeriod is null)
         {
-            throw new InvalidOperationException("Snapshot can't be added to closed position");
+            _positionPeriods.Add(new AavePositionPeriod(Id, day));
         }
 
         var existingSnapshot = PositionSnapshots.FirstOrDefault(s => s.Day == day);

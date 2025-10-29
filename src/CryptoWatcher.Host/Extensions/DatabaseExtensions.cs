@@ -18,6 +18,7 @@ public static class DatabaseExtensions
         services.AddDbContext<CryptoWatcherDbContext>(optionsBuilder =>
         {
             optionsBuilder.UseNpgsql(connectionString);
+            optionsBuilder.UseProjectables();
             optionsBuilder.UseSeeding((context, _) =>
             {
                 SeedUniswapChainData(context);

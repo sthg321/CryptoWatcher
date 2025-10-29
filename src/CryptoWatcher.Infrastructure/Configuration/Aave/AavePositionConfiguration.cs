@@ -15,6 +15,13 @@ public class AavePositionConfiguration : IEntityTypeConfiguration<AavePosition>
 
         builder.Navigation(position => position.PositionSnapshots).UsePropertyAccessMode(PropertyAccessMode.Field);
         builder.Navigation(position => position.PositionEvents).UsePropertyAccessMode(PropertyAccessMode.Field);
+        builder.Navigation(position => position.PositionPeriods).UsePropertyAccessMode(PropertyAccessMode.Field);
+
+        builder.HasMany(aavePosition => aavePosition.PositionPeriods)
+            .WithOne()
+            .HasForeignKey(period => period.PositionId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Restrict);
         
         builder.HasMany(aavePosition => aavePosition.PositionSnapshots)
             .WithOne()

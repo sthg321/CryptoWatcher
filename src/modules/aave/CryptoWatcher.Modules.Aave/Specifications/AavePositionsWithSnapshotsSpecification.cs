@@ -15,9 +15,10 @@ public sealed class AavePositionsWithSnapshotsSpecification : Specification<Aave
 {
     public AavePositionsWithSnapshotsSpecification(string walletAddress, DateOnly from, DateOnly to)
     {
-        Query.Include(position =>
+        Query
+            .Include(position => position.PositionPeriods)
+            .Include(position =>
                 position.PositionSnapshots.Where(snapshot => snapshot.Day >= from && snapshot.Day <= to))
-            .Where(position => position.WalletAddress == walletAddress && position.ClosedAtDay == null);
-
+            .Where(position => position.WalletAddress == walletAddress && position.IsActive());
     }
 }
