@@ -28,7 +28,7 @@ public class HyperliquidApiProvider : IHyperliquidProvider
 
         return result
             .Where(update => update.Delta is VaultDeposit or VaultWithdraw)
-            .Select(MapToVaultEvent)
+            .Select(update => MapToVaultEvent(update, wallet))
             .ToArray();
     }
 
@@ -38,13 +38,13 @@ public class HyperliquidApiProvider : IHyperliquidProvider
         var balance = await _client.UserVaultEquities.GetUserVaultEquities(wallet.Address, ct);
 
         return balance.Select(equity => new HyperliquidVault
-            {
-                Balance = equity.Equity,
-                Address = EvmAddress.Create(equity.VaultAddress)
-            }).ToArray();
+        {
+            Balance = equity.Equity,
+            Address = EvmAddress.Create(equity.VaultAddress)
+        }).ToArray();
     }
 
-    private static HyperliquidVaultEvent MapToVaultEvent(UserNonFundingLedgerUpdate update)
+    private static HyperliquidVaultEvent MapToVaultEvent(UserNonFundingLedgerUpdate update, Wallet wallet)
     {
         var day = DateTime.UnixEpoch.AddMilliseconds(update.Time);
         return update.Delta switch
@@ -54,6 +54,7 @@ public class HyperliquidApiProvider : IHyperliquidProvider
                 Usd = vaultDeposit.Usdc,
                 Event = CacheFlowEvent.Deposit,
                 VaultAddress = EvmAddress.Create(vaultDeposit.Vault),
+                WalletAddress = wallet.Address,
                 Date = day
             },
             VaultWithdraw vaultWithdraw => new HyperliquidVaultEvent
@@ -61,6 +62,7 @@ public class HyperliquidApiProvider : IHyperliquidProvider
                 Usd = vaultWithdraw.NetWithdrawnUsd,
                 Event = CacheFlowEvent.Withdrawal,
                 VaultAddress = EvmAddress.Create(vaultWithdraw.Vault),
+                WalletAddress = wallet.Address,
                 Date = day
             },
             _ => throw new ArgumentOutOfRangeException(nameof(update), update.Delta, null)

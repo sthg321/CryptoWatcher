@@ -58,7 +58,7 @@ public class HyperliquidVaultPosition : ICalculatablePosition<IUsdPositionSnapsh
     /// Each event describes a specific action, such as deposits or withdrawals, along with relevant details.
     /// It is utilized to analyze vault performance, track cash flow, and compute metrics like percentage profit or rate of return.
     /// </remarks>
-    public List<HyperliquidVaultEvent> VaultEvents { get; init; } = [];
+    public IReadOnlyCollection<HyperliquidVaultEvent> VaultEvents => _vaultEvents;
 
     /// <summary>
     /// Contains a collection of snapshots representing the states of a vault's position over time.
