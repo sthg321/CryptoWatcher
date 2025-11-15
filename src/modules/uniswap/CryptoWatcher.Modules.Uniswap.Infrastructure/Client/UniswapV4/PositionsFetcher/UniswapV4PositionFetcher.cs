@@ -1,9 +1,12 @@
+using System.Net;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.PositionsFetcher.Contracts;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.StateView;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 using Nethereum.Web3;
+using Polly;
+using Polly.Retry;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.PositionsFetcher;
 
@@ -18,6 +21,10 @@ internal class UniswapV4PositionFetcher : IUniswapV4PositionFetcher
     private readonly UniswapAppApiClient.UniswapAppApiClient _apiClient;
     private readonly IUniswapV4StateView _stateView;
     private readonly IWeb3Factory _web3Factory;
+
+    private static readonly AsyncRetryPolicy TimeoutPolicy =
+        Policy.Handle<HttpRequestException>(exception => exception.StatusCode == HttpStatusCode.RequestTimeout)
+            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
     public UniswapV4PositionFetcher(UniswapAppApiClient.UniswapAppApiClient apiClient, IUniswapV4StateView stateView,
         IWeb3Factory web3Factory)
@@ -51,8 +58,8 @@ internal class UniswapV4PositionFetcher : IUniswapV4PositionFetcher
             var contract =
                 web3.Eth.GetContract(UniswapV4PositionFetcherAbi.Abi, chain.SmartContractAddresses.PositionManager);
 
-            var packedData = await contract.GetFunction("getPoolAndPositionInfo")
-                .CallDeserializingToObjectAsync<GetPoolAndPositionInfoOutputDTO>(tokenId);
+            var packedData = await TimeoutPolicy.ExecuteAsync(_ => contract.GetFunction("getPoolAndPositionInfo")
+                .CallDeserializingToObjectAsync<GetPoolAndPositionInfoOutputDTO>(tokenId), CancellationToken.None);
 
             var positionInfo = PositionInfoParser.FromUInt256(packedData.PositionInfo);
 
