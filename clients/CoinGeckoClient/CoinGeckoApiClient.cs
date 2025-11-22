@@ -24,6 +24,7 @@ public class CoinGeckoApiClient : ICoinGeckoApiClient
         ["wstETH"] = "WETH",
         ["ETH"] = "WETH",
         ["USD₮0"] = "usd-coin",
+        ["wbtc"] = "btc",
     };
 
     private readonly HttpClient _client;
