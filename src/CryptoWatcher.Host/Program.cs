@@ -125,13 +125,16 @@ app.MapPost("/uniswap/sync-block/{blockNumber}", async (IUniswapCashFlowBlockRan
     string chainName,
     BigInteger blockNumber) =>
 {
-    var chain = await dbContext.UniswapChainConfigurations
+    var chains = await dbContext.UniswapChainConfigurations
         .Where(configuration => configuration.Name == chainName)
         .Include(configuration => configuration.LiquidityPoolPositions)
         .ThenInclude(positions => positions.Wallet)
-        .FirstAsync();
+        .ToArrayAsync();
 
-    await sync.SynchronizeBlockRangeAsync(chain, blockNumber, blockNumber);
+    foreach (var chain in chains)
+    {
+        await sync.SynchronizeBlockRangeAsync(chain, blockNumber, blockNumber);
+    }
 });
 
 async Task<FileStreamHttpResult> TotalReportHandler(IDailySummaryReportProvider reportProvider,

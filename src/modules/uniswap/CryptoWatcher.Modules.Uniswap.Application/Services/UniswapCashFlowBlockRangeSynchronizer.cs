@@ -23,7 +23,7 @@ public class UniswapCashFlowBlockRangeSynchronizer : IUniswapCashFlowBlockRangeS
         _logger = logger;
     }
 
-    public async Task SynchronizeBlockRangeAsync(UniswapChainConfiguration chain, BigInteger fromBlock,
+    public async Task  SynchronizeBlockRangeAsync(UniswapChainConfiguration chain, BigInteger fromBlock,
         BigInteger toBlock,
         CancellationToken ct = default)
     {

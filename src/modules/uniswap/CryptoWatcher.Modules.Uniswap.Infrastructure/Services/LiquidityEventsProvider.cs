@@ -1,6 +1,5 @@
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Models;
 using CryptoWatcher.Modules.Uniswap.Entities;
@@ -12,21 +11,23 @@ namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 
 internal class LiquidityEventsProvider : ILiquidityEventsProvider
 {
-    private readonly IBlockchainLogProvider _logProvider;
+    private readonly IEnumerable<IBlockchainLogProvider> _logProviders;
     private readonly ITransactionDataProvider _transactionDataProvider;
-    private readonly ILiquidityPoolEventDecoder _eventDecoder;
-    private readonly ILogger<LiquidityEventsProvider> _logger;
+    private readonly IUniswapLiquidityPoolEventDecoderSelector _eventDecoderSelector;
     private readonly ResiliencePipelineRegistry<string> _pipelineRegistry;
+    private readonly ILogger<LiquidityEventsProvider> _logger;
 
-    public LiquidityEventsProvider(IBlockchainLogProvider logProvider, ITransactionDataProvider transactionDataProvider,
-        ILiquidityPoolEventDecoder eventDecoder, ILogger<LiquidityEventsProvider> logger,
-        ResiliencePipelineRegistry<string> pipelineRegistry)
+    public LiquidityEventsProvider(IEnumerable<IBlockchainLogProvider> logProviders,
+        ITransactionDataProvider transactionDataProvider,
+        IUniswapLiquidityPoolEventDecoderSelector eventDecoderSelector,
+        ResiliencePipelineRegistry<string> pipelineRegistry,
+        ILogger<LiquidityEventsProvider> logger)
     {
-        _logProvider = logProvider;
+        _logProviders = logProviders;
         _transactionDataProvider = transactionDataProvider;
-        _eventDecoder = eventDecoder;
         _logger = logger;
         _pipelineRegistry = pipelineRegistry;
+        _eventDecoderSelector = eventDecoderSelector;
     }
 
     public async IAsyncEnumerable<IReadOnlyCollection<LiquidityPoolPositionEvent>> FetchLiquidityPoolEvents(
@@ -35,10 +36,14 @@ internal class LiquidityEventsProvider : ILiquidityEventsProvider
         BigInteger toBlock,
         [EnumeratorCancellation] CancellationToken ct = default)
     {
-        var blockchainLogEntries = await _logProvider.GetLogsAsync(chain, fromBlock, toBlock);
+        var getLogsTasks = _logProviders.Select(provider => provider.GetLogsAsync(chain, fromBlock, toBlock)).ToArray();
+
+        await Task.WhenAll(getLogsTasks);
+
+        var blockchainLogEntries = getLogsTasks.SelectMany(task => task.Result).ToList();
 
         _logger.LogInformation("Found {LogsCount} logs", blockchainLogEntries.Count);
-        
+
         var rateLimiter = _pipelineRegistry.GetPipeline("Uniswap");
 
         var tasks = blockchainLogEntries.Select(async log =>
@@ -46,15 +51,14 @@ internal class LiquidityEventsProvider : ILiquidityEventsProvider
             try
             {
                 var transactionData = await rateLimiter.ExecuteAsync<TransactionData?>(async token =>
-                        await _transactionDataProvider.GetTransactionDataAsync(chain, log.TransactionHash, token), ct);
+                    await _transactionDataProvider.GetTransactionDataAsync(chain, log.TransactionHash, token), ct);
 
                 if (transactionData is null)
                 {
                     return null;
                 }
 
-                return _eventDecoder.DecodeModifyLiquidityEvent(transactionData.WalletAddress, log.Data,
-                    transactionData.TransactionHash,
+                return _eventDecoderSelector.DecodeEvent(transactionData.WalletAddress, log,
                     transactionData.EventEnrichment.TokenPair,
                     transactionData.EventEnrichment.TimeStamp);
             }
