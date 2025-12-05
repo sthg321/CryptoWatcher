@@ -5,7 +5,7 @@ namespace CryptoWatcher.Abstractions;
 
 public interface ICalculatablePosition<out TSnapshot> where TSnapshot : IPositionSnapshot
 {
-    IReadOnlyCollection<ICacheFlow> GetCashFlows();
+    IReadOnlyCollection<ICashFlow> GetCashFlows();
     
     IReadOnlyCollection<TSnapshot> GetPositionSnapshots();
 }

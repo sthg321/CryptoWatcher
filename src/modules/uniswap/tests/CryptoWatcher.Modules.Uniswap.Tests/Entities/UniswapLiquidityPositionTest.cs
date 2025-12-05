@@ -1,14 +1,6 @@
-using AutoFixture;
-using Bogus;
-using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.Exceptions;
-using CryptoWatcher.Extensions;
 using CryptoWatcher.Modules.Uniswap.Entities;
-using CryptoWatcher.Modules.Uniswap.Tests.Customizations;
-using CryptoWatcher.Modules.Uniswap.Tests.DataSets;
 using CryptoWatcher.Modules.Uniswap.Tests.Fakers;
-using CryptoWatcher.Shared.ValueObjects;
-using CryptoWatcher.ValueObjects;
 using JetBrains.Annotations;
 using Shouldly;
 
@@ -17,23 +9,16 @@ namespace CryptoWatcher.Modules.Uniswap.Tests.Entities;
 [TestSubject(typeof(UniswapLiquidityPosition))]
 public partial class UniswapLiquidityPositionTest
 {
-    private readonly Fixture _fixture;
-
-    public UniswapLiquidityPositionTest()
-    {
-        _fixture = new Fixture();
-        _fixture.Customize(new EvmAddressCustomization());
-    }
-
     [Fact]
     public void UniswapLiquidityPositionTest_ShouldInitializeWithCorrectFields()
     {
         var chain = new UniswapChainConfigurationFaker().Generate();
         var positionFaker = new UniswapLiquidityPositionFaker(chain).Generate();
 
+        var createdAt = _faker.Date.FutureDateOnly();
         var actual = new UniswapLiquidityPosition(positionFaker.PositionId, positionFaker.TickLower,
             positionFaker.TickUpper, positionFaker.Token0,
-            positionFaker.Token1, positionFaker.WalletAddress, chain);
+            positionFaker.Token1, positionFaker.WalletAddress, chain, createdAt);
 
         actual.PositionId.ShouldBe(positionFaker.PositionId);
         actual.TickLower.ShouldBe(positionFaker.TickLower);
@@ -51,28 +36,31 @@ public partial class UniswapLiquidityPositionTest
     [Fact]
     public void UniswapLiquidityPositionTest_SameTokens_ShouldThrowException()
     {
-        Should.Throw<DomainException>(static () =>
+        Should.Throw<DomainException>(() =>
         {
             var chain = new UniswapChainConfigurationFaker().Generate();
             var position = new UniswapLiquidityPositionFaker(chain).Generate();
+            var createdAt = _faker.Date.FutureDateOnly();
 
             _ = new UniswapLiquidityPosition(position.PositionId, position.TickLower,
                 position.TickUpper, position.Token0,
-                position.Token0, position.WalletAddress, chain);
+                position.Token0, position.WalletAddress, chain, createdAt);
         }, "For uniswap position tokens can't be the same");
     }
 
     [Fact]
     public void UniswapLiquidityPositionTest_TickLowerGreatestThatTickUpper_ShouldThrowException()
     {
-        Should.Throw<DomainException>(static () =>
+        Should.Throw<DomainException>(() =>
         {
             var chain = new UniswapChainConfigurationFaker().Generate();
             var position = new UniswapLiquidityPositionFaker(chain).Generate();
 
+            var createdAt = _faker.Date.FutureDateOnly();
+
             _ = new UniswapLiquidityPosition(position.PositionId, position.TickUpper,
                 position.TickLower, position.Token0,
-                position.Token0, position.WalletAddress, chain);
+                position.Token0, position.WalletAddress, chain, createdAt);
         }, "For uniswap position tokens can't be the same");
     }
 }

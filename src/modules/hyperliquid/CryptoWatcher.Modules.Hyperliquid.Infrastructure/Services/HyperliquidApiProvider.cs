@@ -52,7 +52,7 @@ public class HyperliquidApiProvider : IHyperliquidProvider
             VaultDeposit vaultDeposit => new HyperliquidVaultEvent
             {
                 Usd = vaultDeposit.Usdc,
-                Event = CacheFlowEvent.Deposit,
+                Event = CashFlowEvent.Deposit,
                 VaultAddress = EvmAddress.Create(vaultDeposit.Vault),
                 WalletAddress = wallet.Address,
                 Date = day
@@ -60,7 +60,7 @@ public class HyperliquidApiProvider : IHyperliquidProvider
             VaultWithdraw vaultWithdraw => new HyperliquidVaultEvent
             {
                 Usd = vaultWithdraw.NetWithdrawnUsd,
-                Event = CacheFlowEvent.Withdrawal,
+                Event = CashFlowEvent.Withdrawal,
                 VaultAddress = EvmAddress.Create(vaultWithdraw.Vault),
                 WalletAddress = wallet.Address,
                 Date = day

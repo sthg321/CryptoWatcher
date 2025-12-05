@@ -39,7 +39,7 @@ public class UniswapLiquidityPositionCashFlow : ITokenPairCashFlow
 
     public TransactionHash TransactionHash { get; init; } = null!;
 
-    public CacheFlowEvent Event { get; init; } = null!;
+    public CashFlowEvent Event { get; init; } = null!;
 
     public TokenInfoWithFee Token0 { get; set; } = null!;
 
@@ -47,10 +47,10 @@ public class UniswapLiquidityPositionCashFlow : ITokenPairCashFlow
 
     public decimal FeeInUsd => Token0.FeeAmountInUsd + Token1.FeeAmountInUsd;
  
-    private static TokenInfoWithFee CreateFromEvent(TokenInfoWithAddress infoWithAddress, CacheFlowEvent @event)
+    private static TokenInfoWithFee CreateFromEvent(TokenInfoWithAddress infoWithAddress, CashFlowEvent @event)
     {
-        var amount = @event != CacheFlowEvent.FeeClaim ? infoWithAddress.Amount : 0;
-        var feeAmount = @event != CacheFlowEvent.FeeClaim ? 0 : infoWithAddress.Amount;
+        var amount = @event != CashFlowEvent.FeeClaim ? infoWithAddress.Amount : 0;
+        var feeAmount = @event != CashFlowEvent.FeeClaim ? 0 : infoWithAddress.Amount;
 
         return TokenInfoWithFee.CreateForEvent(@event, infoWithAddress.Symbol, amount, feeAmount,
             infoWithAddress.PriceInUsd);

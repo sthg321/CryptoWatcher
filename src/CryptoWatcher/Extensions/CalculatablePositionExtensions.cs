@@ -15,7 +15,7 @@ public static class CalculatablePositionExtensions
             from,
             to,
             snapshot => snapshot.GetUsdBalance(),
-            (cashFlow, _) => (cashFlow as IUsdCacheFlow)!.Usd
+            (cashFlow, _) => (cashFlow as IUsdCashFlow)!.Usd
         );
     }
 
@@ -27,7 +27,7 @@ public static class CalculatablePositionExtensions
             from,
             to,
             snapshot => snapshot.GetTokenInfo().Amount,
-            (cashFlow, _) => (cashFlow as ITokenCacheFlow)!.Token.Amount
+            (cashFlow, _) => (cashFlow as ITokenCashFlow)!.Token.Amount
         );
     }
 
@@ -39,7 +39,7 @@ public static class CalculatablePositionExtensions
             from,
             to,
             snapshot => snapshot.GetTokenInfo().AmountInUsd,
-            (cashFlow, _) => (cashFlow as ITokenCacheFlow)!.Token.AmountInUsd
+            (cashFlow, _) => (cashFlow as ITokenCashFlow)!.Token.AmountInUsd
         );
     }
 
@@ -66,7 +66,7 @@ public static class CalculatablePositionExtensions
         DateOnly from,
         DateOnly to,
         Func<TSnapshot, decimal> getValue,
-        Func<ICacheFlow, TSnapshot, decimal> getCashFlowAmount)
+        Func<ICashFlow, TSnapshot, decimal> getCashFlowAmount)
         where TSnapshot : IPositionSnapshot
     {
         var snapshots = position.GetPositionSnapshots();
@@ -95,7 +95,7 @@ public static class CalculatablePositionExtensions
             {
                 var cashFlowDay = cacheFlow.Date.ToDateOnly();
                 var snapshot = startSnapshot.Day == cashFlowDay ? startSnapshot : endSnapshot;
-                return cacheFlow.Event == CacheFlowEvent.Deposit
+                return cacheFlow.Event == CashFlowEvent.Deposit
                     ? getCashFlowAmount(cacheFlow, snapshot)
                     : -getCashFlowAmount(cacheFlow, snapshot);
             });

@@ -61,7 +61,7 @@ public partial class UniswapLiquidityPositionTest
         var actual = position.CalculateCumulativeFeeInUsd(startDate, expected.Day);
 
         // Assert
-        claimedCashFlow.Event.ShouldBe(CacheFlowEvent.FeeClaim);
+        claimedCashFlow.Event.ShouldBe(CashFlowEvent.FeeClaim);
         actual.Value.ShouldBe(expected.FeeInUsd + claimedCashFlow.FeeInUsd);
     }
 
@@ -89,7 +89,7 @@ public partial class UniswapLiquidityPositionTest
 
         // Assert
         actual.Value.ShouldBe(expected.FeeInUsd);
-        claimFeeEvents.Event.ShouldNotBe(CacheFlowEvent.FeeClaim);
+        claimFeeEvents.Event.ShouldNotBe(CashFlowEvent.FeeClaim);
     }
 
     [Fact]
@@ -123,7 +123,7 @@ public partial class UniswapLiquidityPositionTest
 
         // Assert
         actual.Value.ShouldBe(expectedTotal);
-        claimedCashFlows.ShouldAllBe(cf => cf.Event == CacheFlowEvent.FeeClaim);
+        claimedCashFlows.ShouldAllBe(cf => cf.Event == CashFlowEvent.FeeClaim);
     }
 
     [Fact]
@@ -187,7 +187,7 @@ public partial class UniswapLiquidityPositionTest
             Token1 = new TokenInfoWithAddress(position.Token1, _faker.Crypto().EvmAddress()),
         };
 
-        return position.AddEventsIfNotExists(positionEvent, tokenPair);
+        return position.AddCashFlow(positionEvent, tokenPair);
     }
 
     private static decimal CalculateExpectedUnclaimedFee(

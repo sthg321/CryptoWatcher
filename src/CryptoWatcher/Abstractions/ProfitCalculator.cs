@@ -8,7 +8,7 @@ public class ProfitCalculator
 {
     public decimal CalculateAbsoluteProfit(
         IReadOnlyCollection<IUsdPositionSnapshot> snapshots,
-        IReadOnlyCollection<IUsdCacheFlow> cashFlowEvents,
+        IReadOnlyCollection<IUsdCashFlow> cashFlowEvents,
         DateOnly startDate,
         DateOnly endDate)
     {

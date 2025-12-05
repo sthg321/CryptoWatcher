@@ -59,14 +59,14 @@ public record TokenInfoWithFee
     }
     
     // Factory с validation по event
-    public static TokenInfoWithFee CreateForEvent(CacheFlowEvent @event, string symbol, decimal amount, decimal feeAmount, decimal priceInUsd)
+    public static TokenInfoWithFee CreateForEvent(CashFlowEvent @event, string symbol, decimal amount, decimal feeAmount, decimal priceInUsd)
     {
-        if (@event == CacheFlowEvent.FeeClaim && feeAmount <= 0)
+        if (@event == CashFlowEvent.FeeClaim && feeAmount <= 0)
         {
             throw new InvalidOperationException("FeeAmount must be >0 for FeeClaim");
         }
 
-        if (@event != CacheFlowEvent.FeeClaim && feeAmount < 0)
+        if (@event != CashFlowEvent.FeeClaim && feeAmount < 0)
         {
             throw new InvalidOperationException("FeeAmount cannot be negative");
         }

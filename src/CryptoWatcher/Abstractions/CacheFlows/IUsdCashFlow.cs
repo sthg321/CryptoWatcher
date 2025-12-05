@@ -1,6 +1,6 @@
 namespace CryptoWatcher.Abstractions.CacheFlows;
 
-public interface IUsdCacheFlow : ICacheFlow
+public interface IUsdCashFlow : ICashFlow
 {
     decimal Usd { get; init; }
 }

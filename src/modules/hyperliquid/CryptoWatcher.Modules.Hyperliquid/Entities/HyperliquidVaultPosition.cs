@@ -72,7 +72,7 @@ public class HyperliquidVaultPosition : ICalculatablePosition<IUsdPositionSnapsh
 
     public IReadOnlyCollection<IUsdPositionSnapshot> GetPositionSnapshots() => PositionSnapshots;
 
-    public IReadOnlyCollection<ICacheFlow> GetCashFlows() => VaultEvents;
+    public IReadOnlyCollection<ICashFlow> GetCashFlows() => VaultEvents;
 
     public void AddOrUpdateSnapshot(HyperliquidVaultPositionSnapshot snapshot)
     {

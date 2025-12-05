@@ -25,7 +25,8 @@ public sealed class UniswapLiquidityPositionFaker : Faker<UniswapLiquidityPositi
                 token0: token0,
                 token1: token1,
                 walletAddress: f.Crypto().EvmAddress(),
-                chain: chainConfiguration);
+                chain: chainConfiguration,
+                f.Date.FutureDateOnly());
             
             return position;
         });

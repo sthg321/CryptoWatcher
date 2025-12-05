@@ -125,7 +125,7 @@ public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
 
     public IReadOnlyCollection<ITokenPositionSnapshot> GetPositionSnapshots() => PositionSnapshots;
 
-    public IReadOnlyCollection<ICacheFlow> GetCashFlows() => PositionEvents;
+    public IReadOnlyCollection<ICashFlow> GetCashFlows() => PositionEvents;
 
     [Projectable]
     public  bool IsActive() => PositionPeriods.Any(period => !period.ClosedAtDay.HasValue);
@@ -192,7 +192,7 @@ public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
                 PositionId = Id,
                 Date = eventDateTime,
                 Token = token with { Amount = (decimal)(positionScale - PreviousScaledAmount) },
-                Event = CacheFlowEvent.Deposit
+                Event = CashFlowEvent.Deposit
             });
         }
         else
@@ -202,7 +202,7 @@ public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
                 PositionId = Id,
                 Date = eventDateTime,
                 Token = token with { Amount = (decimal)(PreviousScaledAmount - positionScale) },
-                Event = CacheFlowEvent.Withdrawal
+                Event = CashFlowEvent.Withdrawal
             });
         }
 

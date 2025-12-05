@@ -15,7 +15,7 @@ namespace CryptoWatcher.Modules.Aave.Entities;
 /// the timestamp when the event occurred. These details are essential for tracking the
 /// lifecycle and changes made to an Aave position.
 /// </remarks>
-public class AavePositionEvent : ITokenCacheFlow
+public class AavePositionEvent : ITokenCashFlow
 {
     /// <summary>
     /// Unique identifier for the position associated with the Aave position event.
@@ -42,5 +42,5 @@ public class AavePositionEvent : ITokenCacheFlow
     /// </remarks>
     public required DateTime Date { get; init; }
 
-    public CacheFlowEvent Event { get; init; } = null!;
+    public CashFlowEvent Event { get; init; } = null!;
 }

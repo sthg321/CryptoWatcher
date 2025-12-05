@@ -8,7 +8,7 @@ namespace CryptoWatcher.Modules.Hyperliquid.Entities;
 /// Represents an event associated with a Hyperliquid vault. These events track interactions such as deposits or withdrawals on specific vaults
 /// and are linked to a specific wallet within the Hyperliquid module.
 /// </summary>
-public class HyperliquidVaultEvent : IUsdCacheFlow
+public class HyperliquidVaultEvent : IUsdCashFlow
 {
     /// <summary>
     /// Represents the monetary value in USD associated with a vault-related activity.
@@ -38,7 +38,7 @@ public class HyperliquidVaultEvent : IUsdCacheFlow
     /// within the Hyperliquid platform. It is used to classify and track the different types of interactions
     /// occurring in the context of vault operations.
     /// </remarks>
-    public CacheFlowEvent Event { get; init; } = null!;
+    public CashFlowEvent Event { get; init; } = null!;
 
     /// <summary>
     /// Represents the unique address identifier for a Hyperliquid vault.

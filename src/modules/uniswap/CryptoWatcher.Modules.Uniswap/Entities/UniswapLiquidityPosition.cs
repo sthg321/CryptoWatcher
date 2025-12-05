@@ -29,7 +29,7 @@ public class UniswapLiquidityPosition : ICalculatablePosition<ITokenPairPosition
     }
 
     public UniswapLiquidityPosition(ulong positionId, long tickLower, long tickUpper, TokenInfo token0,
-        TokenInfo token1, EvmAddress walletAddress, UniswapChainConfiguration chain)
+        TokenInfo token1, EvmAddress walletAddress, UniswapChainConfiguration chain, DateOnly createdAt)
     {
         if (token0.Symbol == token1.Symbol)
         {
@@ -49,7 +49,7 @@ public class UniswapLiquidityPosition : ICalculatablePosition<ITokenPairPosition
         WalletAddress = walletAddress;
         NetworkName = chain.Name;
         ProtocolVersion = chain.ProtocolVersion;
-        IsActive = true;
+        CreatedAt = createdAt;
     }
 
     /// <summary>
@@ -99,7 +99,17 @@ public class UniswapLiquidityPosition : ICalculatablePosition<ITokenPairPosition
     /// An active state signifies that the position is engaged in the liquidity pool,
     /// while an inactive state suggests the position has been exited or is no longer valid.
     /// </remarks>
-    public bool IsActive { get; private set; }
+    public bool IsActive => ClosedAt is not null;
+
+    /// <summary>
+    /// When position created
+    /// </summary>
+    public DateOnly CreatedAt { get; private set; }
+    
+    /// <summary>
+    /// When position closed
+    /// </summary>
+    public DateOnly? ClosedAt { get; private set; }
 
     /// <summary>
     /// Represents the wallet address associated with the liquidity pool position.
@@ -158,7 +168,7 @@ public class UniswapLiquidityPosition : ICalculatablePosition<ITokenPairPosition
         return existedSnapshot;
     }
 
-    public UniswapLiquidityPositionCashFlow AddEventsIfNotExists(
+    public UniswapLiquidityPositionCashFlow AddCashFlow(
         LiquidityPoolPositionEvent positionEvent,
         TokenInfoPair tokenInfoPair)
     {
@@ -174,9 +184,14 @@ public class UniswapLiquidityPosition : ICalculatablePosition<ITokenPairPosition
         return existedSnapshot;
     }
 
-    public void ClosePosition()
+    public void ClosePosition(DateOnly closedAt)
     {
-        IsActive = false;
+        if (ClosedAt.HasValue)
+        {
+            throw new DomainException("Can't close already closed uniswap position");
+        }
+
+        ClosedAt = closedAt;
     }
 
     public Money CalculateHoldValueInUsd(DateOnly to)
@@ -284,14 +299,14 @@ public class UniswapLiquidityPosition : ICalculatablePosition<ITokenPairPosition
     {
         return CashFlows
             .Where(flow => flow.Date.ToDateOnly() >= from && flow.Date.ToDateOnly() <= to)
-            .Where(cashFlow => cashFlow.Event == CacheFlowEvent.FeeClaim)
+            .Where(cashFlow => cashFlow.Event == CashFlowEvent.FeeClaim)
             .GroupBy(cashFlow => cashFlow.Date.ToDateOnly())
             .ToDictionary(
                 g => g.Key,
                 g => g.ToArray());
     }
 
-    public IReadOnlyCollection<ICacheFlow> GetCashFlows()
+    public IReadOnlyCollection<ICashFlow> GetCashFlows()
     {
         return CashFlows;
     }

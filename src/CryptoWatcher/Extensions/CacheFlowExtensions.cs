@@ -5,14 +5,14 @@ namespace CryptoWatcher.Extensions;
 public static class CacheFlowExtensions
 {
     public static decimal CalculateNetCashFlowInUsd<TCashFlow>(this IEnumerable<TCashFlow> cacheFlows, DateOnly from,
-        DateOnly to) where TCashFlow : IUsdCacheFlow
+        DateOnly to) where TCashFlow : IUsdCashFlow
     {
         return cacheFlows.Where(e => FilterCashFlowEvents(e, from, to)).Sum(e => ComputeCashFlowEvent(e.Event, e.Usd));
     }
 
     public static decimal CalculateNetTokenCashFlowInUsd<TCashFlow>(this IEnumerable<TCashFlow> cacheFlows,
         DateOnly from,
-        DateOnly to) where TCashFlow : ITokenCacheFlow
+        DateOnly to) where TCashFlow : ITokenCashFlow
     {
         return cacheFlows.Where(e => FilterCashFlowEvents(e, from, to))
             .Sum(e => ComputeCashFlowEvent(e.Event, e.Token.AmountInUsd));
@@ -20,7 +20,7 @@ public static class CacheFlowExtensions
     
     public static decimal CalculateNetTokenCashFlowInToken<TCashFlow>(this IEnumerable<TCashFlow> cacheFlows,
         DateOnly from,
-        DateOnly to) where TCashFlow : ITokenCacheFlow
+        DateOnly to) where TCashFlow : ITokenCashFlow
     {
         return cacheFlows.Where(e => FilterCashFlowEvents(e, from, to))
             .Sum(e => ComputeCashFlowEvent(e.Event, e.Token.Amount));
@@ -34,14 +34,14 @@ public static class CacheFlowExtensions
             .Sum(e => ComputeCashFlowEvent(e.Event, e.Token0.AmountInUsd + e.Token1.AmountInUsd));
     }
 
-    private static bool FilterCashFlowEvents(ICacheFlow cacheFlow, DateOnly from, DateOnly to)
+    private static bool FilterCashFlowEvents(ICashFlow cashFlow, DateOnly from, DateOnly to)
     {
-        return cacheFlow.Date >= from.ToMinDateTime() && cacheFlow.Date <= to.ToMaxDateTime();
+        return cashFlow.Date >= from.ToMinDateTime() && cashFlow.Date <= to.ToMaxDateTime();
     }
 
-    private static decimal ComputeCashFlowEvent(CacheFlowEvent @event, decimal amount)
+    private static decimal ComputeCashFlowEvent(CashFlowEvent @event, decimal amount)
     {
-        if (@event == CacheFlowEvent.Deposit)
+        if (@event == CashFlowEvent.Deposit)
         {
             return amount;
         }

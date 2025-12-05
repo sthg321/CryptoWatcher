@@ -1,8 +1,8 @@
 namespace CryptoWatcher.Abstractions.CacheFlows;
 
-public interface ICacheFlow
+public interface ICashFlow
 {
     DateTime Date { get; init; }
 
-    CacheFlowEvent Event { get; init; }
+    CashFlowEvent Event { get; init; }
 }

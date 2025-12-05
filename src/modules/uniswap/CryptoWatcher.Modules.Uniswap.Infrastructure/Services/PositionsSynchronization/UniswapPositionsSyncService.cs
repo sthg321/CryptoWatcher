@@ -37,6 +37,7 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
     private readonly IUniswapProvider _providerFactory;
     private readonly IUniswapMath _math;
     private readonly IPoolHistorySyncRepositoryFacade _repositoryFacade;
+    private readonly TimeProvider _timeProvider;
     private readonly ILogger<UniswapPositionsSyncService> _logger;
 
     public UniswapPositionsSyncService(
@@ -44,13 +45,15 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
         IUniswapProvider providerFactory,
         IUniswapMath math,
         IPoolHistorySyncRepositoryFacade repositoryFacade,
+        TimeProvider timeProvider,
         ILogger<UniswapPositionsSyncService> logger)
     {
         _enricher = enricher;
         _providerFactory = providerFactory;
         _math = math;
-        _logger = logger;
         _repositoryFacade = repositoryFacade;
+        _timeProvider = timeProvider;
+        _logger = logger;
     }
 
     public async Task SyncUniswapPositionsAsync(Wallet wallet, UniswapChainConfiguration chainConfiguration,
@@ -99,7 +102,7 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
 
                 if (uniswapPosition.Liquidity == 0)
                 {
-                    dbPoolPosition.ClosePosition();
+                    dbPoolPosition.ClosePosition(DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime));
                     positions.Add(dbPoolPosition);
                     continue;
                 }
@@ -142,7 +145,7 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
         return await _enricher.EnrichAsync(chain.RpcUrlWithAuthToken, fee, ct);
     }
 
-    private static UniswapLiquidityPosition MapToLiquidityPoolPosition(UniswapChainConfiguration chain, Wallet wallet,
+    private UniswapLiquidityPosition MapToLiquidityPoolPosition(UniswapChainConfiguration chain, Wallet wallet,
         IUniswapPosition position, TokenInfoPair tokensEnriched)
     {
         return new UniswapLiquidityPosition
@@ -153,7 +156,8 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
             tokensEnriched.Token0,
             tokensEnriched.Token1,
             wallet.Address,
-            chain
+            chain,
+            DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime)
         );
     }
 

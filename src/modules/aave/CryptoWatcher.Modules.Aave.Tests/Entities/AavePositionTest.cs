@@ -120,16 +120,16 @@ public class AavePositionTest
     }
 
     [Theory]
-    [InlineData(100, 200, AavePositionType.Borrowed, nameof(CacheFlowEvent.Deposit))]
-    [InlineData(500, 400, AavePositionType.Supplied, nameof(CacheFlowEvent.Withdrawal))]
-    [InlineData(100, 50, AavePositionType.Borrowed, nameof(CacheFlowEvent.Withdrawal))]
-    [InlineData(500, 600, AavePositionType.Supplied, nameof(CacheFlowEvent.Deposit))]
+    [InlineData(100, 200, AavePositionType.Borrowed, nameof(CashFlowEvent.Deposit))]
+    [InlineData(500, 400, AavePositionType.Supplied, nameof(CashFlowEvent.Withdrawal))]
+    [InlineData(100, 50, AavePositionType.Borrowed, nameof(CashFlowEvent.Withdrawal))]
+    [InlineData(500, 600, AavePositionType.Supplied, nameof(CashFlowEvent.Deposit))]
     public void AddOrUpdateSnapshotTest_WhenScaleNotChange_ShouldAddSingleDepositEvent(decimal initialScaleAmount,
         decimal updatedScaleAmount,
         AavePositionType positionType,
         string eventName)
     {
-        var eventType = CacheFlowEvent.FromName(eventName);
+        var eventType = CashFlowEvent.FromName(eventName);
         var syncDate = DateOnly.FromDateTime(DateTime.Now);
         var position = CreatePosition(positionType);
         var token = _fixture.Create<TokenInfo>();
@@ -153,14 +153,14 @@ public class AavePositionTest
     }
 
     [Theory]
-    [InlineData(100, 150, nameof(CacheFlowEvent.Deposit))]
-    [InlineData(100, 50, nameof(CacheFlowEvent.Withdrawal))]
+    [InlineData(100, 150, nameof(CashFlowEvent.Deposit))]
+    [InlineData(100, 50, nameof(CashFlowEvent.Withdrawal))]
     public void AddOrUpdateSnapshotTest_WhenScaleChange_ShouldUpdateSnapshot(
         decimal oldScaleAmount,
         decimal newScaleAmount,
         string eventName)
     {
-        var eventType = CacheFlowEvent.FromName(eventName);
+        var eventType = CashFlowEvent.FromName(eventName);
         var position = CreatePosition(AavePositionType.Borrowed);
         var token = _fixture.Create<TokenInfo>();
 
@@ -193,9 +193,9 @@ public class AavePositionTest
         Guid positionId,
         TokenInfo eventToken,
         decimal positionScale,
-        CacheFlowEvent type)
+        CashFlowEvent type)
     {
-        var expectedToken = type == CacheFlowEvent.Withdrawal
+        var expectedToken = type == CashFlowEvent.Withdrawal
             ? eventToken with { Amount = (decimal)(positionScale - position.PreviousScaledAmount)! }
             : eventToken with { Amount = (decimal)(position.PreviousScaledAmount - positionScale)! };
 

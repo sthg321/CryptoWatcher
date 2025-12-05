@@ -2,7 +2,7 @@ using CryptoWatcher.Shared.ValueObjects;
 
 namespace CryptoWatcher.Abstractions.CacheFlows;
 
-public interface ITokenCacheFlow : ICacheFlow
+public interface ITokenCashFlow : ICashFlow
 {
     TokenInfo Token { get; init; }
 }

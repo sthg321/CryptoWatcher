@@ -22,20 +22,20 @@ public class LiquidityPoolPositionEvent
 
     public TokenPair TokenPair { get; init; } = null!;
 
-    public CacheFlowEvent Event => DetectEvent();
+    public CashFlowEvent Event => DetectEvent();
 
-    private CacheFlowEvent DetectEvent()
+    private CashFlowEvent DetectEvent()
     {
         if (LiquidityDelta == 0)
         {
-            return CacheFlowEvent.FeeClaim;
+            return CashFlowEvent.FeeClaim;
         }
 
         if (LiquidityDelta > 0)
         {
-            return CacheFlowEvent.Deposit;
+            return CashFlowEvent.Deposit;
         }
 
-        return CacheFlowEvent.Withdrawal;
+        return CashFlowEvent.Withdrawal;
     }
 }

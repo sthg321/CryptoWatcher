@@ -13,6 +13,6 @@ public sealed class GetPositionsByWalletAndNetworkSpecification : Specification<
             .Where(position => position.NetworkName == uniswapNetwork.Name &&
                                position.ProtocolVersion == uniswapNetwork.ProtocolVersion &&
                                position.Wallet.Address == wallet.Address &&
-                               position.IsActive);
+                               position.ClosedAt == null);
     } 
 }
