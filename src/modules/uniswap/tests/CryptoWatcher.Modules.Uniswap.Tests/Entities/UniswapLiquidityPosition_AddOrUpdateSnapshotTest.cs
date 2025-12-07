@@ -8,7 +8,7 @@ namespace CryptoWatcher.Modules.Uniswap.Tests.Entities;
 public partial class UniswapLiquidityPositionTest
 {
     [Fact]
-    public void UniswapLiquidityPosition_AddOrUpdateSnapshotTest_WhenSnapshotNotExists_ShouldAddSnapshot()
+    public void Add_snapshot_for_position_if_not_exists_for_provided_date()
     {
         var chain = new UniswapChainConfigurationFaker().Generate();
         var position = new UniswapLiquidityPositionFaker(chain).Generate();
@@ -30,7 +30,7 @@ public partial class UniswapLiquidityPositionTest
     }
 
     [Fact]
-    public void UniswapLiquidityPosition_AddOrUpdateSnapshotTest_WhenSnapshotExists_ShouldUpdateSnapshot()
+    public void Update_snapshot_for_position_if_exists()
     {
         var chain = new UniswapChainConfigurationFaker().Generate();
         var position = new UniswapLiquidityPositionFaker(chain).Generate();
@@ -54,7 +54,7 @@ public partial class UniswapLiquidityPositionTest
         updatedSnapshot.NetworkName.ShouldBe(chain.Name);
         updatedSnapshot.Day.ShouldBe(expectedDate);
         updatedSnapshot.IsInRange.ShouldBe(!expectedIsInRange);
-        createdSnapshot.Token0.ShouldBeEquivalentTo(updatedToken0);
-        createdSnapshot.Token1.ShouldBeEquivalentTo(updatedToken1);
+        updatedSnapshot.Token0.ShouldBeEquivalentTo(createdSnapshot.Token0);
+        updatedSnapshot.Token1.ShouldBeEquivalentTo(createdSnapshot.Token1);
     }
 }

@@ -10,7 +10,7 @@ namespace CryptoWatcher.Modules.Uniswap.Tests.Entities;
 public partial class UniswapLiquidityPositionTest
 {
     [Fact]
-    public void UniswapLiquidityPositionTest_ShouldInitializeWithCorrectFields()
+    public void Position_initialized_with_correct_fields()
     {
         var chain = new UniswapChainConfigurationFaker().Generate();
         var positionFaker = new UniswapLiquidityPositionFaker(chain).Generate();
@@ -34,7 +34,7 @@ public partial class UniswapLiquidityPositionTest
     }
 
     [Fact]
-    public void UniswapLiquidityPositionTest_SameTokens_ShouldThrowException()
+    public void Creating_position_with_identical_tokens_throws_exception()
     {
         Should.Throw<DomainException>(() =>
         {
@@ -49,7 +49,7 @@ public partial class UniswapLiquidityPositionTest
     }
 
     [Fact]
-    public void UniswapLiquidityPositionTest_TickLowerGreatestThatTickUpper_ShouldThrowException()
+    public void Creating_position_with_invalid_tick_range_throws_exception()
     {
         Should.Throw<DomainException>(() =>
         {

@@ -228,7 +228,7 @@ public class UniswapLiquidityPosition : ICalculatablePosition<ITokenPairPosition
         var feeFromCashFlows = CalculateDailyFeesFromCashFlows(from, to)
             .Values
             .SelectMany(x => x)
-            .Sum(x => x.Token0.FeeAmountInUsd + x.Token1.FeeAmountInUsd);
+            .Sum(cashFlow => cashFlow.FeeInUsd);
 
         return feeFromPosition + feeFromCashFlows;
     }

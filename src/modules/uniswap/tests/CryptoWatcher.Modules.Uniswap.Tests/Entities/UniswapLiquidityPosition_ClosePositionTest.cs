@@ -7,7 +7,7 @@ namespace CryptoWatcher.Modules.Uniswap.Tests.Entities;
 public partial class UniswapLiquidityPositionTest
 {
     [Fact]
-    public void UniswapLiquidityPosition_ClosePositionTest_PositionIsNotClosed_ShouldClosePosition()
+    public void Position_closed_with_provided_date()
     {
         var chain = new UniswapChainConfigurationFaker().Generate();
         var position = new UniswapLiquidityPositionFaker(chain).Generate();
@@ -19,7 +19,7 @@ public partial class UniswapLiquidityPositionTest
     }
     
     [Fact]
-    public void UniswapLiquidityPosition_ClosePositionTest_PositionIsClosed_ShouldThrowException()
+    public void Cannot_close_closed_position()
     {
         var chain = new UniswapChainConfigurationFaker().Generate();
         var position = new UniswapLiquidityPositionFaker(chain).Generate();

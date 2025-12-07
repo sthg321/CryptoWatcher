@@ -15,10 +15,22 @@ public partial class UniswapLiquidityPositionTest
 {
     private readonly Faker _faker = new();
 
+    [Fact]
+    public void Calculate_position_fee_for_zero_length_period_returns_zero()
+    {
+        var randomStartDate = _faker.Date.FutureDateOnly();
+    
+        var position = CreatePositionWithSnapshots(randomStartDate, 0);
+
+        var actual = position.CalculateLifetimeTotalFeeInUsd(_faker.Date.FutureDateOnly());
+
+        actual.ShouldBe(0);
+    }
+    
     [Theory]
     [InlineData("2024.12.31")]
     [InlineData("2025.01.11")]
-    public void UniswapLiquidityPosition_CalculateFeeInUsdTest_NoFeeClaims_ShouldCalculateLastFeeWithoutFeeClaims(
+    public void Calculate_position_fee_for_period_without_claimed_fees(
         string feeClaimDate)
     {
         // Arrange
@@ -42,7 +54,7 @@ public partial class UniswapLiquidityPositionTest
     [InlineData("2025.01.01")]
     [InlineData("2025.01.03")]
     [InlineData("2025.01.10")]
-    public void UniswapLiquidityPosition_CalculateFeeInUsdTest_WithFeeClaims_ShouldCalculateLastFeeWithClaimedFee(
+    public void Calculate_position_fee_for_period_with_claimed_fees(
         string dateString)
     {
         // Arrange
@@ -68,9 +80,7 @@ public partial class UniswapLiquidityPositionTest
     [Theory]
     [InlineData(1)]
     [InlineData(-1)]
-    public void
-        UniswapLiquidityPosition_CalculateFeeInUsdTest_WithDepositOrWithdrawClaims_ShouldCalculateLastFeeWithoutEvents(
-            int liquidityDelta)
+    public void Calculate_position_fee_ignoring_deposit_and_withdrawal_events(int liquidityDelta)
     {
         // Arrange
         var startDate = DateOnly.FromDateTime(DateTime.UtcNow);
@@ -93,7 +103,8 @@ public partial class UniswapLiquidityPositionTest
     }
 
     [Fact]
-    public void UniswapLiquidityPosition_CalculateCumulativeFeeInUsdTest_WithMultipleFeeClaims_ShouldSumAllClaimedFees()
+    public void
+        Calculate_position_fee_for_period_with_multiple_fee_claims_in_different_days_()
     {
         // Arrange
         var startDate = DateOnly.Parse("2025.01.01");
@@ -127,8 +138,7 @@ public partial class UniswapLiquidityPositionTest
     }
 
     [Fact]
-    public void
-        UniswapLiquidityPosition_CalculateCumulativeFeeInUsdTest_WithFeeClaimOutsideRange_ShouldIgnoreOutOfRangeClaims()
+    public void Calculate_position_fee_ignoring_ignoring_fee_claims_outside_of_specified_period()
     {
         // Arrange
         var startDate = DateOnly.Parse("2025.01.01");

@@ -9,7 +9,7 @@ public partial class UniswapLiquidityPositionTest
     [InlineData(-1)]
     [InlineData(0)]
     [InlineData(1)]
-    public void UniswapLiquidityPosition_AddCashFlowTest_WhenCashFlowWithThisDateNotExists_ShouldAddCashFlow(
+    public void Add_cash_flow_when_none_exists_for_date(
         int liquidityDelta)
     {
         var config = new UniswapChainConfigurationFaker().Generate();
@@ -22,14 +22,14 @@ public partial class UniswapLiquidityPositionTest
 
         var actual = position.CashFlows.Single();
 
-        actual.ShouldBeEquivalentTo(cashFlow);
+        actual.ShouldBeSameAs(cashFlow);
     }
 
     [Theory]
     [InlineData(-1)]
     [InlineData(0)]
     [InlineData(1)]
-    public void UniswapLiquidityPosition_AddCashFlowTest_WhenCashFlowWithThisDateExists_ShouldIgnore(int liquidityDelta)
+    public void Do_not_add_cash_flow_with_duplicate_date(int liquidityDelta)
     {
         var config = new UniswapChainConfigurationFaker().Generate();
         var position = new UniswapLiquidityPositionFaker(config).Generate();
@@ -42,6 +42,6 @@ public partial class UniswapLiquidityPositionTest
 
         var actual = position.CashFlows.Single();
 
-        actual.ShouldBeEquivalentTo(firstCashFlow);
+        actual.ShouldBeSameAs(firstCashFlow);
     }
 }
