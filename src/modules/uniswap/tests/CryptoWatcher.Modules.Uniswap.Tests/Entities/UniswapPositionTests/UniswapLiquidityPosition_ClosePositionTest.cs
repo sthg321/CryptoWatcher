@@ -16,6 +16,7 @@ public partial class UniswapLiquidityPositionTest
         position.ClosePosition(closeDate);
         
         position.ClosedAt.ShouldBe(closeDate);
+        position.IsActive.ShouldBeFalse();
     }
     
     [Fact]
