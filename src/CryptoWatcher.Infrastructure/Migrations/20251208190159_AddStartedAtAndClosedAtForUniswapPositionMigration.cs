@@ -11,10 +11,6 @@ namespace CryptoWatcher.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "IsActive",
-                table: "UniswapLiquidityPositions");
-
             migrationBuilder.AddColumn<DateOnly>(
                 name: "ClosedAt",
                 table: "UniswapLiquidityPositions",
@@ -27,6 +23,38 @@ namespace CryptoWatcher.Infrastructure.Migrations
                 type: "date",
                 nullable: false,
                 defaultValue: new DateOnly(1, 1, 1));
+
+            migrationBuilder.Sql("""
+                                 delete from "UniswapLiquidityPositions" 
+                                 where (select count(*) from "UniswapLiquidityPositionSnapshots"
+                                   	   where "UniswapLiquidityPositions"."PositionId" = "UniswapLiquidityPositionSnapshots"."PoolPositionId" and 
+                                             "UniswapLiquidityPositions"."NetworkName" = "UniswapLiquidityPositionSnapshots"."NetworkName") = 0
+                                 """);
+            
+            migrationBuilder.Sql("""
+                                 update "UniswapLiquidityPositions"
+                                 set "CreatedAt" = (select min("Day") 
+                                                    from "UniswapLiquidityPositionSnapshots"
+                                                    where "UniswapLiquidityPositions"."PositionId" = "UniswapLiquidityPositionSnapshots"."PoolPositionId" and 
+                                                          "UniswapLiquidityPositions"."NetworkName" = "UniswapLiquidityPositionSnapshots"."NetworkName"
+                                                    )
+                                 where "PositionId" != 5148887
+                                 """);
+            
+            migrationBuilder.Sql("""
+                                 update "UniswapLiquidityPositions"
+                                 set "ClosedAt" = (select MAX("Day") 
+                                                    from "UniswapLiquidityPositionSnapshots"
+                                                    where "UniswapLiquidityPositions"."PositionId" = "UniswapLiquidityPositionSnapshots"."PoolPositionId" and 
+                                                          "UniswapLiquidityPositions"."NetworkName" = "UniswapLiquidityPositionSnapshots"."NetworkName" and
+                                                          "UniswapLiquidityPositions"."IsActive" = false 
+                                                    )
+                                                    where "PositionId" != 5148887
+                                 """);
+            
+            migrationBuilder.DropColumn(
+                name: "IsActive",
+                table: "UniswapLiquidityPositions");
         }
 
         /// <inheritdoc />
