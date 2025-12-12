@@ -60,7 +60,7 @@ public static class CalculatablePositionExtensions
                        cashFlowPair.Token1.Amount * snapshot.Token1.PriceInUsd;
             });
     }
-    
+
     private static ProfitMetric CalculateProfit<TSnapshot>(
         ICalculatablePosition<TSnapshot> position,
         DateOnly from,

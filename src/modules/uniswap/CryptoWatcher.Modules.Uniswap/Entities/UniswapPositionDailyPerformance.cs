@@ -99,7 +99,7 @@ public class UniswapPositionDailyPerformance
             NetworkName = position.NetworkName,
             PositionValueInUsd = current.TokenSumInUsd(),
             HoldValueInUsd = position.CalculateHoldValueInUsd(current.Day),
-            CommissionInUsd = position.CalculateCumulativeFeeInUsd(previous.Day, current.Day),
+            CommissionInUsd = position.CalculateFeeForPeriod(previous.Day, current.Day),
             CumulativeCommissionInUsd = position.CalculateLifetimeTotalFeeInUsd(current.Day),
             ProfitInUsd = position.CalculateProfitInUsd(previous.Day, current.Day).Amount,
             Day = current.Day,

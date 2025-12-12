@@ -13,7 +13,7 @@ public static class PositionSnapshotExtensions
             .Where(s => s.Day < day)
             .MaxBy(s => s.Day);
     }
-
+    
     public static TSnapshot? GetLastSnapshotOnOrBefore<TSnapshot>(
         this IReadOnlyCollection<TSnapshot> snapshots,
         DateOnly day)

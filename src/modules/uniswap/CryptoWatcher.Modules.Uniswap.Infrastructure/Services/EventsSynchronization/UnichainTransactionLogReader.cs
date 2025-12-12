@@ -42,7 +42,7 @@ internal class LiquidityEventLogEnricher : ILiquidityEventLogEnricher
 
             // For other cases there are 2 ERC-20 tokens in the pool. So we can get the event from the logs.
             3 => await CreateTokenPairFromLogs(chain, transactionHash, logs, ct),
-            5 => await CreateTokenPairFromLogs(chain, transactionHash, logs, ct),
+            5 or 7 => await CreateTokenPairFromLogs(chain, transactionHash, logs, ct),
             _ => LogUnknownsLog(logs, transactionHash) // check later
         };
     }

@@ -19,14 +19,14 @@ public partial class UniswapLiquidityPositionTest
     public void Calculate_position_fee_for_zero_length_period_returns_zero()
     {
         var randomStartDate = _faker.Date.FutureDateOnly();
-    
+
         var position = CreatePositionWithSnapshots(randomStartDate, 0);
 
         var actual = position.CalculateLifetimeTotalFeeInUsd(_faker.Date.FutureDateOnly());
 
         actual.ShouldBe(0);
     }
-    
+
     [Theory]
     [InlineData("2024.12.31")]
     [InlineData("2025.01.11")]
@@ -44,12 +44,12 @@ public partial class UniswapLiquidityPositionTest
         var expected = position.PoolPositionSnapshots.Last();
 
         // Act
-        var actual = position.CalculateCumulativeFeeInUsd(startDate, expected.Day);
+        var actual = position.CalculateFeeForPeriod(startDate, expected.Day);
 
         // Assert
         actual.Value.ShouldBe(expected.FeeInUsd);
     }
-    
+
     [Fact]
     public void Calculate_position_fee_with_empty_snapshot_for_start_range()
     {
@@ -58,41 +58,53 @@ public partial class UniswapLiquidityPositionTest
             DateOnly.FromDateTime(new DateTime(DateOnly.Parse("2025.01.01"), new TimeOnly(), DateTimeKind.Utc));
 
         var position = CreatePositionWithSnapshots(startDate, 10);
-        
+
         var expected = position.PoolPositionSnapshots.Last();
 
         // Act
-        var actual = position.CalculateCumulativeFeeInUsd(startDate, expected.Day);
+        var actual = position.CalculateFeeForPeriod(startDate, expected.Day);
 
         // Assert
         actual.Value.ShouldBe(expected.FeeInUsd);
     }
 
     [Theory]
-    [InlineData("2025.01.01")]
-    [InlineData("2025.01.03")]
-    [InlineData("2025.01.10")]
+    [InlineData("2025.01.01", 200)]
+    [InlineData("2025.01.02", 400)]
+    [InlineData("2025.01.03", 800)]
     public void Calculate_position_fee_for_period_with_claimed_fees(
-        string dateString)
+        string dateString, decimal expectedFeeWithoutClaimedFee)
     {
         // Arrange
-        var testDate = new DateTime(DateOnly.Parse(dateString), new TimeOnly(), DateTimeKind.Utc);
+        var testDate = DateOnly.Parse(dateString).ToMinDateTime();
 
-        var startDate =
-            DateOnly.FromDateTime(new DateTime(DateOnly.Parse("2025.01.01"), new TimeOnly(), DateTimeKind.Utc));
+        var startDate = DateOnly.Parse("2025.01.01");
 
-        var position = CreatePositionWithSnapshots(startDate, 10);
-        var snapshots = position.PoolPositionSnapshots.ToArray();
+        var position = new UniswapLiquidityPositionFaker(new UniswapChainConfigurationFaker().Generate()).Generate();
 
-        var expected = snapshots.Last();
+        var token0 = position.Token0;
+        var token1 = position.Token1;
+
+        position.AddOrUpdateSnapshot(startDate, true,
+            _faker.Crypto().RandomTokenInfoWithFee(token0, 1, 100),
+            _faker.Crypto().RandomTokenInfoWithFee(token1, 1, 100));
+
+        position.AddOrUpdateSnapshot(DateOnly.Parse("2025.01.02"), true,
+            _faker.Crypto().RandomTokenInfoWithFee(token0, 1, 200),
+            _faker.Crypto().RandomTokenInfoWithFee(token1, 1, 200));
+
+        position.AddOrUpdateSnapshot(DateOnly.Parse("2025.01.03"), true,
+            _faker.Crypto().RandomTokenInfoWithFee(token0, 1, 400),
+            _faker.Crypto().RandomTokenInfoWithFee(token1, 1, 400));
+
         var claimedCashFlow = AddFeeClaimEvent(position, 0, testDate);
 
         // Act
-        var actual = position.CalculateCumulativeFeeInUsd(startDate, expected.Day);
+        var actual = position.CalculateFeeForPeriod(startDate, DateOnly.Parse(dateString));
 
         // Assert
         claimedCashFlow.Event.ShouldBe(CashFlowEvent.FeeClaim);
-        actual.Value.ShouldBe(expected.FeeInUsd + claimedCashFlow.FeeInUsd);
+        actual.Value.ShouldBe(expectedFeeWithoutClaimedFee + claimedCashFlow.FeeInUsd);
     }
 
     [Theory]
@@ -113,7 +125,7 @@ public partial class UniswapLiquidityPositionTest
         var claimFeeEvents = AddFeeClaimEvent(position, liquidityDelta, claimFeeDate);
 
         // Act
-        var actual = position.CalculateCumulativeFeeInUsd(startDate, expected.Day);
+        var actual = position.CalculateFeeForPeriod(startDate, expected.Day);
 
         // Assert
         actual.Value.ShouldBe(expected.FeeInUsd);
@@ -124,6 +136,7 @@ public partial class UniswapLiquidityPositionTest
     public void
         Calculate_position_fee_for_period_with_multiple_fee_claims_in_different_days_()
     {
+        // Arrange
         // Arrange
         var startDate = DateOnly.Parse("2025.01.01");
         var fromDate = DateOnly.Parse("2025.01.01");
@@ -137,18 +150,20 @@ public partial class UniswapLiquidityPositionTest
         {
             new DateTime(2025, 1, 2, 0, 0, 0, DateTimeKind.Utc), // День 2
             new DateTime(2025, 1, 5, 0, 0, 0, DateTimeKind.Utc), // День 5
-            new DateTime(2025, 1, 8, 0, 0, 0, DateTimeKind.Utc)
-        }; // День 8
+            new DateTime(2025, 1, 8, 0, 0, 0, DateTimeKind.Utc)  // День 8
+        };
 
-        var claimedCashFlows =
-            claimDates.Select(date => AddFeeClaimEvent(position, 0, date)).ToList();
+        var claimedCashFlows = claimDates.Select(date => AddFeeClaimEvent(position, 0, date)).ToList();
 
-        var expectedUnclaimed = CalculateExpectedUnclaimedFee(snapshots, fromDate);
+        // ИСПРАВЛЕНО: используем новую логику GetLastSnapshotBefore
+        var snapshotBeforeFrom = snapshots.GetLastSnapshotBefore(fromDate); // null для 01.01
+        var expectedUnclaimed = snapshots.Last().FeeInUsd - (snapshotBeforeFrom?.FeeInUsd ?? 0M);
+    
         var expectedClaimed = claimedCashFlows.Sum(cf => cf.FeeInUsd);
         var expectedTotal = expectedUnclaimed + expectedClaimed;
 
         // Act
-        var actual = position.CalculateCumulativeFeeInUsd(fromDate, toDate);
+        var actual = position.CalculateFeeForPeriod(fromDate, toDate);
 
         // Assert
         actual.Value.ShouldBe(expectedTotal);
@@ -156,7 +171,7 @@ public partial class UniswapLiquidityPositionTest
     }
 
     [Fact]
-    public void Calculate_position_fee_ignoring_ignoring_fee_claims_outside_of_specified_period()
+    public void Calculate_position_fee_ignoring_fee_claims_outside_of_specified_period()
     {
         // Arrange
         var startDate = DateOnly.Parse("2025.01.01");
@@ -164,21 +179,22 @@ public partial class UniswapLiquidityPositionTest
         var toDate = DateOnly.Parse("2025.01.10");
 
         var position = CreatePositionWithSnapshots(startDate, 10);
-        var snapshots = position.PoolPositionSnapshots.ToArray();
-
-        // Claim вне диапазона (до from)
-        var outOfRangeClaimDate = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc); // День 1, до from=3
+        var snapshots = position.PoolPositionSnapshots.OrderBy(s => s.Day).ToArray();
+        
+        var outOfRangeClaimDate = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         AddFeeClaimEvent(position, _faker.Random.Number(1), outOfRangeClaimDate);
-
-        // Claim в диапазоне для сравнения
+        
         var inRangeClaimDate = new DateTime(2025, 1, 5, 0, 0, 0, DateTimeKind.Utc);
-        var claimedCashFlowIn = AddFeeClaimEvent(position, _faker.Random.Long(1), inRangeClaimDate);
+        var inRangeClaim = AddFeeClaimEvent(position, _faker.Random.Long(1), inRangeClaimDate);
 
-        var expectedUnclaimed = CalculateExpectedUnclaimedFee(snapshots, fromDate);
-        var expectedTotal = expectedUnclaimed + claimedCashFlowIn.FeeInUsd; // Только in-range claim
+        var feeOnJan2 = snapshots.First(s => s.Day == DateOnly.Parse("2025.01.02")).FeeInUsd;
+        var feeOnJan10 = snapshots.First(s => s.Day == DateOnly.Parse("2025.01.10")).FeeInUsd;
+        var expectedPositionFee = feeOnJan10 - feeOnJan2; // Разница между 10.01 и 02.01
+    
+        var expectedTotal = expectedPositionFee + inRangeClaim.FeeInUsd;
 
         // Act
-        var actual = position.CalculateCumulativeFeeInUsd(fromDate, toDate);
+        var actual = position.CalculateFeeForPeriod(fromDate, toDate);
 
         // Assert
         actual.Value.ShouldBe(expectedTotal);
@@ -216,13 +232,5 @@ public partial class UniswapLiquidityPositionTest
         };
 
         return position.AddCashFlow(positionEvent, tokenPair);
-    }
-
-    private static decimal CalculateExpectedUnclaimedFee(
-        IReadOnlyCollection<UniswapLiquidityPositionSnapshot> snapshots,
-        DateOnly fromDate)
-    {
-        var snapshotBeforeFrom = snapshots.GetLastSnapshotBefore(fromDate);
-        return snapshots.Last().FeeInUsd - (snapshotBeforeFrom?.FeeInUsd ?? 0M);
     }
 }

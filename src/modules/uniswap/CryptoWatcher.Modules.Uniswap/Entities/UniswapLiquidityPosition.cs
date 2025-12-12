@@ -228,49 +228,35 @@ public class UniswapLiquidityPosition : ICalculatablePosition<ITokenPairPosition
                Token1.Amount * lastPosition.Token1.PriceInUsd;
     }
 
-    public Money CalculateCumulativeFeeInUsd(DateOnly from, DateOnly to)
+    public Money CalculateFeeForPeriod(DateOnly from, DateOnly to)
     {
-        var snapshotBeforeFrom = PoolPositionSnapshots.GetLastSnapshotBefore(from);
-
-        var snapshotAtOrBeforeTo = PoolPositionSnapshots.GetLastSnapshotOnOrBefore(to);
-
-        if (snapshotAtOrBeforeTo is null)
-        {
-            return 0;
-        }
-
-        var feeFromPosition = snapshotAtOrBeforeTo.FeeInUsd - (snapshotBeforeFrom?.FeeInUsd ?? 0M);
-
+        var snapshotAtStart = PoolPositionSnapshots.GetLastSnapshotBefore(from);
+        var snapshotAtEnd = PoolPositionSnapshots.GetLastSnapshotOnOrBefore(to);
+    
+        if (snapshotAtEnd is null) return 0;
+    
+        var feeFromPosition = snapshotAtEnd.FeeInUsd - (snapshotAtStart?.FeeInUsd ?? 0M);
         var feeFromCashFlows = CalculateDailyFeesFromCashFlows(from, to)
-            .Values
-            .SelectMany(x => x)
-            .Sum(cashFlow => cashFlow.FeeInUsd);
-
+            .Values.SelectMany(x => x).Sum(c => c.FeeInUsd);
+    
         return feeFromPosition + feeFromCashFlows;
     }
 
-    public Money CalculateTotalFeeInUsd(DateOnly from, DateOnly to)
+    public Money CalculateDailyFeeProfit(DateOnly day)
     {
-        if (PoolPositionSnapshots.Count == 0)
-        {
+        var todaySnapshot = PoolPositionSnapshots.GetLastSnapshotOnOrBefore(day);
+    
+        if (todaySnapshot is null)
             return 0;
-        }
-
-        var cashFlows = CalculateDailyFeesFromCashFlows(from, to);
-
-        var claimed = 0M;
-
-        var lastSnapshot = PoolPositionSnapshots.GetNearestSnapshot(to, true)!;
-
-        foreach (var snapshot in PoolPositionSnapshots.Where(snapshot => snapshot.Day >= from && snapshot.Day <= to))
-        {
-            if (cashFlows.TryGetValue(snapshot.Day, out var positionCashFlows))
-            {
-                claimed += positionCashFlows.Sum(flow => flow.FeeInUsd);
-            }
-        }
-
-        return claimed + lastSnapshot.FeeInUsd;
+    
+        var prevSnapshot = PoolPositionSnapshots.GetLastSnapshotBefore(day);
+    
+        var feeFromPosition = todaySnapshot.FeeInUsd - (prevSnapshot?.FeeInUsd ?? 0M);
+    
+        var feeFromCashFlows = CalculateDailyFeesFromCashFlows(day, day)
+            .Values.SelectMany(x => x).Sum(c => c.FeeInUsd);
+    
+        return feeFromPosition + feeFromCashFlows;
     }
 
     /// <summary>

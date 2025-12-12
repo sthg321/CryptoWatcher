@@ -66,6 +66,11 @@ public partial class Crypto : DataSet
     {
         return TokenInfoWithFee.Create(token, Random.Decimal(0.0001m, 200_000m), Random.Decimal(0, 20000));
     }
+    
+    public TokenInfoWithFee RandomTokenInfoWithFee(TokenInfo token, decimal amount, decimal priceInUsd)
+    {
+        return TokenInfoWithFee.Create(token, amount, priceInUsd);
+    }
 
     public TokenInfoWithFee RandomTokenInfoWithAddress()
     {
