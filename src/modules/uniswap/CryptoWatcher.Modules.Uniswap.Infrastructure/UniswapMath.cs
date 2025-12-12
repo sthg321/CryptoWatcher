@@ -36,8 +36,7 @@ internal class UniswapMath : IUniswapMath
         };
     }
 
-    public TokenPair CalculateClaimableFee(LiquidityPool pool,
-        IUniswapPosition position)
+    public TokenPair CalculateClaimableFee(LiquidityPool pool, IUniswapPosition position)
     {
         var feeGrowthInside0 = GetFeeGrowthInside(
             position.TickLower, position.TickUpper, pool.Tick,
@@ -52,23 +51,32 @@ internal class UniswapMath : IUniswapMath
             pool.LowerTick.FeeGrowthOutside1X128,
             pool.UpperTick.FeeGrowthOutside1X128
         );
-
-        var earned0 = position.Liquidity * (feeGrowthInside0 - position.FeeGrowthInside0LastX128) /
-                      BigInteger.Pow(2, 128);
-
-        var earned1 = position.Liquidity * (feeGrowthInside1 - position.FeeGrowthInside1LastX128) /
-                      BigInteger.Pow(2, 128);
-
-        var earnedToken0 = new Token { Address = position.Token0, Balance = earned0 };
-        var earnedToken1 = new Token { Address = position.Token1, Balance = earned1 };
-
+    
+        var diff0 = CalculateFeeGrowthDiff(feeGrowthInside0, position.FeeGrowthInside0LastX128);
+        var diff1 = CalculateFeeGrowthDiff(feeGrowthInside1, position.FeeGrowthInside1LastX128);
+    
+        var earned0 = position.Liquidity * diff0 / BigInteger.Pow(2, 128);
+        var earned1 = position.Liquidity * diff1 / BigInteger.Pow(2, 128);
+    
         return new TokenPair
         {
-            Token0 = earnedToken0,
-            Token1 = earnedToken1
+            Token0 = new Token { Address = position.Token0, Balance = earned0 },
+            Token1 = new Token { Address = position.Token1, Balance = earned1 }
         };
     }
 
+    private BigInteger CalculateFeeGrowthDiff(BigInteger current, BigInteger last)
+    {
+        if (current >= last)
+        {
+            return current - last;
+        }
+
+        // (type(uint256).max - last) + current + 1
+        var maxUint256 = BigInteger.Pow(2, 256) - 1;
+        return maxUint256 - last + current + 1;
+    }
+    
     private static (BigInteger amount0, BigInteger amount1) CalculateTokenAmounts(
         BigInteger sqrtRatioX96,
         BigInteger sqrtRatioAX96,
