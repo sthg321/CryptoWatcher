@@ -27,7 +27,8 @@ public class UniswapReportService : IPlatformDailyReportDataProvider
         var result = new Dictionary<Wallet, List<PlatformDailyReport>>();
         foreach (var poolPositionByWallet in poolPositions.GroupBy(position => position.WalletAddress))
         {
-            foreach (var poolPosition in poolPositionByWallet)
+            foreach (var poolPosition in poolPositionByWallet.OrderBy(position => position.PositionId)
+                         .ThenBy(position => position.IsClosed))
             {
                 if (poolPosition.PoolPositionSnapshots.Count == 0)
                 {
