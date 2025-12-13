@@ -38,10 +38,10 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
         [
             nameof(HyperliquidVaultPosition.VaultAddress), nameof(HyperliquidVaultPosition.WalletAddress)
         ],
-        [typeof(HyperliquidVaultEvent)] =
+        [typeof(HyperliquidPositionCashFlow)] =
         [
-            nameof(HyperliquidVaultEvent.VaultAddress), nameof(HyperliquidVaultEvent.WalletAddress),
-            nameof(HyperliquidVaultEvent.Date)
+            nameof(HyperliquidPositionCashFlow.VaultAddress), nameof(HyperliquidPositionCashFlow.WalletAddress),
+            nameof(HyperliquidPositionCashFlow.Date)
         ],
         [typeof(HyperliquidVaultPositionSnapshot)] =
         [

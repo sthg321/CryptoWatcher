@@ -1,4 +1,3 @@
-using System.Security.Cryptography;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Extensions;
@@ -52,9 +51,9 @@ public class AaveReportDataService : IPlatformDailyReportDataProvider
                             DailyProfitInUsdPercent = profitInUsd.Percent * sign,
                             DailyProfitInToken = profitInToken.Amount * sign,
                             CashFlowsInUsd =
-                                position.PositionEvents.CalculateNetTokenCashFlowInUsd(snapshot.Day, snapshot.Day),
+                                position.CashFlows.CalculateNetTokenCashFlowInUsd(snapshot.Day, snapshot.Day),
                             CashFlowsInToken =
-                                position.PositionEvents.CalculateNetTokenCashFlowInToken(snapshot.Day, snapshot.Day),
+                                position.CashFlows.CalculateNetTokenCashFlowInToken(snapshot.Day, snapshot.Day),
                         };
                     })
                     .ToArray();

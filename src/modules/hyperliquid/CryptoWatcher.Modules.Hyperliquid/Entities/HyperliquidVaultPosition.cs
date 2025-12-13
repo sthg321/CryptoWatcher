@@ -1,6 +1,4 @@
 using CryptoWatcher.Abstractions;
-using CryptoWatcher.Abstractions.CacheFlows;
-using CryptoWatcher.Abstractions.PositionSnapshots;
 using CryptoWatcher.Exceptions;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.ValueObjects;
@@ -12,10 +10,11 @@ namespace CryptoWatcher.Modules.Hyperliquid.Entities;
 /// This class encapsulates various properties and methods to track and analyze the performance of the vault,
 /// including event history, position snapshots, and profit calculations over specified time periods.
 /// </summary>
-public class HyperliquidVaultPosition : ICalculatablePosition<ITokenPositionSnapshot>
+public class
+    HyperliquidVaultPosition : IDeFiPosition<HyperliquidVaultPositionSnapshot, HyperliquidPositionCashFlow>
 {
     private readonly List<HyperliquidVaultPositionSnapshot> _positionSnapshots = [];
-    private readonly List<HyperliquidVaultEvent> _vaultEvents = [];
+    private readonly List<HyperliquidPositionCashFlow> _cashFlows = [];
 
     public decimal InitialBalance { get; init; }
 
@@ -58,7 +57,7 @@ public class HyperliquidVaultPosition : ICalculatablePosition<ITokenPositionSnap
     /// Each event describes a specific action, such as deposits or withdrawals, along with relevant details.
     /// It is utilized to analyze vault performance, track cash flow, and compute metrics like percentage profit or rate of return.
     /// </remarks>
-    public IReadOnlyCollection<HyperliquidVaultEvent> VaultEvents => _vaultEvents;
+    public IReadOnlyCollection<HyperliquidPositionCashFlow> CashFlows => _cashFlows;
 
     /// <summary>
     /// Contains a collection of snapshots representing the states of a vault's position over time.
@@ -69,10 +68,6 @@ public class HyperliquidVaultPosition : ICalculatablePosition<ITokenPositionSnap
     /// It is utilized for analysis, reporting, and tracking historical position data within the Hyperliquid module.
     /// </remarks>
     public IReadOnlyCollection<HyperliquidVaultPositionSnapshot> PositionSnapshots => _positionSnapshots;
-
-    public IReadOnlyCollection<ITokenPositionSnapshot> GetPositionSnapshots() => PositionSnapshots;
-
-    public IReadOnlyCollection<ICashFlow> GetCashFlows() => VaultEvents;
 
     public void AddOrUpdateSnapshot(HyperliquidVaultPositionSnapshot snapshot)
     {
@@ -88,18 +83,19 @@ public class HyperliquidVaultPosition : ICalculatablePosition<ITokenPositionSnap
         existedSnapshot.UpdateFrom(snapshot);
     }
 
-    public void AddCashFlowIfNotExists(HyperliquidVaultEvent vaultEvent)
+    public void AddCashFlowIfNotExists(HyperliquidPositionCashFlow positionCashFlow)
     {
         var existedSnapshot =
-            _vaultEvents.FirstOrDefault(positionSnapshot => positionSnapshot.Date == vaultEvent.Date &&
-                                                            positionSnapshot.Token.Amount == vaultEvent.Token.Amount);
+            _cashFlows.FirstOrDefault(positionSnapshot => positionSnapshot.Date == positionCashFlow.Date &&
+                                                            positionSnapshot.Token.Amount ==
+                                                            positionCashFlow.Token.Amount);
 
         if (existedSnapshot is not null)
         {
             return;
         }
 
-        _vaultEvents.Add(vaultEvent);
+        _cashFlows.Add(positionCashFlow);
     }
 
     public void ClosePosition(DateOnly closedAt)

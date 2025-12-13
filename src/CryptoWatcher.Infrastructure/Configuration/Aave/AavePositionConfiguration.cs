@@ -14,7 +14,7 @@ public class AavePositionConfiguration : IEntityTypeConfiguration<AavePosition>
         builder.Property(aavePosition => aavePosition.TokenAddress).ConfigureEvmAddress();
 
         builder.Navigation(position => position.PositionSnapshots).UsePropertyAccessMode(PropertyAccessMode.Field);
-        builder.Navigation(position => position.PositionEvents).UsePropertyAccessMode(PropertyAccessMode.Field);
+        builder.Navigation(position => position.CashFlows).UsePropertyAccessMode(PropertyAccessMode.Field);
         builder.Navigation(position => position.PositionPeriods).UsePropertyAccessMode(PropertyAccessMode.Field);
 
         builder.HasMany(aavePosition => aavePosition.PositionPeriods)
@@ -29,7 +29,7 @@ public class AavePositionConfiguration : IEntityTypeConfiguration<AavePosition>
             .IsRequired()
             .OnDelete(DeleteBehavior.Restrict);
         
-        builder.HasMany(aavePosition => aavePosition.PositionEvents)
+        builder.HasMany(aavePosition => aavePosition.CashFlows)
             .WithOne()
             .HasForeignKey(snapshot => snapshot.PositionId)
             .IsRequired()

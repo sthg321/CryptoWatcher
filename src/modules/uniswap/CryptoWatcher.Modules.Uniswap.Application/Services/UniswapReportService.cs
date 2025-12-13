@@ -30,7 +30,7 @@ public class UniswapReportService : IPlatformDailyReportDataProvider
             foreach (var poolPosition in poolPositionByWallet.OrderBy(position => position.PositionId)
                          .ThenBy(position => position.IsClosed))
             {
-                if (poolPosition.PoolPositionSnapshots.Count == 0)
+                if (poolPosition.PositionSnapshots.Count == 0)
                 {
                     continue;
                 }
@@ -38,11 +38,11 @@ public class UniswapReportService : IPlatformDailyReportDataProvider
                 var profit = poolPosition.CalculateProfitInUsd(from, to);
                 var report = new UniswapDailyReport
                 {
-                    PositionInUsd = poolPosition.PoolPositionSnapshots.MaxBy(snapshot => snapshot.Day)!.TokenSumInUsd(),
+                    PositionInUsd = poolPosition.PositionSnapshots.MaxBy(snapshot => snapshot.Day)!.TokenSumInUsd(),
                     ProfitInUsd = profit.Amount,
                     ProfitInPercent = profit.Percent,
                     TotalHoldInUsd = poolPosition.CalculateHoldValueInUsd(to),
-                    ReportItems = poolPosition.PoolPositionSnapshots.Select(positionSnapshot =>
+                    ReportItems = poolPosition.PositionSnapshots.Select(positionSnapshot =>
                         new UniswapDailyReportItem
                         {
                             Network = poolPosition.NetworkName,

@@ -19,7 +19,7 @@ public sealed class UniswapPositionsForReportSpecification : Specification<Unisw
         var walletAddresses = wallet.Select(x => x.Address.Value).ToArray();
         Query
             .Include(position => position.Wallet)
-            .Include(poolPosition => poolPosition.PoolPositionSnapshots
+            .Include(poolPosition => poolPosition.PositionSnapshots
                 .Where(snapshot => snapshot.Day >= from && snapshot.Day <= to)
                 .OrderBy(snapshot => snapshot.Day)
             )

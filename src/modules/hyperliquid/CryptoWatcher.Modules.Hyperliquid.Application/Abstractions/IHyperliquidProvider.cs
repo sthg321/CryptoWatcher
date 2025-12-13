@@ -6,7 +6,7 @@ namespace CryptoWatcher.Modules.Hyperliquid.Application.Abstractions;
 
 public interface IHyperliquidProvider
 {
-    Task<HyperliquidVaultEvent[]> GetCashFlowEventsAsync(Wallet wallet,
+    Task<HyperliquidPositionCashFlow[]> GetCashFlowEventsAsync(Wallet wallet,
         DateOnly from, DateOnly to,
         CancellationToken ct = default);
 

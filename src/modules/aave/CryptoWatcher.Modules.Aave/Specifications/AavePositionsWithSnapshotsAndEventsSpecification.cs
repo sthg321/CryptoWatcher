@@ -12,7 +12,7 @@ public class AavePositionsWithSnapshotsAndEventsSpecification : Specification<Aa
         var walletAddresses = wallets.Select(wallet => wallet.Address.Value).ToArray();
         Query
             .Include(position => position.Wallet)
-            .Include(position => position.PositionEvents.Where(@event =>
+            .Include(position => position.CashFlows.Where(@event =>
                     @event.Date >= from.ToMinDateTime() && @event.Date <= to.ToMaxDateTime())
                 .OrderBy(@event => @event.Date)
             )

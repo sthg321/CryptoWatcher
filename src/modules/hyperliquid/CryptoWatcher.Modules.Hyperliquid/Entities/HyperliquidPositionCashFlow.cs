@@ -9,9 +9,9 @@ namespace CryptoWatcher.Modules.Hyperliquid.Entities;
 /// Represents an event associated with a Hyperliquid vault. These events track interactions such as deposits or withdrawals on specific vaults
 /// and are linked to a specific wallet within the Hyperliquid module.
 /// </summary>
-public class HyperliquidVaultEvent : ITokenCashFlow
+public class HyperliquidPositionCashFlow : ITokenCashFlow
 {
-    public HyperliquidVaultEvent()
+    public HyperliquidPositionCashFlow()
     {
         
     }

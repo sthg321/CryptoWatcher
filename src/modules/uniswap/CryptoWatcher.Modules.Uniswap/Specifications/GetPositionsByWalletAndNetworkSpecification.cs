@@ -9,7 +9,7 @@ public sealed class GetPositionsByWalletAndNetworkSpecification : Specification<
     public GetPositionsByWalletAndNetworkSpecification(UniswapChainConfiguration uniswapNetwork, Wallet wallet)
     {
         Query
-            .Include(position => position.PoolPositionSnapshots)
+            .Include(position => position.PositionSnapshots)
             .Where(position => position.NetworkName == uniswapNetwork.Name &&
                                position.ProtocolVersion == uniswapNetwork.ProtocolVersion &&
                                position.Wallet.Address == wallet.Address &&

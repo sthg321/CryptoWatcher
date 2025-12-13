@@ -11,6 +11,6 @@ public class HyperliquidPositionsWithSnapshotsAndCashFlowByWallet : Specificatio
         Query.Where(position => position.WalletAddress == wallet.Address && !position.ClosedAt.HasValue)
             .Include(position =>
                 position.PositionSnapshots.Where(snapshot => snapshot.Day >= from && snapshot.Day <= to))
-            .Include(position => position.VaultEvents);
+            .Include(position => position.CashFlows);
     }
 }

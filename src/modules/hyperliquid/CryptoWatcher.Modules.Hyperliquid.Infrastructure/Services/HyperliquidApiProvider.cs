@@ -20,7 +20,7 @@ public class HyperliquidApiProvider : IHyperliquidProvider
         _client = client;
     }
 
-    public async Task<HyperliquidVaultEvent[]> GetCashFlowEventsAsync(Wallet wallet,
+    public async Task<HyperliquidPositionCashFlow[]> GetCashFlowEventsAsync(Wallet wallet,
         DateOnly from, DateOnly to,
         CancellationToken ct = default)
     {
@@ -45,12 +45,12 @@ public class HyperliquidApiProvider : IHyperliquidProvider
         }).ToArray();
     }
 
-    private static HyperliquidVaultEvent MapToVaultEvent(UserNonFundingLedgerUpdate update, Wallet wallet)
+    private static HyperliquidPositionCashFlow MapToVaultEvent(UserNonFundingLedgerUpdate update, Wallet wallet)
     {
         var day = DateTime.UnixEpoch.AddMilliseconds(update.Time);
         return update.Delta switch
         {
-            VaultDeposit vaultDeposit => new HyperliquidVaultEvent
+            VaultDeposit vaultDeposit => new HyperliquidPositionCashFlow
             {
                 Token = new TokenInfo { Amount = vaultDeposit.Usdc, PriceInUsd = 1, Symbol = "USDC" },
                 Event = CashFlowEvent.Deposit,
@@ -58,7 +58,7 @@ public class HyperliquidApiProvider : IHyperliquidProvider
                 WalletAddress = wallet.Address,
                 Date = day
             },
-            VaultWithdraw vaultWithdraw => new HyperliquidVaultEvent
+            VaultWithdraw vaultWithdraw => new HyperliquidPositionCashFlow
             {
                 Token = new TokenInfo { Amount = vaultWithdraw.NetWithdrawnUsd, PriceInUsd = 1, Symbol = "USDC" },
                 Event = CashFlowEvent.Withdrawal,

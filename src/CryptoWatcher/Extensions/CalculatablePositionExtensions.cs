@@ -8,7 +8,7 @@ namespace CryptoWatcher.Extensions;
 public static class CalculatablePositionExtensions
 {
     public static ProfitMetric CalculateProfitInToken(
-        this ICalculatablePosition<ITokenPositionSnapshot> position, DateOnly from, DateOnly to)
+        this IDeFiPosition<ITokenPositionSnapshot, ITokenCashFlow> position, DateOnly from, DateOnly to)
     {
         return CalculateProfit(
             position,
@@ -20,7 +20,7 @@ public static class CalculatablePositionExtensions
     }
 
     public static ProfitMetric CalculateProfitInUsd(
-        this ICalculatablePosition<ITokenPositionSnapshot> position, DateOnly from, DateOnly to)
+        this IDeFiPosition<ITokenPositionSnapshot, ITokenCashFlow> position, DateOnly from, DateOnly to)
     {
         return CalculateProfit(
             position,
@@ -32,7 +32,7 @@ public static class CalculatablePositionExtensions
     }
 
     public static ProfitMetric CalculateProfitInUsd(
-        this ICalculatablePosition<ITokenPairPositionSnapshot> position, DateOnly from, DateOnly to)
+        this IDeFiPosition<ITokenPairPositionSnapshot, ITokenPairCashFlow> position, DateOnly from, DateOnly to)
     {
         return CalculateProfit(
             position,
@@ -49,16 +49,17 @@ public static class CalculatablePositionExtensions
             });
     }
 
-    private static ProfitMetric CalculateProfit<TSnapshot>(
-        ICalculatablePosition<TSnapshot> position,
+    private static ProfitMetric CalculateProfit<TSnapshot, TCashFlow>(
+        IDeFiPosition<TSnapshot, TCashFlow> position,
         DateOnly from,
         DateOnly to,
         Func<TSnapshot, decimal> getValue,
         Func<ICashFlow, TSnapshot, decimal> getCashFlowAmount)
         where TSnapshot : IPositionSnapshot
+        where TCashFlow : ICashFlow
     {
-        var snapshots = position.GetPositionSnapshots();
-        var cashFlows = position.GetCashFlows();
+        var snapshots = position.PositionSnapshots;
+        var cashFlows = position.CashFlows;
 
         var filteredSnapshots = snapshots
             .Where(snapshot => snapshot.Day >= from && snapshot.Day <= to)

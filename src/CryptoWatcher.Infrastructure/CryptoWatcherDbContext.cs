@@ -85,7 +85,7 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
     /// It is designed to store and retrieve transactional information, such as events specific
     /// to individual position records, including token details and relevant identifiers.
     /// </remarks>
-    public DbSet<AavePositionEvent> AavePositionEvents => Set<AavePositionEvent>();
+    public DbSet<AavePositionCashFlow> AavePositionEvents => Set<AavePositionCashFlow>();
 
     #endregion
 
@@ -161,7 +161,7 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
     public DbSet<HyperliquidPositionDailyPerformance> HyperliquidPositionDailyPerformances =>
         Set<HyperliquidPositionDailyPerformance>();
     
-    public DbSet<HyperliquidVaultEvent> HyperliquidVaultEvents => Set<HyperliquidVaultEvent>();
+    public DbSet<HyperliquidPositionCashFlow> HyperliquidVaultEvents => Set<HyperliquidPositionCashFlow>();
 
     #endregion
 

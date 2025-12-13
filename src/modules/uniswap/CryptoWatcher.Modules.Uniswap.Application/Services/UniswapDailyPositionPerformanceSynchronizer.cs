@@ -32,14 +32,14 @@ public class UniswapDailyPositionPerformanceSynchronizer :
         var result = new List<UniswapPositionDailyPerformance>();
         foreach (var uniswapLiquidityPosition in positions)
         {
-            if (uniswapLiquidityPosition.PoolPositionSnapshots.Count == 0)
+            if (uniswapLiquidityPosition.PositionSnapshots.Count == 0)
             {
                 continue;
             }
 
             UniswapLiquidityPositionSnapshot? previousPositionSnapshot = null;
 
-            foreach (var currentSnapshot in uniswapLiquidityPosition.PoolPositionSnapshots)
+            foreach (var currentSnapshot in uniswapLiquidityPosition.PositionSnapshots)
             {
                 previousPositionSnapshot ??= currentSnapshot;
 

@@ -1,6 +1,5 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.CacheFlows;
-using CryptoWatcher.Abstractions.PositionSnapshots;
 using CryptoWatcher.Exceptions;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.Shared.ValueObjects;
@@ -18,10 +17,10 @@ namespace CryptoWatcher.Modules.Aave.Entities;
 /// This class maintains the lifecycle of a position, including its creation and optional closure dates,
 /// along with snapshots of token-specific metrics over time.
 /// </remarks>
-public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
+public class AavePosition : IDeFiPosition<AavePositionSnapshot, AavePositionCashFlow>
 {
     private readonly List<AavePositionSnapshot> _positionSnapshots = [];
-    private readonly List<AavePositionEvent> _positionEvents = [];
+    private readonly List<AavePositionCashFlow> _positionCashFlows = [];
     private readonly List<AavePositionPeriod> _positionPeriods = [];
 
     [UsedImplicitly] // for ef core
@@ -29,7 +28,8 @@ public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
     {
     }
 
-    public AavePosition(AaveChainConfiguration chain, Wallet wallet, AavePositionType positionType, EvmAddress tokenAddress,
+    public AavePosition(AaveChainConfiguration chain, Wallet wallet, AavePositionType positionType,
+        EvmAddress tokenAddress,
         DateOnly createdAtDay)
     {
         Network = chain.Name;
@@ -70,7 +70,7 @@ public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
     /// It plays a critical role in classifying and managing position-related data.
     /// </remarks>
     public AavePositionType PositionType { get; private set; }
- 
+
     /// <summary>
     /// Represents the wallet address associated with the liquidity pool position.
     /// </summary>
@@ -114,22 +114,17 @@ public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
     /// Provides a readonly collection of events associated with the Aave position.
     /// </summary>
     /// <remarks>
-    /// This property contains a list of <see cref="AavePositionEvent"/> objects detailing
+    /// This property contains a list of <see cref="AavePositionCashFlow"/> objects detailing
     /// the sequence of events, such as deposits, withdrawals, and other updates, that
     /// have occurred within the lifecycle of the Aave position. These events reflect
     /// transactional or state changes tied to the position over time.
     /// </remarks>
-    public IReadOnlyCollection<AavePositionEvent> PositionEvents => _positionEvents;
-    
+    public IReadOnlyCollection<AavePositionCashFlow> CashFlows => _positionCashFlows;
+
     public IReadOnlyCollection<AavePositionPeriod> PositionPeriods => _positionPeriods;
+ 
+    [Projectable] public bool IsActive() => PositionPeriods.Any(period => !period.ClosedAtDay.HasValue);
 
-    public IReadOnlyCollection<ITokenPositionSnapshot> GetPositionSnapshots() => PositionSnapshots;
-
-    public IReadOnlyCollection<ICashFlow> GetCashFlows() => PositionEvents;
-
-    [Projectable]
-    public  bool IsActive() => PositionPeriods.Any(period => !period.ClosedAtDay.HasValue);
-    
     /// <summary>
     /// Closes the position by setting the closure date.
     /// </summary>
@@ -187,7 +182,7 @@ public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
 
         if (PreviousScaledAmount < positionScale)
         {
-            _positionEvents.Add(new AavePositionEvent
+            _positionCashFlows.Add(new AavePositionCashFlow
             {
                 PositionId = Id,
                 Date = eventDateTime,
@@ -197,7 +192,7 @@ public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
         }
         else
         {
-            _positionEvents.Add(new AavePositionEvent
+            _positionCashFlows.Add(new AavePositionCashFlow
             {
                 PositionId = Id,
                 Date = eventDateTime,
@@ -207,5 +202,5 @@ public class AavePosition : ICalculatablePosition<ITokenPositionSnapshot>
         }
 
         PreviousScaledAmount = positionScale;
-    } 
+    }
 }

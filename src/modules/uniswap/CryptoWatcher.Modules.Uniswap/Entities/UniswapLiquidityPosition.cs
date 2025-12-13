@@ -19,7 +19,8 @@ namespace CryptoWatcher.Modules.Uniswap.Entities;
 /// and the associated blockchain uniswapNetwork. This class also includes information on whether the
 /// position is currently active and the date it was created.
 /// </remarks>
-public class UniswapLiquidityPosition : ICalculatablePosition<ITokenPairPositionSnapshot>
+public class
+    UniswapLiquidityPosition : IDeFiPosition<UniswapLiquidityPositionSnapshot, UniswapLiquidityPositionCashFlow>
 {
     private readonly List<UniswapLiquidityPositionSnapshot> _positionSnapshots = [];
     private readonly List<UniswapLiquidityPositionCashFlow> _cashFlows = [];
@@ -111,7 +112,7 @@ public class UniswapLiquidityPosition : ICalculatablePosition<ITokenPairPosition
     /// When position created
     /// </summary>
     public DateOnly CreatedAt { get; private set; }
-    
+
     /// <summary>
     /// When position closed
     /// </summary>
@@ -154,7 +155,7 @@ public class UniswapLiquidityPosition : ICalculatablePosition<ITokenPairPosition
     /// These snapshots can be used to track changes and analyze the evolution of the position over time,
     /// including performance metrics, token balances, and other relevant data.
     /// </remarks>
-    public IReadOnlyCollection<UniswapLiquidityPositionSnapshot> PoolPositionSnapshots => _positionSnapshots;
+    public IReadOnlyCollection<UniswapLiquidityPositionSnapshot> PositionSnapshots => _positionSnapshots;
 
     public IReadOnlyCollection<UniswapLiquidityPositionCashFlow> CashFlows => _cashFlows;
 
@@ -165,7 +166,7 @@ public class UniswapLiquidityPosition : ICalculatablePosition<ITokenPairPosition
         {
             throw new DomainException(PositionClosedException);
         }
-        
+
         var existedSnapshot = _positionSnapshots.FirstOrDefault(snapshot => snapshot.Day == day);
         if (existedSnapshot is null)
         {
@@ -187,7 +188,7 @@ public class UniswapLiquidityPosition : ICalculatablePosition<ITokenPairPosition
         {
             throw new DomainException(PositionClosedException);
         }
-        
+
         var existedSnapshot = _cashFlows.FirstOrDefault(snapshot => snapshot.Date == positionEvent.TimeStamp);
         if (existedSnapshot is null)
         {
@@ -212,12 +213,12 @@ public class UniswapLiquidityPosition : ICalculatablePosition<ITokenPairPosition
 
     public Money CalculateHoldValueInUsd(DateOnly to)
     {
-        if (PoolPositionSnapshots.Count == 0)
+        if (PositionSnapshots.Count == 0)
         {
             return 0;
         }
 
-        var lastPosition = PoolPositionSnapshots.GetNearestSnapshot(to, true);
+        var lastPosition = PositionSnapshots.GetNearestSnapshot(to, true);
 
         if (lastPosition is null)
         {
@@ -230,32 +231,32 @@ public class UniswapLiquidityPosition : ICalculatablePosition<ITokenPairPosition
 
     public Money CalculateFeeForPeriod(DateOnly from, DateOnly to)
     {
-        var snapshotAtStart = PoolPositionSnapshots.GetLastSnapshotBefore(from);
-        var snapshotAtEnd = PoolPositionSnapshots.GetLastSnapshotOnOrBefore(to);
-    
+        var snapshotAtStart = PositionSnapshots.GetLastSnapshotBefore(from);
+        var snapshotAtEnd = PositionSnapshots.GetLastSnapshotOnOrBefore(to);
+
         if (snapshotAtEnd is null) return 0;
-    
+
         var feeFromPosition = snapshotAtEnd.FeeInUsd - (snapshotAtStart?.FeeInUsd ?? 0M);
         var feeFromCashFlows = CalculateDailyFeesFromCashFlows(from, to)
             .Values.SelectMany(x => x).Sum(c => c.FeeInUsd);
-    
+
         return feeFromPosition + feeFromCashFlows;
     }
 
     public Money CalculateDailyFeeProfit(DateOnly day)
     {
-        var todaySnapshot = PoolPositionSnapshots.GetLastSnapshotOnOrBefore(day);
-    
+        var todaySnapshot = PositionSnapshots.GetLastSnapshotOnOrBefore(day);
+
         if (todaySnapshot is null)
             return 0;
-    
-        var prevSnapshot = PoolPositionSnapshots.GetLastSnapshotBefore(day);
-    
+
+        var prevSnapshot = PositionSnapshots.GetLastSnapshotBefore(day);
+
         var feeFromPosition = todaySnapshot.FeeInUsd - (prevSnapshot?.FeeInUsd ?? 0M);
-    
+
         var feeFromCashFlows = CalculateDailyFeesFromCashFlows(day, day)
             .Values.SelectMany(x => x).Sum(c => c.FeeInUsd);
-    
+
         return feeFromPosition + feeFromCashFlows;
     }
 
@@ -275,12 +276,12 @@ public class UniswapLiquidityPosition : ICalculatablePosition<ITokenPairPosition
     /// <returns>The total lifetime fees as a Money value in USD.</returns>
     public Money CalculateLifetimeTotalFeeInUsd(DateOnly to)
     {
-        if (PoolPositionSnapshots.Count == 0)
+        if (PositionSnapshots.Count == 0)
         {
             return 0;
         }
 
-        var lastSnapshot = PoolPositionSnapshots.GetNearestSnapshot(to, true);
+        var lastSnapshot = PositionSnapshots.GetNearestSnapshot(to, true);
 
         if (lastSnapshot == null)
         {
@@ -306,15 +307,5 @@ public class UniswapLiquidityPosition : ICalculatablePosition<ITokenPairPosition
             .ToDictionary(
                 g => g.Key,
                 g => g.ToArray());
-    }
-
-    public IReadOnlyCollection<ICashFlow> GetCashFlows()
-    {
-        return CashFlows;
-    }
-
-    public IReadOnlyCollection<ITokenPairPositionSnapshot> GetPositionSnapshots()
-    {
-        return PoolPositionSnapshots;
     }
 }

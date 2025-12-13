@@ -116,7 +116,7 @@ public class AavePositionTest
 
         position.AddOrUpdateSnapshot(token, expectedScaledAmount, syncDate, _timeProviderMock.Object);
 
-        Assert.Empty(position.PositionEvents);
+        Assert.Empty(position.CashFlows);
     }
 
     [Theory]
@@ -142,10 +142,10 @@ public class AavePositionTest
         position.AddOrUpdateSnapshot(token, updatedScaleAmount, syncDate.AddDays(1),
             _timeProviderMock.Object);
 
-        Assert.Single(position.PositionEvents);
+        Assert.Single(position.CashFlows);
         AssertThatAaveEventCorrect(
             position,
-            position.PositionEvents.First(),
+            position.CashFlows.First(),
             position.Id,
             token,
             initialScaleAmount,
@@ -167,10 +167,10 @@ public class AavePositionTest
         position.AddOrUpdateSnapshot(token, oldScaleAmount, TestDate, _timeProviderMock.Object);
         position.AddOrUpdateSnapshot(token, newScaleAmount, TestDate, _timeProviderMock.Object);
 
-        Assert.Single(position.PositionEvents);
+        Assert.Single(position.CashFlows);
         AssertThatAaveEventCorrect(
             position,
-            position.PositionEvents.Last(),
+            position.CashFlows.Last(),
             position.Id,
             token,
             oldScaleAmount,
@@ -189,7 +189,7 @@ public class AavePositionTest
 
     private static void AssertThatAaveEventCorrect(
         AavePosition position,
-        AavePositionEvent @event,
+        AavePositionCashFlow cashFlow,
         Guid positionId,
         TokenInfo eventToken,
         decimal positionScale,
@@ -199,9 +199,9 @@ public class AavePositionTest
             ? eventToken with { Amount = (decimal)(positionScale - position.PreviousScaledAmount)! }
             : eventToken with { Amount = (decimal)(position.PreviousScaledAmount - positionScale)! };
 
-        Assert.Equal(positionId, @event.PositionId);
-        Assert.Equal(TestTime, @event.Date);
-        Assert.Equal(expectedToken, @event.Token);
-        Assert.Equal(type, @event.Event);
+        Assert.Equal(positionId, cashFlow.PositionId);
+        Assert.Equal(TestTime, cashFlow.Date);
+        Assert.Equal(expectedToken, cashFlow.Token);
+        Assert.Equal(type, cashFlow.Event);
     }
 }
