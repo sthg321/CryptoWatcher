@@ -7,18 +7,6 @@ namespace CryptoWatcher.Extensions;
 
 public static class CalculatablePositionExtensions
 {
-    public static ProfitMetric CalculateProfitInUsd(
-        this ICalculatablePosition<IUsdPositionSnapshot> position, DateOnly from, DateOnly to)
-    {
-        return CalculateProfit(
-            position,
-            from,
-            to,
-            snapshot => snapshot.GetUsdBalance(),
-            (cashFlow, _) => (cashFlow as IUsdCashFlow)!.Usd
-        );
-    }
-
     public static ProfitMetric CalculateProfitInToken(
         this ICalculatablePosition<ITokenPositionSnapshot> position, DateOnly from, DateOnly to)
     {
@@ -26,7 +14,7 @@ public static class CalculatablePositionExtensions
             position,
             from,
             to,
-            snapshot => snapshot.GetTokenInfo().Amount,
+            snapshot => snapshot.Token.Amount,
             (cashFlow, _) => (cashFlow as ITokenCashFlow)!.Token.Amount
         );
     }
@@ -38,7 +26,7 @@ public static class CalculatablePositionExtensions
             position,
             from,
             to,
-            snapshot => snapshot.GetTokenInfo().AmountInUsd,
+            snapshot => snapshot.Token.AmountInUsd,
             (cashFlow, _) => (cashFlow as ITokenCashFlow)!.Token.AmountInUsd
         );
     }

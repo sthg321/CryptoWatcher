@@ -4,12 +4,6 @@ namespace CryptoWatcher.Extensions;
 
 public static class CacheFlowExtensions
 {
-    public static decimal CalculateNetCashFlowInUsd<TCashFlow>(this IEnumerable<TCashFlow> cacheFlows, DateOnly from,
-        DateOnly to) where TCashFlow : IUsdCashFlow
-    {
-        return cacheFlows.Where(e => FilterCashFlowEvents(e, from, to)).Sum(e => ComputeCashFlowEvent(e.Event, e.Usd));
-    }
-
     public static decimal CalculateNetTokenCashFlowInUsd<TCashFlow>(this IEnumerable<TCashFlow> cacheFlows,
         DateOnly from,
         DateOnly to) where TCashFlow : ITokenCashFlow

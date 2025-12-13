@@ -6,6 +6,7 @@ using CryptoWatcher.Modules.Hyperliquid.Entities;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.UserNonFundingLedgerUpdates.Contracts;
 using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.Shared.ValueObjects;
 using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Hyperliquid.Infrastructure.Services;
@@ -51,7 +52,7 @@ public class HyperliquidApiProvider : IHyperliquidProvider
         {
             VaultDeposit vaultDeposit => new HyperliquidVaultEvent
             {
-                Usd = vaultDeposit.Usdc,
+                Token = new TokenInfo { Amount = vaultDeposit.Usdc, PriceInUsd = 1, Symbol = "USDC" },
                 Event = CashFlowEvent.Deposit,
                 VaultAddress = EvmAddress.Create(vaultDeposit.Vault),
                 WalletAddress = wallet.Address,
@@ -59,7 +60,7 @@ public class HyperliquidApiProvider : IHyperliquidProvider
             },
             VaultWithdraw vaultWithdraw => new HyperliquidVaultEvent
             {
-                Usd = vaultWithdraw.NetWithdrawnUsd,
+                Token = new TokenInfo { Amount = vaultWithdraw.NetWithdrawnUsd, PriceInUsd = 1, Symbol = "USDC" },
                 Event = CashFlowEvent.Withdrawal,
                 VaultAddress = EvmAddress.Create(vaultWithdraw.Vault),
                 WalletAddress = wallet.Address,

@@ -1,6 +1,7 @@
 using CryptoWatcher.Abstractions.PositionSnapshots;
 using CryptoWatcher.Exceptions;
 using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.Shared.ValueObjects;
 using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Hyperliquid.Entities;
@@ -9,7 +10,7 @@ namespace CryptoWatcher.Modules.Hyperliquid.Entities;
 /// Represents a snapshot of a position in a Hyperliquid vault, including balance, day of the snapshot,
 /// vault details, and associated wallet information.
 /// </summary>
-public class HyperliquidVaultPositionSnapshot : IUsdPositionSnapshot
+public class HyperliquidVaultPositionSnapshot : ITokenPositionSnapshot
 {
     private HyperliquidVaultPositionSnapshot()
     {
@@ -23,6 +24,12 @@ public class HyperliquidVaultPositionSnapshot : IUsdPositionSnapshot
         VaultAddress = vaultAddress;
         Balance = balance;
         Day = day;
+        Token = new TokenInfo
+        {
+            Amount = balance,
+            PriceInUsd = 1,
+            Symbol = "USDC"
+        };
     }
 
     /// <summary>
@@ -35,7 +42,8 @@ public class HyperliquidVaultPositionSnapshot : IUsdPositionSnapshot
     /// </summary>
     public DateOnly Day { get; private set; }
 
-    public decimal GetUsdBalance() => Balance;
+
+    public TokenInfo Token { get; private set; } = null !;
 
     /// <summary>
     /// VaultAddress address

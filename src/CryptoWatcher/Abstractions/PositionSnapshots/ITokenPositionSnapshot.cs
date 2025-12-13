@@ -4,5 +4,5 @@ namespace CryptoWatcher.Abstractions.PositionSnapshots;
 
 public interface ITokenPositionSnapshot : IPositionSnapshot
 {
-    TokenInfo GetTokenInfo();
+    TokenInfo Token { get; }
 }

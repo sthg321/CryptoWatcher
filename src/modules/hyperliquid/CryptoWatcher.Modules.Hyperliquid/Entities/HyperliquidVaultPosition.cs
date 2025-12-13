@@ -12,7 +12,7 @@ namespace CryptoWatcher.Modules.Hyperliquid.Entities;
 /// This class encapsulates various properties and methods to track and analyze the performance of the vault,
 /// including event history, position snapshots, and profit calculations over specified time periods.
 /// </summary>
-public class HyperliquidVaultPosition : ICalculatablePosition<IUsdPositionSnapshot>
+public class HyperliquidVaultPosition : ICalculatablePosition<ITokenPositionSnapshot>
 {
     private readonly List<HyperliquidVaultPositionSnapshot> _positionSnapshots = [];
     private readonly List<HyperliquidVaultEvent> _vaultEvents = [];
@@ -70,7 +70,7 @@ public class HyperliquidVaultPosition : ICalculatablePosition<IUsdPositionSnapsh
     /// </remarks>
     public IReadOnlyCollection<HyperliquidVaultPositionSnapshot> PositionSnapshots => _positionSnapshots;
 
-    public IReadOnlyCollection<IUsdPositionSnapshot> GetPositionSnapshots() => PositionSnapshots;
+    public IReadOnlyCollection<ITokenPositionSnapshot> GetPositionSnapshots() => PositionSnapshots;
 
     public IReadOnlyCollection<ICashFlow> GetCashFlows() => VaultEvents;
 
@@ -92,7 +92,7 @@ public class HyperliquidVaultPosition : ICalculatablePosition<IUsdPositionSnapsh
     {
         var existedSnapshot =
             _vaultEvents.FirstOrDefault(positionSnapshot => positionSnapshot.Date == vaultEvent.Date &&
-                                                            positionSnapshot.Usd == vaultEvent.Usd);
+                                                            positionSnapshot.Token.Amount == vaultEvent.Token.Amount);
 
         if (existedSnapshot is not null)
         {

@@ -1,5 +1,6 @@
 using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.Shared.ValueObjects;
 using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Hyperliquid.Entities;
@@ -8,18 +9,13 @@ namespace CryptoWatcher.Modules.Hyperliquid.Entities;
 /// Represents an event associated with a Hyperliquid vault. These events track interactions such as deposits or withdrawals on specific vaults
 /// and are linked to a specific wallet within the Hyperliquid module.
 /// </summary>
-public class HyperliquidVaultEvent : IUsdCashFlow
+public class HyperliquidVaultEvent : ITokenCashFlow
 {
-    /// <summary>
-    /// Represents the monetary value in USD associated with a vault-related activity.
-    /// </summary>
-    /// <remarks>
-    /// This property encapsulates the financial amount in US dollars for a specific activity,
-    /// such as deposits or withdrawals, in the context of operations involving Hyperliquid vaults.
-    /// It is integral to tracking transactional data and maintaining a record of vault-related events.
-    /// </remarks>
-    public decimal Usd { get; init; }
-
+    public HyperliquidVaultEvent()
+    {
+        
+    }
+    
     /// <summary>
     /// Represents the date and time associated with a specific Hyperliquid vault event.
     /// </summary>
@@ -29,6 +25,8 @@ public class HyperliquidVaultEvent : IUsdCashFlow
     /// enabling chronological tracking and data management of vault-related activities.
     /// </remarks>
     public DateTime Date { get; init; }
+    
+    public TokenInfo Token { get; init; } = null!;
     
     /// <summary>
     /// Indicates the type of event associated with a Hyperliquid vault activity.
