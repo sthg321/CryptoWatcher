@@ -6,17 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CryptoWatcher.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class RemoveUsdAndRenameEvnetTablesToCashFlowMigration : Migration
+    public partial class RemoveUsdColumnSetMaxLengthForTokensMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameTable("AavePositionEvents", newName: "AavePositionCashFlows");
-            migrationBuilder.RenameTable("HyperliquidVaultEvents", newName: "HyperliquidPositionCashFlows");
-
-            migrationBuilder.DropTable(
-                name: "HyperliquidVaultEvents");
-
             migrationBuilder.AlterColumn<string>(
                 name: "Token1_Symbol",
                 table: "UniswapLiquidityPositions",
@@ -79,6 +73,85 @@ namespace CryptoWatcher.Infrastructure.Migrations
                 maxLength: 16,
                 nullable: false,
                 defaultValue: "");
+
+            migrationBuilder.CreateTable(
+                name: "AavePositionCashFlows",
+                columns: table => new
+                {
+                    PositionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Event = table.Column<int>(type: "integer", nullable: false),
+                    Token_Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    Token_PriceInUsd = table.Column<decimal>(type: "numeric", nullable: false),
+                    Token_Symbol = table.Column<string>(type: "character varying(16)", unicode: false, maxLength: 16, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AavePositionCashFlows", x => new { x.PositionId, x.Date, x.Event });
+                    table.ForeignKey(
+                        name: "FK_AavePositionCashFlows_AavePositions_PositionId",
+                        column: x => x.PositionId,
+                        principalTable: "AavePositions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HyperliquidPositionCashFlows",
+                columns: table => new
+                {
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    VaultAddress = table.Column<string>(type: "character(42)", unicode: false, fixedLength: true, maxLength: 42, nullable: false),
+                    WalletAddress = table.Column<string>(type: "character(42)", unicode: false, fixedLength: true, maxLength: 42, nullable: false),
+                    Event = table.Column<int>(type: "integer", nullable: false),
+                    Token_Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    Token_PriceInUsd = table.Column<decimal>(type: "numeric", nullable: false),
+                    Token_Symbol = table.Column<string>(type: "character varying(16)", unicode: false, maxLength: 16, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HyperliquidPositionCashFlows", x => new { x.VaultAddress, x.WalletAddress, x.Date });
+                    table.ForeignKey(
+                        name: "FK_HyperliquidPositionCashFlows_HyperliquidVaultPositions_Vaul~",
+                        columns: x => new { x.VaultAddress, x.WalletAddress },
+                        principalTable: "HyperliquidVaultPositions",
+                        principalColumns: new[] { "VaultAddress", "WalletAddress" },
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_HyperliquidPositionCashFlows_Wallets_WalletAddress",
+                        column: x => x.WalletAddress,
+                        principalTable: "Wallets",
+                        principalColumn: "Address",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HyperliquidPositionCashFlows_WalletAddress",
+                table: "HyperliquidPositionCashFlows",
+                column: "WalletAddress");
+            
+            migrationBuilder.Sql("""
+                                 INSERT INTO "HyperliquidPositionCashFlows" ("VaultAddress", "WalletAddress", "Date", "Event", "Token_Amount", "Token_PriceInUsd", "Token_Symbol")
+                                 SELECT "VaultAddress", "WalletAddress", "Date", "Event", "Usd", 1, 'USDC' FROM "HyperliquidVaultEvents"
+                                 """);
+
+            migrationBuilder.Sql("""
+                                 INSERT INTO "AavePositionCashFlows" ("PositionId", "Date", "Event", "Token_Amount", "Token_PriceInUsd", "Token_Symbol" )
+                                 SELECT "PositionId", "Date", "Event", "Token_Amount", "Token_PriceInUsd", "Token_Symbol" FROM "AavePositionEvents"
+                                 """);
+
+            migrationBuilder.Sql("""
+                                 UPDATE "HyperliquidVaultPositionSnapshots" 
+                                 SET "Token_Symbol" = 'USDC',
+                                     "Token_PriceInUsd" = 1 ,
+                                     "Token_Amount" = "Balance"
+                                 """);
+            
+            migrationBuilder.DropTable(
+                name: "AavePositionEvents");
+
+            migrationBuilder.DropTable(
+                name: "HyperliquidVaultEvents");
         }
 
         /// <inheritdoc />

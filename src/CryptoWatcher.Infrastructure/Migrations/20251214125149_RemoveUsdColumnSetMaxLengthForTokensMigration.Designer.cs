@@ -14,8 +14,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CryptoWatcher.Infrastructure.Migrations
 {
     [DbContext(typeof(CryptoWatcherDbContext))]
-    [Migration("20251213211716_RemoveUsdAndRenameEvnetTablesToCashFlowMigration")]
-    partial class RemoveUsdAndRenameEvnetTablesToCashFlowMigration
+    [Migration("20251214125149_RemoveUsdColumnSetMaxLengthForTokensMigration")]
+    partial class RemoveUsdColumnSetMaxLengthForTokensMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
