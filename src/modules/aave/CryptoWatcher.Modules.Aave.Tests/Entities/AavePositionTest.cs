@@ -55,7 +55,7 @@ public class AavePositionTest
         position.ClosePosition(DateOnly.MaxValue);
 
         Assert.Throws<InvalidOperationException>(() =>
-            position.AddOrUpdateSnapshot(_fixture.Create<TokenInfo>(), fixture.Create<decimal>(), TestDate,
+            position.AddOrUpdateSnapshot(_fixture.Create<CryptoToken>(), fixture.Create<decimal>(), TestDate,
                 _timeProviderMock.Object));
     }
 
@@ -65,25 +65,32 @@ public class AavePositionTest
     public void AddOrUpdateSnapshotTest_WhenSnapshotForDayExist_ShouldUpdateSnapshot(AavePositionType type)
     {
         var position = CreatePosition(type);
-        var token = _fixture.Create<TokenInfo>();
+        var token = _fixture.Create<CryptoToken>();
 
         var existedTokenAmount = _fixture.Create<decimal>();
         position.AddOrUpdateSnapshot(token, existedTokenAmount, TestDate, _timeProviderMock.Object);
 
         var expectedTokenAmount = _fixture.Create<decimal>();
-        var expectedToken = token with
+        
+        var expectedToken = new CryptoTokenStatistic
         {
             PriceInUsd = _fixture.Create<decimal>(),
             Amount = _fixture.Create<decimal>()
         };
 
-        position.AddOrUpdateSnapshot(expectedToken, expectedTokenAmount, TestDate, _timeProviderMock.Object);
+        var updateToken = new CryptoToken
+        {
+            Symbol = token.Symbol, Address = token.Address, Amount = expectedToken.Amount,
+            PriceInUsd = expectedToken.PriceInUsd
+        };
+        
+        position.AddOrUpdateSnapshot(updateToken, expectedTokenAmount, TestDate, _timeProviderMock.Object);
 
         var actualSnapshot = position.PositionSnapshots.First();
 
         Assert.Single(position.PositionSnapshots);
         Assert.Equal(position.PreviousScaledAmount, expectedTokenAmount);
-        Assert.Equivalent(new AavePositionSnapshot(position.Id, TestDate, expectedToken), actualSnapshot);
+        Assert.Equivalent(expectedToken, actualSnapshot.CryptoTokenStatistic);
     }
 
     [Theory]
@@ -93,12 +100,12 @@ public class AavePositionTest
     {
         var syncDate = DateOnly.FromDateTime(DateTime.Now);
         var position = CreatePosition(type);
-        var token = _fixture.Create<TokenInfo>();
+        var token = _fixture.Create<CryptoToken>();
 
         position.AddOrUpdateSnapshot(token, 1, syncDate, _timeProviderMock.Object);
 
         var actualSnapshot = position.PositionSnapshots.First();
-        var expectedSnapshot = new AavePositionSnapshot(position.Id, syncDate, token);
+        var expectedSnapshot = new AavePositionSnapshot(position.Id, syncDate, token.ToStatistic());
 
         Assert.Single(position.PositionSnapshots);
         Assert.Equivalent(expectedSnapshot, actualSnapshot);
@@ -112,7 +119,7 @@ public class AavePositionTest
         var syncDate = DateOnly.FromDateTime(DateTime.Now);
         var expectedScaledAmount = _fixture.Create<decimal>();
         var position = CreatePosition(type);
-        var token = _fixture.Create<TokenInfo>();
+        var token = _fixture.Create<CryptoToken>();
 
         position.AddOrUpdateSnapshot(token, expectedScaledAmount, syncDate, _timeProviderMock.Object);
 
@@ -132,7 +139,7 @@ public class AavePositionTest
         var eventType = CashFlowEvent.FromName(eventName);
         var syncDate = DateOnly.FromDateTime(DateTime.Now);
         var position = CreatePosition(positionType);
-        var token = _fixture.Create<TokenInfo>();
+        var token = _fixture.Create<CryptoToken>();
 
         position.AddOrUpdateSnapshot(token, initialScaleAmount, syncDate.AddDays(1), _timeProviderMock.Object);
 
@@ -162,7 +169,7 @@ public class AavePositionTest
     {
         var eventType = CashFlowEvent.FromName(eventName);
         var position = CreatePosition(AavePositionType.Borrowed);
-        var token = _fixture.Create<TokenInfo>();
+        var token = _fixture.Create<CryptoToken>();
 
         position.AddOrUpdateSnapshot(token, oldScaleAmount, TestDate, _timeProviderMock.Object);
         position.AddOrUpdateSnapshot(token, newScaleAmount, TestDate, _timeProviderMock.Object);
@@ -191,17 +198,17 @@ public class AavePositionTest
         AavePosition position,
         AavePositionCashFlow cashFlow,
         Guid positionId,
-        TokenInfo eventToken,
+        CryptoToken eventCryptoToken,
         decimal positionScale,
         CashFlowEvent type)
     {
         var expectedToken = type == CashFlowEvent.Withdrawal
-            ? eventToken with { Amount = (decimal)(positionScale - position.PreviousScaledAmount)! }
-            : eventToken with { Amount = (decimal)(position.PreviousScaledAmount - positionScale)! };
+            ? eventCryptoToken with { Amount = (decimal)(positionScale - position.PreviousScaledAmount)! }
+            : eventCryptoToken with { Amount = (decimal)(position.PreviousScaledAmount - positionScale)! };
 
         Assert.Equal(positionId, cashFlow.PositionId);
         Assert.Equal(TestTime, cashFlow.Date);
-        Assert.Equal(expectedToken, cashFlow.Token);
+        Assert.Equal(expectedToken, cashFlow.CryptoToken);
         Assert.Equal(type, cashFlow.Event);
     }
 }

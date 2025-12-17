@@ -35,13 +35,13 @@ public class TokenEnricher : ITokenEnricher
         };
     }
 
-    public async ValueTask<TokenInfoWithAddress> EnrichTokenAsync(string rpcAddress, Token token,
+    public async ValueTask<CryptoToken> EnrichTokenAsync(string rpcAddress, Token token,
         CancellationToken ct)
     {
         var web3 = new Web3(rpcAddress);
         var tokenDecimals = await _tokenService.GetTokenDecimalsAsync(web3, token.Address, ct);
         var symbol = await _tokenService.GetTokenSymbolAsync(web3, token.Address);
-        return new TokenInfoWithAddress
+        return new CryptoToken
         {
             Address = token.Address,
             Symbol = symbol,
@@ -50,13 +50,13 @@ public class TokenEnricher : ITokenEnricher
         };
     }
 
-    public async ValueTask<TokenInfoWithAddress> EnrichTokenAsync(string rpcAddress, Token token, decimal priceInUsd,
+    public async ValueTask<CryptoToken> EnrichTokenAsync(string rpcAddress, Token token, decimal priceInUsd,
         CancellationToken ct)
     {
         var web3 = new Web3(rpcAddress);
         var tokenDecimals = await _tokenService.GetTokenDecimalsAsync(web3, token.Address, ct);
         var symbol = await _tokenService.GetTokenSymbolAsync(web3, token.Address);
-        return new TokenInfoWithAddress
+        return new CryptoToken
         {
             Address = token.Address,
             Symbol = symbol,
@@ -65,13 +65,13 @@ public class TokenEnricher : ITokenEnricher
         };
     }
     
-    public async ValueTask<TokenInfoWithAddress> EnrichTokenAsync(string rpcAddress, string platform, Token token,
+    public async ValueTask<CryptoToken> EnrichTokenAsync(string rpcAddress, string platform, Token token,
         CancellationToken ct)
     {
         var web3 = new Web3(rpcAddress);
         var tokenDecimals = await _tokenService.GetTokenDecimalsAsync(web3, token.Address, ct);
         var symbol = await _tokenService.GetTokenSymbolAsync(web3, token.Address);
-        return new TokenInfoWithAddress
+        return new CryptoToken
         {
             Address = token.Address,
             Symbol = symbol,

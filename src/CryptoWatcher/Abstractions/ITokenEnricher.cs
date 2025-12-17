@@ -15,12 +15,12 @@ public interface ITokenEnricher
     ValueTask<TokenInfoPair> EnrichAsync(string rpcAddress, TokenPair tokenPair,
         CancellationToken ct = default);
 
-    ValueTask<TokenInfoWithAddress> EnrichTokenAsync(string rpcAddress, Token token,
+    ValueTask<CryptoToken> EnrichTokenAsync(string rpcAddress, Token token,
         CancellationToken ct);
 
-    ValueTask<TokenInfoWithAddress> EnrichTokenAsync(string rpcAddress, string platform, Token token,
+    ValueTask<CryptoToken> EnrichTokenAsync(string rpcAddress, string platform, Token token,
         CancellationToken ct);
 
-    ValueTask<TokenInfoWithAddress> EnrichTokenAsync(string rpcAddress, Token token, decimal priceInUsd,
+    ValueTask<CryptoToken> EnrichTokenAsync(string rpcAddress, Token token, decimal priceInUsd,
         CancellationToken ct);
 }

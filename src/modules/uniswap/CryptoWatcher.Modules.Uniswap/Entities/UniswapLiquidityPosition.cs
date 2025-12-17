@@ -1,6 +1,5 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.CacheFlows;
-using CryptoWatcher.Abstractions.PositionSnapshots;
 using CryptoWatcher.Exceptions;
 using CryptoWatcher.Extensions;
 using CryptoWatcher.Modules.Uniswap.Models;
@@ -35,8 +34,8 @@ public class
 
     internal const string PositionClosedException = "Position already closed position";
 
-    public UniswapLiquidityPosition(ulong positionId, long tickLower, long tickUpper, TokenInfo token0,
-        TokenInfo token1, EvmAddress walletAddress, UniswapChainConfiguration chain, DateOnly createdAt)
+    public UniswapLiquidityPosition(ulong positionId, long tickLower, long tickUpper, CryptoToken token0,
+        CryptoToken token1, EvmAddress walletAddress, UniswapChainConfiguration chain, DateOnly createdAt)
     {
         if (token0.Symbol == token1.Symbol)
         {
@@ -86,7 +85,7 @@ public class
     /// This property holds information about one of the two tokens in the liquidity pool.
     /// It is paired with <c>Token1</c> to define the token pair comprising the pool.
     /// </remarks>
-    public TokenInfo Token0 { get; private set; } = null!;
+    public CryptoToken Token0 { get; private set; } = null!;
 
     /// <summary>
     /// Represents the second token in a liquidity pool position.
@@ -96,7 +95,7 @@ public class
     /// It is used in association with <c>Token0</c> to define the token pair within the pool
     /// and their respective attributes, enabling operations such as valuation and tracking.
     /// </remarks>
-    public TokenInfo Token1 { get; private set; } = null!;
+    public CryptoToken Token1 { get; private set; } = null!;
 
     /// <summary>
     /// Indicates whether the liquidity pool position is active.

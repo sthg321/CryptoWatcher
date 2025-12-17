@@ -9,7 +9,7 @@ public static class CacheFlowExtensions
         DateOnly to) where TCashFlow : ITokenCashFlow
     {
         return cacheFlows.Where(e => FilterCashFlowEvents(e, from, to))
-            .Sum(e => ComputeCashFlowEvent(e.Event, e.Token.AmountInUsd));
+            .Sum(e => ComputeCashFlowEvent(e.Event, e.CryptoToken.AmountInUsd));
     }
     
     public static decimal CalculateNetTokenCashFlowInToken<TCashFlow>(this IEnumerable<TCashFlow> cacheFlows,
@@ -17,7 +17,7 @@ public static class CacheFlowExtensions
         DateOnly to) where TCashFlow : ITokenCashFlow
     {
         return cacheFlows.Where(e => FilterCashFlowEvents(e, from, to))
-            .Sum(e => ComputeCashFlowEvent(e.Event, e.Token.Amount));
+            .Sum(e => ComputeCashFlowEvent(e.Event, e.CryptoToken.Amount));
     }
     
     public static decimal CalculateNetTokenPairCashFlowInUsd<TCashFlow>(this IEnumerable<TCashFlow> cacheFlows,

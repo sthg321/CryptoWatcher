@@ -1,5 +1,6 @@
 using CryptoWatcher.Abstractions.PositionSnapshots;
 using CryptoWatcher.Shared.ValueObjects;
+using CryptoWatcher.ValueObjects;
 using JetBrains.Annotations;
 
 namespace CryptoWatcher.Modules.Aave.Entities;
@@ -18,11 +19,11 @@ public class AavePositionSnapshot : ITokenPositionSnapshot
     {
     }
 
-    public AavePositionSnapshot(Guid positionId, DateOnly day, TokenInfo token)
+    public AavePositionSnapshot(Guid positionId, DateOnly day, CryptoTokenStatistic positionCryptoToken)
     {
         PositionId = positionId;
         Day = day;
-        Token = token;
+        CryptoTokenStatistic = positionCryptoToken;
     }
 
     /// <summary>
@@ -53,10 +54,10 @@ public class AavePositionSnapshot : ITokenPositionSnapshot
     /// the token's symbol, amount, and valuation. This data is essential for analyzing the financial
     /// state and performance of the associated Aave position at the time of the snapshot.
     /// </remarks>
-    public TokenInfo Token { get; private set; } = null!;
+    public CryptoTokenStatistic CryptoTokenStatistic { get; private set; } = null!;
  
     public void UpdateToken(decimal amount, decimal priceInUsd)
     {
-        Token = Token with { Amount = amount, PriceInUsd = priceInUsd };
+        CryptoTokenStatistic = CryptoTokenStatistic with { Amount = amount, PriceInUsd = priceInUsd };
     }
 }

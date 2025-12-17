@@ -1,4 +1,5 @@
 using CryptoWatcher.Shared.ValueObjects;
+using CryptoWatcher.ValueObjects;
 using Microsoft.Extensions.Logging;
 
 namespace CryptoWatcher.Modules.Aave.Application.Services;
@@ -21,12 +22,12 @@ internal static partial class AavePositionsSyncServiceLogs
         Guid positionId, string tokenAddress);
 
     [LoggerMessage(LogLevel.Information,
-        "For token address: {AaveTokenAddress} position not exists. Will be created with token @{Token}")]
+        "For token address: {AaveTokenAddress} position not exists. Will be created with token @{cryptoToken}")]
     public static partial void LogCreateAavePosition(this ILogger<AavePositionsSyncService> log,
-        string aaveTokenAddress, TokenInfo token);
+        string aaveTokenAddress, CryptoToken cryptoToken);
 
     [LoggerMessage(LogLevel.Information,
-        "For token address: {AaveTokenAddress} position exists. Will be update with token @{Token}")]
+        "For token address: {AaveTokenAddress} position exists. Will be update with token @{cryptoToken}")]
     public static partial void LogUpdateAavePosition(this ILogger<AavePositionsSyncService> log,
-        string aaveTokenAddress, TokenInfo token);
+        string aaveTokenAddress, CryptoToken cryptoToken);
 }

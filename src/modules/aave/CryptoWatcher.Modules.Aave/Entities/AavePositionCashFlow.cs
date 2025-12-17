@@ -1,6 +1,7 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.Shared.ValueObjects;
+using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Aave.Entities;
 
@@ -30,7 +31,7 @@ public class AavePositionCashFlow : ITokenCashFlow
     /// Represents the amount involved in the Aave position event.
     /// The value indicates the scaled amount of the asset being deposited or withdrawn.
     /// Positive values typically represent deposits, while negative values represent withdrawals.
-    public required TokenInfo Token { get; init; }
+    public required CryptoToken CryptoToken { get; init; }
 
     /// <summary>
     /// The date and time when the Aave position event occurred.

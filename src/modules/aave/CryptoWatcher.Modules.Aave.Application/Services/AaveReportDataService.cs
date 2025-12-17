@@ -42,12 +42,12 @@ public class AaveReportDataService : IPlatformDailyReportDataProvider
                         {
                             Day = snapshot.Day,
                             NetworkName = position.Network,
-                            TokenSymbol = snapshot.Token.Symbol,
-                            PositionInUsd = snapshot.Token.AmountInUsd * sign,
+                            TokenSymbol = position.Token0.Symbol,
+                            PositionInUsd = snapshot.CryptoTokenStatistic.AmountInUsd * sign,
                             PositionGrowInUsd = profitInUsd.Amount * sign,
 
-                            PositionInToken = snapshot.Token.Amount * sign,
-                            DailyProfitInUsd = profitInToken.Amount * snapshot.Token.PriceInUsd * sign,
+                            PositionInToken = snapshot.CryptoTokenStatistic.Amount * sign,
+                            DailyProfitInUsd = profitInToken.Amount * snapshot.CryptoTokenStatistic.PriceInUsd * sign,
                             DailyProfitInUsdPercent = profitInUsd.Percent * sign,
                             DailyProfitInToken = profitInToken.Amount * sign,
                             CashFlowsInUsd =
@@ -58,7 +58,7 @@ public class AaveReportDataService : IPlatformDailyReportDataProvider
                     })
                     .ToArray();
 
-                var lastTokenPrice = position.PositionSnapshots.LastOrDefault()?.Token.PriceInUsd ?? 0;
+                var lastTokenPrice = position.PositionSnapshots.LastOrDefault()?.CryptoTokenStatistic.PriceInUsd ?? 0;
                 var profitInUsd = position.CalculateProfitInUsd(from, to);
 
                 var profitInToken = position.CalculateProfitInToken(from, to);

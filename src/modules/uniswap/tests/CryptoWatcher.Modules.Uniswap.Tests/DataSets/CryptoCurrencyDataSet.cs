@@ -1,5 +1,4 @@
 using Bogus;
-using CryptoWatcher.Shared.ValueObjects;
 using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Uniswap.Tests.DataSets;
@@ -44,17 +43,17 @@ public static class TheCryptoData
     public record NetworkRecord(string Name, Uri Rpc, Uri Blockscout);
 }
 
-public partial class Crypto : DataSet
+public class Crypto : DataSet
 {
     private int _evmAddressCounter = 0;
 
-    public TokenInfo TokenInfo()
+    public CryptoToken TokenInfo()
     {
         var token = PickToken();
         var amount = Random.Decimal(0.00000001m, 10_000m);
         amount = Math.Round(amount, token.Decimals, MidpointRounding.AwayFromZero);
 
-        return new TokenInfo
+        return new CryptoToken
         {
             Symbol = token.Symbol,
             Amount = amount,
@@ -62,35 +61,68 @@ public partial class Crypto : DataSet
         };
     }
 
-    public TokenInfoWithFee RandomTokenInfoWithFee(TokenInfo token)
+    public TokenInfoWithFee RandomTokenInfoWithFee(CryptoToken cryptoToken)
     {
-        return TokenInfoWithFee.Create(token, Random.Decimal(0.0001m, 200_000m), Random.Decimal(0, 20000));
-    }
-    
-    public TokenInfoWithFee RandomTokenInfoWithFee(TokenInfo token, decimal amount, decimal priceInUsd)
-    {
-        return TokenInfoWithFee.Create(token, amount, priceInUsd);
+        return TokenInfoWithFee.Create(cryptoToken, Random.Decimal(0.0001m, 200_000m), Random.Decimal(0, 20000));
     }
 
-    public TokenInfoWithFee RandomTokenInfoWithAddress()
+    public TokenInfoWithFee RandomTokenInfoWithFee(CryptoToken cryptoToken, decimal amount, decimal priceInUsd)
+    {
+        return TokenInfoWithFee.Create(cryptoToken, amount, priceInUsd);
+    }
+
+    public TokenInfoWithFee RandomTokenInfoWithFee()
     {
         var token = TokenInfo();
         return TokenInfoWithFee.Create(token, Random.Decimal(0.0001m, 200_000m), Random.Decimal(0, 20000));
     }
 
-    public TokenInfoWithFee RandomTokenInfoWithAddressOtherThan(TokenInfoWithAddress token)
+    public CryptoToken RandomTokenInfoWithAddress()
+    {
+        var token = PickToken();
+
+        return new CryptoToken
+        {
+            Symbol = token.Symbol,
+            Amount = Random.Decimal(0.00000001m, 10_000m),
+            PriceInUsd = Random.Decimal(0.0001m, 200_000m),
+            Address = EvmAddress()
+        };
+    }
+
+    public CryptoToken RandomTokenInfoWithAddressOtherThan(CryptoToken cryptoToken)
     {
         var address = EvmAddress();
 
-        while (address == token.Address)
+        while (address == cryptoToken.Address)
         {
             address = EvmAddress();
         }
 
-        return TokenInfoWithFee.Create(token, Random.Decimal(0.0001m, 200_000m), Random.Decimal(0, 20000));
+        var token = PickToken();
+
+        return new CryptoToken
+        {
+            Symbol = token.Symbol,
+            Amount = Random.Decimal(0.00000001m, 10_000m),
+            PriceInUsd = Random.Decimal(0.0001m, 200_000m),
+            Address = address
+        };
     }
 
-    public TokenInfo TokenInfoOtherThan(TokenInfo previous)
+    public TokenInfoWithFee RandomTokenInfoWithFeeOtherThan(CryptoToken cryptoToken)
+    {
+        var address = EvmAddress();
+
+        while (address == cryptoToken.Address)
+        {
+            address = EvmAddress();
+        }
+
+        return TokenInfoWithFee.Create(cryptoToken, Random.Decimal(0.0001m, 200_000m), Random.Decimal(0, 20000));
+    }
+
+    public CryptoToken TokenInfoOtherThan(CryptoToken previous)
     {
         var available = TheCryptoData.Tokens
             .Where(t => t.Symbol != previous.Symbol)
@@ -106,7 +138,7 @@ public partial class Crypto : DataSet
         var amount = Random.Decimal(0.0001m, 10_000m);
         amount = Math.Round(amount, token.Decimals, MidpointRounding.AwayFromZero);
 
-        return new TokenInfo
+        return new CryptoToken
         {
             Symbol = token.Symbol,
             Amount = amount,
@@ -114,34 +146,9 @@ public partial class Crypto : DataSet
         };
     }
 
-    public TokenInfo TokenInfo(decimal amount)
-    {
-        var token = PickToken();
-        var rounded = Math.Round(amount, token.Decimals, MidpointRounding.AwayFromZero);
-
-        return new TokenInfo
-        {
-            Symbol = token.Symbol,
-            Amount = rounded,
-            PriceInUsd = Random.Decimal(0.0001m, 200_000m)
-        };
-    }
-
-    public (string Symbol, string Name, int Decimals) TokenInfoTuple()
-    {
-        var t = PickToken();
-        return (t.Symbol, t.Name, t.Decimals);
-    }
-
     public TheCryptoData.NetworkRecord Network() => Random.ListItem(TheCryptoData.Networks);
 
-    public string TokenSymbol() => PickToken().Symbol;
-
-    public string TokenName() => PickToken().Name;
-
-    public int TokenDecimals() => PickToken().Decimals;
-
-    public CryptoWatcher.ValueObjects.EvmAddress EvmAddress() =>
+    public EvmAddress EvmAddress() =>
         CryptoWatcher.ValueObjects.EvmAddress.Create($"0x{_evmAddressCounter++.ToString("X").PadLeft(40, '0')}");
 
     public string TxHash() => "0x" + Random.Hash(64).ToLower();

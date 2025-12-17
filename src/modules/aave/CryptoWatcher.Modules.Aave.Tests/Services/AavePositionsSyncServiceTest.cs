@@ -228,11 +228,11 @@ public class AavePositionsSyncServiceTest
     }
 
     [AssertionMethod]
-    private static void AssertThatSnapshotValid(TokenInfo expectedSnapshot, AavePositionSnapshot actualSnapshot,
+    private static void AssertThatSnapshotValid(CryptoToken expectedSnapshot, AavePositionSnapshot actualSnapshot,
         Guid actualPositionId)
     {
         Assert.Equal(SyncDay, actualSnapshot.Day);
         Assert.Equal(actualPositionId, actualSnapshot.PositionId);
-        Assert.Equivalent(expectedSnapshot, actualSnapshot.Token);
+        Assert.Equivalent(expectedSnapshot.ToStatistic(), actualSnapshot.CryptoTokenStatistic);
     }
 }

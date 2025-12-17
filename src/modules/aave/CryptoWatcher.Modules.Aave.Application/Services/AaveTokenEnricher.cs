@@ -3,6 +3,7 @@ using CryptoWatcher.Modules.Aave.Application.Abstractions;
 using CryptoWatcher.Modules.Aave.Application.Models;
 using CryptoWatcher.Modules.Aave.Entities;
 using CryptoWatcher.Shared.ValueObjects;
+using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Aave.Application.Services;
 
@@ -15,7 +16,7 @@ public class AaveTokenEnricher : IAaveTokenEnricher
         _tokenEnricher = tokenEnricher;
     }
 
-    public async Task<TokenInfo> EnrichTokenAsync(AaveChainConfiguration chain,
+    public async Task<CryptoToken> EnrichTokenAsync(AaveChainConfiguration chain,
         CalculatableAaveLendingPosition position,
         CancellationToken ct = default)
     {

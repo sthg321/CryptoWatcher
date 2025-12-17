@@ -14,8 +14,8 @@ public static class CalculatablePositionExtensions
             position,
             from,
             to,
-            snapshot => snapshot.Token.Amount,
-            (cashFlow, _) => (cashFlow as ITokenCashFlow)!.Token.Amount
+            snapshot => snapshot.CryptoTokenStatistic.Amount,
+            (cashFlow, _) => (cashFlow as ITokenCashFlow)!.CryptoToken.Amount
         );
     }
 
@@ -26,8 +26,8 @@ public static class CalculatablePositionExtensions
             position,
             from,
             to,
-            snapshot => snapshot.Token.AmountInUsd,
-            (cashFlow, _) => (cashFlow as ITokenCashFlow)!.Token.AmountInUsd
+            snapshot => snapshot.CryptoTokenStatistic.AmountInUsd,
+            (cashFlow, _) => (cashFlow as ITokenCashFlow)!.CryptoToken.AmountInUsd
         );
     }
 

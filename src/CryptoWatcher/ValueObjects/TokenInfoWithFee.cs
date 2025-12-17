@@ -43,16 +43,16 @@ public record TokenInfoWithFee
     /// <summary>
     /// Creates a new instance of <see cref="TokenInfoWithFee"/> using the provided token information, fee amount, and USD price.
     /// </summary>
-    /// <param name="info">The base token information containing symbol, amount, and price in USD.</param>
+    /// <param name="holding">The base token information containing symbol, amount, and price in USD.</param>
     /// <param name="feeAmount">The fee amount associated with the token.</param>
     /// <param name="priceInUsd">The price of the token in USD.</param>
     /// <returns>A new instance of <see cref="TokenInfoWithFee"/> populated with the provided data.</returns>
-    public static TokenInfoWithFee Create(TokenInfo info, decimal feeAmount, decimal priceInUsd)
+    public static TokenInfoWithFee Create(CryptoToken holding, decimal feeAmount, decimal priceInUsd)
     {
         return new TokenInfoWithFee
         {
-            Symbol = info.Symbol,
-            Amount = info.Amount,
+            Symbol = holding.Symbol,
+            Amount = holding.Amount,
             FeeAmount = feeAmount,
             PriceInUsd = priceInUsd
         };

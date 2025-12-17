@@ -47,12 +47,12 @@ public class UniswapLiquidityPositionCashFlow : ITokenPairCashFlow
 
     public decimal FeeInUsd => Token0.FeeAmountInUsd + Token1.FeeAmountInUsd;
  
-    private static TokenInfoWithFee CreateFromEvent(TokenInfoWithAddress infoWithAddress, CashFlowEvent @event)
+    private static TokenInfoWithFee CreateFromEvent(CryptoToken holding, CashFlowEvent @event)
     {
-        var amount = @event != CashFlowEvent.FeeClaim ? infoWithAddress.Amount : 0;
-        var feeAmount = @event != CashFlowEvent.FeeClaim ? 0 : infoWithAddress.Amount;
+        var amount = @event != CashFlowEvent.FeeClaim ? holding.Amount : 0;
+        var feeAmount = @event != CashFlowEvent.FeeClaim ? 0 : holding.Amount;
 
-        return TokenInfoWithFee.CreateForEvent(@event, infoWithAddress.Symbol, amount, feeAmount,
-            infoWithAddress.PriceInUsd);
+        return TokenInfoWithFee.CreateForEvent(@event, holding.Symbol, amount, feeAmount,
+            holding.PriceInUsd);
     }
 }

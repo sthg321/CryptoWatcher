@@ -15,8 +15,8 @@ public sealed class UniswapLiquidityPositionFaker : Faker<UniswapLiquidityPositi
     {
         CustomInstantiator(f =>
         {
-            var token0 = f.Crypto().TokenInfo();
-            var token1 = f.Crypto().TokenInfoOtherThan(token0);
+            var token0 = f.Crypto().RandomTokenInfoWithAddress();
+            var token1 = f.Crypto().RandomTokenInfoWithAddressOtherThan(token0);
 
             var position = new UniswapLiquidityPosition(
                 positionId: f.Random.ULong(1),

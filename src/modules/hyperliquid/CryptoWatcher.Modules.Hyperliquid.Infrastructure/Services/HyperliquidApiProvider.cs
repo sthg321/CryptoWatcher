@@ -52,7 +52,7 @@ public class HyperliquidApiProvider : IHyperliquidProvider
         {
             VaultDeposit vaultDeposit => new HyperliquidPositionCashFlow
             {
-                Token = new TokenInfo { Amount = vaultDeposit.Usdc, PriceInUsd = 1, Symbol = "USDC" },
+                CryptoToken = new CryptoToken { Amount = vaultDeposit.Usdc, PriceInUsd = 1, Symbol = "USDC" },
                 Event = CashFlowEvent.Deposit,
                 VaultAddress = EvmAddress.Create(vaultDeposit.Vault),
                 WalletAddress = wallet.Address,
@@ -60,7 +60,7 @@ public class HyperliquidApiProvider : IHyperliquidProvider
             },
             VaultWithdraw vaultWithdraw => new HyperliquidPositionCashFlow
             {
-                Token = new TokenInfo { Amount = vaultWithdraw.NetWithdrawnUsd, PriceInUsd = 1, Symbol = "USDC" },
+                CryptoToken = new CryptoToken { Amount = vaultWithdraw.NetWithdrawnUsd, PriceInUsd = 1, Symbol = "USDC" },
                 Event = CashFlowEvent.Withdrawal,
                 VaultAddress = EvmAddress.Create(vaultWithdraw.Vault),
                 WalletAddress = wallet.Address,

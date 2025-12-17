@@ -7,6 +7,7 @@ using CryptoWatcher.Modules.Uniswap.Application.Extensions;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Modules.Uniswap.Models;
 using CryptoWatcher.Shared.ValueObjects;
+using CryptoWatcher.ValueObjects;
 using Microsoft.Extensions.Logging;
 
 namespace CryptoWatcher.Modules.Uniswap.Application.Services;
@@ -99,7 +100,7 @@ public class CashFlowEventMatcher : ICashFlowEventMatcher
                position.TickUpper == positionEvent.TickUpper;
     }
 
-    private static bool IsSymbolMatch(TokenInfo first, TokenInfo second)
+    private static bool IsSymbolMatch(CryptoToken first, CryptoToken second)
     {
         return string.Equals(first.Symbol, second.Symbol, StringComparison.OrdinalIgnoreCase);
     }

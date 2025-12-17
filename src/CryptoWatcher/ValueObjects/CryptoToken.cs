@@ -1,7 +1,12 @@
-namespace CryptoWatcher.Shared.ValueObjects;
+namespace CryptoWatcher.ValueObjects;
 
-public record TokenInfo
+public record CryptoToken
 {
+    /// <summary>
+    /// Token address on chain.
+    /// </summary>
+    public string Address { get; init; } = null!;
+    
     /// <summary>
     /// Token symbol (e.g., "ETH", "USDC").
     /// </summary>
@@ -21,4 +26,6 @@ public record TokenInfo
     /// The total value of the token amount in USD, calculated as the product of Amount and PriceInUsd.
     /// </summary>
     public decimal AmountInUsd => Amount * PriceInUsd;
+
+    public CryptoTokenStatistic ToStatistic() => new() { Amount = Amount, PriceInUsd = PriceInUsd};
 }

@@ -89,6 +89,8 @@ public class AavePosition : IDeFiPosition<AavePositionSnapshot, AavePositionCash
     /// </remarks>
     public Wallet Wallet { get; private set; } = null!;
 
+    public CryptoToken Token0 { get; } = null!;
+
     /// <summary>
     /// Specifies the address of the token associated with the Aave position.
     /// </summary>
@@ -109,7 +111,7 @@ public class AavePosition : IDeFiPosition<AavePositionSnapshot, AavePositionCash
     /// This property provides a historical view of the position's evolution in the Aave protocol.
     /// </remarks>
     public IReadOnlyCollection<AavePositionSnapshot> PositionSnapshots => _positionSnapshots;
-
+    
     /// <summary>
     /// Provides a readonly collection of events associated with the Aave position.
     /// </summary>
@@ -144,13 +146,17 @@ public class AavePosition : IDeFiPosition<AavePositionSnapshot, AavePositionCash
     /// <summary>
     /// Adds or updates a snapshot for the current position.
     /// </summary>
-    /// <param name="token">The token information associated with the snapshot.</param>
+    /// <param name="cryptoToken">The token information associated with the snapshot.</param>
     /// <param name="positionScale">The scaled position amount to record.</param>
     /// <param name="day">The day associated with the snapshot.</param>
     /// <param name="provider"></param>
     /// <exception cref="InvalidOperationException">Thrown if the position is already closed.</exception>
-    public void AddOrUpdateSnapshot(TokenInfo token, decimal positionScale, DateOnly day, TimeProvider provider)
+    public void AddOrUpdateSnapshot(CryptoToken cryptoToken, decimal positionScale, DateOnly day, TimeProvider provider)
     {
+        if (!IsActive())
+        {
+            throw new InvalidOperationException();
+        }
         var activePeriod = _positionPeriods.SingleOrDefault(period => !period.ClosedAtDay.HasValue);
         if (activePeriod is null)
         {
@@ -160,11 +166,11 @@ public class AavePosition : IDeFiPosition<AavePositionSnapshot, AavePositionCash
         var existingSnapshot = PositionSnapshots.FirstOrDefault(s => s.Day == day);
         if (existingSnapshot != null)
         {
-            existingSnapshot.UpdateToken(token.Amount, token.PriceInUsd);
+            existingSnapshot.UpdateToken(cryptoToken.Amount, cryptoToken.PriceInUsd);
         }
         else
         {
-            _positionSnapshots.Add(new AavePositionSnapshot(Id, day, token));
+            _positionSnapshots.Add(new AavePositionSnapshot(Id, day, cryptoToken.ToStatistic()));
         }
 
         if (PreviousScaledAmount == positionScale)
@@ -186,7 +192,7 @@ public class AavePosition : IDeFiPosition<AavePositionSnapshot, AavePositionCash
             {
                 PositionId = Id,
                 Date = eventDateTime,
-                Token = token with { Amount = (decimal)(positionScale - PreviousScaledAmount) },
+                CryptoToken = cryptoToken with { Amount = (decimal)(positionScale - PreviousScaledAmount) },
                 Event = CashFlowEvent.Deposit
             });
         }
@@ -196,7 +202,7 @@ public class AavePosition : IDeFiPosition<AavePositionSnapshot, AavePositionCash
             {
                 PositionId = Id,
                 Date = eventDateTime,
-                Token = token with { Amount = (decimal)(PreviousScaledAmount - positionScale) },
+                CryptoToken = cryptoToken with { Amount = (decimal)(PreviousScaledAmount - positionScale) },
                 Event = CashFlowEvent.Withdrawal
             });
         }

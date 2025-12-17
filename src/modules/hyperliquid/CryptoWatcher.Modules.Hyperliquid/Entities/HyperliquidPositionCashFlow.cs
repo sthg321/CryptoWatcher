@@ -26,7 +26,7 @@ public class HyperliquidPositionCashFlow : ITokenCashFlow
     /// </remarks>
     public DateTime Date { get; init; }
     
-    public TokenInfo Token { get; init; } = null!;
+    public CryptoToken CryptoToken { get; init; } = null!;
     
     /// <summary>
     /// Indicates the type of event associated with a Hyperliquid vault activity.

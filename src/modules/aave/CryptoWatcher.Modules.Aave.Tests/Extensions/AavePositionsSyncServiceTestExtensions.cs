@@ -6,6 +6,7 @@ using CryptoWatcher.Modules.Aave.Entities;
 using CryptoWatcher.Modules.Aave.Models;
 using CryptoWatcher.Modules.Aave.Specifications;
 using CryptoWatcher.Shared.ValueObjects;
+using CryptoWatcher.ValueObjects;
 using Moq;
 
 namespace CryptoWatcher.AaveModule.Tests.Extensions;
@@ -19,15 +20,15 @@ internal static class AavePositionsSyncServiceTestExtensions
             .ReturnsAsync([]);
     }
 
-    public static List<TokenInfo> SetupAaveTokenEnricher(this Mock<IAaveTokenEnricher> mock,
+    public static List<CryptoToken> SetupAaveTokenEnricher(this Mock<IAaveTokenEnricher> mock,
         Fixture fixture,
         AaveChainConfiguration chain,
         IEnumerable<AaveLendingPosition> expectedPositions)
     {
-        var expectedSnapshotTokens = new List<TokenInfo>();
+        var expectedSnapshotTokens = new List<CryptoToken>();
         foreach (var expectedPosition in expectedPositions)
         {
-            var expectedTokenInfo = fixture.Create<TokenInfo>();
+            var expectedTokenInfo = fixture.Create<CryptoToken>();
             
             mock.Setup(enricher => enricher.EnrichTokenAsync(chain,
                     (CalculatableAaveLendingPosition)expectedPosition, It.IsAny<CancellationToken>()))

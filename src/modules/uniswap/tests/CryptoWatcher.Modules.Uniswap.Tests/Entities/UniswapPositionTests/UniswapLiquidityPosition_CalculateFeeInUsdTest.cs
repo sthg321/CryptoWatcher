@@ -150,7 +150,7 @@ public partial class UniswapLiquidityPositionTest
         {
             new DateTime(2025, 1, 2, 0, 0, 0, DateTimeKind.Utc), // День 2
             new DateTime(2025, 1, 5, 0, 0, 0, DateTimeKind.Utc), // День 5
-            new DateTime(2025, 1, 8, 0, 0, 0, DateTimeKind.Utc)  // День 8
+            new DateTime(2025, 1, 8, 0, 0, 0, DateTimeKind.Utc) // День 8
         };
 
         var claimedCashFlows = claimDates.Select(date => AddFeeClaimEvent(position, 0, date)).ToList();
@@ -158,7 +158,7 @@ public partial class UniswapLiquidityPositionTest
         // ИСПРАВЛЕНО: используем новую логику GetLastSnapshotBefore
         var snapshotBeforeFrom = snapshots.GetLastSnapshotBefore(fromDate); // null для 01.01
         var expectedUnclaimed = snapshots.Last().FeeInUsd - (snapshotBeforeFrom?.FeeInUsd ?? 0M);
-    
+
         var expectedClaimed = claimedCashFlows.Sum(cf => cf.FeeInUsd);
         var expectedTotal = expectedUnclaimed + expectedClaimed;
 
@@ -180,17 +180,17 @@ public partial class UniswapLiquidityPositionTest
 
         var position = CreatePositionWithSnapshots(startDate, 10);
         var snapshots = position.PositionSnapshots.OrderBy(s => s.Day).ToArray();
-        
+
         var outOfRangeClaimDate = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         AddFeeClaimEvent(position, _faker.Random.Number(1), outOfRangeClaimDate);
-        
+
         var inRangeClaimDate = new DateTime(2025, 1, 5, 0, 0, 0, DateTimeKind.Utc);
         var inRangeClaim = AddFeeClaimEvent(position, _faker.Random.Long(1), inRangeClaimDate);
 
         var feeOnJan2 = snapshots.First(s => s.Day == DateOnly.Parse("2025.01.02")).FeeInUsd;
         var feeOnJan10 = snapshots.First(s => s.Day == DateOnly.Parse("2025.01.10")).FeeInUsd;
         var expectedPositionFee = feeOnJan10 - feeOnJan2; // Разница между 10.01 и 02.01
-    
+
         var expectedTotal = expectedPositionFee + inRangeClaim.FeeInUsd;
 
         // Act
@@ -227,8 +227,8 @@ public partial class UniswapLiquidityPositionTest
 
         tokenPair ??= new TokenInfoPair
         {
-            Token0 = new TokenInfoWithAddress(position.Token0, _faker.Crypto().EvmAddress()),
-            Token1 = new TokenInfoWithAddress(position.Token1, _faker.Crypto().EvmAddress()),
+            Token0 = position.Token0,
+            Token1 = position.Token1,
         };
 
         return position.AddCashFlow(positionEvent, tokenPair);

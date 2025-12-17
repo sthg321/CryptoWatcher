@@ -22,13 +22,13 @@ public sealed class TokenInfoSymbolMaxLengthConvention : IModelFinalizingConvent
             foreach (var complexProperty in entityType.GetComplexProperties())
             {
                 var complexType = complexProperty.ComplexType;
-                if (complexType.ClrType != typeof(TokenInfo) && complexType.ClrType != typeof(TokenInfoWithFee) &&
-                    complexType.ClrType != typeof(TokenInfoWithAddress))
+                if (complexType.ClrType != typeof(CryptoToken) && complexType.ClrType != typeof(TokenInfoWithFee) &&
+                    complexType.ClrType != typeof(CryptoToken))
                 {
                     continue;
                 }
                 
-                var symbolProperty = complexType.FindProperty(nameof(TokenInfo.Symbol));
+                var symbolProperty = complexType.FindProperty(nameof(CryptoToken.Symbol));
                 if (symbolProperty is null)
                 {
                     continue;
