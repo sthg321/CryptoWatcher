@@ -43,7 +43,7 @@ public class TokenEnricher : ITokenEnricher
         var symbol = await _tokenService.GetTokenSymbolAsync(web3, token.Address);
         return new CryptoToken
         {
-            Address = token.Address,
+            Address = EvmAddress.Create(token.Address),
             Symbol = symbol,
             Amount = token.Balance.ToDecimal(tokenDecimals),
             PriceInUsd = await _tokenService.GetTokenPriceByTokenSymbolAsync(symbol, ct)
@@ -58,7 +58,7 @@ public class TokenEnricher : ITokenEnricher
         var symbol = await _tokenService.GetTokenSymbolAsync(web3, token.Address);
         return new CryptoToken
         {
-            Address = token.Address,
+            Address = EvmAddress.Create(token.Address),
             Symbol = symbol,
             Amount = token.Balance.ToDecimal(tokenDecimals),
             PriceInUsd = priceInUsd
@@ -73,7 +73,7 @@ public class TokenEnricher : ITokenEnricher
         var symbol = await _tokenService.GetTokenSymbolAsync(web3, token.Address);
         return new CryptoToken
         {
-            Address = token.Address,
+            Address = EvmAddress.Create(token.Address),
             Symbol = symbol,
             Amount = token.Balance.ToDecimal(tokenDecimals),
             PriceInUsd = await _tokenService.GetTokenPriceByTokenAddressAsync(platform, token.Address, ct)

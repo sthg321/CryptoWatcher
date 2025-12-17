@@ -55,6 +55,7 @@ public class Crypto : DataSet
 
         return new CryptoToken
         {
+            Address = EvmAddress(),
             Symbol = token.Symbol,
             Amount = amount,
             PriceInUsd = Random.Decimal(0.0001m, 200_000m)
@@ -140,6 +141,7 @@ public class Crypto : DataSet
 
         return new CryptoToken
         {
+            Address = EvmAddress(),
             Symbol = token.Symbol,
             Amount = amount,
             PriceInUsd = Random.Decimal(0.0001m, 200_000m)
