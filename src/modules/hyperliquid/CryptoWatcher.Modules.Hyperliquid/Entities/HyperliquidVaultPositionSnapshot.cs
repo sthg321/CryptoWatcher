@@ -24,7 +24,7 @@ public class HyperliquidVaultPositionSnapshot : ITokenPositionSnapshot
         VaultAddress = vaultAddress;
         Balance = balance;
         Day = day;
-        CryptoTokenStatistic = new CryptoTokenStatistic
+        Token0 = new CryptoTokenStatistic
         {
             Amount = balance,
             PriceInUsd = 1
@@ -41,7 +41,7 @@ public class HyperliquidVaultPositionSnapshot : ITokenPositionSnapshot
     /// </summary>
     public DateOnly Day { get; private set; }
     
-    public CryptoTokenStatistic CryptoTokenStatistic { get; private set; } = null !;
+    public CryptoTokenStatistic Token0 { get; private set; } = null !;
 
     /// <summary>
     /// VaultAddress address

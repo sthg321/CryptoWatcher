@@ -233,6 +233,6 @@ public class AavePositionsSyncServiceTest
     {
         Assert.Equal(SyncDay, actualSnapshot.Day);
         Assert.Equal(actualPositionId, actualSnapshot.PositionId);
-        Assert.Equivalent(expectedSnapshot.ToStatistic(), actualSnapshot.CryptoTokenStatistic);
+        Assert.Equivalent(expectedSnapshot.ToStatistic(), actualSnapshot.Token0);
     }
 }

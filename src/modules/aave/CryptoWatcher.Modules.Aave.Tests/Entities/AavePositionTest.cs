@@ -90,7 +90,7 @@ public class AavePositionTest
 
         Assert.Single(position.PositionSnapshots);
         Assert.Equal(position.PreviousScaledAmount, expectedTokenAmount);
-        Assert.Equivalent(expectedToken, actualSnapshot.CryptoTokenStatistic);
+        Assert.Equivalent(expectedToken, actualSnapshot.Token0);
     }
 
     [Theory]
@@ -208,7 +208,7 @@ public class AavePositionTest
 
         Assert.Equal(positionId, cashFlow.PositionId);
         Assert.Equal(TestTime, cashFlow.Date);
-        Assert.Equal(expectedToken, cashFlow.CryptoToken);
+        Assert.Equal(expectedToken.ToStatistic(), cashFlow.Token0);
         Assert.Equal(type, cashFlow.Event);
     }
 }

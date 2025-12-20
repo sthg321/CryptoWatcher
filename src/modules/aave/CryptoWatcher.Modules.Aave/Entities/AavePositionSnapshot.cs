@@ -23,7 +23,7 @@ public class AavePositionSnapshot : ITokenPositionSnapshot
     {
         PositionId = positionId;
         Day = day;
-        CryptoTokenStatistic = positionCryptoToken;
+        Token0 = positionCryptoToken;
     }
 
     /// <summary>
@@ -54,10 +54,10 @@ public class AavePositionSnapshot : ITokenPositionSnapshot
     /// the token's symbol, amount, and valuation. This data is essential for analyzing the financial
     /// state and performance of the associated Aave position at the time of the snapshot.
     /// </remarks>
-    public CryptoTokenStatistic CryptoTokenStatistic { get; private set; } = null!;
+    public CryptoTokenStatistic Token0 { get; private set; } = null!;
  
     public void UpdateToken(decimal amount, decimal priceInUsd)
     {
-        CryptoTokenStatistic = CryptoTokenStatistic with { Amount = amount, PriceInUsd = priceInUsd };
+        Token0 = Token0 with { Amount = amount, PriceInUsd = priceInUsd };
     }
 }

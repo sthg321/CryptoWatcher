@@ -66,7 +66,7 @@ public class AavePositionDailyPerformance
     /// the token's symbol, amount, and valuation. This data is essential for analyzing the financial
     /// state and performance of the associated Aave position at the time of the snapshot.
     /// </remarks>
-    public CryptoToken CryptoToken { get; private set; } = null!; 
+    public CryptoToken Token0 { get; private set; } = null!; 
 
     /// <summary>
     /// Represents the profit, in USD, derived from a specific Aave position over the course of a day.
@@ -100,7 +100,7 @@ public class AavePositionDailyPerformance
             WalletAddress = position.WalletAddress,
             NetworkName = position.Network,
             PositionType = position.PositionType,
-            CryptoToken = position.Token0,
+            Token0 = position.Token0,
             ProfitInUsd = profitInUsd.Amount,
             ProfitInToken = profitInToken.Amount,
             SnapshotPositionId = current.PositionId

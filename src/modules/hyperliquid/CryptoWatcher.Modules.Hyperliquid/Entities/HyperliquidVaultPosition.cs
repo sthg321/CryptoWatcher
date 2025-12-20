@@ -1,7 +1,6 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Exceptions;
 using CryptoWatcher.Shared.Entities;
-using CryptoWatcher.Shared.ValueObjects;
 using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Hyperliquid.Entities;
@@ -50,7 +49,7 @@ public class
     /// </remarks>
     public Wallet Wallet { get; init; } = null!;
 
-    public CryptoToken Token0 { get; } = null!;
+    public CryptoToken Token0 { get; init; } = null!;
 
     /// <summary>
     /// Represents the collection of events associated with the vault's activity.
@@ -90,8 +89,8 @@ public class
     {
         var existedSnapshot =
             _cashFlows.FirstOrDefault(positionSnapshot => positionSnapshot.Date == positionCashFlow.Date &&
-                                                            positionSnapshot.CryptoToken.Amount ==
-                                                            positionCashFlow.CryptoToken.Amount);
+                                                            positionSnapshot.Token0.Amount ==
+                                                            positionCashFlow.Token0.Amount);
 
         if (existedSnapshot is not null)
         {

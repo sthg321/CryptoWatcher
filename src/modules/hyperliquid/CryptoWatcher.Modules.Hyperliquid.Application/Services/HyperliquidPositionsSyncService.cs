@@ -3,6 +3,7 @@ using CryptoWatcher.Modules.Hyperliquid.Application.Abstractions;
 using CryptoWatcher.Modules.Hyperliquid.Entities;
 using CryptoWatcher.Modules.Hyperliquid.Specifications;
 using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Hyperliquid.Application.Services;
 
@@ -57,7 +58,13 @@ public class HyperliquidPositionsSyncService : IHyperliquidPositionsSyncService
                 {
                     vaultPosition = new HyperliquidVaultPosition
                     {
-                        InitialBalance = vault.Balance,
+                        Token0 = new CryptoToken
+                        {
+                            Amount = vault.Balance,
+                            Symbol = "USDC",
+                            PriceInUsd = 1,
+                            Address = EvmAddress.Create("0xaf88d065e77c8cC2239327C5EDb3A432268e5831")
+                        },
                         WalletAddress = wallet.Address,
                         VaultAddress = vault.Address,
                         Wallet = wallet,

@@ -111,7 +111,7 @@ public class AavePosition : IDeFiPosition<AavePositionSnapshot, AavePositionCash
     /// This property provides a historical view of the position's evolution in the Aave protocol.
     /// </remarks>
     public IReadOnlyCollection<AavePositionSnapshot> PositionSnapshots => _positionSnapshots;
-    
+
     /// <summary>
     /// Provides a readonly collection of events associated with the Aave position.
     /// </summary>
@@ -124,7 +124,7 @@ public class AavePosition : IDeFiPosition<AavePositionSnapshot, AavePositionCash
     public IReadOnlyCollection<AavePositionCashFlow> CashFlows => _cashFlows;
 
     public IReadOnlyCollection<AavePositionPeriod> PositionPeriods => _positionPeriods;
- 
+
     [Projectable] public bool IsActive() => PositionPeriods.Any(period => !period.ClosedAtDay.HasValue);
 
     /// <summary>
@@ -157,6 +157,7 @@ public class AavePosition : IDeFiPosition<AavePositionSnapshot, AavePositionCash
         {
             throw new InvalidOperationException();
         }
+
         var activePeriod = _positionPeriods.SingleOrDefault(period => !period.ClosedAtDay.HasValue);
         if (activePeriod is null)
         {
@@ -192,7 +193,8 @@ public class AavePosition : IDeFiPosition<AavePositionSnapshot, AavePositionCash
             {
                 PositionId = Id,
                 Date = eventDateTime,
-                CryptoToken = cryptoToken with { Amount = (decimal)(positionScale - PreviousScaledAmount) },
+                Token0 = new CryptoTokenStatistic
+                    { Amount = (decimal)(positionScale - PreviousScaledAmount), PriceInUsd = Token0.PriceInUsd },
                 Event = CashFlowEvent.Deposit
             });
         }
@@ -202,7 +204,8 @@ public class AavePosition : IDeFiPosition<AavePositionSnapshot, AavePositionCash
             {
                 PositionId = Id,
                 Date = eventDateTime,
-                CryptoToken = cryptoToken with { Amount = (decimal)(PreviousScaledAmount - positionScale) },
+                Token0 = new CryptoTokenStatistic
+                    { Amount = (decimal)(PreviousScaledAmount - positionScale), PriceInUsd = Token0.PriceInUsd },
                 Event = CashFlowEvent.Withdrawal
             });
         }

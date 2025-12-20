@@ -5,5 +5,5 @@ namespace CryptoWatcher.Abstractions.PositionSnapshots;
 
 public interface ITokenPositionSnapshot : IPositionSnapshot
 {
-    CryptoTokenStatistic CryptoTokenStatistic { get; }
+    CryptoTokenStatistic Token0 { get; }
 }
