@@ -190,7 +190,7 @@ public class AavePositionTest
             TestNetwork,
             TestWallet,
             type,
-            _fixture.Create<EvmAddress>(),
+            _fixture.Create<CryptoToken>(),
             TestDate);
     }
 

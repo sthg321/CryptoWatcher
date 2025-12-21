@@ -39,7 +39,8 @@ public class AavePositionsSyncService : IAavePositionsSyncService
         CancellationToken ct = default)
     {
         var existedPositions = await _aavePositionRepository.ListAsync(
-            new AavePositionsWithSnapshotsSpecification(chain, wallet, syncDay, syncDay), ct);
+            new AavePositionsWithSnapshotsSpecification(chain, wallet, syncDay, syncDay),
+            ct); // Предполагаем, что spec грузит открытые позиции; если нет — обновите spec на all open.
 
         _logger.LogExistedPositionsForWalletCount(wallet.Address, existedPositions.Count);
 
@@ -54,50 +55,45 @@ public class AavePositionsSyncService : IAavePositionsSyncService
             if (lendingPosition is EmptyAaveLendingPosition)
             {
                 foreach (var position in existedPositions.Where(position =>
-                             position.TokenAddress.Equals(lendingPosition.TokenAddress)))
+                             position.Token0.Address.Equals(lendingPosition.TokenAddress)))
                 {
                     position.ClosePosition(syncDay);
                     result.Add(position);
 
                     _aavePositionRepository.Update(position);
-                    _logger.LogPositionClosed(position.Id, position.TokenAddress);
+                    _logger.LogPositionClosed(position.Id, position.Token0.Address);
                 }
 
                 continue;
             }
-
+            
             var calculatableAaveLendingPosition = lendingPosition as CalculatableAaveLendingPosition ??
-                                                  throw new InvalidOperationException(
-                                                      "To calculate position amount, lending position must inherit from CalculatableAaveLendingPosition class");
+                                                  throw new InvalidOperationException("...");
 
-            var tokenInfo =
-                await _aaveTokenEnricher.EnrichTokenAsync(chain, calculatableAaveLendingPosition, ct);
-
+            var cryptoToken = await _aaveTokenEnricher.EnrichTokenAsync(chain, calculatableAaveLendingPosition, ct);
+            
             var positionType = calculatableAaveLendingPosition.DeterminePositionType();
 
             var currentPosition = existedPositions.FirstOrDefault(position =>
-                position.TokenAddress.Equals(lendingPosition.TokenAddress) && position.PositionType == positionType);
+                position.Token0.Address.Equals(cryptoToken.Address) && position.PositionType == positionType);
 
             if (currentPosition is null)
             {
-                currentPosition =
-                    new AavePosition(chain, wallet, positionType, EvmAddress.Create(lendingPosition.TokenAddress),
-                        syncDay);
+                currentPosition = new AavePosition(chain, wallet, positionType, cryptoToken, syncDay);
 
                 _aavePositionRepository.Insert(currentPosition);
 
-                _logger.LogCreateAavePosition(currentPosition.TokenAddress, tokenInfo);
+                _logger.LogCreateAavePosition(currentPosition.Token0.Address, cryptoToken);
             }
-
             else
             {
                 _aavePositionRepository.Update(currentPosition);
 
-                _logger.LogUpdateAavePosition(currentPosition.TokenAddress, tokenInfo);
+                _logger.LogUpdateAavePosition(currentPosition.Token0.Address, cryptoToken);
             }
 
             var positionScaleAmount = calculatableAaveLendingPosition.CalculatePositionScaleInToken();
-            currentPosition.AddOrUpdateSnapshot(tokenInfo, positionScaleAmount, syncDay, _timeProvider);
+            currentPosition.AddOrUpdateSnapshot(cryptoToken, positionScaleAmount, syncDay, _timeProvider);
 
             result.Add(currentPosition);
         }

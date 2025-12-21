@@ -80,19 +80,36 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Property<decimal?>("PreviousScaledAmount")
                         .HasColumnType("numeric");
 
-                    b.Property<string>("TokenAddress")
-                        .IsRequired()
-                        .HasMaxLength(42)
-                        .IsUnicode(false)
-                        .HasColumnType("character(42)")
-                        .IsFixedLength();
-
                     b.Property<string>("WalletAddress")
                         .IsRequired()
                         .HasMaxLength(42)
                         .IsUnicode(false)
                         .HasColumnType("character(42)")
                         .IsFixedLength();
+
+                    b.ComplexProperty<Dictionary<string, object>>("Token0", "CryptoWatcher.Modules.Aave.Entities.AavePosition.Token0#CryptoToken", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Address")
+                                .IsRequired()
+                                .HasMaxLength(42)
+                                .IsUnicode(false)
+                                .HasColumnType("character(42)")
+                                .IsFixedLength();
+
+                            b1.Property<decimal>("Amount")
+                                .HasColumnType("numeric");
+
+                            b1.Property<decimal>("PriceInUsd")
+                                .HasColumnType("numeric");
+
+                            b1.Property<string>("Symbol")
+                                .IsRequired()
+                                .HasMaxLength(16)
+                                .IsUnicode(false)
+                                .HasColumnType("character varying(16)");
+                        });
 
                     b.HasKey("Id");
 

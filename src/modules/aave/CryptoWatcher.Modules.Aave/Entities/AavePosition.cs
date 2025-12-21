@@ -29,13 +29,13 @@ public class AavePosition : IDeFiPosition<AavePositionSnapshot, AavePositionCash
     }
 
     public AavePosition(AaveChainConfiguration chain, Wallet wallet, AavePositionType positionType,
-        EvmAddress tokenAddress,
+        CryptoToken token,
         DateOnly createdAtDay)
     {
         Network = chain.Name;
         WalletAddress = wallet.Address;
         PositionType = positionType;
-        TokenAddress = tokenAddress;
+        Token0 = token;
         Id = Guid.CreateVersion7();
 
         _positionPeriods.Add(new AavePositionPeriod(Id, createdAtDay));
@@ -89,17 +89,7 @@ public class AavePosition : IDeFiPosition<AavePositionSnapshot, AavePositionCash
     /// </remarks>
     public Wallet Wallet { get; private set; } = null!;
 
-    public CryptoToken Token0 { get; } = null!;
-
-    /// <summary>
-    /// Specifies the address of the token associated with the Aave position.
-    /// </summary>
-    /// <remarks>
-    /// This property identifies the specific token being borrowed or supplied in the position.
-    /// The token's address acts as a unique identifier on the blockchain, enabling precise tracking
-    /// of assets involved in the position.
-    /// </remarks>
-    public EvmAddress TokenAddress { get; private set; } = null!;
+    public CryptoToken Token0 { get; private set; } = null!;
 
     public decimal? PreviousScaledAmount { get; set; }
 
@@ -194,7 +184,7 @@ public class AavePosition : IDeFiPosition<AavePositionSnapshot, AavePositionCash
                 PositionId = Id,
                 Date = eventDateTime,
                 Token0 = new CryptoTokenStatistic
-                    { Amount = (decimal)(positionScale - PreviousScaledAmount), PriceInUsd = Token0.PriceInUsd },
+                    { Amount = (decimal)(positionScale - PreviousScaledAmount), PriceInUsd = cryptoToken.PriceInUsd },
                 Event = CashFlowEvent.Deposit
             });
         }
@@ -205,7 +195,7 @@ public class AavePosition : IDeFiPosition<AavePositionSnapshot, AavePositionCash
                 PositionId = Id,
                 Date = eventDateTime,
                 Token0 = new CryptoTokenStatistic
-                    { Amount = (decimal)(PreviousScaledAmount - positionScale), PriceInUsd = Token0.PriceInUsd },
+                    { Amount = (decimal)(PreviousScaledAmount - positionScale), PriceInUsd = cryptoToken.PriceInUsd },
                 Event = CashFlowEvent.Withdrawal
             });
         }
