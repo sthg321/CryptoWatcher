@@ -9,6 +9,8 @@ public class UniswapSynchronizationStateByWalletAndChain : Specification<Uniswap
 {
     public UniswapSynchronizationStateByWalletAndChain(UniswapChainConfiguration chainConfiguration, Wallet wallet)
     {
-        Query.Where(state => state.ChainName == chainConfiguration.Name && state.WalletAddress == wallet.Address);
+        Query.Where(state => state.ChainName == chainConfiguration.Name &&
+                             chainConfiguration.ProtocolVersion == state.UniswapProtocolVersion &&
+                             state.WalletAddress == wallet.Address);
     }
 }

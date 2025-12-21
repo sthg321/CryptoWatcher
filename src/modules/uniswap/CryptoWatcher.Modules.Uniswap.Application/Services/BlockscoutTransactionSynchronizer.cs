@@ -10,6 +10,7 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Services;
 public class BlockscoutTransactionSynchronizer : IBlockscoutTransactionSynchronizer
 {
     private const string ModifyLiquidityMethodName = "modifyLiquidities";
+    private const string CollectMethodName = "Collect";
 
     private readonly IBlockscoutTransactionFetcher _blockscoutTransactionFetcher;
     private readonly IUniswapCashFlowBlockRangeSynchronizer _blockRangeSynchronizer;
@@ -62,7 +63,7 @@ public class BlockscoutTransactionSynchronizer : IBlockscoutTransactionSynchroni
                     "Start processing transaction: {TransactionHash} with bloc number: {BlockNumber}",
                     transaction.TransactionHash.Value, transaction.BlockNumber);
 
-                if (transaction.Method == ModifyLiquidityMethodName)
+                if (transaction.Method is ModifyLiquidityMethodName or CollectMethodName)
                 {
                     _logger.LogInformation("Transaction is modify liquidity event. Calling sync block range");
 
