@@ -11,6 +11,7 @@ using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports;
 using CryptoWatcher.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Aave;
 using CryptoWatcher.Modules.Hyperliquid.Application.Abstractions;
+using CryptoWatcher.Modules.Morpho.Infrastructure;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Shared.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -65,6 +66,7 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
+     
     if (!app.Environment.IsDevelopment())
     {
         scope.ServiceProvider.GetRequiredService<CryptoWatcherDbContext>().Database.Migrate();

@@ -27,6 +27,7 @@
         <ProjectReference Include="..\modules\aave\CryptoWatcher.Modules.Aave\CryptoWatcher.Modules.Aave.csproj" />
         <ProjectReference Include="..\modules\hyperliquid\CryptoWatcher.Modules.Hyperliquid.Infrastructure\CryptoWatcher.Modules.Hyperliquid.Infrastructure.csproj" />
         <ProjectReference Include="..\modules\hyperliquid\CryptoWatcher.Modules.Hyperliquid\CryptoWatcher.Modules.Hyperliquid.csproj" />
+        <ProjectReference Include="..\modules\morpho\CryptoWatcher.Modules.Morpho.Infrastructure\CryptoWatcher.Modules.Morpho.Infrastructure.csproj" />
         <ProjectReference Include="..\modules\uniswap\CryptoWatcher.Modules.Uniswap.Application\CryptoWatcher.Modules.Uniswap.Application.csproj" />
         <ProjectReference Include="..\modules\uniswap\CryptoWatcher.Modules.Uniswap.Infrastructure\CryptoWatcher.Modules.Uniswap.Infrastructure.csproj" />
         <ProjectReference Include="..\modules\uniswap\CryptoWatcher.Modules.Uniswap.Infrastructure\CryptoWatcher.Modules.Uniswap.Infrastructure.csproj" />

@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\CryptoWatcher.Modules.Morpho\CryptoWatcher.Modules.Morpho.csproj" />
+    </ItemGroup>
+
 </Project>

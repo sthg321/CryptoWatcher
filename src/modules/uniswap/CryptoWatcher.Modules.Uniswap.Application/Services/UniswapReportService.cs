@@ -43,7 +43,8 @@ public class UniswapReportService : IPlatformDailyReportDataProvider
                     ProfitInPercent = profit.Percent,
                     TotalHoldInUsd = poolPosition.CalculateHoldValueInUsd(to),
                     ReportItems = poolPosition.PositionSnapshots.Select(positionSnapshot =>
-                        new UniswapDailyReportItem
+                    {
+                        return new UniswapDailyReportItem
                         {
                             Network = poolPosition.NetworkName,
                             Day = positionSnapshot.Day,
@@ -52,7 +53,8 @@ public class UniswapReportService : IPlatformDailyReportDataProvider
                             TokenPairSymbols = $"{poolPosition.Token0.Symbol} / {poolPosition.Token1.Symbol}",
                             DailyProfitInUsd = poolPosition.CalculateDailyFeeProfit(positionSnapshot.Day),
                             DailyProfitInUsdPercent = 0
-                        }).ToArray()
+                        };
+                    }).ToArray()
                 };
 
                 if (!result.TryGetValue(poolPosition.Wallet, out var dailyReports))
