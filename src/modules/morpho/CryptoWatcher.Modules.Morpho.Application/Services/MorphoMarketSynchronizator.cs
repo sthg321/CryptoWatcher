@@ -41,7 +41,7 @@ public class MorphoMarketSynchronizer : IMorphoMarketSynchronizer
         {
             if (!dbMarketPositions.TryGetValue(marketPosition.MarketId, out var dbMarketPosition))
             {
-                if (marketPosition.LoanToken.Amount == 0 && marketPosition.CollateralToken.Amount == 0)
+                if (marketPosition.IsEmpty())
                 {
                     continue;
                 }
@@ -50,7 +50,7 @@ public class MorphoMarketSynchronizer : IMorphoMarketSynchronizer
                     marketPosition.LoanToken, marketPosition.CollateralToken, syncDate);
             }
 
-            if (marketPosition.LoanToken.Amount == 0 && marketPosition.CollateralToken.Amount == 0)
+            if (marketPosition.IsEmpty())
             {
                 dbMarketPosition.ClosePosition(syncDate);
                 result.Add(dbMarketPosition);
