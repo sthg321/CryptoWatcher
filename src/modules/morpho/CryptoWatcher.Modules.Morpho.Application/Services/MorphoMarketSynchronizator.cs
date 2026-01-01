@@ -36,7 +36,7 @@ public class MorphoMarketSynchronizator
         {
             if (!dbMarketPositions.TryGetValue(marketPosition.MarketId, out var dbMarketPosition))
             {
-                dbMarketPosition = new MorphoMarketPosition(marketPosition.MarketId, chainId,
+                dbMarketPosition = new MorphoMarketPosition(walletAddress, marketPosition.MarketId, chainId,
                     marketPosition.LoanToken, marketPosition.CollateralToken, today);
                 result.Add(dbMarketPosition);
                 continue;

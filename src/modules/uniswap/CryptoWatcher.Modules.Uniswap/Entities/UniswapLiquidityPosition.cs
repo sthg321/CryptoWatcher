@@ -21,7 +21,7 @@ namespace CryptoWatcher.Modules.Uniswap.Entities;
 public class
     UniswapLiquidityPosition : IDeFiPosition<UniswapLiquidityPositionSnapshot, UniswapLiquidityPositionCashFlow>
 {
-    private readonly List<UniswapLiquidityPositionSnapshot> _positionSnapshots = [];
+    private readonly List<UniswapLiquidityPositionSnapshot> _snapshots = [];
     private readonly List<UniswapLiquidityPositionCashFlow> _cashFlows = [];
 
     private UniswapLiquidityPosition()
@@ -154,7 +154,7 @@ public class
     /// These snapshots can be used to track changes and analyze the evolution of the position over time,
     /// including performance metrics, token balances, and other relevant data.
     /// </remarks>
-    public IReadOnlyCollection<UniswapLiquidityPositionSnapshot> Snapshots => _positionSnapshots;
+    public IReadOnlyCollection<UniswapLiquidityPositionSnapshot> Snapshots => _snapshots;
 
     public IReadOnlyCollection<UniswapLiquidityPositionCashFlow> CashFlows => _cashFlows;
 
@@ -167,11 +167,11 @@ public class
             throw new DomainException(PositionClosedException);
         }
 
-        var existedSnapshot = _positionSnapshots.FirstOrDefault(snapshot => snapshot.Day == day);
+        var existedSnapshot = _snapshots.FirstOrDefault(snapshot => snapshot.Day == day);
         if (existedSnapshot is null)
         {
             var snapshot = new UniswapLiquidityPositionSnapshot(this, day, isInRange, token0, token1);
-            _positionSnapshots.Add(snapshot);
+            _snapshots.Add(snapshot);
             return snapshot;
         }
 

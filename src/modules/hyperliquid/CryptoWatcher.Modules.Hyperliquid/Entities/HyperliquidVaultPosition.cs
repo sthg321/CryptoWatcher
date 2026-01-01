@@ -13,7 +13,7 @@ namespace CryptoWatcher.Modules.Hyperliquid.Entities;
 public class
     HyperliquidVaultPosition : IDeFiPosition<HyperliquidVaultPositionSnapshot, HyperliquidPositionCashFlow>
 {
-    private readonly List<HyperliquidVaultPositionSnapshot> _positionSnapshots = [];
+    private readonly List<HyperliquidVaultPositionSnapshot> _snapshots = [];
     private readonly List<HyperliquidPositionCashFlow> _cashFlows = [];
 
     public decimal InitialBalance { get; init; }
@@ -69,16 +69,16 @@ public class
     /// where each snapshot captures specific details of the vault position at a given point in time.
     /// It is utilized for analysis, reporting, and tracking historical position data within the Hyperliquid module.
     /// </remarks>
-    public IReadOnlyCollection<HyperliquidVaultPositionSnapshot> Snapshots => _positionSnapshots;
+    public IReadOnlyCollection<HyperliquidVaultPositionSnapshot> Snapshots => _snapshots;
 
     public void AddOrUpdateSnapshot(HyperliquidVaultPositionSnapshot snapshot)
     {
         var existedSnapshot =
-            _positionSnapshots.FirstOrDefault(positionSnapshot => positionSnapshot.Day == snapshot.Day);
+            _snapshots.FirstOrDefault(positionSnapshot => positionSnapshot.Day == snapshot.Day);
 
         if (existedSnapshot is null)
         {
-            _positionSnapshots.Add(snapshot);
+            _snapshots.Add(snapshot);
             return;
         }
 
