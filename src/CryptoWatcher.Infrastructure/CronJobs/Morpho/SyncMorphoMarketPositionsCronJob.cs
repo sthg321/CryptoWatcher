@@ -26,7 +26,7 @@ public class SyncMorphoMarketPositionsCronJob
         foreach (var wallet in wallets)
         {
             // for now only unichain is supported
-            await _morphoMarketSynchronizer.SynchronizeAsync(wallet.Address, 140, now, ct);
+            await _morphoMarketSynchronizer.SynchronizeAsync(wallet.Address, 130, now, ct);
         }
     }
 }
