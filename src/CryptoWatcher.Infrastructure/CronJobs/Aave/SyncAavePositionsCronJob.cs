@@ -46,7 +46,7 @@ internal class SyncAavePositionsCronJob
                 }
                 catch (Exception e)
                 {
-                  
+                    _logger.LogError(e, "Unable to sync aave chain. ChainName: {ChainName}", chainConfiguration.Name);
                 }
             }
         }
