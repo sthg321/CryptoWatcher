@@ -30,7 +30,8 @@ internal class UiPoolDataProviderFetcher : IUiPoolDataProviderFetcher
         {
             UnderlyingAsset = EvmAddress.Create(data.UnderlyingAsset),
             ScaledATokenBalance = data.ScaledATokenBalance,
-            ScaledVariableDebt = data.ScaledVariableDebt
+            ScaledVariableDebt = data.ScaledVariableDebt,
+            IsCollateral = data.UsageAsCollateralEnabled
         }).ToArray();
     }
 
@@ -38,9 +39,8 @@ internal class UiPoolDataProviderFetcher : IUiPoolDataProviderFetcher
     {
         var web3 = new Web3(chain.RpcUrlWithAuthToken);
 
-        var function = GetFunction(web3, "getReservesData",
-            chain.SmartContractAddresses.UiPoolDataProviderAddress.Value);
-
+        var function = GetFunction(web3, "getReservesData", chain.SmartContractAddresses.UiPoolDataProviderAddress.Value);
+       
         var result = await function.CallDeserializingToObjectAsync<GetReservesDataOutput>(chain.SmartContractAddresses
             .PoolAddressesProviderAddress.Value);
 
@@ -53,7 +53,8 @@ internal class UiPoolDataProviderFetcher : IUiPoolDataProviderFetcher
                 Decimals = data.Decimals,
                 LiquidityIndex = data.LiquidityIndex,
                 PriceInMarketReferenceCurrency = data.PriceInMarketReferenceCurrency,
-                VariableBorrowIndex = data.VariableBorrowIndex
+                VariableBorrowIndex = data.VariableBorrowIndex,
+                ReserveLiquidationThreshold = (ushort)data.ReserveLiquidationThreshold
             }).ToArray(),
         };
     }

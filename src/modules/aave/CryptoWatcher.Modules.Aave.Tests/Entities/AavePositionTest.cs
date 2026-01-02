@@ -56,7 +56,7 @@ public class AavePositionTest
 
         Assert.Throws<InvalidOperationException>(() =>
             position.AddOrUpdateSnapshot(_fixture.Create<CryptoToken>(), fixture.Create<decimal>(), TestDate,
-                _timeProviderMock.Object));
+                _timeProviderMock.Object, 0));
     }
 
     [Theory]
@@ -68,7 +68,8 @@ public class AavePositionTest
         var token = _fixture.Create<CryptoToken>();
 
         var existedTokenAmount = _fixture.Create<decimal>();
-        position.AddOrUpdateSnapshot(token, existedTokenAmount, TestDate, _timeProviderMock.Object);
+        var hf = _fixture.Create<double>();
+        position.AddOrUpdateSnapshot(token, existedTokenAmount, TestDate, _timeProviderMock.Object, hf);
 
         var expectedTokenAmount = _fixture.Create<decimal>();
         
@@ -83,14 +84,16 @@ public class AavePositionTest
             Symbol = token.Symbol, Address = token.Address, Amount = expectedToken.Amount,
             PriceInUsd = expectedToken.PriceInUsd
         };
-        
-        position.AddOrUpdateSnapshot(updateToken, expectedTokenAmount, TestDate, _timeProviderMock.Object);
+
+        var newHf = _fixture.Create<double>();
+        position.AddOrUpdateSnapshot(updateToken, expectedTokenAmount, TestDate, _timeProviderMock.Object, newHf);
 
         var actualSnapshot = position.Snapshots.First();
 
         Assert.Single(position.Snapshots);
         Assert.Equal(position.PreviousScaledAmount, expectedTokenAmount);
         Assert.Equivalent(expectedToken, actualSnapshot.Token0);
+        Assert.Equal(actualSnapshot.HealthFactor, newHf);
     }
 
     [Theory]
@@ -102,10 +105,10 @@ public class AavePositionTest
         var position = CreatePosition(type);
         var token = _fixture.Create<CryptoToken>();
 
-        position.AddOrUpdateSnapshot(token, 1, syncDate, _timeProviderMock.Object);
-
+        position.AddOrUpdateSnapshot(token, 1, syncDate, _timeProviderMock.Object, 2);
+        
         var actualSnapshot = position.Snapshots.First();
-        var expectedSnapshot = new AavePositionSnapshot(position.Id, syncDate, token.ToStatistic());
+        var expectedSnapshot = new AavePositionSnapshot(position.Id, syncDate, token.ToStatistic(), 2);
 
         Assert.Single(position.Snapshots);
         Assert.Equivalent(expectedSnapshot, actualSnapshot);
@@ -121,7 +124,7 @@ public class AavePositionTest
         var position = CreatePosition(type);
         var token = _fixture.Create<CryptoToken>();
 
-        position.AddOrUpdateSnapshot(token, expectedScaledAmount, syncDate, _timeProviderMock.Object);
+        position.AddOrUpdateSnapshot(token, expectedScaledAmount, syncDate, _timeProviderMock.Object, 0);
 
         Assert.Empty(position.CashFlows);
     }
@@ -141,13 +144,13 @@ public class AavePositionTest
         var position = CreatePosition(positionType);
         var token = _fixture.Create<CryptoToken>();
 
-        position.AddOrUpdateSnapshot(token, initialScaleAmount, syncDate.AddDays(1), _timeProviderMock.Object);
+        position.AddOrUpdateSnapshot(token, initialScaleAmount, syncDate.AddDays(1), _timeProviderMock.Object, 0);
 
         position.AddOrUpdateSnapshot(token, updatedScaleAmount, syncDate,
-            _timeProviderMock.Object);
+            _timeProviderMock.Object, 0);
 
         position.AddOrUpdateSnapshot(token, updatedScaleAmount, syncDate.AddDays(1),
-            _timeProviderMock.Object);
+            _timeProviderMock.Object, 0);
 
         Assert.Single(position.CashFlows);
         AssertThatAaveEventCorrect(
@@ -171,8 +174,8 @@ public class AavePositionTest
         var position = CreatePosition(AavePositionType.Borrowed);
         var token = _fixture.Create<CryptoToken>();
 
-        position.AddOrUpdateSnapshot(token, oldScaleAmount, TestDate, _timeProviderMock.Object);
-        position.AddOrUpdateSnapshot(token, newScaleAmount, TestDate, _timeProviderMock.Object);
+        position.AddOrUpdateSnapshot(token, oldScaleAmount, TestDate, _timeProviderMock.Object, 0);
+        position.AddOrUpdateSnapshot(token, newScaleAmount, TestDate, _timeProviderMock.Object, 0);
 
         Assert.Single(position.CashFlows);
         AssertThatAaveEventCorrect(

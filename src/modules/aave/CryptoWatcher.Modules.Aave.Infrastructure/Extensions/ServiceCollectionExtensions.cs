@@ -1,6 +1,5 @@
 using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Application.Abstractions;
-using CryptoWatcher.Modules.Aave.Abstractions;
 using CryptoWatcher.Modules.Aave.Application.Abstractions;
 using CryptoWatcher.Modules.Aave.Application.Abstractions.Client;
 using CryptoWatcher.Modules.Aave.Application.Services;
@@ -26,6 +25,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IUiPoolDataProviderFetcher, UiPoolDataProviderFetcher>();
 
         services.AddSingleton<IAaveApiClient, AaveApiClient>();
+        services.AddSingleton<IAaveHealthFactorCalculator, AaveHealthFactorCalculator>();
         
         services.AddScoped<IDailyPositionPerformanceSynchronizer, AaveDailyPositionPerformanceSynchronizer>();
         

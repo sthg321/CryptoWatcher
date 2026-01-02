@@ -1,7 +1,8 @@
 using CryptoWatcher.Extensions;
-using CryptoWatcher.Modules.Aave.Abstractions;
+using CryptoWatcher.Modules.Aave.Application.Abstractions;
 using CryptoWatcher.Modules.Aave.Application.Abstractions.Client;
 using CryptoWatcher.Modules.Aave.Application.Models;
+using CryptoWatcher.Modules.Aave.Application.Services;
 using CryptoWatcher.Modules.Aave.Entities;
 using CryptoWatcher.Modules.Aave.Models;
 using CryptoWatcher.Shared.Entities;
@@ -12,20 +13,22 @@ namespace CryptoWatcher.Modules.Aave.Infrastructure.Services;
 internal class AaveProvider : IAaveProvider
 {
     private readonly IAaveApiClient _aaveApiClient;
+    private readonly IAaveHealthFactorCalculator _aaveHealthFactorCalculator;
 
-    public AaveProvider(IAaveApiClient aaveApiClient)
+    public AaveProvider(IAaveApiClient aaveApiClient, IAaveHealthFactorCalculator aaveHealthFactorCalculator)
     {
         _aaveApiClient = aaveApiClient;
+        _aaveHealthFactorCalculator = aaveHealthFactorCalculator;
     }
 
-    public async Task<List<AaveLendingPosition>> GetLendingPositionAsync(AaveChainConfiguration chain, Wallet wallet,
-        CancellationToken ct = default)
+    public async Task<AavePositionsResponse> GetLendingPositionAsync(AaveChainConfiguration chain, Wallet wallet)
     {
         var userReserves =
             await _aaveApiClient.UiPoolDataProviderFetcher.GetUserReservesDataAsync(chain, wallet.Address);
 
         var reserveOutput =
             await _aaveApiClient.UiPoolDataProviderFetcher.GetMarketReservesDataAsync(chain);
+
         var marketData = reserveOutput.AggregatedMarketReserveData.ToDictionary(data => data.UnderlyingAsset);
 
         var result = new List<AaveLendingPosition>();
@@ -57,7 +60,8 @@ internal class AaveProvider : IAaveProvider
                     TokenAddress = EvmAddress.Create(userReserveData.UnderlyingAsset),
                     LiquidityIndex = reserveData.LiquidityIndex,
                     TokenPriceInUsd = reserveData.PriceInMarketReferenceCurrency.ToDecimal(decimals),
-                    TokenDecimals = (byte)reserveData.Decimals
+                    TokenDecimals = (byte)reserveData.Decimals,
+                    IsCollateral = userReserveData.IsCollateral
                 };
 
                 result.Add(suppliedPosition);
@@ -78,6 +82,9 @@ internal class AaveProvider : IAaveProvider
             }
         }
 
-        return result;
+        var healthFactor = _aaveHealthFactorCalculator.CalculateHealthFactor(
+            result.OfType<CalculatableAaveLendingPosition>().ToArray(), marketData);
+
+        return new AavePositionsResponse(result, healthFactor);
     }
 }

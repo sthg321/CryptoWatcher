@@ -19,11 +19,13 @@ public class AavePositionSnapshot : ITokenPositionSnapshot
     {
     }
 
-    public AavePositionSnapshot(Guid positionId, DateOnly day, CryptoTokenStatistic positionCryptoToken)
+    public AavePositionSnapshot(Guid positionId, DateOnly day, CryptoTokenStatistic positionCryptoToken,
+        double healthFactor)
     {
         PositionId = positionId;
         Day = day;
         Token0 = positionCryptoToken;
+        HealthFactor = healthFactor;
     }
 
     /// <summary>
@@ -45,7 +47,7 @@ public class AavePositionSnapshot : ITokenPositionSnapshot
     /// changes or records daily.
     /// </remarks>
     public DateOnly Day { get; init; }
-  
+
     /// <summary>
     /// Gets the token information related to the Aave position snapshot.
     /// </summary>
@@ -55,9 +57,12 @@ public class AavePositionSnapshot : ITokenPositionSnapshot
     /// state and performance of the associated Aave position at the time of the snapshot.
     /// </remarks>
     public CryptoTokenStatistic Token0 { get; private set; } = null!;
- 
-    public void UpdateToken(decimal amount, decimal priceInUsd)
+
+    public double HealthFactor { get; private set; }
+
+    public void Update(decimal amount, decimal priceInUsd, double healthFactor)
     {
         Token0 = Token0 with { Amount = amount, PriceInUsd = priceInUsd };
+        HealthFactor = healthFactor;
     }
 }

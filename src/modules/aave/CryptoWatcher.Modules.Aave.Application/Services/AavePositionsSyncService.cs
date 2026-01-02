@@ -1,5 +1,4 @@
 using CryptoWatcher.Abstractions;
-using CryptoWatcher.Modules.Aave.Abstractions;
 using CryptoWatcher.Modules.Aave.Application.Abstractions;
 using CryptoWatcher.Modules.Aave.Application.Models;
 using CryptoWatcher.Modules.Aave.Entities;
@@ -46,11 +45,11 @@ public class AavePositionsSyncService : IAavePositionsSyncService
 
         var result = new List<AavePosition>();
 
-        var lendingPositions = await _aaveProvider.GetLendingPositionAsync(chain, wallet, ct);
+        var aavePositionsResponse = await _aaveProvider.GetLendingPositionAsync(chain, wallet);
 
-        _logger.LogFetchedPositionsForNetworkCount(chain.Name, lendingPositions.Count);
+        _logger.LogFetchedPositionsForNetworkCount(chain.Name, aavePositionsResponse.Positions.Count);
 
-        foreach (var lendingPosition in lendingPositions)
+        foreach (var lendingPosition in aavePositionsResponse.Positions)
         {
             if (lendingPosition is EmptyAaveLendingPosition)
             {
@@ -93,7 +92,8 @@ public class AavePositionsSyncService : IAavePositionsSyncService
             }
 
             var positionScaleAmount = calculatableAaveLendingPosition.CalculatePositionScaleInToken();
-            currentPosition.AddOrUpdateSnapshot(cryptoToken, positionScaleAmount, syncDay, _timeProvider);
+            currentPosition.AddOrUpdateSnapshot(cryptoToken, positionScaleAmount, syncDay, _timeProvider,
+                aavePositionsResponse.HealthFactor);
 
             result.Add(currentPosition);
         }

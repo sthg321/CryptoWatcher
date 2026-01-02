@@ -10,4 +10,6 @@ public class UserReserve
     public required BigInteger ScaledATokenBalance { get; init; }
  
     public required BigInteger ScaledVariableDebt { get; init; }
+    
+    public required bool IsCollateral { get; init; }
 }

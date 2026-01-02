@@ -40,7 +40,14 @@ internal class SyncAavePositionsCronJob
         {
             foreach (var chainConfiguration in chains)
             {
-                await _positionsSyncService.SyncPositionsAsync(chainConfiguration, wallet, now, ct);
+                try
+                {
+                    await _positionsSyncService.SyncPositionsAsync(chainConfiguration, wallet, now, ct);
+                }
+                catch (Exception e)
+                {
+                  
+                }
             }
         }
 

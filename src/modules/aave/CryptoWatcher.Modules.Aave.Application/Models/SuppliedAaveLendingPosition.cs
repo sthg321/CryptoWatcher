@@ -1,7 +1,6 @@
 using System.Numerics;
-using CryptoWatcher.Modules.Aave.Application.Models;
 
-namespace CryptoWatcher.Modules.Aave.Models;
+namespace CryptoWatcher.Modules.Aave.Application.Models;
 
 /// <summary>
 /// Indicates that the position is supplied.
@@ -14,4 +13,6 @@ public class SuppliedAaveLendingPosition : CalculatableAaveLendingPosition
     public required BigInteger LiquidityIndex { get; init; }
 
     protected override BigInteger AccrualIndex => LiquidityIndex;
+    
+    public required bool IsCollateral { get; init; }
 }

@@ -2,7 +2,6 @@ using AutoFixture;
 using CryptoWatcher.AaveModule.Tests.Customizations;
 using CryptoWatcher.AaveModule.Tests.Extensions;
 using CryptoWatcher.Abstractions;
-using CryptoWatcher.Modules.Aave.Abstractions;
 using CryptoWatcher.Modules.Aave.Application.Abstractions;
 using CryptoWatcher.Modules.Aave.Application.Models;
 using CryptoWatcher.Modules.Aave.Application.Services;
@@ -65,8 +64,10 @@ public class AavePositionsSyncServiceTest
         var randomSyncDay = DateOnly.FromDateTime(_fixture.Create<DateTime>());
 
         _aaveProviderMock.Setup(provider =>
-                provider.GetLendingPositionAsync(TestNetwork, TestWallet, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(_fixture.CreateMany<EmptyAaveLendingPosition>().Cast<AaveLendingPosition>().ToList());
+                provider.GetLendingPositionAsync(TestNetwork, TestWallet))
+            .ReturnsAsync(
+                new AavePositionsResponse(_fixture.CreateMany<EmptyAaveLendingPosition>().Cast<AaveLendingPosition>()
+                    .ToArray(), 2));
 
         _aavePositionRepositoryMock.SetupEmptyListFromRepo();
 
@@ -101,8 +102,8 @@ public class AavePositionsSyncServiceTest
         };
 
         _aaveProviderMock.Setup(provider =>
-                provider.GetLendingPositionAsync(TestNetwork, TestWallet, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(expectedPositions);
+                provider.GetLendingPositionAsync(TestNetwork, TestWallet))
+            .ReturnsAsync(new AavePositionsResponse(expectedPositions, 2));
 
         if (positionsExists)
         {
@@ -162,8 +163,8 @@ public class AavePositionsSyncServiceTest
         AaveLendingPosition[] expectedPositions = [suppliedPosition, borrowedPosition];
 
         _aaveProviderMock.Setup(provider =>
-                provider.GetLendingPositionAsync(TestNetwork, TestWallet, It.IsAny<CancellationToken>()))
-            .ReturnsAsync([..expectedPositions, emptyPosition]);
+                provider.GetLendingPositionAsync(TestNetwork, TestWallet))
+            .ReturnsAsync(new AavePositionsResponse([..expectedPositions, emptyPosition], 2));
 
         _aavePositionRepositoryMock.SetupEmptyListFromRepo();
 
@@ -201,8 +202,10 @@ public class AavePositionsSyncServiceTest
             SyncDay.AddDays(-1));
 
         _aaveProviderMock.Setup(provider =>
-                provider.GetLendingPositionAsync(TestNetwork, TestWallet, It.IsAny<CancellationToken>()))
-            .ReturnsAsync([new EmptyAaveLendingPosition { TokenAddress = dbPosition.Token0.Address }]);
+                provider.GetLendingPositionAsync(TestNetwork, TestWallet))
+            .ReturnsAsync(
+                new AavePositionsResponse([new EmptyAaveLendingPosition { TokenAddress = dbPosition.Token0.Address }],
+                    2));
 
         _aavePositionRepositoryMock.Setup(repository => repository.ListAsync(
                 It.IsAny<AavePositionsWithSnapshotsSpecification>(),
