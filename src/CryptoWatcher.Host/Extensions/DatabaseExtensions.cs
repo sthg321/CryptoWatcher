@@ -86,10 +86,42 @@ public static class DatabaseExtensions
                 SmartContractAddresses = new UniswapAddresses
                 {
                     PoolFactory = EvmAddress.Create("0x1F98431c8aD98523631AE4a59f267346ea31F984"),
-                    MultiCall = EvmAddress.Create("0x842eC2c7D803033Edf55E478F461FC547Bc54EB2"),
+                    MultiCall = EvmAddress.Create("0xcA11bde05977b3631167028862bE2a173976CA11"),
                     PositionManager = EvmAddress.Create("0xC36442b4a4522E871399CD717aBDD847Ab11FE88")
                 },
                 LastProcessedBlock = 389191403,
+                ProtocolVersion = UniswapProtocolVersion.V3
+            });
+            
+            context.Set<UniswapChainConfiguration>().Add(new UniswapChainConfiguration
+            {
+                Name = "Ethereum",
+                ChainId = 1,
+                RpcUrl = new Uri("https://lb.drpc.live/ethereum"),
+                BlockscoutUrl = new Uri("https://etherscan.io"),
+                SmartContractAddresses = new UniswapAddresses
+                {
+                    PoolFactory = EvmAddress.Create("0x1F98431c8aD98523631AE4a59f267346ea31F984"),
+                    MultiCall = EvmAddress.Create("0xcA11bde05977b3631167028862bE2a173976CA11"),
+                    PositionManager = EvmAddress.Create("0xC36442b4a4522E871399CD717aBDD847Ab11FE88")
+                },
+                LastProcessedBlock = 24155256,
+                ProtocolVersion = UniswapProtocolVersion.V3
+            });
+            
+            context.Set<UniswapChainConfiguration>().Add(new UniswapChainConfiguration
+            {
+                Name = "Monad",
+                ChainId = 143,
+                RpcUrl = new Uri("https://lb.drpc.live/monad-mainnet"),
+                BlockscoutUrl = new Uri("https://monadscan.com"),
+                SmartContractAddresses = new UniswapAddresses
+                {
+                    PoolFactory = EvmAddress.Create("0x204faca1764b154221e35c0d20abb3c525710498"),
+                    MultiCall = EvmAddress.Create("0xcA11bde05977b3631167028862bE2a173976CA11"),
+                    PositionManager = EvmAddress.Create("0x7197e214c0b767cfb76fb734ab638e2c192f4e53")
+                },
+                LastProcessedBlock = 46147240,
                 ProtocolVersion = UniswapProtocolVersion.V3
             });
         }
