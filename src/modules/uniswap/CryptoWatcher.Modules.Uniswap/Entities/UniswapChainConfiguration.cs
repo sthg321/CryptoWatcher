@@ -72,7 +72,7 @@ public class UniswapChainConfiguration
     /// It is used to authenticate requests to the blockchain RPC endpoint for interacting with
     /// the Uniswap protocol on a specific chain.
     /// </remarks>
-    public string RpcUrlWithAuthToken => RpcAuthToken is not null ? $"{RpcUrl}/{RpcAuthToken}" : RpcUrl.ToString();
+    public Uri RpcUrlWithAuthToken => RpcAuthToken is not null ? new Uri($"{RpcUrl}/{RpcAuthToken}") : RpcUrl;
 
     /// <summary>
     /// Represents the required collection of smart contract addresses specific

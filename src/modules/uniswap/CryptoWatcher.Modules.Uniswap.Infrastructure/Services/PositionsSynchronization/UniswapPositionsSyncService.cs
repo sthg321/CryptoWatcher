@@ -86,7 +86,8 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
 
                 var positionInPool = _math.CalculatePosition(pool, uniswapPosition);
 
-                var tokensEnriched = await _enricher.EnrichAsync(chainConfiguration.RpcUrlWithAuthToken,
+                var tokensEnriched = await _enricher.EnrichAsync(chainConfiguration.Name,
+                    chainConfiguration.RpcUrlWithAuthToken,
                     positionInPool.TokenInfoPair, ct);
 
                 var positionKey = new PositionKey((ulong)uniswapPosition.PositionId, chainConfiguration.Name);
@@ -144,7 +145,7 @@ internal class UniswapPositionsSyncService : IUniswapPositionsSyncService
     {
         var fee = _math.CalculateClaimableFee(pool, uniswapPosition);
 
-        return await _enricher.EnrichAsync(chain.RpcUrlWithAuthToken, fee, ct);
+        return await _enricher.EnrichAsync(chain.Name, chain.RpcUrlWithAuthToken, fee, ct);
     }
 
     private UniswapLiquidityPosition MapToLiquidityPoolPosition(UniswapChainConfiguration chain, Wallet wallet,

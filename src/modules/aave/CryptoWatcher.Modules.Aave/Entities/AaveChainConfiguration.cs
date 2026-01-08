@@ -9,8 +9,8 @@ public class AaveChainConfiguration
     public Uri RpcUrl { get; init; } = null!;
 
     public string? RpcAuthToken { get; init; }
-    
-    public string RpcUrlWithAuthToken => RpcAuthToken is not null ? $"{RpcUrl}/{RpcAuthToken}" : RpcUrl.ToString();
+
+    public Uri RpcUrlWithAuthToken => RpcAuthToken is not null ? new Uri($"{RpcUrl}/{RpcAuthToken}") : RpcUrl;
 
     public AaveAddresses SmartContractAddresses { get; init; } = null!;
 }

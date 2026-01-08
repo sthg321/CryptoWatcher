@@ -25,7 +25,7 @@ internal class Web3Factory : IWeb3Factory
         {
             entry.SetAbsoluteExpiration(_web3CacheLifeTime);
 
-            return new Web3(chain.RpcUrlWithAuthToken);
+            return new Web3(chain.RpcUrlWithAuthToken.ToString());
         })!;
     }
 }

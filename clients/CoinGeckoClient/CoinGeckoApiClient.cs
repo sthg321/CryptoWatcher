@@ -26,6 +26,11 @@ public class CoinGeckoApiClient : ICoinGeckoApiClient
         ["USD₮0"] = "usd-coin",
         ["wbtc"] = "btc",
     };
+    
+    private static readonly Dictionary<string, string> NetworkName2Id = new()
+    {
+        ["Arbitrum"] = "arbitrum-one",
+    };
 
     private readonly HttpClient _client;
 
@@ -54,8 +59,10 @@ public class CoinGeckoApiClient : ICoinGeckoApiClient
     public async Task<decimal> GetTokenPriceInUsdAsync(GetTokenPriceInUsdByPlatformAndAddressRequest request,
         CancellationToken ct)
     {
+        var platformName = NetworkName2Id.GetValueOrDefault(request.Platform) ?? request.Platform.ToLower();
+        
         var url =
-            $"api/v3/simple/token_price/{request.Platform.ToLower()}?contract_addresses={request.TokenAddress}&vs_currencies=usd";
+            $"api/v3/simple/token_price/{platformName}?contract_addresses={request.TokenAddress}&vs_currencies=usd";
 
         var result = await _client.GetFromJsonAsync<Dictionary<string, TokenPriceInfo>>(url, ct);
 

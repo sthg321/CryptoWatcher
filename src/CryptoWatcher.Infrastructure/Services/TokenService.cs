@@ -77,11 +77,21 @@ public class TokenService
     }
 
     public async ValueTask<decimal> GetTokenPriceByTokenAddressAsync(string platform, string address,
+        string symbol,
         CancellationToken ct)
     {
-        var result = await _coinGeckoCoinPriceProvider.GetTokenPriceInUsdAsync(platform, address, ct);
+        // we need to cahe symbol instead of address to avoid additional requests to api
+        var cacheKey = string.Format(CacheKeys.TokenPrice.TokenPriceInUsdByTokenSymbolCacheKeyTemplate, symbol);
+        
+        return await _cache.GetOrCreateAsync(cacheKey, address, async (s, token) =>
+            {
+                var result = await _coinGeckoCoinPriceProvider.GetTokenPriceInUsdAsync(platform, s, token);
 
-        return result;
+                return result;
+            },
+            new HybridCacheEntryOptions
+                { Expiration = TimeSpan.FromSeconds(CacheKeys.TokenPrice.CacheLifetimeInSecond) },
+            cancellationToken: ct);
     }
 
     public async ValueTask<decimal> GetTokenPriceByTokenSymbolAsync(string symbol, CancellationToken ct)

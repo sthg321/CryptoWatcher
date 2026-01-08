@@ -16,7 +16,7 @@ internal class UiPoolDataProviderFetcher : IUiPoolDataProviderFetcher
     public async Task<IReadOnlyCollection<UserReserve>> GetUserReservesDataAsync(AaveChainConfiguration chain,
         EvmAddress userAddress)
     {
-        var web3 = new Web3(chain.RpcUrlWithAuthToken);
+        var web3 = new Web3(chain.RpcUrlWithAuthToken.ToString());
 
         var function = GetFunction(web3, "getUserReservesData", chain.SmartContractAddresses.UiPoolDataProviderAddress
             .Value);
@@ -37,7 +37,7 @@ internal class UiPoolDataProviderFetcher : IUiPoolDataProviderFetcher
 
     public async Task<MarketReserveOutput> GetMarketReservesDataAsync(AaveChainConfiguration chain)
     {
-        var web3 = new Web3(chain.RpcUrlWithAuthToken);
+        var web3 = new Web3(chain.RpcUrlWithAuthToken.ToString());
 
         var function = GetFunction(web3, "getReservesData", chain.SmartContractAddresses.UiPoolDataProviderAddress.Value);
        

@@ -44,7 +44,9 @@ public class CashFlowEventMatcher : ICashFlowEventMatcher
                 _logger.LogInformation("Processing event with type: {EventType}", poolPositionEvent.Event.Name);
 
                 var enrichedTokenPair =
-                    await _tokenEnricher.EnrichAsync(chainConfiguration.RpcUrlWithAuthToken,
+                    await _tokenEnricher.EnrichAsync(
+                        chainConfiguration.Name,
+                        chainConfiguration.RpcUrlWithAuthToken,
                         poolPositionEvent.TokenPair, ct);
 
                 var positionFromDb = chainConfiguration.LiquidityPoolPositions.SingleOrDefault(position =>

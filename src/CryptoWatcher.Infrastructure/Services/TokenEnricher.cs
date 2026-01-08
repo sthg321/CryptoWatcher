@@ -1,8 +1,5 @@
-using System.Numerics;
 using CryptoWatcher.Abstractions;
-using CryptoWatcher.Application;
 using CryptoWatcher.Extensions;
-using CryptoWatcher.Shared.ValueObjects;
 using CryptoWatcher.ValueObjects;
 using Nethereum.Web3;
 
@@ -14,46 +11,33 @@ namespace CryptoWatcher.Infrastructure.Services;
 public class TokenEnricher : ITokenEnricher
 {
     private readonly TokenService _tokenService;
-    private readonly CoinNormalizer _coinNormalizer;
 
-    public TokenEnricher(TokenService tokenService, CoinNormalizer coinNormalizer)
+    public TokenEnricher(TokenService tokenService)
     {
         _tokenService = tokenService;
-        _coinNormalizer = coinNormalizer;
     }
 
-    public async ValueTask<TokenInfoPair> EnrichAsync(string rpcAddress, TokenPair tokenPair,
+    public async ValueTask<TokenInfoPair> EnrichAsync(string networkName, Uri rpcAddress, TokenPair tokenPair,
         CancellationToken ct = default)
     {
-        ArgumentNullException.ThrowIfNull(rpcAddress);
-        ArgumentNullException.ThrowIfNull(tokenPair);
-
         return new TokenInfoPair
         {
-            Token0 = await EnrichTokenAsync(rpcAddress, tokenPair.Token0, ct),
-            Token1 = await EnrichTokenAsync(rpcAddress, tokenPair.Token1, ct),
+            Token0 = await EnrichTokenAsync(networkName, rpcAddress, tokenPair.Token0, null, ct),
+            Token1 = await EnrichTokenAsync(networkName, rpcAddress, tokenPair.Token1, null, ct),
         };
     }
 
-    public async ValueTask<CryptoToken> EnrichTokenAsync(string rpcAddress, Token token,
+    public async ValueTask<CryptoToken> EnrichTokenAsync(Uri rpcAddress, Token token, decimal priceInUsd,
         CancellationToken ct)
     {
-        var web3 = new Web3(rpcAddress);
-        var tokenDecimals = await _tokenService.GetTokenDecimalsAsync(web3, token.Address, ct);
-        var symbol = await _tokenService.GetTokenSymbolAsync(web3, token.Address);
-        return new CryptoToken
-        {
-            Address = EvmAddress.Create(token.Address),
-            Symbol = symbol,
-            Amount = token.Balance.ToDecimal(tokenDecimals),
-            PriceInUsd = await _tokenService.GetTokenPriceByTokenSymbolAsync(symbol, ct)
-        };
+        return await EnrichTokenAsync(null!, rpcAddress, token, priceInUsd, ct);
     }
 
-    public async ValueTask<CryptoToken> EnrichTokenAsync(string rpcAddress, Token token, decimal priceInUsd,
-        CancellationToken ct)
+    private async ValueTask<CryptoToken> EnrichTokenAsync(string platform, Uri rpcAddress, Token token,
+        decimal? priceInUsd = null,
+        CancellationToken ct = default)
     {
-        var web3 = new Web3(rpcAddress);
+        var web3 = new Web3(rpcAddress.ToString());
         var tokenDecimals = await _tokenService.GetTokenDecimalsAsync(web3, token.Address, ct);
         var symbol = await _tokenService.GetTokenSymbolAsync(web3, token.Address);
         return new CryptoToken
@@ -61,22 +45,8 @@ public class TokenEnricher : ITokenEnricher
             Address = EvmAddress.Create(token.Address),
             Symbol = symbol,
             Amount = token.Balance.ToDecimal(tokenDecimals),
-            PriceInUsd = priceInUsd
-        };
-    }
-    
-    public async ValueTask<CryptoToken> EnrichTokenAsync(string rpcAddress, string platform, Token token,
-        CancellationToken ct)
-    {
-        var web3 = new Web3(rpcAddress);
-        var tokenDecimals = await _tokenService.GetTokenDecimalsAsync(web3, token.Address, ct);
-        var symbol = await _tokenService.GetTokenSymbolAsync(web3, token.Address);
-        return new CryptoToken
-        {
-            Address = EvmAddress.Create(token.Address),
-            Symbol = symbol,
-            Amount = token.Balance.ToDecimal(tokenDecimals),
-            PriceInUsd = await _tokenService.GetTokenPriceByTokenAddressAsync(platform, token.Address, ct)
+            PriceInUsd = priceInUsd ??
+                         await _tokenService.GetTokenPriceByTokenAddressAsync(platform, token.Address, symbol, ct)
         };
     }
 }

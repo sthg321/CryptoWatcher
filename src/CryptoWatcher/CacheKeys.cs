@@ -5,6 +5,7 @@ public static class CacheKeys
     public static class TokenPrice
     {
         public const string TokenPriceInUsdByTokenSymbolCacheKeyTemplate = "token:{0}:tokenPriceInUsd";
+        public const string TokenPriceInUsdByAddressCacheKeyTemplate = "token:{0}:tokenPriceInUsd";
         public const int CacheLifetimeInSecond = 3600;
     }
     

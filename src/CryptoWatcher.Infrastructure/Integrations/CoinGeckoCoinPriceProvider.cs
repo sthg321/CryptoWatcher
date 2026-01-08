@@ -29,7 +29,7 @@ public class CoinGeckoCoinPriceProvider : ICoinPriceProvider
 
     public async Task<decimal> GetTokenPriceInUsdAsync(string platform, string address, CancellationToken ct)
     {
-        return await _apiClient.GetTokenPriceInUsdAsync(new GetTokenPriceInUsdByPlatformAndAddressRequest(platform,address), ct);
-     
+        return await _apiClient.GetTokenPriceInUsdAsync(
+            new GetTokenPriceInUsdByPlatformAndAddressRequest(platform, address), ct);
     }
 }
