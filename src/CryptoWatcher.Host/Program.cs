@@ -34,10 +34,6 @@ builder.Services.Configure<ExternalServicesConfig>(builder.Configuration.GetSect
 
 builder.Services.AddSingleton(provider => provider.GetRequiredService<IOptions<ExternalServicesConfig>>().Value);
 
-builder.Services.Configure<AaveConfig>(builder.Configuration.GetSection(nameof(AaveConfig)));
-
-builder.Services.AddSingleton(provider => provider.GetRequiredService<IOptions<AaveConfig>>().Value);
-
 builder.Services.AddConfiguredDatabase(builder.Configuration.GetConnectionString("Postgres")!);
 
 builder.Services
