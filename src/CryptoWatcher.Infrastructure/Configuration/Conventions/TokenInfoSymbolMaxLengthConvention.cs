@@ -9,7 +9,7 @@ namespace CryptoWatcher.Infrastructure.Configuration.Conventions;
 /// </summary>
 public sealed class TokenInfoSymbolMaxLengthConvention : IModelFinalizingConvention
 {
-    private const int MaxLength = 16;
+    internal const int MaxLength = 16;
 
     public void ProcessModelFinalizing(IConventionModelBuilder modelBuilder,
         IConventionContext<IConventionModelBuilder> context)

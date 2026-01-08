@@ -4,6 +4,7 @@ using CryptoWatcher.Infrastructure.Configuration.Conventions;
 using CryptoWatcher.Infrastructure.Configuration.Converters;
 using CryptoWatcher.Modules.Aave.Entities;
 using CryptoWatcher.Modules.Hyperliquid.Entities;
+using CryptoWatcher.Modules.Merkl.Entities;
 using CryptoWatcher.Modules.Morpho.Entities;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
@@ -179,6 +180,14 @@ public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(option
 
     public DbSet<MorphoMarketPositionSnapshot> MorphoMarketPositionSnapshots => Set<MorphoMarketPositionSnapshot>();
     
+    #endregion
+
+    #region Merkl
+
+    public DbSet<MerklCampaign> MerklCampaigns => Set<MerklCampaign>();
+    
+    public DbSet<MerklCampaignSnapshot> MerklCampaignSnapshots => Set<MerklCampaignSnapshot>();
+
     #endregion
     
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

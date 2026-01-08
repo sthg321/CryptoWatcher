@@ -24,4 +24,6 @@ public class UniswapDailyReportItem : PlatformDailyReportItem
     /// Represents the concatenated symbols of the token pair in a Uniswap pool, separated by a delimiter such as " / ".
     /// </summary>
     public required string TokenPairSymbols { get; init; } = null!;
+    
+    public required Money RewardsInUsd { get; init; }
 }

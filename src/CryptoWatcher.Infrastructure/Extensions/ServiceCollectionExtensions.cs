@@ -20,6 +20,7 @@ using CryptoWatcher.Modules.Aave.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Hyperliquid.Application.Abstractions;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.Extensions;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Extensions;
+using CryptoWatcher.Modules.Merkl.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Morpho.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Services;
@@ -58,6 +59,7 @@ public static class ServiceCollectionExtensions
             .AddConfiguredHyperliquidModule()
             .AddConfiguredUniswapModule()
             .AddMorphoModule(provider => provider.GetRequiredService<ExternalServicesConfig>().Morpho)
+            .AddMerklModule(provider => provider.GetRequiredService<ExternalServicesConfig>().Merkl)
             .AddConfiguredApplication();
 
         services.AddSingleton<ITokenEnricher, TokenEnricher>();

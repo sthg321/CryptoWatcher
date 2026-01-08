@@ -2,6 +2,8 @@ using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Extensions;
 using CryptoWatcher.Models;
+using CryptoWatcher.Modules.Merkl.Application.Abstractions;
+using CryptoWatcher.Modules.Merkl.Application.Models;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Modules.Uniswap.Models;
 using CryptoWatcher.Modules.Uniswap.Specifications;
@@ -12,10 +14,13 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Services;
 public class UniswapReportService : IPlatformDailyReportDataProvider
 {
     private readonly IRepository<UniswapLiquidityPosition> _poolPositionRepository;
+    private readonly IRewardService _rewardService;
 
-    public UniswapReportService(IRepository<UniswapLiquidityPosition> poolPositionRepository)
+    public UniswapReportService(IRepository<UniswapLiquidityPosition> poolPositionRepository,
+        IRewardService rewardService)
     {
         _poolPositionRepository = poolPositionRepository;
+        _rewardService = rewardService;
     }
 
     public async Task<PlatformDailyReportData> GetReportDataAsync(IReadOnlyCollection<Wallet> wallets, DateOnly from,
@@ -27,6 +32,9 @@ public class UniswapReportService : IPlatformDailyReportDataProvider
         var result = new Dictionary<Wallet, List<PlatformDailyReport>>();
         foreach (var poolPositionByWallet in poolPositions.GroupBy(position => position.WalletAddress))
         {
+            var rewards = (await _rewardService.GetUniswapRewardsAsync(poolPositionByWallet.Key, from, to, ct))
+                .ToDictionary(reward => new UniswapReward.UniswapRewardKey(reward.NftId, reward.Day));
+
             foreach (var poolPosition in poolPositionByWallet.OrderBy(position => position.PositionId)
                          .ThenBy(position => position.IsClosed))
             {
@@ -52,7 +60,10 @@ public class UniswapReportService : IPlatformDailyReportDataProvider
                             HoldInUsd = poolPosition.CalculateHoldValueInUsd(positionSnapshot.Day),
                             TokenPairSymbols = $"{poolPosition.Token0.Symbol} / {poolPosition.Token1.Symbol}",
                             DailyProfitInUsd = poolPosition.CalculateDailyFeeProfit(positionSnapshot.Day),
-                            DailyProfitInUsdPercent = 0
+                            DailyProfitInUsdPercent = 0,
+                            RewardsInUsd =
+                                rewards.GetValueOrDefault(new UniswapReward.UniswapRewardKey(poolPosition.PositionId,
+                                    positionSnapshot.Day))?.RewardsInUsd ?? 0
                         };
                     }).ToArray()
                 };

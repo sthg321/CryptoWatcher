@@ -11,6 +11,8 @@ using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports;
 using CryptoWatcher.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Aave;
 using CryptoWatcher.Modules.Hyperliquid.Application.Abstractions;
+using CryptoWatcher.Modules.Merkl.Application.Abstractions;
+using CryptoWatcher.Modules.Merkl.Application.Services;
 using CryptoWatcher.Modules.Morpho.Application.Abstractions;
 using CryptoWatcher.Modules.Morpho.Infrastructure;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
