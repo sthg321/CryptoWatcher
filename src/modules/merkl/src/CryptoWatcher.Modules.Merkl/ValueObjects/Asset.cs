@@ -2,7 +2,7 @@ using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Merkl.ValueObjects;
 
-public class Asset
+public record Asset
 {
     public required string Symbol { get; init; } = null!;
     

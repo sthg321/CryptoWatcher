@@ -4,7 +4,7 @@ using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Merkl.Application.Models;
 
-public class MerklCampaignInfo
+public record MerklCampaignInfo
 {
     public int ChainId { get; init; }
 

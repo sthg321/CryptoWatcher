@@ -24,10 +24,10 @@ public class MerklProvider : IMerklProvider
         CancellationToken ct = default)
     {
         var response =
-            await _httpClient.GetFromJsonAsync<GetUserRewardsResponse>($"/v4/users/{user}/rewards?chainId={chainId}",
+            await _httpClient.GetFromJsonAsync<GetUserRewardsResponse[]>($"/v4/users/{user}/rewards?chainId={chainId}",
                 ct);
 
-        return response!.Rewards.SelectMany(reward =>
+        return response!.First().Rewards.SelectMany(reward =>
         {
             return reward.Breakdowns.Select(breakdown =>
                 new MerklCampaignInfo
@@ -35,6 +35,7 @@ public class MerklProvider : IMerklProvider
                     CampaignId = TransactionHash.FromString(breakdown.CampaignId),
                     Claimed = BigInteger.Parse(breakdown.Claimed),
                     Pending = BigInteger.Parse(breakdown.Pending),
+                    Amount =  BigInteger.Parse(breakdown.Amount),
                     ChainId = reward.Token.ChainId,
                     Reason = breakdown.Reason,
                     Asset = new Asset

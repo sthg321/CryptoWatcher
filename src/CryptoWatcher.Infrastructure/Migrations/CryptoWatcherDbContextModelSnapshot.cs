@@ -412,14 +412,28 @@ namespace CryptoWatcher.Infrastructure.Migrations
 
             modelBuilder.Entity("CryptoWatcher.Modules.Merkl.Entities.MerklCampaign", b =>
                 {
-                    b.Property<string>("CampaignId")
-                        .HasMaxLength(66)
-                        .IsUnicode(false)
-                        .HasColumnType("character(66)")
-                        .IsFixedLength();
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<int>("ChainId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TokenAddress")
+                        .IsRequired()
+                        .HasMaxLength(42)
+                        .IsUnicode(false)
+                        .HasColumnType("character(42)")
+                        .IsFixedLength();
+
+                    b.Property<string>("TokenSymbol")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
 
                     b.Property<string>("WalletAddress")
                         .IsRequired()
@@ -428,30 +442,7 @@ namespace CryptoWatcher.Infrastructure.Migrations
                         .HasColumnType("character(42)")
                         .IsFixedLength();
 
-                    b.ComplexProperty<Dictionary<string, object>>("Asset", "CryptoWatcher.Modules.Merkl.Entities.MerklCampaign.Asset#Asset", b1 =>
-                        {
-                            b1.IsRequired();
-
-                            b1.Property<string>("Address")
-                                .IsRequired()
-                                .HasMaxLength(42)
-                                .IsUnicode(false)
-                                .HasColumnType("character(42)")
-                                .IsFixedLength();
-
-                            b1.Property<byte>("Decimals")
-                                .HasColumnType("smallint");
-
-                            b1.Property<decimal>("PriceInUsd")
-                                .HasColumnType("numeric");
-
-                            b1.Property<string>("Symbol")
-                                .IsRequired()
-                                .HasMaxLength(16)
-                                .HasColumnType("character varying(16)");
-                        });
-
-                    b.HasKey("CampaignId");
+                    b.HasKey("Id");
 
                     b.ToTable("MerklCampaigns");
                 });
@@ -461,21 +452,20 @@ namespace CryptoWatcher.Infrastructure.Migrations
                     b.Property<DateOnly>("Day")
                         .HasColumnType("date");
 
-                    b.Property<string>("MerklCampaignId")
-                        .HasMaxLength(66)
-                        .IsUnicode(false)
-                        .HasColumnType("character(66)")
-                        .IsFixedLength();
+                    b.Property<Guid>("MerklCampaignId")
+                        .HasColumnType("uuid");
 
-                    b.Property<decimal>("ClaimedInUsd")
+                    b.Property<decimal>("ClaimabelAmount")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("PendingInUsd")
+                    b.Property<decimal>("ClaimedAmount")
                         .HasColumnType("numeric");
 
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<decimal>("PendingAmout")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("PriceInUsd")
+                        .HasColumnType("numeric");
 
                     b.HasKey("Day", "MerklCampaignId");
 

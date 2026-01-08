@@ -12,7 +12,7 @@ public static class ServiceCollectionExtensinos
         services.AddHttpClient<IMerklProvider, MerklProvider>((provider, client) =>
             client.BaseAddress = uriFactory(provider));
 
-        services.AddScoped<MerklSyncService>();
+        services.AddScoped<IMerklSyncService, MerklSyncService>();
         return services;
     }
 }
