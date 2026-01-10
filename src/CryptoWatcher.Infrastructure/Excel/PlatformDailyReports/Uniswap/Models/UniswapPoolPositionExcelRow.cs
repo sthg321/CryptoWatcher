@@ -26,6 +26,12 @@ internal class UniswapPoolPositionExcelRow
     [CellStyle(ExcelStyleRegistry.TwoDecimalPlaces)]
     [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Money>))]
     public required Money DailyProfitInUsd { get; init; }
+    
+    [ColumnHeader("Награды в $")]
+    [ColumnWidth(20)]
+    [CellStyle(ExcelStyleRegistry.TwoDecimalPlaces)]
+    [CellValueConverter(typeof(ValueObjectToExcelValueConverter<Money>))]
+    public required Money RewardsInUsd { get; init; }
  
     [ColumnHeader("Пара")] public required string TokenPairSymbols { get; init; } = null!;
 

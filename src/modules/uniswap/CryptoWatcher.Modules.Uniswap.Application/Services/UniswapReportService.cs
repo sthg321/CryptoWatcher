@@ -14,13 +14,13 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Services;
 public class UniswapReportService : IPlatformDailyReportDataProvider
 {
     private readonly IRepository<UniswapLiquidityPosition> _poolPositionRepository;
-    private readonly IRewardService _rewardService;
+    private readonly IMerklRewardService _merklRewardService;
 
     public UniswapReportService(IRepository<UniswapLiquidityPosition> poolPositionRepository,
-        IRewardService rewardService)
+        IMerklRewardService merklRewardService)
     {
         _poolPositionRepository = poolPositionRepository;
-        _rewardService = rewardService;
+        _merklRewardService = merklRewardService;
     }
 
     public async Task<PlatformDailyReportData> GetReportDataAsync(IReadOnlyCollection<Wallet> wallets, DateOnly from,
@@ -32,8 +32,8 @@ public class UniswapReportService : IPlatformDailyReportDataProvider
         var result = new Dictionary<Wallet, List<PlatformDailyReport>>();
         foreach (var poolPositionByWallet in poolPositions.GroupBy(position => position.WalletAddress))
         {
-            var rewards = (await _rewardService.GetUniswapRewardsAsync(poolPositionByWallet.Key, from, to, ct))
-                .ToDictionary(reward => new UniswapReward.UniswapRewardKey(reward.NftId, reward.Day));
+            var rewards = (await _merklRewardService.GetUniswapRewardsAsync(poolPositionByWallet.Key, from, to, ct))
+                .ToDictionary(reward => reward.GetUniswapId());
 
             foreach (var poolPosition in poolPositionByWallet.OrderBy(position => position.PositionId)
                          .ThenBy(position => position.IsClosed))
@@ -43,6 +43,8 @@ public class UniswapReportService : IPlatformDailyReportDataProvider
                     continue;
                 }
 
+                var merklCampaign = rewards.GetValueOrDefault(poolPosition.PositionId);
+                
                 var profit = poolPosition.CalculateProfitInUsd(from, to);
                 var report = new UniswapDailyReport
                 {
@@ -61,9 +63,7 @@ public class UniswapReportService : IPlatformDailyReportDataProvider
                             TokenPairSymbols = $"{poolPosition.Token0.Symbol} / {poolPosition.Token1.Symbol}",
                             DailyProfitInUsd = poolPosition.CalculateDailyFeeProfit(positionSnapshot.Day),
                             DailyProfitInUsdPercent = 0,
-                            RewardsInUsd =
-                                rewards.GetValueOrDefault(new UniswapReward.UniswapRewardKey(poolPosition.PositionId,
-                                    positionSnapshot.Day))?.RewardsInUsd ?? 0
+                            RewardsInUsd = merklCampaign?.CalculateDailyRewardsInUsd(positionSnapshot.Day) ?? 0
                         };
                     }).ToArray()
                 };

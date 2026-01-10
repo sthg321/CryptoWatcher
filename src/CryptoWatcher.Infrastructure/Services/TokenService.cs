@@ -1,4 +1,3 @@
-using CryptoWatcher.Application;
 using CryptoWatcher.Integrations;
 using Microsoft.Extensions.Caching.Hybrid;
 using Nethereum.Web3;
@@ -9,14 +8,11 @@ public class TokenService
 {
     private readonly ICoinPriceProvider _coinGeckoCoinPriceProvider;
     private readonly HybridCache _cache;
-    private readonly CoinNormalizer _coinNormalizer;
 
-    public TokenService(ICoinPriceProvider coinGeckoCoinPriceProvider, HybridCache cache,
-        CoinNormalizer coinNormalizer)
+    public TokenService(ICoinPriceProvider coinGeckoCoinPriceProvider, HybridCache cache)
     {
         _coinGeckoCoinPriceProvider = coinGeckoCoinPriceProvider;
         _cache = cache;
-        _coinNormalizer = coinNormalizer;
     }
 
     public async ValueTask<string> GetTokenSymbolAsync(IWeb3 web3, string tokenAddress)
@@ -86,21 +82,6 @@ public class TokenService
         return await _cache.GetOrCreateAsync(cacheKey, address, async (s, token) =>
             {
                 var result = await _coinGeckoCoinPriceProvider.GetTokenPriceInUsdAsync(platform, s, token);
-
-                return result;
-            },
-            new HybridCacheEntryOptions
-                { Expiration = TimeSpan.FromSeconds(CacheKeys.TokenPrice.CacheLifetimeInSecond) },
-            cancellationToken: ct);
-    }
-
-    public async ValueTask<decimal> GetTokenPriceByTokenSymbolAsync(string symbol, CancellationToken ct)
-    {
-        var cacheKey = string.Format(CacheKeys.TokenPrice.TokenPriceInUsdByTokenSymbolCacheKeyTemplate, symbol);
-        return await _cache.GetOrCreateAsync(cacheKey, symbol, async (coinSymbol, token) =>
-            {
-                var normalizedSymbol = _coinNormalizer.NormalizeSymbol(coinSymbol);
-                var result = await _coinGeckoCoinPriceProvider.GetTokenPriceInUsdAsync(normalizedSymbol, token);
 
                 return result;
             },

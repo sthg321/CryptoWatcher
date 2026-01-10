@@ -13,7 +13,7 @@ public static class ServiceCollectionExtensinos
             client.BaseAddress = uriFactory(provider));
 
         services.AddScoped<IMerklSyncService, MerklSyncService>();
-        services.AddScoped<IRewardService, RewardService>();
+        services.AddScoped<IMerklRewardService, MerklRewardService>();
         return services;
     }
 }

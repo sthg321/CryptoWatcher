@@ -1,3 +1,4 @@
+using CryptoWatcher.Extensions;
 using CryptoWatcher.Modules.Merkl.ValueObjects;
 using CryptoWatcher.ValueObjects;
 
@@ -56,6 +57,20 @@ public class MerklCampaign
         var snapshot = new MerklCampaignSnapshot(day, rewardStatus, priceInUsd, Id);
 
         _snapshots.Add(snapshot);
+    }
+
+    public decimal CalculateDailyRewardsInUsd(DateOnly day)
+    {
+        var todaySnapshot = Snapshots.GetLastSnapshotOnOrBefore(day);
+
+        if (todaySnapshot is null)
+            return 0;
+
+        var prevSnapshot = Snapshots.GetLastSnapshotBefore(day);
+
+        var rewards = todaySnapshot.RewardsAmount - (prevSnapshot?.RewardsAmount ?? 0M);
+
+        return rewards * todaySnapshot.PriceInUsd;
     }
 
     public bool IsUniswapRewards() => Reason.StartsWith("UNISWAP_V3") || Reason.StartsWith("UniswapV4");

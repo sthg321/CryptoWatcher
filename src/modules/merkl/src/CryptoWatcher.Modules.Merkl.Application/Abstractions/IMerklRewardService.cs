@@ -1,10 +1,11 @@
 using CryptoWatcher.Modules.Merkl.Application.Models;
+using CryptoWatcher.Modules.Merkl.Entities;
 using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Merkl.Application.Abstractions;
 
-public interface IRewardService
+public interface IMerklRewardService
 {
-    Task<UniswapReward[]> GetUniswapRewardsAsync(EvmAddress walletAddress, DateOnly from, DateOnly to,
+    Task<IEnumerable<MerklCampaign>> GetUniswapRewardsAsync(EvmAddress walletAddress, DateOnly from, DateOnly to,
         CancellationToken ct = default);
 }

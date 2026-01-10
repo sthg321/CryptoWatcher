@@ -23,6 +23,8 @@ public class UniswapDailyReport : PlatformDailyReport
     /// This value represents the aggregate fees earned through liquidity provisions within the pools.
     /// </summary>
     public Money TotalCommissionInUsd => ReportItems.Sum(item => item.DailyProfitInUsd);
+    
+    public Money TotalRewardsInUsd => ReportItems.Sum(item => item.RewardsInUsd);
 
     /// <summary>
     /// Gets the collection of report items that represent individual snapshots of a Uniswap pool position.

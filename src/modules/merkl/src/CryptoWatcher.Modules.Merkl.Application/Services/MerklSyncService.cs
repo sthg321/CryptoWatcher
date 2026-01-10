@@ -2,6 +2,7 @@ using CryptoWatcher.Abstractions;
 using CryptoWatcher.Extensions;
 using CryptoWatcher.Modules.Merkl.Application.Abstractions;
 using CryptoWatcher.Modules.Merkl.Entities;
+using CryptoWatcher.Modules.Merkl.Specifications;
 using CryptoWatcher.Modules.Merkl.ValueObjects;
 using CryptoWatcher.ValueObjects;
 
@@ -27,7 +28,7 @@ public class MerklSyncService : IMerklSyncService
     {
         var rewards = await _provider.GetUserRewardsAsync(walletAddress, chainId, ct);
 
-        var dbCampaigns = (await _campaignRepo.ListAsync(ct))
+        var dbCampaigns = (await _campaignRepo.ListAsync(new GetCampaignsWithSnapshotsSpecification(walletAddress), ct))
             .ToDictionary(campaign => campaign.Reason);
 
         var result = new List<MerklCampaign>();
@@ -50,7 +51,7 @@ public class MerklSyncService : IMerklSyncService
                     rewardCampaignGroup.Amount.ToDecimal(rewardCampaignGroup.Asset.Decimals);
             }
 
-            if (rewardStatus.ClaimedAmount - rewardStatus.ClaimabelAmount == 0 && rewardStatus.PendingAmount == 0)
+            if (rewardStatus.ClaimabelAmount - rewardStatus.ClaimedAmount == 0 && rewardStatus.PendingAmount == 0)
             {
                 continue;
             }
