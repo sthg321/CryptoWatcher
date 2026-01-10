@@ -10,7 +10,7 @@ public record Token
     /// <summary>
     /// Token contract address.
     /// </summary>
-    public string Address { get; init; } = null!;
+    public EvmAddress Address { get; init; } = null!;
 
     /// <summary>
     /// Token balance (in raw units, not adjusted for decimals).

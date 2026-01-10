@@ -13,20 +13,6 @@ public class CoinGeckoCoinPriceProvider : ICoinPriceProvider
         _apiClient = apiClient;
     }
 
-    public async Task<Dictionary<string, string>> GetSymbolToIdAsync(CancellationToken ct)
-    {
-        var coinsInfo = await _apiClient.GetCoinsListAsync(ct);
-
-        return coinsInfo
-            .GroupBy(info => info.Symbol)
-            .ToDictionary(info => info.Key, info => info.Select(coinInfo => coinInfo).First().Id);
-    }
-
-    public async Task<decimal> GetTokenPriceInUsdAsync(string tokenId, CancellationToken ct)
-    {
-        return await _apiClient.GetTokenPriceInUsdAsync(new GetTokenPriceInUsdRequest(tokenId.ToLower()), ct);
-    }
-
     public async Task<decimal> GetTokenPriceInUsdAsync(string platform, string address, CancellationToken ct)
     {
         return await _apiClient.GetTokenPriceInUsdAsync(

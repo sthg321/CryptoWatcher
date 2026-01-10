@@ -64,7 +64,7 @@ internal class LiquidityEventLogEnricher : ILiquidityEventLogEnricher
 
         var token1 = new Token
         {
-            Address = UniswapWellKnownField.EthAddress,
+            Address = EvmAddress.Create(UniswapWellKnownField.EthAddress),
             Balance = ethAmount.Amount
         };
 
@@ -128,7 +128,7 @@ internal class LiquidityEventLogEnricher : ILiquidityEventLogEnricher
     {
         return new Token
         {
-            Address = logs[index].Address,
+            Address = EvmAddress.Create(logs[index].Address),
             Balance = logs[index].Data
         };
     }

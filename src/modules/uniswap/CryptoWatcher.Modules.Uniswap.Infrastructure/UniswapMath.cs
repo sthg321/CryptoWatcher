@@ -30,8 +30,8 @@ internal class UniswapMath : IUniswapMath
             PositionId = (ulong)position.PositionId,
             TokenInfoPair = new TokenPair
             {
-                Token0 = new Token { Address = position.Token0, Balance = amount0 },
-                Token1 = new Token { Address = position.Token1, Balance = amount1 }
+                Token0 = new Token { Address = EvmAddress.Create(position.Token0), Balance = amount0 },
+                Token1 = new Token { Address = EvmAddress.Create(position.Token1), Balance = amount1 }
             },
             IsInRange = pool.Tick >= position.TickLower && pool.Tick < position.TickUpper
         };
@@ -52,17 +52,17 @@ internal class UniswapMath : IUniswapMath
             pool.LowerTick.FeeGrowthOutside1X128,
             pool.UpperTick.FeeGrowthOutside1X128
         );
-    
+
         var diff0 = CalculateFeeGrowthDiff(feeGrowthInside0, position.FeeGrowthInside0LastX128);
         var diff1 = CalculateFeeGrowthDiff(feeGrowthInside1, position.FeeGrowthInside1LastX128);
-    
+
         var earned0 = position.Liquidity * diff0 / BigInteger.Pow(2, 128);
         var earned1 = position.Liquidity * diff1 / BigInteger.Pow(2, 128);
-    
+
         return new TokenPair
         {
-            Token0 = new Token { Address = position.Token0, Balance = earned0 },
-            Token1 = new Token { Address = position.Token1, Balance = earned1 }
+            Token0 = new Token { Address = EvmAddress.Create(position.Token0), Balance = earned0 },
+            Token1 = new Token { Address = EvmAddress.Create(position.Token1), Balance = earned1 }
         };
     }
 
@@ -77,7 +77,7 @@ internal class UniswapMath : IUniswapMath
         var maxUint256 = BigInteger.Pow(2, 256) - 1;
         return maxUint256 - last + current + 1;
     }
-    
+
     private static (BigInteger amount0, BigInteger amount1) CalculateTokenAmounts(
         BigInteger sqrtRatioX96,
         BigInteger sqrtRatioAX96,
@@ -128,7 +128,7 @@ internal class UniswapMath : IUniswapMath
 
         return feeGrowthGlobal - feeGrowthBelow - feeGrowthAbove;
     }
-    
+
     private static BigInteger GetAmount0ForLiquidity(BigInteger sqrtRatioAx96, BigInteger sqrtRatioBx96,
         BigInteger liquidity)
     {

@@ -19,14 +19,6 @@ public static class CacheFlowExtensions
         return cacheFlows.Where(e => FilterCashFlowEvents(e, from, to))
             .Sum(e => ComputeCashFlowEvent(e.Event, e.Token0.Amount));
     }
-    
-    public static decimal CalculateNetTokenPairCashFlowInUsd<TCashFlow>(this IEnumerable<TCashFlow> cacheFlows,
-        DateOnly from,
-        DateOnly to) where TCashFlow : ITokenPairCashFlow
-    {
-        return cacheFlows.Where(e => FilterCashFlowEvents(e, from, to))
-            .Sum(e => ComputeCashFlowEvent(e.Event, e.Token0.AmountInUsd + e.Token1.AmountInUsd));
-    }
 
     private static bool FilterCashFlowEvents(ICashFlow cashFlow, DateOnly from, DateOnly to)
     {
