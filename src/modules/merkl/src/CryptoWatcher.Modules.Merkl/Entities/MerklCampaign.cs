@@ -89,9 +89,13 @@ public class MerklCampaign
 
         var prevSnapshot = Snapshots.GetLastSnapshotBefore(day);
 
+        var cashFlows = CashFlows
+            .Where(flow => flow.ClaimDate >= day.ToMinDateTime() && flow.ClaimDate <= day.ToMaxDateTime())
+            .Sum(flow => flow.ClaimedAmount.AmountInUsd);
+        
         var rewards = todaySnapshot.RewardsAmount - (prevSnapshot?.RewardsAmount ?? 0M);
 
-        return rewards * todaySnapshot.PriceInUsd;
+        return rewards * todaySnapshot.PriceInUsd + cashFlows;
     }
 
     public bool IsUniswapRewards() => Reason.StartsWith("UNISWAP_V3") || Reason.StartsWith("UniswapV4");

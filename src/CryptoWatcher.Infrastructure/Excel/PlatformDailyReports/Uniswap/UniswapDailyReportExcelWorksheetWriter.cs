@@ -30,7 +30,7 @@ internal class UniswapDailyReportExcelWorksheetWriter : ExcelSheetDataWriter<Uni
 
         var lastItem = dailyReport.ReportItems.Last();
         var totalRow = dailyReport.MapToExcelModel(TotalName, lastItem.TokenPairSymbols, lastItem.Network);
-
+        
         await workbook.AddAsRowAsync(totalRow, totalContext, ct);
     }
 }
