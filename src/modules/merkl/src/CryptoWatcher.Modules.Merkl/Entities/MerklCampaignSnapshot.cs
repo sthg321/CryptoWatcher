@@ -21,11 +21,11 @@ public class MerklCampaignSnapshot : IPositionSnapshot
 
     public DateOnly Day { get; private init; }
 
-    public decimal ClaimabelAmount { get; private set; }
+    public decimal ClaimableAmount { get; private set; }
 
     public decimal ClaimedAmount { get; private set; }
 
-    public decimal PendingAmout { get; private set; }
+    public decimal PendingAmount { get; private set; }
 
     public decimal PriceInUsd { get; private set; }
 
@@ -42,27 +42,16 @@ public class MerklCampaignSnapshot : IPositionSnapshot
     private void UpdateFromRewards(RewardStatus rewardStatus)
     {
         // no changes in rewards
-        if (ClaimabelAmount == rewardStatus.ClaimabelAmount &&
-            PendingAmout == rewardStatus.PendingAmount &&
+        if (ClaimableAmount == rewardStatus.ClaimabelAmount &&
+            PendingAmount == rewardStatus.PendingAmount &&
             ClaimedAmount == rewardStatus.ClaimedAmount)
         {
             return;
         }
-        //
-        // // user claimed only avilabel rewarads and still has pending rewards
-        // if (ClaimabelAmount == rewardStatus.ClaimabelAmount &&
-        //     PendingAmout == rewardStatus.PendingAmount &&
-        //     ClaimedAmount != rewardStatus.ClaimedAmount)
-        // {
-        //     ClaimabelAmount = rewardStatus.ClaimabelAmount;
-        //     return;
-        // }
-        //
-        //user has only avilable rewards without any pending rewards
         
         RewardsAmount += rewardStatus.ClaimabelAmount - rewardStatus.ClaimedAmount + rewardStatus.PendingAmount;
-        ClaimabelAmount = rewardStatus.ClaimabelAmount;
-        PendingAmout = rewardStatus.PendingAmount;
+        ClaimableAmount = rewardStatus.ClaimabelAmount;
+        PendingAmount = rewardStatus.PendingAmount;
         ClaimedAmount = rewardStatus.ClaimedAmount;
     }
 }
