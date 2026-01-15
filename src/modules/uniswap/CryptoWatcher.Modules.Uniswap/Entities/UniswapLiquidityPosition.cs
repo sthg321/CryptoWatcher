@@ -97,6 +97,8 @@ public class
     /// </remarks>
     public CryptoToken Token1 { get; private set; } = null!;
 
+    public string TokenSymbols => $"{Token0.Symbol} / {Token1.Symbol}";
+
     /// <summary>
     /// Indicates whether the liquidity pool position is active.
     /// </summary>

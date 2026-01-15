@@ -40,6 +40,8 @@ internal class ExcelReportGenerator : IExcelReportGenerator
         [ExcelStyleRegistry.TwoDecimalPlaces] = new Style
             { Format = NumberFormat.Standard(StandardNumberFormat.TwoDecimalPlaces) },
         [ExcelStyleRegistry.Percent] = new Style { Format = NumberFormat.Standard(StandardNumberFormat.Percent) },
+        [ExcelStyleRegistry.Dollars] = new Style { Format = NumberFormat.Custom("[$$]#,##0.00") },
+        [ExcelStyleRegistry.Date] = new Style { Format = NumberFormat.Custom("d.m.yyyy") },
     };
 
     public async Task<ExcelReport> CreatePlatformDailyReportAsync(

@@ -3,8 +3,11 @@ using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
+using CryptoWatcher.Modules.Uniswap.Application.Abstractions.Reports;
+using CryptoWatcher.Modules.Uniswap.Application.Models.Reports;
 using CryptoWatcher.Modules.Uniswap.Application.Services;
 using CryptoWatcher.Modules.Uniswap.Application.Services.EventsSynchronization;
+using CryptoWatcher.Modules.Uniswap.Application.Services.Reports;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.LiquidityPool;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.LiquidityPoolFactory;
@@ -72,6 +75,8 @@ public static class ServiceCollectionExtensions
         
         services.AddSingleton<ILiquidityEventLogEnricher, LiquidityEventLogEnricher>();
         services.AddSingleton<IWeb3Factory, Web3Factory>();
+
+        services.AddScoped<IUniswapOverallReportService, UniswapOverallReportService>();
 
         //v3
         services.AddSingleton<UniswapV3Client>();

@@ -10,3 +10,11 @@ internal class DateOnlyExcelConverter : CellValueConverter<DateOnly>
         return new DataCell(value.ToShortDateString());
     }
 }
+
+internal class NullableDateOnlyExcelConverter : CellValueConverter<DateOnly?>
+{
+    public override DataCell ConvertToDataCell(DateOnly? value)
+    {
+        return new DataCell(value?.ToShortDateString() ?? "-");
+    }
+}

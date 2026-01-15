@@ -6,6 +6,7 @@ using CryptoWatcher.Application.Abstractions;
 using CryptoWatcher.Application.Reports;
 using CryptoWatcher.Infrastructure.BackgroundServices;
 using CryptoWatcher.Infrastructure.Configs;
+using CryptoWatcher.Infrastructure.Excel.Overall.Uniswap;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Aave;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports.Abstractions;
@@ -119,6 +120,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddUniswapModule()
             .AddSingleton<IDailyExcelSheetBuilder, UniswapDailyExcelSheetBuilder>()
+            .AddScoped<UniswapOverallExcelReportService>()
             .AddSingleton<UniswapDailyReportExcelWorksheetWriter>();
 
         return services;
