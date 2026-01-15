@@ -31,7 +31,7 @@ namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Extensions;
 
 public static class UniswapModuleKeyedService
 {
-    public const string DailyPlatformKeyService = nameof(UniswapReportService);
+    public const string DailyPlatformKeyService = nameof(UniswapDailyReportService);
 }
 
 public static class ServiceCollectionExtensions
@@ -96,7 +96,7 @@ public static class ServiceCollectionExtensions
         services.AddHttpClient<UniswapAppApiClient>(client =>
             client.BaseAddress = new Uri("https://interface.gateway.uniswap.org")).AddStandardHedgingHandler();
 
-        services.AddKeyedScoped<IPlatformDailyReportDataProvider, UniswapReportService>(UniswapModuleKeyedService
+        services.AddKeyedScoped<IPlatformDailyReportDataProvider, UniswapDailyReportService>(UniswapModuleKeyedService
             .DailyPlatformKeyService);
         services.AddSingleton<IUniswapMath, UniswapMath>();
         services.AddScoped<IUniswapPositionsSyncService, UniswapPositionsSyncService>();
