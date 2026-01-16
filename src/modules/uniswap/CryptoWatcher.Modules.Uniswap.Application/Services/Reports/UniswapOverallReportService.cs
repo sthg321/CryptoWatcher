@@ -17,16 +17,14 @@ public class UniswapOverallReportService : BaseReportService<UniswapOverallRepor
     protected override UniswapOverallReport CreateReportItem(UniswapLiquidityPosition position,
         MerklCampaign? merklCampaign, DateOnly from, DateOnly to)
     {
-        var initialSnapshot = position.Snapshots.MinBy(snapshot => snapshot.Day);
-        
         var report = new UniswapOverallReport
         {
             Network = position.NetworkName,
             Pair = position.TokenSymbols,
             CreatedAt = position.CreatedAt,
             ClosedAt = position.ClosedAt,
-            InitialBalanceInUsd = initialSnapshot?.AmountInUsd ?? 0,
-            CurrentBalanceInUsd = position.Snapshots.Last().AmountInUsd,
+            InitialBalanceInUsd = position.CalculateInitialAmountInUsd(),
+            CurrentBalanceInUsd = position.CalculateCurrentAmountInUsd(),
             CommissionInUsd = position.CalculateFeeForPeriod(from, to),
             RewardsInUsd = merklCampaign?.CalculateDailyRewardsInUsd(from, to) ?? 0,
         };

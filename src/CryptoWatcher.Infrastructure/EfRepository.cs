@@ -2,6 +2,7 @@ using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Modules.Hyperliquid.Entities;
+using CryptoWatcher.Modules.Merkl.Entities;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
 
@@ -48,6 +49,10 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
             nameof(HyperliquidVaultPositionSnapshot.VaultAddress),
             nameof(HyperliquidVaultPositionSnapshot.WalletAddress),
             nameof(HyperliquidVaultPositionSnapshot.Day)
+        ],
+        [typeof(MerklCampaignCashFlow)] =
+        [
+            nameof(MerklCampaignCashFlow.Id),
         ],
     };
 
