@@ -88,14 +88,22 @@ public class MerklCampaign
             return 0;
 
         var prevSnapshot = Snapshots.GetLastSnapshotBefore(day);
-
-        var cashFlows = CashFlows
-            .Where(flow => flow.ClaimDate >= day.ToMinDateTime() && flow.ClaimDate <= day.ToMaxDateTime())
-            .Sum(flow => flow.ClaimedAmount.AmountInUsd);
         
         var rewards = todaySnapshot.RewardsAmount - (prevSnapshot?.RewardsAmount ?? 0M);
 
-        return rewards * todaySnapshot.PriceInUsd + cashFlows;
+        return rewards * todaySnapshot.PriceInUsd + GetCashFlowSum(day, day);
+    }
+
+    public decimal CalculateDailyRewardsInUsd(DateOnly from, DateOnly to)
+    {
+        var snapshotAtStart = Snapshots.GetLastSnapshotBefore(from);
+        var snapshotAtEnd = Snapshots.GetLastSnapshotOnOrBefore(to);
+
+        if (snapshotAtEnd is null) return 0;
+
+        var rewardsFromPosition = snapshotAtEnd.RewardsAmount - (snapshotAtStart?.RewardsAmount ?? 0M);
+        
+        return rewardsFromPosition + GetCashFlowSum(from, to);
     }
 
     public bool IsUniswapRewards() => Reason.StartsWith("UNISWAP_V3") || Reason.StartsWith("UniswapV4");
@@ -105,5 +113,12 @@ public class MerklCampaign
         var lastSlashIndex = Reason.LastIndexOf('_');
 
         return ulong.Parse(Reason[(lastSlashIndex + 1)..]);
+    }
+
+    private decimal GetCashFlowSum(DateOnly from, DateOnly to)
+    {
+        return CashFlows
+            .Where(flow => flow.ClaimDate >= from.ToMinDateTime() && flow.ClaimDate <= to.ToMaxDateTime())
+            .Sum(flow => flow.ClaimedAmount.AmountInUsd);
     }
 }

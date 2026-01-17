@@ -88,6 +88,8 @@ public class UniswapLiquidityPositionSnapshot : ITokenPairPositionSnapshot
     /// </remarks>
     public decimal FeeInUsd => Token0.FeeInUsd + Token1.FeeInUsd;
 
+    public decimal AmountInUsd => Token0.AmountInUsd + Token1.AmountInUsd;
+
     /// <summary>
     /// Calculates the total sum in USD of tokens held within the position snapshot by combining the USD values of token0 and token1.
     /// </summary>

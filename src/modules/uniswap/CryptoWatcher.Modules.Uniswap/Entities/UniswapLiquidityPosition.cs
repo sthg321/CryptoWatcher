@@ -97,6 +97,8 @@ public class
     /// </remarks>
     public CryptoToken Token1 { get; private set; } = null!;
 
+    public string TokenSymbols => $"{Token0.Symbol} / {Token1.Symbol}";
+
     /// <summary>
     /// Indicates whether the liquidity pool position is active.
     /// </summary>
@@ -209,6 +211,25 @@ public class
         }
 
         ClosedAt = closedAt;
+    }
+
+    public Money CalculateInitialAmountInUsd()
+    {
+        var initialAmountInUsd = Token0.AmountInUsd + Token1.AmountInUsd;
+
+        return initialAmountInUsd + CashFlows.CalculateNetTokenPairCashFlowInUsd(CreatedAt, CreatedAt);
+    }
+
+    public Money CalculateCurrentAmountInUsd()
+    {
+        var lastSnapshot = Snapshots.MaxBy(snapshot => snapshot.Day);
+        if (lastSnapshot is null)
+        {
+            return 0;
+        }
+ 
+        return lastSnapshot.AmountInUsd +
+               CashFlows.CalculateNetTokenPairCashFlowInUsd(CreatedAt.AddDays(1), lastSnapshot.Day);
     }
 
     public Money CalculateHoldValueInUsd(DateOnly to)

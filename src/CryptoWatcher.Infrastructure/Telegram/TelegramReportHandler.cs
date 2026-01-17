@@ -1,5 +1,8 @@
 using CryptoWatcher.Abstractions;
+using CryptoWatcher.Infrastructure.Excel.Overall.Uniswap;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports;
+using CryptoWatcher.Infrastructure.Extensions;
+using CryptoWatcher.Modules.Uniswap.Application.Models.Reports;
 using CryptoWatcher.Shared.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -30,12 +33,15 @@ public class TelegramReportHandler : IUpdateHandler
 
         var dailyReportFacade = scope.ServiceProvider.GetRequiredService<IPlatformDailyReportFacade>();
 
+        var (from, to) = DateTime.Now.GetCurrentMonthRange();
         var excelReport = update.Message!.Text switch
         {
             "/uniswap" => await dailyReportFacade.CreateUniswapReportAsync(wallets, null, null, cancellationToken),
             "/hyperliquid" => await dailyReportFacade.CreateHyperliquidReportAsync(wallets, null, null,
                 cancellationToken),
             "/aave" => await dailyReportFacade.CreateAaveReportAsync(wallets, null, null, cancellationToken),
+            "/uniswap_overall" => await scope.ServiceProvider.GetRequiredService<UniswapOverallExcelReportService>()
+                .CreateReportAsync(wallets, from, to, cancellationToken)
         };
 
         await botClient.SendDocument(update.Message!.From!.Id,

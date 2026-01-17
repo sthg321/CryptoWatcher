@@ -3,8 +3,11 @@ using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
+using CryptoWatcher.Modules.Uniswap.Application.Abstractions.Reports;
+using CryptoWatcher.Modules.Uniswap.Application.Models.Reports;
 using CryptoWatcher.Modules.Uniswap.Application.Services;
 using CryptoWatcher.Modules.Uniswap.Application.Services.EventsSynchronization;
+using CryptoWatcher.Modules.Uniswap.Application.Services.Reports;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.LiquidityPool;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.LiquidityPoolFactory;
@@ -28,7 +31,7 @@ namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Extensions;
 
 public static class UniswapModuleKeyedService
 {
-    public const string DailyPlatformKeyService = nameof(UniswapReportService);
+    public const string DailyPlatformKeyService = nameof(UniswapDailyReportService);
 }
 
 public static class ServiceCollectionExtensions
@@ -73,6 +76,8 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ILiquidityEventLogEnricher, LiquidityEventLogEnricher>();
         services.AddSingleton<IWeb3Factory, Web3Factory>();
 
+        services.AddScoped<IUniswapOverallReportService, UniswapOverallReportService>();
+
         //v3
         services.AddSingleton<UniswapV3Client>();
         services.AddSingleton<ILiquidityPoolEventDecoder, UniswapV3CollectEventDecoder>();
@@ -91,7 +96,7 @@ public static class ServiceCollectionExtensions
         services.AddHttpClient<UniswapAppApiClient>(client =>
             client.BaseAddress = new Uri("https://interface.gateway.uniswap.org")).AddStandardHedgingHandler();
 
-        services.AddKeyedScoped<IPlatformDailyReportDataProvider, UniswapReportService>(UniswapModuleKeyedService
+        services.AddKeyedScoped<IPlatformDailyReportDataProvider, UniswapDailyReportService>(UniswapModuleKeyedService
             .DailyPlatformKeyService);
         services.AddSingleton<IUniswapMath, UniswapMath>();
         services.AddScoped<IUniswapPositionsSyncService, UniswapPositionsSyncService>();
