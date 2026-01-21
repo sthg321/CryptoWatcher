@@ -30,6 +30,18 @@ public class UniswapLiquidityPositionCashFlow : ITokenPairCashFlow
         Token1 = tokenInfoPair.Token0.ToStatistic();
     }
 
+    public UniswapLiquidityPositionCashFlow(ulong positionId, string networkName, DateTime date,
+        CashFlowEvent cashFlowEvent, TransactionHash transactionHash, TokenInfoPair infoPair)
+    {
+        PositionId = positionId;
+        NetworkName = networkName;
+        Date = date;
+        Event = cashFlowEvent;
+        TransactionHash = transactionHash;
+        Token0 = infoPair.Token0.ToStatistic();
+        Token1 = infoPair.Token1.ToStatistic();
+    }
+
     public ulong PositionId { get; init; }
 
     public string NetworkName { get; init; } = null!;

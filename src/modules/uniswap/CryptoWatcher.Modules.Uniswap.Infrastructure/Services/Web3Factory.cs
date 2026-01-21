@@ -4,7 +4,7 @@ using Nethereum.Web3;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 
-internal interface IWeb3Factory
+public interface IWeb3Factory
 {
     IWeb3 GetWeb3(UniswapChainConfiguration chain);
 }

@@ -31,6 +31,7 @@ public class UniswapV3DecreaseLiquidityLogEventDecoder : ITransactionLogEventDec
             Token1 = transferEvents[1].MapEventToToken(decreaseEvent.Event.Amount1),
             Commission0 = collectEvents.Event.Amount0,
             Commission1 = collectEvents.Event.Amount1,
+            TransactionHash = transactionReceipt.TransactionHash,
             IsPositionClosed = decreaseEvent.Event.Amount0 == 0
         };
     }

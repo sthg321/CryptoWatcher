@@ -23,7 +23,7 @@ public class UniswapV3IncreaseLiquidityLogEventDecoder : ITransactionLogEventDec
         // note: there is difference between mint and transfer ERC721 event. when it's only increase liquidity 
         // then there is not any ERC721 transfer events.
         return transactionReceipt.DecodeAllEvents<MintEvent>().Count == 1 &&
-               transactionReceipt.DecodeAllEvents<IncreaseLiquidityOperation>().Count == 1;
+               transactionReceipt.DecodeAllEvents<IncreaseLiquidityEvent>().Count == 1;
     }
 
     public PositionOperation GetOperation(TransactionReceipt transactionReceipt)
@@ -35,6 +35,7 @@ public class UniswapV3IncreaseLiquidityLogEventDecoder : ITransactionLogEventDec
         return new IncreaseLiquidityOperation
         {
             PositionId = (ulong)increaseLiquidity.Event.TokenId,
+            TransactionHash = transactionReceipt.TransactionHash,
             Token0 = new Token
             {
                 Address = EvmAddress.Create(tokenTransfers[0].Log.Address),

@@ -1,6 +1,5 @@
 using CryptoWatcher.Modules.Uniswap.Application.UniswapV3.Models.Operations;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Extensions;
-using CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.UniswapV3.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.UniswapV3.Models.Events;
 using Nethereum.Contracts;
@@ -23,18 +22,18 @@ public class UniswapV3MintLogEventDecoder : ITransactionLogEventDecoder
         var nftTransfer = transactionReceipt.DecodeAllEvents<TransferEventDTO>().Single();
 
         var mintEvent = transactionReceipt.DecodeAllEvents<MintEvent>().Single();
-        
+
         var tokenTransfers = transactionReceipt
             .DecodeAllEvents<Nethereum.Contracts.Standards.ERC20.ContractDefinition.TransferEventDTO>();
 
         return new MintPositionOperation
         {
             PositionId = (ulong)nftTransfer.Event.TokenId,
+            TransactionHash = transactionReceipt.TransactionHash,
             TickLower = mintEvent.Event.TickLower,
             TickUpper = mintEvent.Event.TickUpper,
             Token0 = tokenTransfers[0].MapEventToToken(),
             Token1 = tokenTransfers[1].MapEventToToken()
         };
     }
- 
 }

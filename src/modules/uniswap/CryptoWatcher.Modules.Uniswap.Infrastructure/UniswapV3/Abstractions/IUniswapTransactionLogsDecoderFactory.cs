@@ -1,8 +1,9 @@
+using CryptoWatcher.Modules.Uniswap.Application.UniswapV3.Models.Operations;
 using Nethereum.RPC.Eth.DTOs;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.UniswapV3.Abstractions;
 
-internal interface IUniswapTransactionLogsDecoderFactory
+public interface IUniswapTransactionLogsDecoderFactory
 {
-    ITransactionLogEventDecoder? FindDecoder(TransactionReceipt transactionReceipt);
+    PositionOperation? GetOperationFromTransaction(TransactionReceipt transactionReceipt);
 }

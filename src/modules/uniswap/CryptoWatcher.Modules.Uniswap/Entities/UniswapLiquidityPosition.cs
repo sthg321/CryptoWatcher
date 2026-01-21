@@ -203,6 +203,29 @@ public class
         return existedSnapshot;
     }
 
+    public UniswapLiquidityPositionCashFlow AddCashFlow(
+        CashFlowEvent cashFlowEvent, 
+        TokenInfoPair infoPair,
+        TransactionHash transactionHash,
+        DateTime date)
+    {
+        if (IsClosed)
+        {
+            throw new DomainException(PositionClosedException);
+        }
+
+        var existedSnapshot = _cashFlows.FirstOrDefault(snapshot => snapshot.Date == date);
+        if (existedSnapshot is null)
+        {
+            var cashFlow = new UniswapLiquidityPositionCashFlow(PositionId, NetworkName, date, cashFlowEvent,
+                transactionHash, infoPair);
+            _cashFlows.Add(cashFlow);
+            return cashFlow;
+        }
+
+        return existedSnapshot;
+    }
+
     public void ClosePosition(DateOnly closedAt)
     {
         if (IsClosed)
@@ -227,7 +250,7 @@ public class
         {
             return 0;
         }
- 
+
         return lastSnapshot.AmountInUsd +
                CashFlows.CalculateNetTokenPairCashFlowInUsd(CreatedAt.AddDays(1), lastSnapshot.Day);
     }

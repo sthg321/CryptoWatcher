@@ -1,5 +1,4 @@
 using CryptoWatcher.Modules.Uniswap.Application.UniswapV3.Models.Operations;
-using CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.UniswapV3.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.UniswapV3.Models.Events;
 using CryptoWatcher.ValueObjects;
@@ -43,7 +42,8 @@ public class UniswapV3CollectLogEventDecoder : ITransactionLogEventDecoder
             {
                 Address = EvmAddress.Create(transferEvents[0].Log.Address),
                 Balance = collectEvents.Event.Amount1
-            }
+            },
+            TransactionHash = transactionReceipt.TransactionHash
         };
     }
 }
