@@ -27,12 +27,12 @@ public class PositionOperationOrchestrator
         if (operationInfo.Operation is MintPositionOperation mintPositionOperation)
         {
             return await _mintPositionOperationApplier.CreatePositionAsync(walletAddress, mintPositionOperation,
-                chainConfiguration, operationInfo.OperationDate, ct);
+                chainConfiguration, operationInfo.Timestamp, ct);
         }
 
         var applier = _operationApplierFactory.GetOperationApplier(operationInfo.Operation);
 
         return await applier.ApplyOperationAsync(chainConfiguration, position!, operationInfo.Operation,
-            operationInfo.OperationDate, ct);
+            operationInfo.Timestamp, ct);
     }
 }

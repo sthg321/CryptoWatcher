@@ -11,6 +11,7 @@ using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports;
 using CryptoWatcher.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Hyperliquid.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
+using CryptoWatcher.Modules.Uniswap.Application.Models;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.UniswapV3.Services;
 using CryptoWatcher.Shared.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -66,9 +67,7 @@ using (var scope = app.Services.CreateScope())
     var config = db.UniswapChainConfigurations.First(x => x.Name == "Monad");
 
     var manager = scope.ServiceProvider.GetRequiredService<UniswapV3PositionOperationsSource>();
-
-    await manager.GetOperationFromTransactionAsync(config,
-        "0xee098092bd920139cbab493de151cacb2e8185646948c25f9817e83062b5ff85");
+ 
 
     if (!app.Environment.IsDevelopment())
     {

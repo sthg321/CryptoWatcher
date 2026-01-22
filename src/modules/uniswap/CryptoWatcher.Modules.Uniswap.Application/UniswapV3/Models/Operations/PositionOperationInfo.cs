@@ -4,6 +4,6 @@ public class PositionOperationInfo
 {
     public PositionOperation Operation { get; set; } = null!;
 
-    public DateTime OperationDate { get; set; }
+    public DateTime Timestamp { get; set; }
 }
  

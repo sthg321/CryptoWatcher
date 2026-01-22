@@ -84,7 +84,7 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IUniswapOverallReportService, UniswapOverallReportService>();
 
-        services.AddSingleton<IBlockchainDataProvider, Web3BlockchainDataProvider>();
+        services.AddSingleton<IBlockchainDataSource, Web3BlockchainDataSource>();
         
         //v3
         services.AddSingleton<UniswapV3Client>();
@@ -95,7 +95,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IUniswapV3PositionFetcher, UniswapV3PositionFetcher>();
         
         services.AddSingleton<UniswapV3PositionOperationsSource>();
-        services.AddSingleton<IUniswapTransactionLogsDecoderFactory, Uniswap3TransactionLogsDecoderFactory>();
+        services.AddSingleton<IUniswapTransactionLogsDecoderFactory, UniswapV3TransactionLogsDecoderFactory>();
         services.AddSingleton<ITransactionLogEventDecoder, UniswapV3CollectLogEventDecoder>();
         services.AddSingleton<ITransactionLogEventDecoder, UniswapV3DecreaseLiquidityLogEventDecoder>();
         services.AddSingleton<ITransactionLogEventDecoder, UniswapV3IncreaseLiquidityLogEventDecoder>();

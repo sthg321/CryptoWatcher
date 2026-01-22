@@ -6,7 +6,7 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions.OperationReader
 
 public interface IPositionOperationsSource
 {
-    Task<PositionOperationInfo?> GetOperationFromTransactionAsync(UniswapChainConfiguration chainConfiguration,
-        TransactionHash transactionHash,
+    Task<PositionOperation?> GetOperationFromTransactionAsync(UniswapChainConfiguration chainConfiguration,
+        TransactionHash hash,
         CancellationToken ct = default);
 }
