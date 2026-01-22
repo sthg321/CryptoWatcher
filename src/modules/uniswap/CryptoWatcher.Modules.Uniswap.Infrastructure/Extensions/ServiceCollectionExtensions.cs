@@ -137,11 +137,11 @@ public static class ServiceCollectionExtensions
 
     private static void RegisterKeyedApplier<TOperation, TApplier>(IServiceCollection services)
         where TOperation : PositionOperation
-        where TApplier : class, IPositionOperationApplier<TOperation>
+        where TApplier : class, IPositionMutationOperation
     {
         services.AddScoped<TApplier>();
         
         var key = typeof(TOperation);
-        services.AddKeyedScoped<IPositionOperationApplier<TOperation>>(key, (sp, _) => sp.GetRequiredService<TApplier>());
+        services.AddKeyedScoped<IPositionMutationOperation>(key, (sp, _) => sp.GetRequiredService<TApplier>());
     }
 }

@@ -1,11 +1,13 @@
 using CryptoWatcher.Abstractions;
+using CryptoWatcher.Modules.Uniswap.Application.Abstractions.OperationReaders;
 using CryptoWatcher.Modules.Uniswap.Application.UniswapV3.Models.Operations;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Uniswap.Application.UniswapV3.OperationReaders;
 
-public abstract class BasePositionOperationApplier<TOperation> where TOperation : PositionOperation
+public abstract class BasePositionOperationApplier<TOperation> : IPositionMutationOperation
+    where TOperation : PositionOperation
 {
     private readonly ITokenEnricher _tokenEnricher;
 
@@ -17,13 +19,13 @@ public abstract class BasePositionOperationApplier<TOperation> where TOperation 
     public async Task<UniswapLiquidityPosition> ApplyOperationAsync(
         UniswapChainConfiguration chainConfiguration,
         UniswapLiquidityPosition position,
-        TOperation operation,
+        PositionOperation operation,
         DateTime timestamp,
         CancellationToken ct = default)
     {
         var enrichedTokens = await EnrichTokensAsync(chainConfiguration, operation.Token0, operation.Token1, ct);
 
-        await ApplyOperation(chainConfiguration, position, enrichedTokens, operation, timestamp);
+        await ApplyOperation(chainConfiguration, position, enrichedTokens, (TOperation)operation, timestamp);
 
         return position;
     }

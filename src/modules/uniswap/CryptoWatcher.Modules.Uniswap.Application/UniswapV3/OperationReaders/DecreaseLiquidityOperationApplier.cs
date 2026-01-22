@@ -1,15 +1,13 @@
 using System.Numerics;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.CacheFlows;
-using CryptoWatcher.Modules.Uniswap.Application.Abstractions.OperationReaders;
 using CryptoWatcher.Modules.Uniswap.Application.UniswapV3.Models.Operations;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Uniswap.Application.UniswapV3.OperationReaders;
 
-public class DecreaseLiquidityOperationApplier : BasePositionOperationApplier<DecreaseLiquidityOperation>,
-    IPositionOperationApplier<DecreaseLiquidityOperation>
+public class DecreaseLiquidityOperationApplier : BasePositionOperationApplier<DecreaseLiquidityOperation>
 {
     public DecreaseLiquidityOperationApplier(ITokenEnricher tokenEnricher) : base(tokenEnricher)
     {

@@ -16,13 +16,11 @@ public class MintPositionOperationApplier : IMintPositionOperationApplier
     }
 
     public async Task<UniswapLiquidityPosition> ReadOperationAsync(EvmAddress walletAddress,
-        PositionOperationInfo mintPositionOperation,
+        MintPositionOperation operation,
         UniswapChainConfiguration chainConfiguration,
+        DateTime timestamp,
         CancellationToken ct = default)
     {
-        var operation = mintPositionOperation.Operation as MintPositionOperation ??
-                        throw new InvalidOperationException("Operation is not a MintPositionOperation");
-
         var enrichedTokens = await _tokenEnricher.EnrichAsync(chainConfiguration.Name,
             chainConfiguration.RpcUrlWithAuthToken,
             new TokenPair
@@ -38,7 +36,7 @@ public class MintPositionOperationApplier : IMintPositionOperationApplier
             enrichedTokens.Token1,
             walletAddress,
             chainConfiguration,
-            DateOnly.FromDateTime(mintPositionOperation.OperationDate));
+            DateOnly.FromDateTime(timestamp));
 
         return position;
     }

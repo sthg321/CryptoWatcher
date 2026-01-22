@@ -13,10 +13,8 @@ public class PositionOperationApplierFactory : IPositionOperationApplierFactory
         _serviceProvider = serviceProvider;
     }
 
-    public IPositionOperationApplier<TPositionOperation> GetOperationApplier<TPositionOperation>()
-        where TPositionOperation : PositionOperation
+    public IPositionMutationOperation GetOperationApplier(PositionOperation operation)
     {
-        return _serviceProvider.GetRequiredKeyedService<IPositionOperationApplier<TPositionOperation>>(
-            typeof(TPositionOperation));
+        return _serviceProvider.GetRequiredKeyedService<IPositionMutationOperation>(operation.GetType());
     }
 }

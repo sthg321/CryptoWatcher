@@ -4,6 +4,5 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions.OperationReader
 
 public interface IPositionOperationApplierFactory
 {
-    IPositionOperationApplier<TPositionOperation> GetOperationApplier<TPositionOperation>()
-        where TPositionOperation : PositionOperation;
+    IPositionMutationOperation GetOperationApplier(PositionOperation operation);
 }

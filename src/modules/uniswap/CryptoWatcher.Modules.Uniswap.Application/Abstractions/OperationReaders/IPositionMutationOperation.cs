@@ -2,13 +2,13 @@ using CryptoWatcher.Modules.Uniswap.Application.UniswapV3.Models.Operations;
 using CryptoWatcher.Modules.Uniswap.Entities;
 
 namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions.OperationReaders;
- 
-public interface IPositionOperationApplier<in TOperation> where TOperation : PositionOperation
+
+public interface IPositionMutationOperation
 {
     Task<UniswapLiquidityPosition> ApplyOperationAsync(
         UniswapChainConfiguration chainConfiguration,
         UniswapLiquidityPosition position,
-        TOperation operation,
+        PositionOperation operation,
         DateTime timestamp,
         CancellationToken ct = default);
 }
