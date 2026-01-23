@@ -11,8 +11,9 @@ namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockscout.A
 /// </summary>
 public interface IBlockscoutApi
 {
-    [Get("/api/v2/addresses/{walletAddress}/transactions/query")]
-    Task<BlockscoutTransactionHistoryResponse> GetTransactionHistoryAsync(string walletAddress,
+    [Get("/api/v2/addresses/{address_hash}/transactions/query")]
+    Task<BlockscoutTransactionHistoryResponse> GetTransactionHistoryAsync(
+        [AliasAs("address_hash")] string walletAddress,
         BlockscoutTransactionHistoryQueryParams? queryParams, CancellationToken ct = default);
 
     [Get("/api/v2/transactions/{transactionHash}/internal-transactions")]
