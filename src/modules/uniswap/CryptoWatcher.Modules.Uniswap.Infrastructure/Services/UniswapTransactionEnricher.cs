@@ -9,20 +9,20 @@ namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 public class UniswapTransactionEnricher : IUniswapTransactionEnricher
 {
     private readonly IPositionOperationsSource _positionOperationsSource;
-    private readonly IUniswapTransactionPreFilter _uniswapTransactionPreFilter;
+    private readonly IUniswapTransactionFilter _uniswapTransactionFilter;
 
     public UniswapTransactionEnricher(IPositionOperationsSource positionOperationsSource,
-        IUniswapTransactionPreFilter uniswapTransactionPreFilter)
+        IUniswapTransactionFilter uniswapTransactionFilter)
     {
         _positionOperationsSource = positionOperationsSource;
-        _uniswapTransactionPreFilter = uniswapTransactionPreFilter;
+        _uniswapTransactionFilter = uniswapTransactionFilter;
     }
 
     public async Task<UniswapEvent?> TryEnrichAsync(UniswapChainConfiguration chainConfiguration,
         BlockchainTransaction transaction,
         CancellationToken ct = default)
     {
-        if (!_uniswapTransactionPreFilter.IsRelevant(chainConfiguration, transaction))
+        if (!_uniswapTransactionFilter.IsRelevant(chainConfiguration, transaction))
         {
             return null;
         }

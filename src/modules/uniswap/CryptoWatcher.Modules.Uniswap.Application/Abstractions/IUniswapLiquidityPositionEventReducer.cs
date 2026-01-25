@@ -4,7 +4,7 @@ using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 
-public interface ILiquidityPositionEventReducer
+public interface IUniswapLiquidityPositionEventReducer
 {
     Task<UniswapLiquidityPosition[]> ApplyEventsAsync(UniswapChainConfiguration chainConfiguration,
         EvmAddress walletAddress,

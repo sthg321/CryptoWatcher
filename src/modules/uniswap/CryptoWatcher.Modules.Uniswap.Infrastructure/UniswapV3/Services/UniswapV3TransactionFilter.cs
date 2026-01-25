@@ -4,16 +4,16 @@ using CryptoWatcher.Modules.Uniswap.Entities;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.UniswapV3.Services;
 
-public class UniswapV3TransactionPreFilter : IUniswapTransactionPreFilter
+public class UniswapV3TransactionFilter : IUniswapTransactionFilter
 {
     private static readonly HashSet<string> V3LiquidityMethods = new(StringComparer.OrdinalIgnoreCase)
     {
         "mint", "collect", "increaseLiquidity", "decreaseLiquidity", "burn", "multicall"
     };
 
-    public bool IsRelevant(UniswapChainConfiguration config, BlockchainTransaction tx)
+    public bool IsRelevant(UniswapChainConfiguration config, BlockchainTransaction transaction)
     {
-        return tx.To.Equals(config.SmartContractAddresses.PositionManager) &&
-               V3LiquidityMethods.Contains(tx.FunctionName);
+        return transaction.To.Equals(config.SmartContractAddresses.PositionManager) &&
+               V3LiquidityMethods.Contains(transaction.FunctionName);
     }
 }

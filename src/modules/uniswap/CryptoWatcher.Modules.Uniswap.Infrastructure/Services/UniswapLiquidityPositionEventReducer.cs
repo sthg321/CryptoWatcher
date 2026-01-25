@@ -5,11 +5,11 @@ using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 
-public class LiquidityPositionEventReducer : ILiquidityPositionEventReducer
+public class UniswapLiquidityPositionEventReducer : IUniswapLiquidityPositionEventReducer
 {
     private readonly IUniswapPositionEventApplier _eventApplier;
 
-    public LiquidityPositionEventReducer(
+    public UniswapLiquidityPositionEventReducer(
         IUniswapPositionEventApplier eventApplier)
     {
         _eventApplier = eventApplier;

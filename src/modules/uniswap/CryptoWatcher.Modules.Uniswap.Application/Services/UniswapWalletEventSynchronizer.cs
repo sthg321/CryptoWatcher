@@ -13,11 +13,11 @@ public class UniswapWalletEventSynchronizer : IUniswapWalletEventSynchronizer
     private const int ChunkSize = 50;
 
     private readonly IUniswapWalletEventExtractor _uniswapWalletEventExtractor;
-    private readonly ILiquidityPositionEventReducer _positionEventReducer;
+    private readonly IUniswapLiquidityPositionEventReducer _positionEventReducer;
     private readonly IRepository<UniswapLiquidityPosition> _positionsRepository;
 
     public UniswapWalletEventSynchronizer(IUniswapWalletEventExtractor uniswapWalletEventExtractor,
-        ILiquidityPositionEventReducer positionEventReducer, IRepository<UniswapLiquidityPosition> positionsRepository)
+        IUniswapLiquidityPositionEventReducer positionEventReducer, IRepository<UniswapLiquidityPosition> positionsRepository)
     {
         _uniswapWalletEventExtractor = uniswapWalletEventExtractor;
         _positionEventReducer = positionEventReducer;

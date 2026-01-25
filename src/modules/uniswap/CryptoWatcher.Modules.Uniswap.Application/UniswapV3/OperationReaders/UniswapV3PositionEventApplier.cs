@@ -6,12 +6,12 @@ using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Uniswap.Application.UniswapV3.OperationReaders;
 
-public class UniswapPositionEventApplier : IUniswapPositionEventApplier
+public class UniswapV3PositionEventApplier : IUniswapPositionEventApplier
 {
     private readonly IPositionOperationApplierFactory _operationApplierFactory;
     private readonly IMintPositionOperationApplier _mintPositionOperationApplier;
 
-    public UniswapPositionEventApplier(IPositionOperationApplierFactory operationApplierFactory,
+    public UniswapV3PositionEventApplier(IPositionOperationApplierFactory operationApplierFactory,
         IMintPositionOperationApplier mintPositionOperationApplier)
     {
         _operationApplierFactory = operationApplierFactory;
