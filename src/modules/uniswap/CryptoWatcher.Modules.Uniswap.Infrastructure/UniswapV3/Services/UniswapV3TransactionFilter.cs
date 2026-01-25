@@ -14,6 +14,6 @@ public class UniswapV3TransactionFilter : IUniswapTransactionFilter
     public bool IsRelevant(UniswapChainConfiguration config, BlockchainTransaction transaction)
     {
         return transaction.To.Equals(config.SmartContractAddresses.PositionManager) &&
-               V3LiquidityMethods.Contains(transaction.FunctionName);
+               V3LiquidityMethods.Any(functionName => transaction.FunctionName.Contains(functionName));
     }
 }

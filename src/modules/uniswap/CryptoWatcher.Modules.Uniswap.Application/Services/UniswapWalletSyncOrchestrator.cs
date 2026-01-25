@@ -17,7 +17,7 @@ public class UniswapWalletSyncOrchestrator : IUniswapWalletSyncOrchestrator
     public UniswapWalletSyncOrchestrator(IRepository<Wallet> walletRepository,
         IRepository<UniswapChainConfiguration> chainConfigurationRepository,
         IRepository<UniswapSynchronizationState> synchronizationStateRepository,
-        IUniswapWalletEventSynchronizer synchronizer, 
+        IUniswapWalletEventSynchronizer synchronizer,
         IUniswapWalletSyncStore syncStore)
     {
         _walletRepository = walletRepository;
@@ -35,7 +35,7 @@ public class UniswapWalletSyncOrchestrator : IUniswapWalletSyncOrchestrator
 
         foreach (var wallet in wallets)
         {
-            foreach (var chain in chainConfigurations)
+            foreach (var chain in chainConfigurations.Where(x => x.Name == "Monad"))
             {
                 var state = await _synchronizationStateRepository.FirstOrDefaultAsync(
                                 new UniswapSynchronizationStateByWalletAndChain(chain, wallet), ct) ??

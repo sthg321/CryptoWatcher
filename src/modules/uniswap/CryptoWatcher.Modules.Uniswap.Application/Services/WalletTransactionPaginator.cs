@@ -8,7 +8,7 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Services;
 
 public class WalletTransactionPaginator : IWalletTransactionPaginator
 {
-    private const int PageSize = 100;
+    private const int PageSize = 1000;
 
     private readonly IWalletTransactionGateway _transactionGateway;
     private readonly IEtherscanApiKeyProvider _apiKeyProvider;

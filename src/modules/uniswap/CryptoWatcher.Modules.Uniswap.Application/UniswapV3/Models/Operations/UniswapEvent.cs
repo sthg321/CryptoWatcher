@@ -6,4 +6,3 @@ public class UniswapEvent
 
     public DateTime Timestamp { get; init; }
 }
- 

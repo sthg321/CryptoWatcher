@@ -166,9 +166,9 @@ public static class ServiceCollectionExtensions
         where TOperation : PositionOperation
         where TApplier : class, IPositionMutationOperation
     {
-        services.AddScoped<TApplier>();
+        services.AddSingleton<TApplier>();
         
         var key = typeof(TOperation);
-        services.AddKeyedScoped<IPositionMutationOperation>(key, (sp, _) => sp.GetRequiredService<TApplier>());
+        services.AddKeyedSingleton<IPositionMutationOperation>(key, (sp, _) => sp.GetRequiredService<TApplier>());
     }
 }

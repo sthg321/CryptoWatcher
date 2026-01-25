@@ -1,3 +1,4 @@
+using CryptoWatcher.Exceptions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions.OperationReaders;
 using CryptoWatcher.Modules.Uniswap.Application.UniswapV3.Models.Operations;
@@ -22,7 +23,7 @@ public class UniswapV3PositionEventApplier : IUniswapPositionEventApplier
         UniswapChainConfiguration chainConfiguration,
         EvmAddress walletAddress,
         UniswapEvent @event,
-        UniswapLiquidityPosition? position,
+        UniswapLiquidityPosition? position, 
         CancellationToken ct = default)
     {
         if (@event.Operation is MintPositionOperation mintPositionOperation)
@@ -31,6 +32,16 @@ public class UniswapV3PositionEventApplier : IUniswapPositionEventApplier
                 chainConfiguration, @event.Timestamp, ct);
         }
 
+        if (position is null)
+        {
+            throw new DomainException("Position is not found for event");
+        }
+
+        if (position.IsClosed)
+        {
+            return position;
+        }
+        
         var applier = _operationApplierFactory.GetOperationApplier(@event.Operation);
 
         return await applier.ApplyOperationAsync(chainConfiguration, position!, @event.Operation,

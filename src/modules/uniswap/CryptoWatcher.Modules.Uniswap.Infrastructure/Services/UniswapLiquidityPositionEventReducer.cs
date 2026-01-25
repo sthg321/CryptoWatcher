@@ -28,7 +28,7 @@ public class UniswapLiquidityPositionEventReducer : IUniswapLiquidityPositionEve
                      .GroupBy(@event => @event.Operation.PositionId))
         {
             positionsById.TryGetValue(uniswapEventGroup.Key, out var liquidityPosition);
-
+            
             foreach (var uniswapEvent in uniswapEventGroup)
             {
                 liquidityPosition = await _eventApplier.ApplyOperationToPositionAsync(

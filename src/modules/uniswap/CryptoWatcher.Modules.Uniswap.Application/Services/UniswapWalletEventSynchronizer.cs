@@ -32,15 +32,16 @@ public class UniswapWalletEventSynchronizer : IUniswapWalletEventSynchronizer
         [EnumeratorCancellation] CancellationToken ct = default)
     {
         var scannedTransactions = _uniswapWalletTransactionScanner
-            .ScanWalletTransactionsAsync(chainConfiguration, synchronizationState, wallet.Address, ct);
+            .ScanWalletTransactionsAsync(chainConfiguration, synchronizationState, wallet.Address, ct)
+            .ToBlockingEnumerable(cancellationToken: ct); // until a problem with pending transaction is fixed
 
-        await foreach (var uniswapEventBatch in scannedTransactions.Chunk(ChunkSize).WithCancellation(ct))
+        foreach (var uniswapEventBatch in scannedTransactions.Chunk(ChunkSize))
         {
             var uniswapEvents = uniswapEventBatch
                 .Where(item => item.Event is not null)
                 .Select(eventScanItem => eventScanItem.Event!)
                 .ToArray();
-            
+
             var updatedPositions = Array.Empty<UniswapLiquidityPosition>();
 
             if (uniswapEvents.Length > 0)

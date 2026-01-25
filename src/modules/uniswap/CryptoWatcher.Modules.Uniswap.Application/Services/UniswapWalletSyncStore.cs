@@ -28,8 +28,7 @@ public class UniswapWalletSyncStore : IUniswapWalletSyncStore
         var blockNumber = batch.LastScannedTransaction.BlockNumber;
 
         state.UpdateLastSynchronizedTransaction(lastTransactionHash, blockNumber, _timeProvider);
-        _synchronizationStateRepository.Update(state);
         
-        await _synchronizationStateRepository.UnitOfWork.SaveChangesAsync(ct);
+        await _synchronizationStateRepository.BulkMergeAsync([state], ct);
     }
 }
