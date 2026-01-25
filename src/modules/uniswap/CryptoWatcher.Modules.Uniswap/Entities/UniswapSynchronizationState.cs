@@ -25,13 +25,22 @@ public class UniswapSynchronizationState
         SynchronizedAt = provider.GetUtcNow().UtcDateTime;
     }
 
-    public TransactionHash LastTransactionHash { get; private set; }
+    public UniswapSynchronizationState(UniswapChainConfiguration chain, Wallet wallet)
+    {
+         ChainConfiguration = chain;
+         ChainName = chain.Name;
+         UniswapProtocolVersion = chain.ProtocolVersion;
+         LastBlockNumber = 0;
+         WalletAddress = wallet.Address;
+    }
+
+    public TransactionHash? LastTransactionHash { get; private set; }
 
     public BigInteger LastBlockNumber { get; private set; }
 
     public EvmAddress WalletAddress { get; private set; }
 
-    public Wallet Wallet { get; private set; }
+    public Wallet Wallet { get; private set; } = null!;
 
     public DateTime SynchronizedAt { get; set; }
 

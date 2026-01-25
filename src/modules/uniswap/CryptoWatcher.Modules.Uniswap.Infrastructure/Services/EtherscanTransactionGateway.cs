@@ -5,11 +5,11 @@ using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Etherscan.Contra
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 
-public class EtherscanTransactionSource : IWalletTransactionSource
+public class EtherscanTransactionGateway : IWalletTransactionGateway
 {
     private readonly IEtherscanApi _etherscanApi;
 
-    public EtherscanTransactionSource(IEtherscanApi etherscanApi)
+    public EtherscanTransactionGateway(IEtherscanApi etherscanApi)
     {
         _etherscanApi = etherscanApi;
     }

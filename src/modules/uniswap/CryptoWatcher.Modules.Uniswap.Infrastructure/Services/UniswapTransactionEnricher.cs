@@ -6,19 +6,19 @@ using CryptoWatcher.Modules.Uniswap.Entities;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 
-public class UniswapTransactionClassifier : IUniswapTransactionClassifier
+public class UniswapTransactionEnricher : IUniswapTransactionEnricher
 {
     private readonly IPositionOperationsSource _positionOperationsSource;
     private readonly IUniswapTransactionPreFilter _uniswapTransactionPreFilter;
 
-    public UniswapTransactionClassifier(IPositionOperationsSource positionOperationsSource,
+    public UniswapTransactionEnricher(IPositionOperationsSource positionOperationsSource,
         IUniswapTransactionPreFilter uniswapTransactionPreFilter)
     {
         _positionOperationsSource = positionOperationsSource;
         _uniswapTransactionPreFilter = uniswapTransactionPreFilter;
     }
 
-    public async Task<PositionOperationInfo?> Classify(UniswapChainConfiguration chainConfiguration,
+    public async Task<UniswapEvent?> TryEnrichAsync(UniswapChainConfiguration chainConfiguration,
         BlockchainTransaction transaction,
         CancellationToken ct = default)
     {
@@ -36,7 +36,7 @@ public class UniswapTransactionClassifier : IUniswapTransactionClassifier
             return null;
         }
 
-        return new PositionOperationInfo
+        return new UniswapEvent
         {
             Operation = operation,
             Timestamp = transaction.Timestamp

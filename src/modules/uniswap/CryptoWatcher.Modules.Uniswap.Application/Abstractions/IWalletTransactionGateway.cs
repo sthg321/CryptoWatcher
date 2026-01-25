@@ -2,7 +2,7 @@ using CryptoWatcher.Modules.Uniswap.Application.Models;
 
 namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 
-public interface IWalletTransactionSource
+public interface IWalletTransactionGateway
 {
     Task<IReadOnlyCollection<BlockchainTransaction>> GetWalletTransactionsAsync(
         EtherscanTransactionQuery etherscanTransactionQuery,

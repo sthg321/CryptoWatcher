@@ -4,8 +4,8 @@ using CryptoWatcher.Modules.Uniswap.Entities;
 
 namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 
-public interface IUniswapTransactionClassifier
+public interface IUniswapTransactionEnricher
 {
-    Task<PositionOperationInfo?> Classify(UniswapChainConfiguration chainConfiguration, BlockchainTransaction transaction,
+    Task<UniswapEvent?> TryEnrichAsync(UniswapChainConfiguration chainConfiguration, BlockchainTransaction transaction,
         CancellationToken ct = default);
 }

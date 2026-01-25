@@ -8,5 +8,7 @@ public class EtherscanTransactionHistoryItem
 
     public string FunctionName { get; set; } = null!;
 
+    public long BlockNumber { get; set; }
+    
     public string To { get; set; } = null!;
 }

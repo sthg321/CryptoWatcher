@@ -1,3 +1,4 @@
+using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions.OperationReaders;
 using CryptoWatcher.Modules.Uniswap.Application.UniswapV3.Models.Operations;
 using CryptoWatcher.Modules.Uniswap.Entities;
@@ -5,12 +6,12 @@ using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Uniswap.Application.UniswapV3.OperationReaders;
 
-public class PositionOperationOrchestrator
+public class UniswapPositionEventApplier : IUniswapPositionEventApplier
 {
     private readonly IPositionOperationApplierFactory _operationApplierFactory;
     private readonly IMintPositionOperationApplier _mintPositionOperationApplier;
 
-    public PositionOperationOrchestrator(IPositionOperationApplierFactory operationApplierFactory,
+    public UniswapPositionEventApplier(IPositionOperationApplierFactory operationApplierFactory,
         IMintPositionOperationApplier mintPositionOperationApplier)
     {
         _operationApplierFactory = operationApplierFactory;
@@ -18,21 +19,21 @@ public class PositionOperationOrchestrator
     }
 
     public async Task<UniswapLiquidityPosition> ApplyOperationToPositionAsync(
-        EvmAddress walletAddress,
         UniswapChainConfiguration chainConfiguration,
-        PositionOperationInfo operationInfo,
+        EvmAddress walletAddress,
+        UniswapEvent @event,
         UniswapLiquidityPosition? position,
         CancellationToken ct = default)
     {
-        if (operationInfo.Operation is MintPositionOperation mintPositionOperation)
+        if (@event.Operation is MintPositionOperation mintPositionOperation)
         {
             return await _mintPositionOperationApplier.CreatePositionAsync(walletAddress, mintPositionOperation,
-                chainConfiguration, operationInfo.Timestamp, ct);
+                chainConfiguration, @event.Timestamp, ct);
         }
 
-        var applier = _operationApplierFactory.GetOperationApplier(operationInfo.Operation);
+        var applier = _operationApplierFactory.GetOperationApplier(@event.Operation);
 
-        return await applier.ApplyOperationAsync(chainConfiguration, position!, operationInfo.Operation,
-            operationInfo.Timestamp, ct);
+        return await applier.ApplyOperationAsync(chainConfiguration, position!, @event.Operation,
+            @event.Timestamp, ct);
     }
 }

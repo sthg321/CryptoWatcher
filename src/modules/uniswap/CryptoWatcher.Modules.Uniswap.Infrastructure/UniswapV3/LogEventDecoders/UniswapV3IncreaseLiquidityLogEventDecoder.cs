@@ -36,6 +36,7 @@ public class UniswapV3IncreaseLiquidityLogEventDecoder : ITransactionLogEventDec
         {
             PositionId = (ulong)increaseLiquidity.Event.TokenId,
             TransactionHash = transactionReceipt.TransactionHash,
+            BlockNumber = transactionReceipt.BlockNumber,
             Token0 = new Token
             {
                 Address = EvmAddress.Create(tokenTransfers[0].Log.Address),

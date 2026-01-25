@@ -43,7 +43,8 @@ public class UniswapV3CollectLogEventDecoder : ITransactionLogEventDecoder
                 Address = EvmAddress.Create(transferEvents[0].Log.Address),
                 Balance = collectEvents.Event.Amount1
             },
-            TransactionHash = transactionReceipt.TransactionHash
+            TransactionHash = transactionReceipt.TransactionHash,
+            BlockNumber = transactionReceipt.BlockNumber
         };
     }
 }

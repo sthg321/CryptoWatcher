@@ -30,6 +30,7 @@ public class UniswapV3MintLogEventDecoder : ITransactionLogEventDecoder
         {
             PositionId = (ulong)nftTransfer.Event.TokenId,
             TransactionHash = transactionReceipt.TransactionHash,
+            BlockNumber = transactionReceipt.BlockNumber,
             TickLower = mintEvent.Event.TickLower,
             TickUpper = mintEvent.Event.TickUpper,
             Token0 = tokenTransfers[0].MapEventToToken(),
