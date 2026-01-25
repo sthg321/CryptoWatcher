@@ -27,7 +27,7 @@ public class UniswapWalletSyncOrchestrator : IUniswapWalletSyncOrchestrator
         _syncStore = syncStore;
     }
 
-    public async Task SyncWalletAsync(CancellationToken ct = default)
+    public async Task SyncWalletPositionsAsync(CancellationToken ct = default)
     {
         var wallets = await _walletRepository.ListAsync(ct);
 

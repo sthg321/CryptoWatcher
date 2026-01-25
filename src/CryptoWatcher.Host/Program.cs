@@ -64,7 +64,7 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<CryptoWatcherDbContext>();
     
-    await scope.ServiceProvider.GetRequiredService<IUniswapWalletSyncOrchestrator>().SyncWalletAsync();
+    await scope.ServiceProvider.GetRequiredService<IUniswapWalletSyncOrchestrator>().SyncWalletPositionsAsync();
 
     if (!app.Environment.IsDevelopment())
     {
