@@ -20,14 +20,9 @@ using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.StateView;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.UniswapAppApiClient;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain.Api;
-using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockscout;
-using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockscout.Api;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Etherscan;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Etherscan.Api;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
-using CryptoWatcher.Modules.Uniswap.Infrastructure.Services.EventsSynchronization;
-using CryptoWatcher.Modules.Uniswap.Infrastructure.Services.EventsSynchronization.V3;
-using CryptoWatcher.Modules.Uniswap.Infrastructure.Services.EventsSynchronization.V4;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Services.PositionsSynchronization;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.UniswapV3.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.UniswapV3.LogEventDecoders;
@@ -66,24 +61,9 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddScoped<IDailyPositionPerformanceSynchronizer, UniswapDailyPositionPerformanceSynchronizer>();
-
-        services.AddScoped<IBlockscoutTransactionSynchronizer, BlockscoutTransactionSynchronizer>();
-        services.AddSingleton<IBlockscoutTransactionFetcher, BlockscoutTransactionFetcher>();
-        services.AddScoped<IUniswapChainSynchronizerOrchestrator, UniswapChainSynchronizationOrchestrator>();
-        services.AddScoped<IUniswapChainSynchronizer, UniswapChainSynchronizer>();
-        services.AddScoped<IUniswapCashFlowBlockRangeSynchronizer, UniswapCashFlowBlockRangeSynchronizer>();
-
+        
         services.AddSingleton<IUniswapProvider, UniswapProvider>();
-        services.AddSingleton<IChainLogChunkingStrategy, ChainLogChunkingStrategy>();
-        services.AddSingleton<ICashFlowEventMatcher, CashFlowEventMatcher>();
-        services.AddSingleton<ILiquidityEventsProvider, LiquidityEventsProvider>();
-        services.AddSingleton<ITransactionDataProvider, Web3TransactionDataProvider>();
-        services.AddHttpClient<IBlockscoutProvider, BlockscoutProvider>()
-            .AddStandardResilienceHandler();
 
-        services.AddSingleton<IUniswapLiquidityPoolEventDecoderSelector, UniswapLiquidityPoolEventDecoderSelector>();
-
-        services.AddSingleton<ILiquidityEventLogEnricher, LiquidityEventLogEnricher>();
         services.AddSingleton<IWeb3Factory, Web3Factory>();
 
         services.AddScoped<IUniswapOverallReportService, UniswapOverallReportService>();
@@ -106,9 +86,6 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<IEtherscanApiKeyProvider, EtherscanApiKeyProvider>();
 
-        services.AddRefitClient<IBlockscoutApi>()
-            .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://api.etherscan.io"));
-
         services.AddSingleton<IBlockchainGateway, Web3BlockchainGateway>();
         services.AddSingleton<IWeb3BlockchainApi, Web3BlockchainApi>();
         services.AddScoped<IUniswapTransactionEventSource, UniswapTransactionEventSource>();
@@ -116,8 +93,6 @@ public static class ServiceCollectionExtensions
 
         //v3
         services.AddSingleton<UniswapV3Client>();
-        services.AddSingleton<ILiquidityPoolEventDecoder, UniswapV3CollectEventDecoder>();
-        services.AddSingleton<IBlockchainLogProvider, UniswapV3BlockchainLogProvider>();
         services.AddSingleton<IUniswapV3LiquidityPool, UniswapV3LiquidityPool>();
         services.AddSingleton<IUniswapV3PoolFactory, UniswapV3PoolFactory>();
         services.AddSingleton<IUniswapV3PositionFetcher, UniswapV3PositionFetcher>();
@@ -139,8 +114,6 @@ public static class ServiceCollectionExtensions
 
         //v4
         services.AddSingleton<UniswapV4Client>();
-        services.AddSingleton<ILiquidityPoolEventDecoder, UniswapV4ModifyLiquidityEventDecoder>();
-        services.AddSingleton<IBlockchainLogProvider, UniswapV4BlockchainLogProvider>();
         services.AddSingleton<IUniswapV4StateView, UniswapV4StateView>();
         services.AddSingleton<IUniswapV4LiquidityPool, UniswapV4LiquidityPool>();
         services.AddSingleton<IUniswapV4PositionFetcher, UniswapV4PositionFetcher>();
