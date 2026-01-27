@@ -1,4 +1,4 @@
-using CryptoWatcher.Modules.Uniswap.Application.Services.PoisitionEventsSync.UniswapV3.Models.Operations;
+using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.Models.PositionEvents;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.ValueObjects;
 
@@ -8,7 +8,7 @@ public interface IUniswapLiquidityPositionEventReducer
 {
     Task<UniswapLiquidityPosition[]> ApplyEventsAsync(UniswapChainConfiguration chainConfiguration,
         EvmAddress walletAddress,
-        IReadOnlyCollection<UniswapEvent> uniswapEvents,
+        IReadOnlyCollection<UniswapPositionEvent> uniswapEvents,
         IReadOnlyCollection<UniswapLiquidityPosition> currentPositions,
         CancellationToken ct = default);
 }

@@ -19,6 +19,7 @@
 
     <ItemGroup>
       <Folder Include="Models\UniswapV3\" />
+      <Folder Include="Services\Synchronization\PositinosPriceSync\" />
     </ItemGroup>
 
 </Project>

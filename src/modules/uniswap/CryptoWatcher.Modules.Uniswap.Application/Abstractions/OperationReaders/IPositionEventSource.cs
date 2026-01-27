@@ -2,10 +2,11 @@ using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.Positio
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.ValueObjects;
 
-namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions;
+namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions.OperationReaders;
 
-public interface IUniswapTransactionEventSource
+public interface IPositionEventSource
 {
-    Task<UniswapPositionEvent?> GetUniswapEventAsync(UniswapChainConfiguration chain, TransactionHash hash,
+    Task<PositionEvent?> GetOperationFromTransactionAsync(UniswapChainConfiguration chainConfiguration,
+        TransactionHash hash,
         CancellationToken ct = default);
 }
