@@ -1,12 +1,12 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
-using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsPriceSync.Models;
+using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsSnapshotSynchronization.Models;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Modules.Uniswap.Models;
 using CryptoWatcher.ValueObjects;
 
-namespace CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsPriceSync;
+namespace CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsSnapshotSynchronization;
 
 public class PositionEvaluator : IPositionEvaluator
 {

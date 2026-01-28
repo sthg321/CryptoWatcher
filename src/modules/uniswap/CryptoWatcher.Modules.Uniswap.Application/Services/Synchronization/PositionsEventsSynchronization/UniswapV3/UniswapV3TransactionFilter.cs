@@ -2,7 +2,7 @@ using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Models;
 using CryptoWatcher.Modules.Uniswap.Entities;
 
-namespace CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization;
+namespace CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization.UniswapV3;
 
 public class UniswapV3TransactionFilter : IUniswapTransactionFilter
 {

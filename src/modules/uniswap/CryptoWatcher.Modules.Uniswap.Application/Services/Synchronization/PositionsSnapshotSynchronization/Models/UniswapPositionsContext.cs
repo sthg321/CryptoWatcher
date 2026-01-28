@@ -1,7 +1,6 @@
 using CryptoWatcher.Modules.Uniswap.Entities;
-using CryptoWatcher.Shared.Entities;
 
-namespace CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsPriceSync.Models;
+namespace CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsSnapshotSynchronization.Models;
 
 public sealed class UniswapPositionsContext
 {
@@ -12,10 +11,9 @@ public sealed class UniswapPositionsContext
         Positions = positions;
     }
 
-    public UniswapLiquidityPosition[] ForChainAndWallet(UniswapChainConfiguration chain, Wallet wallet)
+    public UniswapLiquidityPosition[] GetPositionsForChain(UniswapChainConfiguration chain)
     {
         return Positions.Where(position =>
-                position.WalletAddress.Equals(wallet.Address) &&
                 position.NetworkName == chain.Name &&
                 position.ProtocolVersion == chain.ProtocolVersion)
             .ToArray();

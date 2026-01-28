@@ -1,13 +1,11 @@
 using CryptoWatcher.Modules.Uniswap.Entities;
-using CryptoWatcher.Shared.Entities;
 
 namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 
-public interface IPositionPriceSynchronizer
+public interface IPositionSnapshotUpdater
 {
-    IAsyncEnumerable<UniswapLiquidityPosition> SynchronizeAsync(UniswapChainConfiguration chain,
-        Wallet wallet,
+    IAsyncEnumerable<UniswapLiquidityPosition> GetUpdatedPositionsAsync(UniswapChainConfiguration chain,
         IReadOnlyCollection<UniswapLiquidityPosition> dbPositions,
-        DateOnly day,
+        DateOnly snapshotDay,
         CancellationToken ct = default);
 }

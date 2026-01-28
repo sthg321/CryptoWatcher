@@ -5,14 +5,14 @@ using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions.OperationReaders;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions.Reports;
-using CryptoWatcher.Modules.Uniswap.Application.Services;
 using CryptoWatcher.Modules.Uniswap.Application.Services.DailyPerformance;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Reports;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization;
+using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization.UniswapV3;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.Models.PositionEvents;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.PositionEventAppliers;
-using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsPriceSync;
+using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsSnapshotSynchronization;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.TransactionSynchronization;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV3.LiquidityPool;
@@ -22,7 +22,6 @@ using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.LiquidityPool;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.PositionsFetcher;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.StateView;
-using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.UniswapAppApiClient;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain.Api;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Etherscan;
@@ -66,7 +65,7 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddScoped<IDailyPositionPerformanceSynchronizer, UniswapDailyPositionPerformanceSynchronizer>();
-        
+
         services.AddSingleton<IUniswapProvider, UniswapProvider>();
 
         services.AddSingleton<IWeb3Factory, Web3Factory>();
@@ -96,10 +95,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUniswapTransactionEventSource, UniswapTransactionEventSource>();
         services.AddScoped<IUniswapSingleTransactionOrchestrator, UniswapSingleTransactionOrchestrator>();
 
-        services.AddScoped<IPositionPriceSynchronizationJob, PositionPriceSynchronizationJob>();
+        services.AddScoped<IPositionPriceSynchronizationJob, PositionSnapshotSynchronizationJob>();
         services.AddScoped<IPositionEvaluator, PositionEvaluator>();
-        services.AddScoped<IPositionPriceSynchronizer, PositionPriceSynchronizer>();
-        
+        services.AddScoped<IPositionSnapshotUpdater, PositionSnapshotUpdater>();
+
         //v3
         services.AddSingleton<UniswapV3Client>();
         services.AddSingleton<IUniswapV3LiquidityPool, UniswapV3LiquidityPool>();
@@ -126,14 +125,10 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IUniswapV4StateView, UniswapV4StateView>();
         services.AddSingleton<IUniswapV4LiquidityPool, UniswapV4LiquidityPool>();
         services.AddSingleton<IUniswapV4PositionFetcher, UniswapV4PositionFetcher>();
-        services.AddHttpClient<UniswapAppApiClient>(client =>
-            client.BaseAddress = new Uri("https://interface.gateway.uniswap.org")).AddStandardHedgingHandler();
 
         services.AddKeyedScoped<IPlatformDailyReportDataProvider, UniswapDailyReportService>(UniswapModuleKeyedService
             .DailyPlatformKeyService);
         services.AddSingleton<IUniswapMath, UniswapMath>();
-        services.AddScoped<IUniswapPositionsSyncService, UniswapPositionsSyncService>();
-
 
         return services;
     }

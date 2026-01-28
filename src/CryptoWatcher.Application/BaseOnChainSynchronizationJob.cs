@@ -1,0 +1,76 @@
+using CryptoWatcher.Abstractions;
+using CryptoWatcher.Shared.Entities;
+using Microsoft.Extensions.Logging;
+
+namespace CryptoWatcher.Application;
+
+public abstract class BaseOnChainSynchronizationJob<TChainConfiguration, TContext>
+    where TChainConfiguration : BaseChainConfiguration
+{
+    // ReSharper disable once StaticMemberInGenericType
+    // field for each inheritor
+    private static int _isRunning;
+
+    private readonly IRepository<Wallet> _walletRepository;
+    private readonly IRepository<TChainConfiguration> _chainRepository;
+    private readonly ILogger _logger;
+
+    protected BaseOnChainSynchronizationJob(IRepository<Wallet> walletRepository,
+        IRepository<TChainConfiguration> chainRepository, ILogger logger)
+    {
+        _walletRepository = walletRepository;
+        _chainRepository = chainRepository;
+        _logger = logger;
+    }
+
+    public async Task SynchronizeAsync(CancellationToken ct = default)
+    {
+        var chainSyncName = typeof(TChainConfiguration).Name;
+
+        if (Interlocked.CompareExchange(ref _isRunning, 1, 0) == 1)
+        {
+            _logger.LogWarning("Synchronization for {ChainConfiguration} is already in progress", chainSyncName);
+            return;
+        }
+
+        _logger.LogInformation("Starting synchronization for {ChainConfiguration}", chainSyncName);
+
+        try
+        {
+            var wallets = await _walletRepository.ListAsync(ct);
+
+            var chains = await _chainRepository.ListAsync(ct);
+
+            var context = await CreateContextAsync(ct);
+
+            foreach (var wallet in wallets)
+            {
+                using var _ = _logger.BeginScope("Wallet: {Wallet}", wallet.Address);
+
+                _logger.LogInformation("Start synchronizing wallet");
+                
+                foreach (var chain in chains)
+                {
+                    using var __ = _logger.BeginScope("Chain: {ChainName}", chain.Name);
+                 
+                    _logger.LogInformation("Start synchronizing chain");
+                    
+                    await SynchronizeWalletOnChainAsync(chain, wallet, context, ct);
+
+                    _logger.LogInformation("Synchronization completed for chain");
+                }
+                
+                _logger.LogInformation("Synchronization completed for wallet");
+            }
+        }
+        finally
+        {
+            _isRunning = 0;
+        }
+    }
+
+    protected abstract Task<TContext> CreateContextAsync(CancellationToken ct);
+
+    protected abstract Task SynchronizeWalletOnChainAsync(TChainConfiguration chain, Wallet wallet, TContext context,
+        CancellationToken ct);
+}

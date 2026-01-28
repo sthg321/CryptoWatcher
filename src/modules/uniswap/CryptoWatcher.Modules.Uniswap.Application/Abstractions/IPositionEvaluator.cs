@@ -1,5 +1,5 @@
 using CryptoWatcher.Modules.Uniswap.Abstractions;
-using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsPriceSync.Models;
+using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsSnapshotSynchronization.Models;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Modules.Uniswap.Models;
 

@@ -4,7 +4,6 @@ using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.PositionsFetcher.Contracts;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.StateView;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain;
-using CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
 using Nethereum.Web3;
 using Polly;
 using Polly.Retry;
@@ -14,12 +13,11 @@ namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Client.UniswapV4.Position
 internal interface IUniswapV4PositionFetcher
 {
     Task<List<IUniswapPosition>> GetPositionsDataAsync(UniswapChainConfiguration chain,
-        string walletAddress);
+        IReadOnlyCollection<ulong> tokenIds);
 }
 
 internal class UniswapV4PositionFetcher : IUniswapV4PositionFetcher
 {
-    private readonly UniswapAppApiClient.UniswapAppApiClient _apiClient;
     private readonly IUniswapV4StateView _stateView;
     private readonly IWeb3Factory _web3Factory;
 
@@ -27,33 +25,26 @@ internal class UniswapV4PositionFetcher : IUniswapV4PositionFetcher
         Policy.Handle<HttpRequestException>(exception => exception.StatusCode == HttpStatusCode.RequestTimeout)
             .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
-    public UniswapV4PositionFetcher(UniswapAppApiClient.UniswapAppApiClient apiClient, IUniswapV4StateView stateView,
-        IWeb3Factory web3Factory)
+    public UniswapV4PositionFetcher(IUniswapV4StateView stateView, IWeb3Factory web3Factory)
     {
-        _apiClient = apiClient;
         _stateView = stateView;
         _web3Factory = web3Factory;
     }
 
     public async Task<List<IUniswapPosition>> GetPositionsDataAsync(UniswapChainConfiguration chain,
-        string walletAddress)
+        IReadOnlyCollection<ulong> tokenIds)
     {
         var web3 = _web3Factory.GetWeb3(chain);
-        var tokenIds = await _apiClient.GetPoolPositionTokenIdsAsync(walletAddress);
 
-        if (!tokenIds.TryGetValue(chain.ChainId, out var tokenIdsForChain))
-        {
-            return [];
-        }
-
-        return await GetPositionsDataAsync(web3, chain, tokenIdsForChain);
+        return await GetPositionsDataAsync(web3, chain, tokenIds);
     }
 
     private async Task<List<IUniswapPosition>> GetPositionsDataAsync(IWeb3 web3,
         UniswapChainConfiguration chain,
         IReadOnlyCollection<ulong> tokenIds)
     {
-        var result = new List<IUniswapPosition>();
+        var result = new List<IUniswapPosition>(tokenIds.Count);
+
         foreach (var tokenId in tokenIds)
         {
             var contract =

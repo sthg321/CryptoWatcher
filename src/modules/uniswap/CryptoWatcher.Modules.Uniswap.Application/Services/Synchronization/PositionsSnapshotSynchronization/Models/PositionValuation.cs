@@ -1,6 +1,6 @@
 using CryptoWatcher.ValueObjects;
 
-namespace CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsPriceSync.Models;
+namespace CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsSnapshotSynchronization.Models;
 
 public class PositionValuation
 {

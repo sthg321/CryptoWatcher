@@ -27,14 +27,14 @@ internal class UniswapProvider : IUniswapProvider
     }
 
     public async Task<List<IUniswapPosition>> GetPositionsAsync(UniswapChainConfiguration chainConfiguration,
-        Wallet wallet)
+        List<ulong> tokenIds)
     {
         return chainConfiguration.ProtocolVersion switch
         {
             UniswapProtocolVersion.V3 => await _uniswapV3Client.PositionFetcher.GetPositionsDataAsync(
-                chainConfiguration, wallet.Address),
+                chainConfiguration, tokenIds),
             UniswapProtocolVersion.V4 => await _uniswapV4Client.PositionFetcher.GetPositionsDataAsync(
-                chainConfiguration, wallet.Address),
+                chainConfiguration, tokenIds),
             _ => throw new ArgumentOutOfRangeException(nameof(chainConfiguration))
         };
     }

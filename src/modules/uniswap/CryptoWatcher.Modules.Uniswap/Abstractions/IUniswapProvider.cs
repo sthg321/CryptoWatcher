@@ -13,9 +13,10 @@ public interface IUniswapProvider
     /// Retrieves a list of Uniswap positions associated with the specified network and wallet.
     /// </summary>
     /// <param name="chainConfiguration">The Uniswap network to query for positions.</param>
-    /// <param name="wallet">The wallet containing the positions to be retrieved.</param>
+    /// <param name="tokenIds">Nft ids</param>
     /// <returns>A task representing the asynchronous operation. The task result contains a list of Uniswap positions associated with the specified network and wallet.</returns>
-    Task<List<IUniswapPosition>> GetPositionsAsync(UniswapChainConfiguration chainConfiguration, Wallet wallet);
+    Task<List<IUniswapPosition>> GetPositionsAsync(UniswapChainConfiguration chainConfiguration,
+        List<ulong> tokenIds);
 
     /// <summary>
     /// Retrieves the liquidity pool associated with the specified Uniswap network and position.
