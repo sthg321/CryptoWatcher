@@ -15,11 +15,13 @@ public class UniswapWalletSyncOrchestrator : BaseOnChainSynchronizationJobWithou
     private readonly IUniswapWalletSyncStore _syncStore;
     private readonly IRepository<UniswapSynchronizationState> _stateRepository;
 
-    public UniswapWalletSyncOrchestrator(IRepository<Wallet> walletRepository,
-        IRepository<UniswapChainConfiguration> chainRepository, ILogger logger,
-        IUniswapWalletEventSynchronizer synchronizer, IUniswapWalletSyncStore syncStore,
-        IRepository<UniswapSynchronizationState> stateRepository) : base(walletRepository,
-        chainRepository, logger)
+    public UniswapWalletSyncOrchestrator(
+        IRepository<Wallet> walletRepository,
+        IRepository<UniswapChainConfiguration> chainRepository,
+        ILogger<UniswapWalletSyncOrchestrator> logger,
+        IUniswapWalletEventSynchronizer synchronizer, 
+        IUniswapWalletSyncStore syncStore,
+        IRepository<UniswapSynchronizationState> stateRepository) : base(walletRepository, chainRepository, logger)
     {
         _synchronizer = synchronizer;
         _syncStore = syncStore;
