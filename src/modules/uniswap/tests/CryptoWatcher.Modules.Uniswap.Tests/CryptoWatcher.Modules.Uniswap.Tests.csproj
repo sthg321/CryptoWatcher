@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <OutputType>Exe</OutputType>
         <RootNamespace>CryptoWatcher.Modules.Uniswap.Tests</RootNamespace>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <!--
         To enable the Microsoft Testing Platform 'dotnet test' experience, add property:
           <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
@@ -29,10 +29,13 @@
     <ItemGroup>
         <PackageReference Include="Bogus" Version="35.6.5" />
         <PackageReference Include="JetBrains.Annotations" Version="2025.2.2" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
         <PackageReference Include="Shouldly" Version="4.3.0" />
-        <PackageReference Include="xunit.v3" Version="3.0.0"/>
-        <PackageReference Include="xunit.runner.visualstudio" Version="3.1.2"/>
+        <PackageReference Include="xunit.v3" Version="3.2.2" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
