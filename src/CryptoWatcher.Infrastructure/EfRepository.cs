@@ -71,19 +71,19 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
         _dbContext = dbContext;
         UnitOfWork = unitOfWork;
     }
- 
+
     public async Task BulkMergeAsync(IList<TEntity> entities, CancellationToken ct)
     {
         if (entities.Count == 0)
         {
             return;
         }
-        
+
         await _dbContext.BulkMergeAsync(entities, operation =>
         {
+            operation.IncludeGraph = true;
             operation.ColumnPrimaryKeyNames = Type2PrimaryKeyFields.GetValueOrDefault(typeof(TEntity));
         }, ct);
-    
     }
 
     public TEntity Insert(TEntity entity)
