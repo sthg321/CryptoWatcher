@@ -7,8 +7,12 @@ public class UniswapLiquidityPositionFullAggregate : Specification<UniswapLiquid
 {
     public UniswapLiquidityPositionFullAggregate(bool includeClosed = false)
     {
+        if (!includeClosed)
+        {
+            Query.Where(position => position.ClosedAt == null);
+        }
+        
         Query
-            .Where(position => position.IsClosed == includeClosed)
             .Include(position => position.Snapshots)
             .Include(position => position.CashFlows);
     }
