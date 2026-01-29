@@ -17,15 +17,18 @@ public class PositionSnapshotSynchronizationJob :
     private readonly IRepository<UniswapLiquidityPosition> _positionsRepository;
     private readonly IPositionSnapshotUpdater _positionSnapshotUpdater;
     private readonly ILogger<PositionSnapshotSynchronizationJob> _logger;
+    private readonly TimeProvider _timeProvider;
 
     public PositionSnapshotSynchronizationJob(IRepository<Wallet> walletRepository,
         IRepository<UniswapChainConfiguration> chainRepository,
         IRepository<UniswapLiquidityPosition> positionsRepository,
         IPositionSnapshotUpdater positionSnapshotUpdater,
+        TimeProvider timeProvider,
         ILogger<PositionSnapshotSynchronizationJob> logger) : base(walletRepository, chainRepository, logger)
     {
         _positionsRepository = positionsRepository;
         _positionSnapshotUpdater = positionSnapshotUpdater;
+        _timeProvider = timeProvider;
         _logger = logger;
     }
 
@@ -50,7 +53,7 @@ public class PositionSnapshotSynchronizationJob :
             return;
         }
 
-        var day = DateOnly.FromDateTime(DateTime.UtcNow);
+        var day = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
 
         var updatedPositions = _positionSnapshotUpdater.GetUpdatedPositionsAsync(chain, existedChainPositions, day, ct);
 
