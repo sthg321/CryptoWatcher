@@ -2,7 +2,7 @@ using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.Positio
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.ValueObjects;
 
-namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions.OperationReaders;
+namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions.EventAppliers;
 
 public interface IPositionMintEventApplier
 {

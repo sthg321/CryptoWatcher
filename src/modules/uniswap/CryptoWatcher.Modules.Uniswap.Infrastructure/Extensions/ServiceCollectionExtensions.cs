@@ -3,7 +3,7 @@ using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
-using CryptoWatcher.Modules.Uniswap.Application.Abstractions.OperationReaders;
+using CryptoWatcher.Modules.Uniswap.Application.Abstractions.EventAppliers;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions.Reports;
 using CryptoWatcher.Modules.Uniswap.Application.Services.DailyPerformance;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Reports;

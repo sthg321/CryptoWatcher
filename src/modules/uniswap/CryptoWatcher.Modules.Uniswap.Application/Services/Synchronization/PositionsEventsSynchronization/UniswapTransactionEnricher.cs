@@ -1,5 +1,4 @@
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
-using CryptoWatcher.Modules.Uniswap.Application.Abstractions.OperationReaders;
 using CryptoWatcher.Modules.Uniswap.Application.Models;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.Models.PositionEvents;
 using CryptoWatcher.Modules.Uniswap.Entities;
@@ -27,18 +26,18 @@ public class UniswapTransactionEnricher : IUniswapTransactionEnricher
             return null;
         }
 
-        var operation =
-            await _positionEventSource.GetOperationFromTransactionAsync(chainConfiguration, transaction.Hash, ct);
+        var uniswapEvent =
+            await _positionEventSource.GetEventFromTransactionAsync(chainConfiguration, transaction.Hash, ct);
 
         // for case when multicall is not a liquidity operation
-        if (operation is null)
+        if (uniswapEvent is null)
         {
             return null;
         }
 
         return new UniswapPositionEvent
         {
-            Event = operation,
+            Event = uniswapEvent,
             Timestamp = transaction.Timestamp
         };
     }

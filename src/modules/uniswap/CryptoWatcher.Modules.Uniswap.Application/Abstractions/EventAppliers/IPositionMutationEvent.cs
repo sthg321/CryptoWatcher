@@ -1,7 +1,7 @@
 using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.Models.PositionEvents;
 using CryptoWatcher.Modules.Uniswap.Entities;
 
-namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions.OperationReaders;
+namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions.EventAppliers;
 
 public interface IPositionMutationEvent
 {
