@@ -12,12 +12,13 @@ namespace CryptoWatcher.Host.Extensions;
 
 public static class DatabaseExtensions
 {
-    public static void AddConfiguredDatabase(this IServiceCollection services, string connectionString)
+    public static void AddConfiguredDatabase(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<CryptoWatcherDbContext>());
+        
         services.AddDbContext<CryptoWatcherDbContext>(optionsBuilder =>
         {
-            optionsBuilder.UseNpgsql(connectionString);
+            optionsBuilder.UseNpgsql(configuration.GetConnectionString("Postgres"));
             optionsBuilder.UseProjectables();
             optionsBuilder.UseSeeding((context, _) =>
             {

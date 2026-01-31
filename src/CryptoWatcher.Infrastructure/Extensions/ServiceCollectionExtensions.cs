@@ -23,8 +23,6 @@ using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.Extensions;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Merkl.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Morpho.Infrastructure.Extensions;
-using CryptoWatcher.Modules.Uniswap.Abstractions;
-using CryptoWatcher.Modules.Uniswap.Application.Services;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

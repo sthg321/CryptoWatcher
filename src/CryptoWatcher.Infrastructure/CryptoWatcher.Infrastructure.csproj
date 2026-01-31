@@ -10,13 +10,18 @@
         <PackageReference Include="Ardalis.SmartEnum.EFCore" Version="8.2.0" />
         <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="9.3.1" />
         <PackageReference Include="EntityFrameworkCore.Projectables" Version="5.0.1" />
+        <PackageReference Include="Hangfire.Core" Version="1.8.22" />
+        <PackageReference Include="Hangfire.PostgreSql" Version="1.20.13" />
+        <PackageReference Include="Hangfire.RecurringJobExtensions" Version="1.1.6" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
         <PackageReference Include="Riok.Mapperly" Version="4.3.1" />
         <PackageReference Include="SpreadCheetah" Version="1.25.0" />
         <PackageReference Include="Telegram.Bot" Version="22.8.1" />
-        <PackageReference Include="TickerQ.EntityFrameworkCore" Version="2.5.3" />
-        <PackageReference Include="TickerQ" Version="2.5.3" />
         <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="10.105.2.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>

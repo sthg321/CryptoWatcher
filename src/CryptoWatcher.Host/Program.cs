@@ -6,6 +6,7 @@ using CryptoWatcher.Application.Abstractions;
 using CryptoWatcher.Host.Extensions;
 using CryptoWatcher.Infrastructure;
 using CryptoWatcher.Infrastructure.Configs;
+using CryptoWatcher.Infrastructure.CronJobs.Aave;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports;
 using CryptoWatcher.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Hyperliquid.Application.Abstractions;
@@ -13,13 +14,13 @@ using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.ValueObjects;
+using Hangfire;
+using Hangfire.PostgreSql;
+using Hangfire.RecurringJobExtensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using TickerQ.Dashboard.DependencyInjection;
-using TickerQ.DependencyInjection;
-using TickerQ.EntityFrameworkCore.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,21 +30,11 @@ builder.Services.Configure<ExternalServicesConfig>(builder.Configuration.GetSect
 
 builder.Services.AddSingleton(provider => provider.GetRequiredService<IOptions<ExternalServicesConfig>>().Value);
 
-builder.Services.AddConfiguredDatabase(builder.Configuration.GetConnectionString("Postgres")!);
+builder.Services.AddConfiguredDatabase(builder.Configuration);
 
 builder.Services
     .AddStackExchangeRedisCache(options => options.Configuration = builder.Configuration.GetConnectionString("Redis"))
     .AddHybridCache();
-
-builder.Services.AddTickerQ(optionsBuilder =>
-{
-    optionsBuilder.SetInstanceIdentifier("CryptoWatcher");
-    optionsBuilder.AddDashboard();
-    optionsBuilder.AddOperationalStore<CryptoWatcherDbContext>(optionBuilder =>
-    {
-        optionBuilder.UseModelCustomizerForMigrations();
-    });
-});
 
 builder.Services.AddInfrastructure();
 builder.Services.AddTelegram(builder.Configuration);
@@ -54,6 +45,16 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     options.SerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;
 });
+
+builder.Services.AddHangfire(configuration => configuration
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UsePostgreSqlStorage(options =>
+        options.UseNpgsqlConnection(builder.Configuration.GetConnectionString("Hangfire")))
+    .UseRecurringJob(typeof(SyncAavePositionsCronJob).Assembly.GetRecurringJobs));
+
+builder.Services.AddHangfireServer();
 
 builder.Services.AddEndpointsApiExplorer().AddSwaggerGen();
 
@@ -72,7 +73,7 @@ using (var scope = app.Services.CreateScope())
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseTickerQ();
+app.MapHangfireDashboardWithNoAuthorizationFilters();
 
 async Task<FileStreamHttpResult> Handler(IPlatformDailyReportFacade reportFacade,
     IRepository<Wallet> walletRepository,

@@ -2,7 +2,7 @@ using CryptoWatcher.Abstractions;
 using CryptoWatcher.Modules.Hyperliquid.Application.Abstractions;
 using CryptoWatcher.Shared.Entities;
 using Microsoft.Extensions.Logging;
-using TickerQ.Utilities.Base;
+using Hangfire.RecurringJobExtensions;
 
 namespace CryptoWatcher.Infrastructure.CronJobs.Hyperliquid;
 
@@ -20,7 +20,7 @@ public class SyncHyperliquidPositionsCronJob
         _logger = logger;
     }
 
-    [TickerFunction(nameof(SyncHyperliquidPositionsAsync), "0,50 * * * *")]
+    [RecurringJob(CronRegistry.Every50Minutes, RecurringJobId = nameof(SyncHyperliquidPositionsAsync))]
     public async Task SyncHyperliquidPositionsAsync(CancellationToken ct)
     {
         using var scope = _logger.BeginScope("Syncing {SynchronizationPlatform} positions", "Hyperliquid");

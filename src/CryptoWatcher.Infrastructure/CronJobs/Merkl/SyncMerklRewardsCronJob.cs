@@ -2,7 +2,7 @@ using CryptoWatcher.Abstractions;
 using CryptoWatcher.Modules.Merkl.Application.Abstractions;
 using CryptoWatcher.Shared.Entities;
 using Microsoft.Extensions.Logging;
-using TickerQ.Utilities.Base;
+using Hangfire.RecurringJobExtensions;
 
 namespace CryptoWatcher.Infrastructure.CronJobs.Merkl;
 
@@ -21,7 +21,7 @@ public class SyncMerklRewardsCronJob
         _logger = logger;
     }
 
-    [TickerFunction(nameof(SyncMerklRewardsAsync), CronRegistry.Every50Minutes)]
+    [RecurringJob(CronRegistry.Every50Minutes, RecurringJobId = nameof(SyncMerklRewardsAsync))]
     public async Task SyncMerklRewardsAsync(CancellationToken ct)
     {
         if (Interlocked.CompareExchange(ref _isRunning, 1, 0) == 1)

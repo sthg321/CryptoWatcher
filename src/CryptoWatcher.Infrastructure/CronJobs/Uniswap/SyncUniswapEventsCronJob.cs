@@ -1,5 +1,5 @@
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
-using TickerQ.Utilities.Base;
+using Hangfire.RecurringJobExtensions;
 
 namespace CryptoWatcher.Infrastructure.CronJobs.Uniswap;
 
@@ -12,7 +12,7 @@ public class SyncUniswapEventsCronJob
         _chainSynchronizerJob = chainSynchronizerJob;
     }
 
-    [TickerFunction(nameof(SyncUniswapEventsAsync), "* * * * *")]
+    [RecurringJob(CronRegistry.EveryMinute, RecurringJobId = nameof(SyncUniswapEventsAsync))]
     public async Task SyncUniswapEventsAsync()
     {
         await _chainSynchronizerJob.SynchronizeAsync();

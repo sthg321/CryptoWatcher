@@ -1,14 +1,13 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Modules.Aave.Application.Abstractions;
 using CryptoWatcher.Modules.Aave.Entities;
-using CryptoWatcher.Modules.Aave.Models;
 using CryptoWatcher.Shared.Entities;
 using Microsoft.Extensions.Logging;
-using TickerQ.Utilities.Base;
+using Hangfire.RecurringJobExtensions;
 
 namespace CryptoWatcher.Infrastructure.CronJobs.Aave;
 
-internal class SyncAavePositionsCronJob
+public class SyncAavePositionsCronJob
 {
     private readonly IAavePositionsSyncService _positionsSyncService;
     private readonly IRepository<Wallet> _walletRepository;
@@ -24,7 +23,7 @@ internal class SyncAavePositionsCronJob
         _aaveNetworkRepository = aaveNetworkRepository;
     }
 
-    [TickerFunction(nameof(SyncAavePositionsAsync), CronRegistry.Every50Minutes)]
+    [RecurringJob(CronRegistry.Every50Minutes, RecurringJobId = nameof(SyncAavePositionsAsync))]
     public async Task SyncAavePositionsAsync(CancellationToken ct = default)
     {
         _logger.SynchronizationStarted();

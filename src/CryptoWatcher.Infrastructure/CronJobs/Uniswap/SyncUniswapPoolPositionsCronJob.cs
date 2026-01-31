@@ -1,9 +1,9 @@
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
-using TickerQ.Utilities.Base;
+using Hangfire.RecurringJobExtensions;
 
 namespace CryptoWatcher.Infrastructure.CronJobs.Uniswap;
 
-internal class SyncUniswapPoolPositionsCronJob
+public class SyncUniswapPoolPositionsCronJob
 {
     private readonly IPositionPriceSynchronizationJob _positionsSyncService;
 
@@ -11,8 +11,8 @@ internal class SyncUniswapPoolPositionsCronJob
     {
         _positionsSyncService = positionsSyncService;
     }
-
-    [TickerFunction(nameof(SyncUniswapPoolPositionsAsync), CronRegistry.Every50Minutes)]
+    
+    [RecurringJob(CronRegistry.Every50Minutes, RecurringJobId = nameof(SyncUniswapPoolPositionsAsync))]
     public async Task SyncUniswapPoolPositionsAsync(CancellationToken ct)
     {
         await _positionsSyncService.SynchronizeAsync(ct);

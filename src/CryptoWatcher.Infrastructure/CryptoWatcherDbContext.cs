@@ -8,7 +8,6 @@ using CryptoWatcher.Modules.Merkl.Entities;
 using CryptoWatcher.Modules.Morpho.Entities;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
-using CryptoWatcher.Shared.ValueObjects;
 using CryptoWatcher.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;

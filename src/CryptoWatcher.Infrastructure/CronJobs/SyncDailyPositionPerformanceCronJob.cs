@@ -1,5 +1,5 @@
 using CryptoWatcher.Application.Abstractions;
-using TickerQ.Utilities.Base;
+using Hangfire.RecurringJobExtensions;
 
 namespace CryptoWatcher.Infrastructure.CronJobs;
 
@@ -13,8 +13,8 @@ public class SyncDailyPositionPerformanceCronJob
     {
         _dailyPositionPerformanceCoordinator = dailyPositionPerformanceCoordinator;
     }
-    
-    [TickerFunction(nameof(SyncDailyPositionPerformanceAsync), "* * * * *")]
+
+    [RecurringJob(CronRegistry.EveryMinute, RecurringJobId = nameof(SyncDailyPositionPerformanceAsync))]
     public async Task SyncDailyPositionPerformanceAsync(CancellationToken ct = default)
     {
         if (Interlocked.CompareExchange(ref _isRunning, 1, 0) == 1)
