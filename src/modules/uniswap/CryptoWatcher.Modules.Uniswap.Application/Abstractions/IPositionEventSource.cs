@@ -1,3 +1,4 @@
+using System.Numerics;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.Models.PositionEvents;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.ValueObjects;
@@ -9,4 +10,6 @@ public interface IPositionEventSource
     Task<PositionEvent?> GetEventFromTransactionAsync(UniswapChainConfiguration chainConfiguration,
         TransactionHash hash,
         CancellationToken ct = default);
+
+    Task<BigInteger> GetPositionLiquidityAsync(UniswapChainConfiguration chain, BigInteger tokenId);
 }

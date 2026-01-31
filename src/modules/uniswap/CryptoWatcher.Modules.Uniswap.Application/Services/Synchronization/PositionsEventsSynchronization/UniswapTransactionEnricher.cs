@@ -34,6 +34,15 @@ public class UniswapTransactionEnricher : IUniswapTransactionEnricher
         {
             return null;
         }
+        
+        if (uniswapEvent is DecreaseLiquidityEvent decrease)
+        {
+            var liquidityAfter = await _positionEventSource.GetPositionLiquidityAsync(
+                chainConfiguration,
+                decrease.PositionId);
+
+            decrease.IsPositionClosed = liquidityAfter == 0;
+        }
 
         return new UniswapPositionEvent
         {
