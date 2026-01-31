@@ -214,8 +214,9 @@ public class
             throw new DomainException(PositionClosedException);
         }
 
-        var existedSnapshot = _cashFlows.FirstOrDefault(snapshot => snapshot.Date == date);
-        if (existedSnapshot is null)
+        var existedCashFlow = _cashFlows.FirstOrDefault(flow => flow.Event == cashFlowEvent &&
+                                                                flow.Date == date);
+        if (existedCashFlow is null)
         {
             var cashFlow = new UniswapLiquidityPositionCashFlow(PositionId, NetworkName, date, cashFlowEvent,
                 transactionHash, infoPair);
@@ -223,7 +224,7 @@ public class
             return cashFlow;
         }
 
-        return existedSnapshot;
+        return existedCashFlow;
     }
 
     public void ClosePosition(DateOnly closedAt)
