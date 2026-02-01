@@ -8,5 +8,5 @@ public class DecreaseLiquidityEvent : PositionEvent
     
     public BigInteger Commission1 { get; init; }
 
-    public bool IsPositionClosed { get; init; }
+    public bool IsPositionClosed { get; set; }
 }

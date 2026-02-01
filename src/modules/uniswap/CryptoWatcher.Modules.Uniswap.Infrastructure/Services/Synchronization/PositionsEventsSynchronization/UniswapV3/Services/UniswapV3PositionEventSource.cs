@@ -1,12 +1,15 @@
+using System.Numerics;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
-using CryptoWatcher.Modules.Uniswap.Application.Abstractions.EventAppliers;
-using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.Models.PositionEvents;
+using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.Models
+    .PositionEvents;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain.Api;
-using CryptoWatcher.Modules.Uniswap.Infrastructure.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.Abstractions;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.
+    Abstractions;
 using CryptoWatcher.ValueObjects;
 
-namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.Services;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services.Synchronization.PositionsEventsSynchronization.UniswapV3
+    .Services;
 
 public class UniswapV3PositionEventSource : IPositionEventSource
 {
@@ -32,5 +35,10 @@ public class UniswapV3PositionEventSource : IPositionEventSource
         ct.ThrowIfCancellationRequested();
 
         return _decoderFactory.DecodeEventFromTransaction(transactionReceipt);
+    }
+
+    public async Task<BigInteger> GetPositionLiquidityAsync(UniswapChainConfiguration chain, BigInteger tokenId)
+    {
+        return await _blockchainApi.GetPositionLiquidityAsync(chain, tokenId);
     }
 }

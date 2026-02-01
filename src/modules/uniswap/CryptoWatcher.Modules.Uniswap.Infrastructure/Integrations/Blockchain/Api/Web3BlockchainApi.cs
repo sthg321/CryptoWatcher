@@ -1,8 +1,9 @@
 using System.Numerics;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain.UniswapV3.LiquidityPool.Contracts;
-using CryptoWatcher.Modules.Uniswap.Infrastructure.Services;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain.UniswapV3.PositionsFetcher.Contracts;
 using CryptoWatcher.ValueObjects;
+using Nethereum.Hex.HexTypes;
 using Nethereum.RPC.Eth.DTOs;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain.Api;
@@ -14,8 +15,7 @@ public interface IWeb3BlockchainApi
 
     Task<DateTime> GetTransactionTimestampAsync(UniswapChainConfiguration chain, BigInteger blockNumber);
 
-    Task<BigInteger> GetHistoricalSlot0(UniswapChainConfiguration chain, EvmAddress poolAddress,
-        BigInteger blockNumber);
+    Task<BigInteger> GetPositionLiquidityAsync(UniswapChainConfiguration chain, BigInteger tokenId);
 }
 
 public class Web3BlockchainApi : IWeb3BlockchainApi
@@ -39,9 +39,29 @@ public class Web3BlockchainApi : IWeb3BlockchainApi
     {
         var web3 = _web3Factory.GetWeb3(chain);
 
-        var result = await web3.Eth.Blocks.GetBlockTransactionCountByNumber.SendRequestAsync(blockNumber);
+        var result = await web3.Eth.Blocks.GetBlockWithTransactionsByNumber.SendRequestAsync(
+                new BlockParameter(blockNumber.ToHexBigInteger()));
 
-        return DateTimeOffset.FromUnixTimeMilliseconds((long)result.Value).UtcDateTime;
+        return DateTimeOffset.FromUnixTimeSeconds((long)result.Timestamp.Value).UtcDateTime;
+    }
+
+    public async Task<BigInteger> GetPositionLiquidityAsync(UniswapChainConfiguration chain, BigInteger tokenId)
+    {
+        var web3 = _web3Factory.GetWeb3(chain);
+
+        var handler = web3.Eth
+            .GetContractQueryHandler<PositionsFunction>();
+
+        var function = new PositionsFunction
+        {
+            TokenId = tokenId
+        };
+
+        var result = await handler.QueryDeserializingToObjectAsync<PositionsOutputDTO>(
+            function,
+            chain.SmartContractAddresses.PositionManager);
+
+        return result.Liquidity;
     }
 
     public async Task<BigInteger> GetHistoricalSlot0(UniswapChainConfiguration chain, EvmAddress poolAddress,
@@ -75,7 +95,7 @@ public class Web3BlockchainApi : IWeb3BlockchainApi
         var slot0Function = contract.GetFunction("slot0");
 
         var blockParameter = new BlockParameter(
-            new Nethereum.Hex.HexTypes.HexBigInteger(blockNumber)
+            new HexBigInteger(blockNumber)
         );
 
         // slot0 возвращает tuple — читаем всё, но используем только sqrtPriceX96
@@ -83,7 +103,5 @@ public class Web3BlockchainApi : IWeb3BlockchainApi
             .CallDeserializingToObjectAsync<Slot0OutputDto>(blockParameter);
 
         return result.SqrtPriceX96;
-        
-        
     }
 }

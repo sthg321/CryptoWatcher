@@ -6,7 +6,8 @@ using Nethereum.Contracts;
 using Nethereum.Contracts.Standards.ERC20.ContractDefinition;
 using Nethereum.RPC.Eth.DTOs;
 
-namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.LogEventDecoders;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Services.Synchronization.PositionsEventsSynchronization.UniswapV3
+    .LogEventDecoders;
 
 public class UniswapV3DecreaseLiquidityLogEventDecoder : ITransactionLogEventDecoder
 {
@@ -25,14 +26,14 @@ public class UniswapV3DecreaseLiquidityLogEventDecoder : ITransactionLogEventDec
 
         var (token0, token1) =
             tokenTransfers.MapEventToTokens(decreaseEvent.Event.Amount0, decreaseEvent.Event.Amount1);
-        
+
         return new DecreaseLiquidityEvent
         {
             PositionId = (ulong)decreaseEvent.Event.TokenId,
             Token0 = token0,
             Token1 = token1,
-            Commission0 = collectEvents.Event.Amount0,
-            Commission1 = collectEvents.Event.Amount1,
+            Commission0 = collectEvents.Event.Amount0 != 0 ? collectEvents.Event.Amount0 - token1.Balance : 0,
+            Commission1 = collectEvents.Event.Amount1 != 0 ? collectEvents.Event.Amount1 - token1.Balance : 0,
             TransactionHash = transactionReceipt.TransactionHash,
             BlockNumber = transactionReceipt.BlockNumber,
             IsPositionClosed = decreaseEvent.Event.Amount0 == 0

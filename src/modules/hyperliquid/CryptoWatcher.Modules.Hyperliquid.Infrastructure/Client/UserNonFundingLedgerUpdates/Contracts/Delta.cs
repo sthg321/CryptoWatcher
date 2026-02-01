@@ -5,4 +5,4 @@ namespace CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.UserNonFunding
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type", IgnoreUnrecognizedTypeDiscriminators = true)]
 [JsonDerivedType(typeof(VaultDeposit), "vaultDeposit")]
 [JsonDerivedType(typeof(VaultWithdraw), "vaultWithdraw")]
-public record Delta(string Type);
+public record Delta;
