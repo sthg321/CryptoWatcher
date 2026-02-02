@@ -1,4 +1,4 @@
-namespace CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.UserVaultEquities.Contracts;
+namespace CryptoWatcher.Modules.Hyperliquid.Infrastructure.Integrations.Hyperliquid.Contracts.UserVaultEquities;
 
 /// <summary>
 /// Represents a vault equity.

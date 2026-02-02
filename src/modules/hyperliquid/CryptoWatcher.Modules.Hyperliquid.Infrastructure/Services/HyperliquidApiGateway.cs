@@ -1,31 +1,33 @@
 using CryptoWatcher.Abstractions.CacheFlows;
-using CryptoWatcher.Extensions;
 using CryptoWatcher.Modules.Hyperliquid.Application.Abstractions;
 using CryptoWatcher.Modules.Hyperliquid.Application.Models;
 using CryptoWatcher.Modules.Hyperliquid.Entities;
-using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client;
-using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.UserNonFundingLedgerUpdates.Contracts;
+using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Integrations.Hyperliquid.Api;
+using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Integrations.Hyperliquid.Contracts.UserNonFundingLedgerUpdates;
+using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Integrations.Hyperliquid.Contracts.UserVaultEquities;
 using CryptoWatcher.Shared.Entities;
-using CryptoWatcher.Shared.ValueObjects;
 using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Hyperliquid.Infrastructure.Services;
 
-public class HyperliquidApiProvider : IHyperliquidProvider
+public class HyperliquidApiGateway : IHyperliquidGateway
 {
-    private readonly IHyperliquidApiClient _client;
+    private readonly IHyperliquidApi _hyperliquidApi;
 
-    public HyperliquidApiProvider(IHyperliquidApiClient client)
+    public HyperliquidApiGateway(IHyperliquidApi hyperliquidApi)
     {
-        _client = client;
+        _hyperliquidApi = hyperliquidApi;
     }
 
     public async Task<HyperliquidPositionCashFlow[]> GetCashFlowEventsAsync(Wallet wallet,
-        DateOnly from, DateOnly to,
+        DateTime from, DateTime to,
         CancellationToken ct = default)
     {
-        var result = await _client.UserNonFundingLedgerUpdates.GetUserNonFundingLedgerUpdates(wallet.Address,
-            from.ToMinDateTime(), to.ToMaxDateTime(), ct);
+        var startTime = ((DateTimeOffset)from.AddDays(-2)).ToUnixTimeMilliseconds();
+        var endTime = ((DateTimeOffset)to).ToUnixTimeMilliseconds();
+
+        var result = await _hyperliquidApi.GetUserNonFundingLedgerUpdatesAsync(
+            new UserNonFundingLedgerUpdatesRequest(wallet.Address, startTime, endTime), ct);
 
         return result
             .Where(update => update.Delta is VaultDeposit or VaultWithdraw)
@@ -36,7 +38,7 @@ public class HyperliquidApiProvider : IHyperliquidProvider
     public async Task<IReadOnlyCollection<HyperliquidVault>> GetVaultsPositionsEquityAsync(Wallet wallet,
         CancellationToken ct = default)
     {
-        var balance = await _client.UserVaultEquities.GetUserVaultEquities(wallet.Address, ct);
+        var balance = await _hyperliquidApi.GetUserVaultEquitiesAsync(new UserVaultEquitiesRequest(wallet.Address), ct);
 
         return balance.Select(equity => new HyperliquidVault
         {

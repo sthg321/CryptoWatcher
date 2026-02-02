@@ -1,4 +1,5 @@
 using CryptoWatcher.Abstractions;
+using CryptoWatcher.Extensions;
 using CryptoWatcher.Modules.Hyperliquid.Application.Abstractions;
 using CryptoWatcher.Modules.Hyperliquid.Entities;
 using CryptoWatcher.Modules.Hyperliquid.Specifications;
@@ -12,16 +13,16 @@ namespace CryptoWatcher.Modules.Hyperliquid.Application.Services;
 /// </summary>
 public class HyperliquidPositionsSyncService : IHyperliquidPositionsSyncService
 {
-    private readonly IHyperliquidProvider _hyperliquidProvider;
+    private readonly IHyperliquidGateway _hyperliquidGateway;
     private readonly IRepository<HyperliquidVaultPosition> _repository;
     private readonly TimeProvider _timeProvider;
     private readonly IHyperliquidSyncRepoFacade _facade;
 
-    public HyperliquidPositionsSyncService(IHyperliquidProvider hyperliquidProvider,
+    public HyperliquidPositionsSyncService(IHyperliquidGateway hyperliquidGateway,
         IRepository<HyperliquidVaultPosition> repository,
         TimeProvider timeProvider, IHyperliquidSyncRepoFacade facade)
     {
-        _hyperliquidProvider = hyperliquidProvider;
+        _hyperliquidGateway = hyperliquidGateway;
         _repository = repository;
 
         _timeProvider = timeProvider;
@@ -35,9 +36,10 @@ public class HyperliquidPositionsSyncService : IHyperliquidPositionsSyncService
                 ct))
             .ToDictionary(position => position.VaultAddress);
 
-        var hyperliquidVaultPositions = await _hyperliquidProvider.GetVaultsPositionsEquityAsync(wallet, ct);
+        var hyperliquidVaultPositions = await _hyperliquidGateway.GetVaultsPositionsEquityAsync(wallet, ct);
 
-        var cashFlowHistory = (await _hyperliquidProvider.GetCashFlowEventsAsync(wallet, from, to, ct))
+        var cashFlowHistory =
+            (await _hyperliquidGateway.GetCashFlowEventsAsync(wallet, from.ToMinDateTime(), to.ToMaxDateTime(), ct))
             .GroupBy(@event => @event.VaultAddress)
             .ToDictionary(events => events.Key, events => events.OrderBy(@event => @event.Date).ToArray());
 

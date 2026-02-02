@@ -2,10 +2,10 @@ using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Application.Abstractions;
 using CryptoWatcher.Modules.Hyperliquid.Application.Abstractions;
 using CryptoWatcher.Modules.Hyperliquid.Application.Services;
-using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client;
-using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.UserNonFundingLedgerUpdates;
-using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.UserVaultEquities;
+using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Integrations.Hyperliquid.Api;
+using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Refit;
 
 namespace CryptoWatcher.Modules.Hyperliquid.Infrastructure.Extensions;
 
@@ -26,17 +26,11 @@ public static class ServiceCollectionExtensions
         services.AddKeyedScoped<IPlatformDailyReportDataProvider, HyperliquidReportDataService>(
             HyperliquidModuleKeyedService.DailyPlatformKeyService);
 
-        services.AddHttpClient<IUserNonFundingLedgerUpdatesClient, UserNonFundingLedgerUpdatesClient>((provider,
-                client) => client.BaseAddress = hyperliquidUriFactory?.Invoke(provider) ?? new Uri(BaseUrl))
-            .AddStandardResilienceHandler();
+        services.AddRefitClient<IHyperliquidApi>()
+            .ConfigureHttpClient((provider, client) =>
+                client.BaseAddress = hyperliquidUriFactory?.Invoke(provider) ?? new Uri(BaseUrl));
 
-        services.AddHttpClient<IUserVaultEquitiesClient, UserVaultEquitiesClient>((provider, client) =>
-                client.BaseAddress = hyperliquidUriFactory?.Invoke(provider) ?? new Uri(BaseUrl))
-            .AddStandardResilienceHandler();
-
-        services.AddScoped<IHyperliquidApiClient, HyperliquidApiClient>();
-        services.AddScoped<HyperliquidApiClient>(provider =>
-            (HyperliquidApiClient)provider.GetRequiredService<IHyperliquidApiClient>());
+        services.AddScoped<IHyperliquidGateway, HyperliquidApiGateway>();
 
         return services;
     }

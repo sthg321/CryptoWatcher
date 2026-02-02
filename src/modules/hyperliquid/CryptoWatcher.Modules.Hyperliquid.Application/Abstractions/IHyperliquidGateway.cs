@@ -4,10 +4,10 @@ using CryptoWatcher.Shared.Entities;
 
 namespace CryptoWatcher.Modules.Hyperliquid.Application.Abstractions;
 
-public interface IHyperliquidProvider
+public interface IHyperliquidGateway
 {
     Task<HyperliquidPositionCashFlow[]> GetCashFlowEventsAsync(Wallet wallet,
-        DateOnly from, DateOnly to,
+        DateTime from, DateTime to,
         CancellationToken ct = default);
 
     Task<IReadOnlyCollection<HyperliquidVault>> GetVaultsPositionsEquityAsync(Wallet wallet,
