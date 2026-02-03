@@ -19,7 +19,6 @@ using CryptoWatcher.Infrastructure.Telegram;
 using CryptoWatcher.Integrations;
 using CryptoWatcher.Modules.Aave.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Hyperliquid.Application.Abstractions;
-using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Client.Extensions;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Merkl.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Morpho.Infrastructure.Extensions;
@@ -104,8 +103,6 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddConfiguredHyperliquidModule(this IServiceCollection services)
     {
-        services.AddHyperLiquidClient();
-
         services.AddHyperliquidModule()
             .AddSingleton<IDailyExcelSheetBuilder, HyperliquidDailyExcelSheetBuilder>()
             .AddSingleton<HyperliquidDailyReportExcelWorksheetWriter>();

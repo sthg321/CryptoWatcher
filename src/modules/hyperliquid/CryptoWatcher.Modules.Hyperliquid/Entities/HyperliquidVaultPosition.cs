@@ -1,4 +1,5 @@
 using CryptoWatcher.Abstractions;
+using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.Exceptions;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.ValueObjects;
@@ -13,12 +14,31 @@ namespace CryptoWatcher.Modules.Hyperliquid.Entities;
 public class
     HyperliquidVaultPosition : IDeFiPosition<HyperliquidVaultPositionSnapshot, HyperliquidPositionCashFlow>
 {
+    private HyperliquidVaultPosition()
+    {
+    }
+
+    public HyperliquidVaultPosition(decimal balance, DateTime createdAt, EvmAddress vaultAddress,
+        EvmAddress walletAddress)
+    {
+        Token0 = new CryptoToken
+        {
+            Amount = balance,
+            Symbol = "USDC",
+            PriceInUsd = 1,
+            Address = EvmAddress.Create("0xaf88d065e77c8cC2239327C5EDb3A432268e5831")
+        };
+
+        CreatedAt = DateOnly.FromDateTime(createdAt);
+        VaultAddress = vaultAddress;
+        WalletAddress = walletAddress;
+    }
+
+
     private readonly List<HyperliquidVaultPositionSnapshot> _snapshots = [];
     private readonly List<HyperliquidPositionCashFlow> _cashFlows = [];
-
-    public decimal InitialBalance { get; init; }
-
-    public DateOnly CreatedAt { get; init; }
+    
+    public DateOnly CreatedAt { get; private set; }
 
     public DateOnly? ClosedAt { get; private set; }
 
@@ -29,7 +49,7 @@ public class
     /// This property holds the unique identifier of the vault on the blockchain.
     /// It is used to track and manage vault-specific data and operations within the Hyperliquid module.
     /// </remarks>
-    public EvmAddress VaultAddress { get; init; } = null!;
+    public EvmAddress VaultAddress { get; private set; } = null!;
 
     /// <summary>
     /// Represents the wallet address associated with the liquidity pool position.
@@ -38,7 +58,7 @@ public class
     /// This property holds the blockchain wallet address linked to the liquidity pool position.
     /// It is used to identify the owner of the position and manage the related account details.
     /// </remarks>
-    public EvmAddress WalletAddress { get; init; } = null!;
+    public EvmAddress WalletAddress { get; private set; } = null!;
 
     /// <summary>
     /// Represents the wallet associated with a liquidity pool position.
@@ -47,9 +67,9 @@ public class
     /// This property identifies the wallet that holds ownership of the liquidity pool position.
     /// It includes the wallet's unique identifier and blockchain address for managing assets.
     /// </remarks>
-    public Wallet Wallet { get; init; } = null!;
+    public Wallet Wallet { get; private set; } = null!;
 
-    public CryptoToken Token0 { get; init; } = null!;
+    public CryptoToken Token0 { get; private set; } = null!;
 
     /// <summary>
     /// Represents the collection of events associated with the vault's activity.
@@ -89,8 +109,8 @@ public class
     {
         var existedSnapshot =
             _cashFlows.FirstOrDefault(positionSnapshot => positionSnapshot.Date == positionCashFlow.Date &&
-                                                            positionSnapshot.Token0.Amount ==
-                                                            positionCashFlow.Token0.Amount);
+                                                          positionSnapshot.Token0.Amount ==
+                                                          positionCashFlow.Token0.Amount);
 
         if (existedSnapshot is not null)
         {
@@ -98,6 +118,25 @@ public class
         }
 
         _cashFlows.Add(positionCashFlow);
+    }
+
+    public void AddCashFlowIfNotExists(decimal amount, CashFlowEvent @event, DateTime timestamp)
+    {
+        var positionCashFlow = _cashFlows.FirstOrDefault(cashFlow => cashFlow.Date == timestamp &&
+                                                                     cashFlow.Event == @event &&
+                                                                     cashFlow.Token0.Amount ==
+                                                                     amount);
+        if (positionCashFlow is null)
+        {
+            _cashFlows.Add(new HyperliquidPositionCashFlow
+            {
+                Date = timestamp,
+                Event = @event,
+                Token0 = new CryptoTokenStatistic { Amount = amount, PriceInUsd = 1 },
+                VaultAddress = VaultAddress,
+                WalletAddress = WalletAddress,
+            });
+        }
     }
 
     public void ClosePosition(DateOnly closedAt)

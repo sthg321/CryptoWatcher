@@ -58,20 +58,7 @@ public class HyperliquidPositionsSyncService : IHyperliquidPositionsSyncService
                 var isPositionExist = existingPositionMap.TryGetValue(vault.Address, out var vaultPosition);
                 if (!isPositionExist)
                 {
-                    vaultPosition = new HyperliquidVaultPosition
-                    {
-                        Token0 = new CryptoToken
-                        {
-                            Amount = vault.Balance,
-                            Symbol = "USDC",
-                            PriceInUsd = 1,
-                            Address = EvmAddress.Create("0xaf88d065e77c8cC2239327C5EDb3A432268e5831")
-                        },
-                        WalletAddress = wallet.Address,
-                        VaultAddress = vault.Address,
-                        Wallet = wallet,
-                        CreatedAt = nowDay
-                    };
+                    vaultPosition = new HyperliquidVaultPosition(vault.Balance, now, vault.Address, wallet.Address);
                 }
 
                 if (vault.Balance == 0)
