@@ -1,6 +1,8 @@
+using System.Globalization;
 using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.Modules.Hyperliquid.Application.Abstractions;
 using CryptoWatcher.Modules.Hyperliquid.Application.Models;
+using CryptoWatcher.Modules.Hyperliquid.Application.Services.PositionUpdates;
 using CryptoWatcher.Modules.Hyperliquid.Entities;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Integrations.Hyperliquid.Api;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Integrations.Hyperliquid.Contracts.UserNonFundingLedgerUpdates;
@@ -19,7 +21,7 @@ public class HyperliquidApiGateway : IHyperliquidGateway
         _hyperliquidApi = hyperliquidApi;
     }
 
-    public async Task<HyperliquidPositionCashFlow[]> GetCashFlowEventsAsync(Wallet wallet,
+    public async Task<Queue<VaultUpdate>> GetVaultUpdatesAsync(EvmAddress walletAddress,
         DateTime from, DateTime to,
         CancellationToken ct = default)
     {
@@ -27,52 +29,42 @@ public class HyperliquidApiGateway : IHyperliquidGateway
         var endTime = ((DateTimeOffset)to).ToUnixTimeMilliseconds();
 
         var result = await _hyperliquidApi.GetUserNonFundingLedgerUpdatesAsync(
-            new UserNonFundingLedgerUpdatesRequest(wallet.Address, startTime, endTime), ct);
+            new UserNonFundingLedgerUpdatesRequest(walletAddress, startTime, endTime), ct);
 
-        return result
+        var stack = result
             .Where(update => update.Delta is VaultDeposit or VaultWithdraw)
-            .Select(update => MapToVaultEvent(update, wallet))
-            .ToArray();
+            .Select(MapToVaultEvent)
+            .OrderBy(update => update.Timestamp);
+
+        return new Queue<VaultUpdate>(stack);
     }
 
-    public async Task<IReadOnlyCollection<HyperliquidVault>> GetVaultsPositionsEquityAsync(Wallet wallet,
+    public async Task<IReadOnlyCollection<HyperliquidVault>> GetVaultsPositionsEquityAsync(EvmAddress walletAddress,
         CancellationToken ct = default)
     {
-        var balance = await _hyperliquidApi.GetUserVaultEquitiesAsync(new UserVaultEquitiesRequest(wallet.Address), ct);
+        var balance = await _hyperliquidApi.GetUserVaultEquitiesAsync(new UserVaultEquitiesRequest(walletAddress), ct);
 
         return balance.Select(equity => new HyperliquidVault
         {
-            Balance = equity.Equity,
+            Balance = decimal.Parse(equity.Equity, CultureInfo.InvariantCulture),
             Address = EvmAddress.Create(equity.VaultAddress)
         }).ToArray();
     }
 
-    private static HyperliquidPositionCashFlow MapToVaultEvent(UserNonFundingLedgerUpdate update, Wallet wallet)
+    private static VaultUpdate MapToVaultEvent(UserNonFundingLedgerUpdate update)
     {
-        var day = DateTime.UnixEpoch.AddMilliseconds(update.Time);
+        var timestamp = DateTime.UnixEpoch.AddMilliseconds(update.Time);
         return update.Delta switch
         {
-            VaultDeposit vaultDeposit => new HyperliquidPositionCashFlow
+            VaultDeposit vaultDeposit => new DepositUpdate
             {
-                Token0 = new CryptoTokenStatistic
-                {
-                    Amount = vaultDeposit.Usdc, PriceInUsd = 1
-                },
-                Event = CashFlowEvent.Deposit,
-                VaultAddress = EvmAddress.Create(vaultDeposit.Vault),
-                WalletAddress = wallet.Address,
-                Date = day
+                Amount = decimal.Parse(vaultDeposit.Usdc, CultureInfo.InvariantCulture),
+                Timestamp = timestamp,
             },
-            VaultWithdraw vaultWithdraw => new HyperliquidPositionCashFlow
+            VaultWithdraw vaultWithdraw => new WithdrawUpdate
             {
-                Token0 = new CryptoTokenStatistic
-                {
-                    Amount = vaultWithdraw.NetWithdrawnUsd, PriceInUsd = 1
-                },
-                Event = CashFlowEvent.Withdrawal,
-                VaultAddress = EvmAddress.Create(vaultWithdraw.Vault),
-                WalletAddress = wallet.Address,
-                Date = day
+                Amount = decimal.Parse(vaultWithdraw.NetWithdrawnUsd, CultureInfo.InvariantCulture),
+                Timestamp = timestamp
             },
             _ => throw new ArgumentOutOfRangeException(nameof(update), update.Delta, null)
         };

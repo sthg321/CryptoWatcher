@@ -17,10 +17,10 @@ public class HyperliquidVaultPositionSnapshot : ITokenPositionSnapshot
         
     }
     
-    public HyperliquidVaultPositionSnapshot(Wallet wallet, EvmAddress vaultAddress, decimal balance,
+    public HyperliquidVaultPositionSnapshot(EvmAddress walletAddress, EvmAddress vaultAddress, decimal balance,
         DateOnly day)
     {
-        WalletAddress = wallet.Address;
+        WalletAddress = walletAddress;
         VaultAddress = vaultAddress;
         Balance = balance;
         Day = day;
@@ -57,6 +57,11 @@ public class HyperliquidVaultPositionSnapshot : ITokenPositionSnapshot
     /// </remarks>
     public EvmAddress WalletAddress { get; init; }
 
+    public void UpdateFrom(decimal amount)
+    {
+        Balance = amount;
+    }
+    
     public void UpdateFrom(HyperliquidVaultPositionSnapshot newSnapshot)
     {
         if (!newSnapshot.VaultAddress.Equals(newSnapshot.VaultAddress))

@@ -1,10 +1,11 @@
 using CryptoWatcher.Abstractions;
+using CryptoWatcher.Abstractions.CacheFlows;
 using CryptoWatcher.Extensions;
 using CryptoWatcher.Modules.Hyperliquid.Application.Abstractions;
+using CryptoWatcher.Modules.Hyperliquid.Application.Services.PositionUpdates;
 using CryptoWatcher.Modules.Hyperliquid.Entities;
 using CryptoWatcher.Modules.Hyperliquid.Specifications;
 using CryptoWatcher.Shared.Entities;
-using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Hyperliquid.Application.Services;
 
@@ -32,16 +33,18 @@ public class HyperliquidPositionsSyncService : IHyperliquidPositionsSyncService
     public async Task SyncPositionsAsync(Wallet wallet, DateOnly from, DateOnly to, CancellationToken ct = default)
     {
         var existingPositionMap =
-            (await _repository.ListAsync(new HyperliquidPositionsWithSnapshotsAndCashFlowByWallet(wallet, from, to),
+            (await _repository.ListAsync(
+                new HyperliquidPositionsWithSnapshotsAndCashFlowByWallet(wallet.Address, from, to),
                 ct))
             .ToDictionary(position => position.VaultAddress);
 
-        var hyperliquidVaultPositions = await _hyperliquidGateway.GetVaultsPositionsEquityAsync(wallet, ct);
+        var hyperliquidVaultPositions = await _hyperliquidGateway.GetVaultsPositionsEquityAsync(wallet.Address, ct);
 
         var cashFlowHistory =
-            (await _hyperliquidGateway.GetCashFlowEventsAsync(wallet, from.ToMinDateTime(), to.ToMaxDateTime(), ct))
+            (await _hyperliquidGateway.GetVaultUpdatesAsync(wallet.Address, from.ToMinDateTime(), to.ToMaxDateTime(),
+                ct))
             .GroupBy(@event => @event.VaultAddress)
-            .ToDictionary(events => events.Key, events => events.OrderBy(@event => @event.Date).ToArray());
+            .ToDictionary(events => events.Key, events => events.OrderBy(@event => @event.Timestamp).ToArray());
 
         var now = _timeProvider.GetUtcNow().UtcDateTime;
 
@@ -60,23 +63,19 @@ public class HyperliquidPositionsSyncService : IHyperliquidPositionsSyncService
                 {
                     vaultPosition = new HyperliquidVaultPosition(vault.Balance, now, vault.Address, wallet.Address);
                 }
-
-                if (vault.Balance == 0)
-                {
-                    vaultPosition!.ClosePosition(nowDay);
-                }
-
-                vaultPosition!.AddOrUpdateSnapshot(
-                    new HyperliquidVaultPositionSnapshot(wallet, vault.Address, vault.Balance, nowDay));
-
+                
                 if (cashFlowHistory.TryGetValue(vault.Address, out var cashFlowEvents))
                 {
                     foreach (var cashFlowEvent in cashFlowEvents)
                     {
-                        vaultPosition.AddCashFlowIfNotExists(cashFlowEvent);
+                        vaultPosition!.AddCashFlowIfNotExists(cashFlowEvent.Amount,
+                            cashFlowEvent is DepositUpdate ? CashFlowEvent.Deposit : CashFlowEvent.Withdrawal,
+                            cashFlowEvent.Timestamp);
                     }
                 }
 
+                vaultPosition!.AddOrUpdateSnapshot(vault.Balance, nowDay);
+ 
                 result.Add(vaultPosition);
             }
             catch

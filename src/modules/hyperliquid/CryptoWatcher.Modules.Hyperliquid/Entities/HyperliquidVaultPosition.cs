@@ -42,6 +42,8 @@ public class
 
     public DateOnly? ClosedAt { get; private set; }
 
+    public decimal InitialBalance { get; set; }
+
     /// <summary>
     /// Represents the address of the vault associated with the Hyperliquid platform position.
     /// </summary>
@@ -91,6 +93,33 @@ public class
     /// </remarks>
     public IReadOnlyCollection<HyperliquidVaultPositionSnapshot> Snapshots => _snapshots;
 
+    public static HyperliquidVaultPosition Open(
+        EvmAddress wallet,
+        EvmAddress vault,
+        DateTime openedAt)
+    {
+        return new HyperliquidVaultPosition
+        {
+            WalletAddress = wallet,
+            VaultAddress = vault,
+            CreatedAt = DateOnly.FromDateTime(openedAt),
+        };
+    }
+
+    public void AddOrUpdateSnapshot(decimal amount, DateOnly day)
+    {
+        var existedSnapshot =
+            _snapshots.FirstOrDefault(positionSnapshot => positionSnapshot.Day == day);
+
+        if (existedSnapshot is null)
+        {
+            _snapshots.Add(new HyperliquidVaultPositionSnapshot(WalletAddress, VaultAddress, amount, day));
+            return;
+        }
+
+        existedSnapshot.UpdateFrom(amount);
+    }
+    
     public void AddOrUpdateSnapshot(HyperliquidVaultPositionSnapshot snapshot)
     {
         var existedSnapshot =
@@ -103,23 +132,13 @@ public class
         }
 
         existedSnapshot.UpdateFrom(snapshot);
-    }
 
-    public void AddCashFlowIfNotExists(HyperliquidPositionCashFlow positionCashFlow)
-    {
-        var existedSnapshot =
-            _cashFlows.FirstOrDefault(positionSnapshot => positionSnapshot.Date == positionCashFlow.Date &&
-                                                          positionSnapshot.Token0.Amount ==
-                                                          positionCashFlow.Token0.Amount);
-
-        if (existedSnapshot is not null)
+        if (snapshot.Balance == 0)
         {
-            return;
+            ClosePosition(snapshot.Day);
         }
-
-        _cashFlows.Add(positionCashFlow);
     }
-
+ 
     public void AddCashFlowIfNotExists(decimal amount, CashFlowEvent @event, DateTime timestamp)
     {
         var positionCashFlow = _cashFlows.FirstOrDefault(cashFlow => cashFlow.Date == timestamp &&
@@ -139,7 +158,7 @@ public class
         }
     }
 
-    public void ClosePosition(DateOnly closedAt)
+    private void ClosePosition(DateOnly closedAt)
     {
         if (ClosedAt.HasValue)
         {
