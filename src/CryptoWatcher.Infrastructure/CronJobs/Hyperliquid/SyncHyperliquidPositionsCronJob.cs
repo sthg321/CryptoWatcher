@@ -1,4 +1,5 @@
 using CryptoWatcher.Abstractions;
+using CryptoWatcher.Modules.Hyperliquid.Application.Features.Synchronization.VaultSynchronization.Abstractions;
 using CryptoWatcher.Shared.Entities;
 using Microsoft.Extensions.Logging;
 using Hangfire.RecurringJobExtensions;
@@ -11,12 +12,14 @@ public class SyncHyperliquidPositionsCronJob
 {
     private readonly IRepository<Wallet> _walletRepository;
     private readonly ILogger<SyncHyperliquidPositionsCronJob> _logger;
+    private readonly IHyperliquidVaultPositionSyncJob _positionSyncJob;
 
     public SyncHyperliquidPositionsCronJob(
-        IRepository<Wallet> walletRepository, ILogger<SyncHyperliquidPositionsCronJob> logger)
+        IRepository<Wallet> walletRepository, ILogger<SyncHyperliquidPositionsCronJob> logger, IHyperliquidVaultPositionSyncJob positionSyncJob)
     {
         _walletRepository = walletRepository;
         _logger = logger;
+        _positionSyncJob = positionSyncJob;
     }
 
     [RecurringJob(CronRegistry.Every50Minutes, RecurringJobId = nameof(SyncHyperliquidPositionsAsync))]
@@ -26,7 +29,7 @@ public class SyncHyperliquidPositionsCronJob
 
         var wallets = await _walletRepository.ListAsync(ct);
 
-        var now = DateOnly.FromDateTime(DateTime.Now);
+        var now = DateTime.UtcNow;
 
         _logger.LogInformation("Found: {WalletsCount} wallets", wallets.Count);
 
@@ -36,6 +39,8 @@ public class SyncHyperliquidPositionsCronJob
             {
                 _logger.LogInformation("Processing positions for wallet: {WalletAddress}", wallet.Address);
 
+                await _positionSyncJob.SyncPositionAsync(wallet.Address, now, ct);
+                
                 _logger.LogInformation("Positions for wallet: {WalletAddress} processed", wallet.Address);
             }
             catch (Exception e)
