@@ -23,7 +23,7 @@ public class HyperliquidVaultPositionRepository : IHyperliquidVaultPositionRepos
 
     public async Task<HyperliquidVaultPosition?> GetByWalletAsync(EvmAddress wallet, CancellationToken ct = default)
     {
-        return await _dbContext.Set<HyperliquidVaultPosition>()
+        return await _dbContext.HyperliquidVaultPositions
             .Include(position => position.Periods)
             .Include(position => position.Snapshots)
             .Include(position => position.CashFlows)
