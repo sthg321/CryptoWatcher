@@ -33,7 +33,7 @@ internal class MorphoProvider : IMorphoProvider
                 var collateralToken = CreateToken(position.Market.CollateralAsset, position.State.Collateral);
 
                 return new MorphoMarketPositionData(position.Market.Id, loanToken, collateralToken,
-                    position.HealthFactor);
+                    position.HealthFactor ?? int.MaxValue);
             })
             .ToArray();
     }

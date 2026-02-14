@@ -32,7 +32,7 @@ public class UniswapV3DecreaseLiquidityLogEventDecoder : ITransactionLogEventDec
             PositionId = (ulong)decreaseEvent.Event.TokenId,
             Token0 = token0,
             Token1 = token1,
-            Commission0 = collectEvents.Event.Amount0 != 0 ? collectEvents.Event.Amount0 - token1.Balance : 0,
+            Commission0 = collectEvents.Event.Amount0 != 0 ? collectEvents.Event.Amount0 - token0.Balance : 0,
             Commission1 = collectEvents.Event.Amount1 != 0 ? collectEvents.Event.Amount1 - token1.Balance : 0,
             TransactionHash = transactionReceipt.TransactionHash,
             BlockNumber = transactionReceipt.BlockNumber,

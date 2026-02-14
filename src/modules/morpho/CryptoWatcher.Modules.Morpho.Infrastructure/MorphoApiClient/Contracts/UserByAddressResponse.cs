@@ -21,7 +21,7 @@ internal record UserByAddress
 internal record MarketPosition
 {
     public string Id { get; set; } = null!;
-    public double HealthFactor { get; set; }
+    public double? HealthFactor { get; set; }
     public Market Market { get; set; } = null!;
     public PositionState State { get; set; } = null!;
 }
