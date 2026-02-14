@@ -16,9 +16,7 @@ public class HyperliquidSyncStateRepository : IHyperliquidSyncStateRepository
 
     public async Task AddOrUpdateAsync(HyperliquidSynchronizationState state, CancellationToken ct = default)
     {
-        _context.HyperliquidSynchronizationStates.Update(state);
-
-        await _context.SaveChangesAsync(ct);
+        await _context.SingleMergeAsync(state, ct);
     }
 
     public async Task<HyperliquidSynchronizationState?> GetByWalletAsync(EvmAddress wallet,

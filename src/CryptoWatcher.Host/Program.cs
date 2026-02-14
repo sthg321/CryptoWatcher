@@ -35,7 +35,7 @@ builder.Services
     .AddStackExchangeRedisCache(options => options.Configuration = builder.Configuration.GetConnectionString("Redis"))
     .AddHybridCache();
 
-builder.Services.AddInfrastructure();
+builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddTelegram(builder.Configuration);
 
 builder.Services.ConfigureHttpJsonOptions(options =>

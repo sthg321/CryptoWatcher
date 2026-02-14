@@ -23,7 +23,7 @@ namespace CryptoWatcher.Infrastructure;
 /// like networks, liquidity pool positions, and pool history. It initializes the database schema
 /// and configures entity relationships using Fluent API within the OnModelCreating method.
 /// </remarks>
-public class CryptoWatcherDbContext(DbContextOptions options) : DbContext(options), IUnitOfWork
+public class CryptoWatcherDbContext(DbContextOptions<CryptoWatcherDbContext> options) : DbContext(options), IUnitOfWork
 {
     private const byte EvmAddressLength = 42;
     private const byte TransactionHashLength = 66;

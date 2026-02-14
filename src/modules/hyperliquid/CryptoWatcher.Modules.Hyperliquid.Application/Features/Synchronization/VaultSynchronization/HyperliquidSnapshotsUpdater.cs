@@ -20,9 +20,9 @@ public class HyperliquidSnapshotsUpdater : IHyperliquidSnapshotsUpdater
             .FirstOrDefault(hyperliquidVault =>
                 hyperliquidVault.Address.Equals(HyperliquidWellKnowFields.HlpVaultAddress));
 
-        if (vault is null)
+        if (vault is null) // for case to sync old positions. For them, we can't take snapshot
         {
-            throw new InvalidOperationException("Vault not found");
+             return;
         }
 
         position.AddOrUpdateSnapshot(vault.Balance, syncDate);

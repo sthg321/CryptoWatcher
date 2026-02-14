@@ -49,11 +49,11 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services
             .AddConfiguredAaveModule()
-            .AddConfiguredHyperliquidModule()
+            .AddConfiguredHyperliquidModule(configuration.GetConnectionString("Postgres")!)
             .AddConfiguredUniswapModule()
             .AddMorphoModule(provider => provider.GetRequiredService<ExternalServicesConfig>().Morpho)
             .AddMerklModule(provider => provider.GetRequiredService<ExternalServicesConfig>().Merkl)
@@ -98,9 +98,9 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static IServiceCollection AddConfiguredHyperliquidModule(this IServiceCollection services)
+    private static IServiceCollection AddConfiguredHyperliquidModule(this IServiceCollection services, string conectionString)
     {
-        services.AddHyperliquidModule("")
+        services.AddHyperliquidModule(conectionString)
             .AddSingleton<IDailyExcelSheetBuilder, HyperliquidDailyExcelSheetBuilder>()
             .AddSingleton<HyperliquidDailyReportExcelWorksheetWriter>();
 
