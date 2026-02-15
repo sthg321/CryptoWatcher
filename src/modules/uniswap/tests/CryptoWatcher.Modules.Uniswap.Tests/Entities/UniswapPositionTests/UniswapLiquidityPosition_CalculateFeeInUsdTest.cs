@@ -39,7 +39,7 @@ public partial class UniswapLiquidityPositionTest
 
         var position = CreatePositionWithSnapshots(startDate, 10);
 
-        AddFeeClaimEvent(position, 0, DateOnly.Parse(feeClaimDate).ToMinDateTime());
+        AddFeeClaimEvent(position, 0, DateOnly.Parse(feeClaimDate).ToMinDateTime().UtcDateTime);
 
         var expected = position.Snapshots.Last();
 
@@ -212,12 +212,12 @@ public partial class UniswapLiquidityPositionTest
         return position;
     }
 
-    private UniswapLiquidityPositionCashFlow AddFeeClaimEvent(UniswapLiquidityPosition position,
+    private static UniswapLiquidityPositionCashFlow AddFeeClaimEvent(UniswapLiquidityPosition position,
         BigInteger liquidity,
-        DateTime claimDate,
+        DateTimeOffset claimDate,
         TokenInfoPair? tokenPair = null)
     {
-        var positionEvent = new LiquidityPoolPositionEventFaker(position, liquidity, claimDate).Generate();
+        var positionEvent = new LiquidityPoolPositionEventFaker(position, liquidity, claimDate.UtcDateTime).Generate();
 
         tokenPair ??= new TokenInfoPair
         {
