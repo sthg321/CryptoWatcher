@@ -1,5 +1,6 @@
 using CryptoWatcher.Models;
 using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.ValueObjects;
 using SpreadCheetah;
 using SpreadCheetah.SourceGeneration;
 
@@ -60,8 +61,8 @@ public abstract class ExcelSheetDataWriter<TExcelRowContext, TDailyReport, TDail
 
     protected abstract Task WriteTotalRowAsync(Spreadsheet workbook, TDailyReport dailyReport, CancellationToken ct);
 
-    private static async Task WriteWalletRow(Spreadsheet workbook, Wallet wallet, CancellationToken ct = default)
+    private static async Task WriteWalletRow(Spreadsheet workbook, EvmAddress wallet, CancellationToken ct = default)
     {
-        await workbook.AddRowAsync([new DataCell("Кошелек:"), new DataCell(wallet.Address)], ct);
+        await workbook.AddRowAsync([new DataCell("Кошелек:"), new DataCell(wallet)], ct);
     }
 }

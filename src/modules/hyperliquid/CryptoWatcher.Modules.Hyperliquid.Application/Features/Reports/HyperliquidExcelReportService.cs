@@ -4,6 +4,7 @@ using CryptoWatcher.Models;
 using CryptoWatcher.Modules.Hyperliquid.Application.Features.Reports.Abstractions;
 using CryptoWatcher.Modules.Hyperliquid.Application.Features.Reports.Models;
 using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Hyperliquid.Application.Features.Reports;
  
@@ -22,7 +23,7 @@ public class HyperliquidReportDataService : IPlatformDailyReportDataProvider
         var walletAddresses = wallets.Select(wallet => wallet.Address).ToArray();
         var vaultPositions = await _query.GetPositionsAsync(walletAddresses, from, to, ct);
 
-        var result = new Dictionary<Wallet, List<PlatformDailyReport>>();
+        var result = new Dictionary<EvmAddress, List<PlatformDailyReport>>();
         foreach (var vaultPositionByWallet in vaultPositions.GroupBy(position => position.WalletAddress))
         {
             foreach (var vaultPosition in vaultPositionByWallet)
@@ -52,9 +53,9 @@ public class HyperliquidReportDataService : IPlatformDailyReportDataProvider
                     ReportItems = vaultReportItems
                 };
 
-                if (!result.TryGetValue(vaultPosition.Wallet, out var dailyReports))
+                if (!result.TryGetValue(vaultPosition.WalletAddress, out var dailyReports))
                 {
-                    result.Add(vaultPosition.Wallet, dailyReports = []);
+                    result.Add(vaultPosition.WalletAddress, dailyReports = []);
                 }
 
                 dailyReports.Add(vaultReport);

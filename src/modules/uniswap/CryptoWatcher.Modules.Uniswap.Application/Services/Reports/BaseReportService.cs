@@ -4,6 +4,7 @@ using CryptoWatcher.Modules.Merkl.Entities;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Modules.Uniswap.Specifications;
 using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Uniswap.Application.Services.Reports;
 
@@ -19,15 +20,14 @@ public abstract class BaseReportService<TReport> where TReport : class
         _merklRewardService = merklRewardService;
     }
 
-    public async Task<Dictionary<Wallet, List<TReport>>> GetReportDataAsync(
-        IReadOnlyCollection<Wallet> wallets,
+    public async Task<Dictionary<EvmAddress, List<TReport>>> GetReportDataAsync(IReadOnlyCollection<Wallet> wallets,
         DateOnly from, DateOnly to,
         CancellationToken ct = default)
     {
         var poolPositions =
             await _poolPositionRepository.ListAsync(new UniswapPositionsForReportSpecification(wallets, from, to), ct);
 
-        var result = new Dictionary<Wallet, List<TReport>>();
+        var result = new Dictionary<EvmAddress, List<TReport>>();
 
         foreach (var poolPositionByWallet in poolPositions.GroupBy(position => position.WalletAddress))
         {
@@ -46,9 +46,9 @@ public abstract class BaseReportService<TReport> where TReport : class
 
                 var report = CreateReportItem(poolPosition, merklCampaign, from, to);
 
-                if (!result.TryGetValue(poolPosition.Wallet, out var dailyReports))
+                if (!result.TryGetValue(poolPosition.WalletAddress, out var dailyReports))
                 {
-                    result.Add(poolPosition.Wallet, dailyReports = []);
+                    result.Add(poolPosition.WalletAddress, dailyReports = []);
                 }
 
                 dailyReports.Add(report);

@@ -31,7 +31,7 @@ internal class UniswapOverallExcelReportService
             await spreadsheet.AddHeaderRowAsync(UniswapOverallExcelRowContext.Default.UniswapOverallExcelReport, null, ct);
             foreach (var reportByWallet in reports)
             {
-                await spreadsheet.AddRowAsync([new Cell("Кошелек:"), new Cell(reportByWallet.Key.Address)], ct);
+                await spreadsheet.AddRowAsync([new Cell("Кошелек:"), new Cell(reportByWallet.Key)], ct);
                 await spreadsheet.AddRowAsync([], ct);
 
                 foreach (var uniswapOverallReport in reportByWallet.Value)

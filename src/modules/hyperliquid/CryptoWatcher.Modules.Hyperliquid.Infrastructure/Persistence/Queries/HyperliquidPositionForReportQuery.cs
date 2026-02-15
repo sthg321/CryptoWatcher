@@ -21,7 +21,6 @@ public class HyperliquidPositionForReportQuery : IHyperliquidPositionForReportQu
     {
         return await _dbContext.HyperliquidVaultPositions
             .Where(position =>  wallets.Contains(position.WalletAddress))
-            .Include(position => position.Wallet)
             .Include(position => position.CashFlows.Where(@event =>
                 @event.Date.Date >= from.ToMinDateTime() && @event.Date.Date <= to.ToMaxDateTime()))
             .Include(position => position.Snapshots

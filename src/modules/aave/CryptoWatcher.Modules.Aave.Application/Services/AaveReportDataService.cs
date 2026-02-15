@@ -6,6 +6,7 @@ using CryptoWatcher.Modules.Aave.Entities;
 using CryptoWatcher.Modules.Aave.Models;
 using CryptoWatcher.Modules.Aave.Specifications;
 using CryptoWatcher.Shared.Entities;
+using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Aave.Application.Services;
 
@@ -25,7 +26,7 @@ public class AaveReportDataService : IPlatformDailyReportDataProvider
         var positions =
             await _repository.ListAsync(new AavePositionsWithSnapshotsAndEventsSpecification(wallets, from, to), ct);
 
-        var result = new Dictionary<Wallet, List<PlatformDailyReport>>();
+        var result = new Dictionary<EvmAddress, List<PlatformDailyReport>>();
         foreach (var positionsByWallet in positions.GroupBy(static position => position.WalletAddress))
         {
             foreach (var position in positionsByWallet)
@@ -73,10 +74,10 @@ public class AaveReportDataService : IPlatformDailyReportDataProvider
                     ReportItems = reportItems
                 };
 
-                if (!result.TryGetValue(position.Wallet, out var dailyReports))
+                if (!result.TryGetValue(position.WalletAddress, out var dailyReports))
                 {
                     dailyReports = [];
-                    result.Add(position.Wallet, dailyReports);
+                    result.Add(position.WalletAddress, dailyReports);
                 }
 
                 dailyReports.Add(dailyReport);
