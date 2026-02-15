@@ -159,23 +159,6 @@ public class CryptoWatcherDbContext(DbContextOptions<CryptoWatcherDbContext> opt
 
     #endregion
 
-    #region Hyperliquid
-
-    public DbSet<HyperliquidVaultPosition> HyperliquidVaultPositions => Set<HyperliquidVaultPosition>();
-
-    public DbSet<HyperliquidVaultPositionSnapshot> HyperliquidVaultPositionSnapshots =>
-        Set<HyperliquidVaultPositionSnapshot>();
-
-    public DbSet<HyperliquidPositionDailyPerformance> HyperliquidPositionDailyPerformances =>
-        Set<HyperliquidPositionDailyPerformance>();
-
-    public DbSet<HyperliquidPositionCashFlow> HyperliquidPositionCashFlows => Set<HyperliquidPositionCashFlow>();
-
-    public DbSet<HyperliquidSynchronizationState> HyperliquidSynchronizationStates =>
-        Set<HyperliquidSynchronizationState>();
-
-    #endregion
-
     #region Morpho
 
     public DbSet<MorphoMarketPosition> MorphoMarketPositions => Set<MorphoMarketPosition>();
