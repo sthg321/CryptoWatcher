@@ -20,7 +20,7 @@ public class HyperliquidPositionForReportQuery : IHyperliquidPositionForReportQu
         CancellationToken ct = default)
     {
         return await _dbContext.HyperliquidVaultPositions
-            .Where(position => ((IEnumerable<string>)wallets).Contains(position.WalletAddress))
+            .Where(position =>  wallets.Contains(position.WalletAddress))
             .Include(position => position.Wallet)
             .Include(position => position.CashFlows.Where(@event =>
                 @event.Date.Date >= from.ToMinDateTime() && @event.Date.Date <= to.ToMaxDateTime()))
