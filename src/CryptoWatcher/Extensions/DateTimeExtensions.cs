@@ -7,13 +7,16 @@ public static class DateTimeExtensions
         return DateOnly.FromDateTime(dateTime);
     }
 
-    public static DateTime ToMinDateTime(this DateOnly date)
+    extension(DateOnly date)
     {
-        return date.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
-    }
-    
-    public static DateTime ToMaxDateTime(this DateOnly date)
-    {
-        return date.ToDateTime(TimeOnly.MaxValue,  DateTimeKind.Utc);
+        public DateTimeOffset ToMinDateTime()
+        {
+            return new DateTimeOffset(date.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc), TimeSpan.Zero);
+        }
+
+        public DateTimeOffset ToMaxDateTime()
+        {
+            return new DateTimeOffset(date.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc), TimeSpan.Zero);
+        }
     }
 }
