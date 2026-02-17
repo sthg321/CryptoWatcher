@@ -167,6 +167,18 @@ public static class DatabaseExtensions
                     UiPoolDataProviderAddress = EvmAddress.Create("0x39bc1bfDa2130d6Bb6DBEfd366939b4c7aa7C697")
                 }
             });
+            
+            context.Set<AaveChainConfiguration>().Add(new AaveChainConfiguration
+            {
+                Name = "Arbitrum",
+                RpcUrl = new Uri("https://lb.drpc.live/arbitrum"),
+                SmartContractAddresses = new AaveAddresses
+                {
+                    PoolAddressesProviderAddress =
+                        EvmAddress.Create("0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb"),
+                    UiPoolDataProviderAddress = EvmAddress.Create("0x145dE30c929a065582da84Cf96F88460dB9745A7")
+                }
+            });
         }
     }
 }
