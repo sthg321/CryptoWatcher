@@ -58,7 +58,8 @@ public class MorphoMarketSynchronizer : IMorphoMarketSynchronizer
             }
 
             dbMarketPosition.AddSnapshot(syncDay, marketPosition.LoanToken.ToStatistic(),
-                marketPosition.CollateralToken.ToStatistic(), marketPosition.HealthFactor);
+                marketPosition.CollateralToken.ToStatistic(), marketPosition.HealthFactor,
+                marketPosition.LiquidationLtv);
 
             result.Add(dbMarketPosition);
         }

@@ -9,6 +9,7 @@ namespace CryptoWatcher.Modules.Morpho.Infrastructure;
 
 internal class MorphoProvider : IMorphoProvider
 {
+    private static readonly BigInteger Wad = (BigInteger)1e18m;
     private readonly IMorphoClient _morphoClient;
 
     public MorphoProvider(IMorphoClient morphoClient)
@@ -25,7 +26,7 @@ internal class MorphoProvider : IMorphoProvider
         {
             return [];
         }
-        
+
         return result.UserByAddress.MarketPositions
             .Select(position =>
             {
@@ -33,7 +34,7 @@ internal class MorphoProvider : IMorphoProvider
                 var collateralToken = CreateToken(position.Market.CollateralAsset, position.State.Collateral);
 
                 return new MorphoMarketPositionData(position.Market.Id, loanToken, collateralToken,
-                    position.HealthFactor ?? int.MaxValue);
+                    position.HealthFactor ?? int.MaxValue, (double)(BigInteger.Parse(position.Market.Lltv) / Wad));
             })
             .ToArray();
     }
