@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\CryptoWatcher.Modules.Infrastructure.Shared\CryptoWatcher.Modules.Infrastructure.Shared.csproj" />
       <ProjectReference Include="..\CryptoWatcher.Modules.Aave.Application\CryptoWatcher.Modules.Aave.Application.csproj" />
     </ItemGroup>
 
