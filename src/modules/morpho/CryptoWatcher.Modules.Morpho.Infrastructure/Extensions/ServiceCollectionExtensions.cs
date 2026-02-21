@@ -26,6 +26,7 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IMorphoClient, MorphoClient>();
         services.AddScoped<IMorphoProvider, MorphoProvider>();
+        services.AddScoped<MorphoPositionsStatusService>();
         
         services.AddScoped<IMorphoMarketSynchronizer, MorphoMarketSynchronizer>();
 

@@ -16,5 +16,5 @@ public class BaseCurrencyInfo
     public BigInteger NetworkBaseTokenPriceInUsd { get; set; }
 
     [Parameter("uint8", "networkBaseTokenPriceDecimals", 4)]
-    public byte NetworkBaseTokenPriceDecimals { get; set; }
+    public BigInteger NetworkBaseTokenPriceDecimals { get; set; }
 }

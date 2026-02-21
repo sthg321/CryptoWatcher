@@ -5,6 +5,7 @@ using System.Numerics;
 using CryptoWatcher.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -13,9 +14,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CryptoWatcher.Infrastructure.Migrations
 {
     [DbContext(typeof(CryptoWatcherDbContext))]
-    partial class CryptoWatcherDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260218195336_AddLiquidationLltvToMorphoMigration")]
+    partial class AddLiquidationLltvToMorphoMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -263,9 +266,6 @@ namespace CryptoWatcher.Infrastructure.Migrations
 
                     b.Property<DateOnly>("Day")
                         .HasColumnType("date");
-
-                    b.Property<double?>("LiquidationLtv")
-                        .HasColumnType("double precision");
 
                     b.ComplexProperty(typeof(Dictionary<string, object>), "Token0", "CryptoWatcher.Modules.Aave.Entities.AavePositionSnapshot.Token0#CryptoTokenStatistic", b1 =>
                         {

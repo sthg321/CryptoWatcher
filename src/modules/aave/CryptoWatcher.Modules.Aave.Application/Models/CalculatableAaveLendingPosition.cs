@@ -26,6 +26,9 @@ public abstract class CalculatableAaveLendingPosition : AaveLendingPosition
     
     public BigInteger CalculateAmountWithInterest() => ScaleAmount * AccrualIndex / AaveIndexNormalizationFactor;
 
+    public decimal CalculateAmountWithInterestInUsd() =>
+        (ScaleAmount * AccrualIndex / AaveIndexNormalizationFactor).ToDecimal(TokenDecimals) * TokenPriceInUsd;
+
     public AavePositionType DeterminePositionType() => this switch
     {
         BorrowedAaveLendingPosition _ => AavePositionType.Borrowed,

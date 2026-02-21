@@ -15,6 +15,14 @@ namespace CryptoWatcher.Modules.Aave.Specifications;
 /// </remarks>
 public sealed class AavePositionsWithSnapshotsSpecification : Specification<AavePosition>
 {
+    public AavePositionsWithSnapshotsSpecification(IReadOnlyCollection<EvmAddress> wallets, DateOnly day)
+    {
+        Query.Include(position => position.PositionPeriods)
+            .Include(position =>
+                position.Snapshots.Where(snapshot => snapshot.Day >= day && snapshot.Day <= day))
+            .Where(position => wallets.Contains(position.WalletAddress) && position.IsActive());
+    }
+    
     public AavePositionsWithSnapshotsSpecification(AaveChainConfiguration chain, Wallet wallet, DateOnly from,
         DateOnly to)
     {

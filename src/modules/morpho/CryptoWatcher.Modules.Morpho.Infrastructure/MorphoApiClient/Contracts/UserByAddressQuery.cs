@@ -10,6 +10,7 @@ internal static class UserByAddressQuery
                                       healthFactor
                                       market {
                                         id
+                                        lltv
                                         loanAsset {
                                           address
                                           decimals

@@ -224,7 +224,7 @@ public class AavePositionsSyncServiceTest
     private AavePositionsSyncService CreateService()
     {
         return new AavePositionsSyncService(_aaveProviderMock.Object, _tokenEnricherMock.Object,
-            _aavePositionRepositoryMock.Object, _timeProviderMock.Object);
+            _aavePositionRepositoryMock.Object, _timeProviderMock.Object, Mock.Of<IRepository<AaveAccountSnapshot>>());
     }
 
     [AssertionMethod]

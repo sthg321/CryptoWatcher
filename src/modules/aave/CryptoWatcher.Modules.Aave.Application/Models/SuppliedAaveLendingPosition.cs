@@ -11,6 +11,8 @@ public class SuppliedAaveLendingPosition : CalculatableAaveLendingPosition
     /// For positions with supplied liquidity, this property represents the liquidity index.
     /// </summary>
     public required BigInteger LiquidityIndex { get; init; }
+    
+    public required decimal LiquidationLtv { get; init; }
 
     protected override BigInteger AccrualIndex => LiquidityIndex;
     

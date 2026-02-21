@@ -13,6 +13,8 @@ public class AggregatedMarketReserveData
     
     public required BigInteger VariableBorrowIndex { get; init; }
     
+    public required BigInteger LiquidationLtv { get; init; }
+    
     public required BigInteger PriceInMarketReferenceCurrency { get; init; }
     
     public required ushort ReserveLiquidationThreshold { get; init; }

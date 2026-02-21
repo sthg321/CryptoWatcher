@@ -34,6 +34,8 @@ internal record Market
     public Asset LoanAsset { get; set; } = null!;
 
     public Asset CollateralAsset { get; set; } = null!;
+    
+    public string Lltv { get; set; } = null!;
 }
 
 [PublicAPI]

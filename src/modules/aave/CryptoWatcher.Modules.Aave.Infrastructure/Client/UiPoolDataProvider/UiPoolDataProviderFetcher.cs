@@ -46,12 +46,13 @@ internal class UiPoolDataProviderFetcher : IUiPoolDataProviderFetcher
 
         return new MarketReserveOutput
         {
-            NetworkBaseTokenPriceDecimals = result.BaseCurrencyInfo.NetworkBaseTokenPriceDecimals,
+            NetworkBaseTokenPriceDecimals = (byte)result.BaseCurrencyInfo.NetworkBaseTokenPriceDecimals,
             AggregatedMarketReserveData = result.ReservesData.Select(data => new AggregatedMarketReserveData
             {
                 UnderlyingAsset = EvmAddress.Create(data.UnderlyingAsset),
                 Decimals = data.Decimals,
                 LiquidityIndex = data.LiquidityIndex,
+                LiquidationLtv = data.ReserveLiquidationThreshold,
                 PriceInMarketReferenceCurrency = data.PriceInMarketReferenceCurrency,
                 VariableBorrowIndex = data.VariableBorrowIndex,
                 ReserveLiquidationThreshold = (ushort)data.ReserveLiquidationThreshold

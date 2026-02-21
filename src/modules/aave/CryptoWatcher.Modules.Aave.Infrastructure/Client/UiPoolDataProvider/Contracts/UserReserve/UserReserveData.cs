@@ -14,6 +14,15 @@ public class UserReserveData
     [Parameter("bool", "usageAsCollateralEnabledOnUser", 3)]
     public bool UsageAsCollateralEnabled { get; set; }
 
-    [Parameter("uint256", "scaledVariableDebt", 4)]
+    [Parameter("uint256", "stableBorrowRate", 4)]
+    public BigInteger StableBorrowRate { get; set; }
+
+    [Parameter("uint256", "scaledVariableDebt", 5)]
     public BigInteger ScaledVariableDebt { get; set; }
+
+    [Parameter("uint256", "principalStableDebt", 6)]
+    public BigInteger PrincipalStableDebt { get; set; }
+
+    [Parameter("uint256", "stableBorrowLastUpdateTimestamp", 7)]
+    public BigInteger StableBorrowLastUpdateTimestamp { get; set; }
 }

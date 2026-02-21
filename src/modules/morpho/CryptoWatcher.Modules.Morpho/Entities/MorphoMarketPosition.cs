@@ -18,13 +18,12 @@ public class MorphoMarketPosition : IDeFiPosition<MorphoMarketPositionSnapshot, 
 
     internal const string PositionClosedException = "Position already closed";
     internal const string ClosedAtGreatestThatCreatedAtException = "ClosedAt can't be greatest that CreatedAt";
-    
+
     //for ef
     private MorphoMarketPosition()
     {
-        
     }
-    
+
     public MorphoMarketPosition(
         EvmAddress walletAddress,
         Guid marketExternalMarketExternalId,
@@ -60,16 +59,16 @@ public class MorphoMarketPosition : IDeFiPosition<MorphoMarketPositionSnapshot, 
     public DateTime? ClosedAt { get; private set; }
 
     public EvmAddress WalletAddress { get; private set; } = null!;
-    
+
     public bool IsClosed => ClosedAt is not null;
-    
+
     public IReadOnlyCollection<MorphoMarketPositionSnapshot> Snapshots => _snapshots;
 
     // support later
     public IReadOnlyCollection<MorphoMarketPositionCashFlow> CashFlows => _cashFlows;
 
     public void AddSnapshot(DateOnly day, CryptoTokenStatistic load, CryptoTokenStatistic collateralToken,
-        double healthFactor)
+        double healthFactor, double liquidationLtv)
     {
         if (IsClosed)
         {
@@ -79,13 +78,13 @@ public class MorphoMarketPosition : IDeFiPosition<MorphoMarketPositionSnapshot, 
         var existedSnapshot = Snapshots.FirstOrDefault(snapshot => snapshot.Day == day);
         if (existedSnapshot is not null)
         {
-            existedSnapshot.UpdateSnapshot(load, collateralToken, healthFactor);
+            existedSnapshot.UpdateSnapshot(load, collateralToken, healthFactor, liquidationLtv);
             return;
         }
 
-        _snapshots.Add(new MorphoMarketPositionSnapshot(Id, day, load, collateralToken, healthFactor));
+        _snapshots.Add(new MorphoMarketPositionSnapshot(Id, day, load, collateralToken, healthFactor, liquidationLtv));
     }
-    
+
     public void ClosePosition(DateTime closedAt)
     {
         if (closedAt < CreatedAt)

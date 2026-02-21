@@ -1,6 +1,7 @@
 using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
 using CryptoWatcher.Abstractions;
+using CryptoWatcher.Modules.Aave.Entities;
 using CryptoWatcher.Modules.Hyperliquid.Entities;
 using CryptoWatcher.Modules.Merkl.Entities;
 using CryptoWatcher.Modules.Uniswap.Entities;
@@ -18,6 +19,11 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
     // ReSharper disable once StaticMemberInGenericType
     private static readonly Dictionary<Type, List<string>> Type2PrimaryKeyFields = new()
     {
+        [typeof(AaveAccountSnapshot)] =
+        [
+            nameof(AaveAccountSnapshot.NetworkName), nameof(AaveAccountSnapshot.WalletAddress),
+            nameof(AaveAccountSnapshot.Day)
+        ],
         [typeof(Wallet)] =
         [
             nameof(Wallet.Address)
@@ -112,7 +118,7 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
                                 new
                                 {
                                     @event.VaultAddress, @event.WalletAddress, @event.Date
-                                };  
+                                };
                             break;
                         case BulkOperation<HyperliquidVaultPeriod> positionOperation:
                             positionOperation.ColumnPrimaryKeyExpression = @event => @event.Id;
@@ -122,7 +128,7 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
             }, ct);
             return;
         }
-        
+
         if (entities.First() is UniswapLiquidityPosition)
         {
             await _dbContext.BulkMergeAsync(entities, operation =>

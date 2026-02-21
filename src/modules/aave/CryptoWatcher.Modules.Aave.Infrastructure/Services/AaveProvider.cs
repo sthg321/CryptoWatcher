@@ -61,6 +61,7 @@ internal class AaveProvider : IAaveProvider
                     LiquidityIndex = reserveData.LiquidityIndex,
                     TokenPriceInUsd = reserveData.PriceInMarketReferenceCurrency.ToDecimal(decimals),
                     TokenDecimals = (byte)reserveData.Decimals,
+                    LiquidationLtv = (decimal)Math.Round((double)reserveData.LiquidationLtv / 10000, 4),
                     IsCollateral = userReserveData.IsCollateral
                 };
 

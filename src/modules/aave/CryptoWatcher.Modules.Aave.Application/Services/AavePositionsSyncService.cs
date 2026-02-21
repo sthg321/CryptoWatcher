@@ -5,7 +5,6 @@ using CryptoWatcher.Modules.Aave.Entities;
 using CryptoWatcher.Modules.Aave.Models;
 using CryptoWatcher.Modules.Aave.Specifications;
 using CryptoWatcher.Shared.Entities;
-using CryptoWatcher.ValueObjects;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -18,16 +17,16 @@ public class AavePositionsSyncService : IAavePositionsSyncService
     private readonly IRepository<AavePosition> _aavePositionRepository;
     private readonly TimeProvider _timeProvider;
     private readonly ILogger<AavePositionsSyncService> _logger;
+    private readonly IRepository<AaveAccountSnapshot>  _aaveAccountSnapshotRepository;
 
     public AavePositionsSyncService(IAaveProvider aaveProvider, IAaveTokenEnricher aaveTokenEnricher,
-        IRepository<AavePosition> aavePositionRepository, TimeProvider timeProvider,
-        ILogger<AavePositionsSyncService>? logger = null)
+        IRepository<AavePosition> aavePositionRepository, TimeProvider timeProvider, IRepository<AaveAccountSnapshot> aaveAccountSnapshotRepository, ILogger<AavePositionsSyncService>? logger = null)
     {
         _aaveProvider = aaveProvider;
         _aaveTokenEnricher = aaveTokenEnricher;
         _aavePositionRepository = aavePositionRepository;
         _timeProvider = timeProvider;
-
+        _aaveAccountSnapshotRepository = aaveAccountSnapshotRepository;
         _logger = logger ?? NullLogger<AavePositionsSyncService>.Instance;
     }
 
@@ -39,7 +38,7 @@ public class AavePositionsSyncService : IAavePositionsSyncService
     {
         var existedPositions = await _aavePositionRepository.ListAsync(
             new AavePositionsWithSnapshotsSpecification(chain, wallet, syncDay, syncDay),
-            ct); // Предполагаем, что spec грузит открытые позиции; если нет — обновите spec на all open.
+            ct);
 
         _logger.LogExistedPositionsForWalletCount(wallet.Address, existedPositions.Count);
 
@@ -49,6 +48,8 @@ public class AavePositionsSyncService : IAavePositionsSyncService
 
         _logger.LogFetchedPositionsForNetworkCount(chain.Name, aavePositionsResponse.Positions.Count);
 
+        var totalSupply = 0M;
+        var totalBorrow = 0M;
         foreach (var lendingPosition in aavePositionsResponse.Positions)
         {
             if (lendingPosition is EmptyAaveLendingPosition)
@@ -65,12 +66,12 @@ public class AavePositionsSyncService : IAavePositionsSyncService
 
                 continue;
             }
-            
+
             var calculatableAaveLendingPosition = lendingPosition as CalculatableAaveLendingPosition ??
                                                   throw new InvalidOperationException("...");
 
             var cryptoToken = await _aaveTokenEnricher.EnrichTokenAsync(chain, calculatableAaveLendingPosition, ct);
-            
+
             var positionType = calculatableAaveLendingPosition.DeterminePositionType();
 
             var currentPosition = existedPositions.FirstOrDefault(position =>
@@ -93,13 +94,33 @@ public class AavePositionsSyncService : IAavePositionsSyncService
 
             var positionScaleAmount = calculatableAaveLendingPosition.CalculatePositionScaleInToken();
             currentPosition.AddOrUpdateSnapshot(cryptoToken, positionScaleAmount, syncDay, _timeProvider,
-                aavePositionsResponse.HealthFactor);
+                (double?)(calculatableAaveLendingPosition as SuppliedAaveLendingPosition)?.LiquidationLtv);
 
             result.Add(currentPosition);
+
+            if (positionType == AavePositionType.Supplied)
+            {
+                totalSupply += cryptoToken.AmountInUsd;
+                continue;
+            }
+
+            totalBorrow += cryptoToken.AmountInUsd;
         }
 
+        var accountSnapshot = new AaveAccountSnapshot
+        {
+            HealthFactor = aavePositionsResponse.HealthFactor,
+            Day = syncDay,
+            WalletAddress = wallet.Address,
+            NetworkName = chain.Name,
+            TotalCollateralInUsd = totalSupply,
+            TotalDebtInUsd = totalBorrow
+        };
+        
         await _aavePositionRepository.UnitOfWork.SaveChangesAsync(ct);
 
+        await _aaveAccountSnapshotRepository.BulkMergeAsync([accountSnapshot], ct);
+        
         return result;
     }
 }

@@ -140,10 +140,10 @@ public class AavePosition : IDeFiPosition<AavePositionSnapshot, AavePositionCash
     /// <param name="positionScale">The scaled position amount to record.</param>
     /// <param name="day">The day associated with the snapshot.</param>
     /// <param name="provider"></param>
-    /// <param name="healthFactor">position hf</param>
+    /// <param name="liquidationLtv"></param>
     /// <exception cref="InvalidOperationException">Thrown if the position is already closed.</exception>
     public void AddOrUpdateSnapshot(CryptoToken cryptoToken, decimal positionScale, DateOnly day, TimeProvider provider,
-        double healthFactor)
+        double? liquidationLtv = null)
     {
         if (!IsActive())
         {
@@ -159,11 +159,11 @@ public class AavePosition : IDeFiPosition<AavePositionSnapshot, AavePositionCash
         var existingSnapshot = Snapshots.FirstOrDefault(s => s.Day == day);
         if (existingSnapshot != null)
         {
-            existingSnapshot.Update(cryptoToken.Amount, cryptoToken.PriceInUsd, healthFactor);
+            existingSnapshot.Update(cryptoToken.Amount, cryptoToken.PriceInUsd, liquidationLtv);
         }
         else
         {
-            _snapshots.Add(new AavePositionSnapshot(Id, day, cryptoToken.ToStatistic(), healthFactor));
+            _snapshots.Add(new AavePositionSnapshot(Id, day, cryptoToken.ToStatistic(), liquidationLtv));
         }
 
         if (PreviousScaledAmount == positionScale)

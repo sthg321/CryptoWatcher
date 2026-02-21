@@ -33,6 +33,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAaveTokenEnricher, AaveTokenEnricher>();
 
         services.AddScoped<IAaveProvider, AaveProvider>();
+        services.AddScoped<AaveAccountStatusService>();
 
         services.AddKeyedScoped<IPlatformDailyReportDataProvider, AaveReportDataService>(AaveModuleKeyedService
             .DailyPlatformKeyService);

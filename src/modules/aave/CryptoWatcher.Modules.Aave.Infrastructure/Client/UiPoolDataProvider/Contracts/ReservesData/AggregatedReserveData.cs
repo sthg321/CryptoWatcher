@@ -3,20 +3,16 @@ using Nethereum.ABI.FunctionEncoding.Attributes;
 
 namespace CryptoWatcher.Modules.Aave.Infrastructure.Client.UiPoolDataProvider.Contracts.ReservesData;
 
-[FunctionOutput]
 public class AggregatedReserveData
 {
     [Parameter("address", "underlyingAsset", 1)]
-    public string UnderlyingAsset { get; set; } = null!;
+    public string UnderlyingAsset { get; set; }
 
-    [Parameter("string", "name", 2)]
-    public string Name { get; set; } = null!;
+    [Parameter("string", "name", 2)] public string Name { get; set; }
 
-    [Parameter("string", "symbol", 3)]
-    public string Symbol { get; set; } = null!;
+    [Parameter("string", "symbol", 3)] public string Symbol { get; set; }
 
-    [Parameter("uint256", "decimals", 4)]
-    public BigInteger Decimals { get; set; }
+    [Parameter("uint256", "decimals", 4)] public BigInteger Decimals { get; set; }
 
     [Parameter("uint256", "baseLTVasCollateral", 5)]
     public BigInteger BaseLTVasCollateral { get; set; }
@@ -36,93 +32,130 @@ public class AggregatedReserveData
     [Parameter("bool", "borrowingEnabled", 10)]
     public bool BorrowingEnabled { get; set; }
 
-    [Parameter("bool", "isActive", 11)]
-    public bool IsActive { get; set; }
+    [Parameter("bool", "stableBorrowRateEnabled", 11)]
+    public bool StableBorrowRateEnabled { get; set; }
 
-    [Parameter("bool", "isFrozen", 12)]
-    public bool IsFrozen { get; set; }
+    [Parameter("bool", "isActive", 12)] public bool IsActive { get; set; }
 
-    [Parameter("uint128", "liquidityIndex", 13)]
+    [Parameter("bool", "isFrozen", 13)] public bool IsFrozen { get; set; }
+
+    [Parameter("uint128", "liquidityIndex", 14)]
     public BigInteger LiquidityIndex { get; set; }
 
-    [Parameter("uint128", "variableBorrowIndex", 14)]
+    [Parameter("uint128", "variableBorrowIndex", 15)]
     public BigInteger VariableBorrowIndex { get; set; }
 
-    [Parameter("uint128", "liquidityRate", 15)]
+    [Parameter("uint128", "liquidityRate", 16)]
     public BigInteger LiquidityRate { get; set; }
 
-    [Parameter("uint128", "variableBorrowRate", 16)]
+    [Parameter("uint128", "variableBorrowRate", 17)]
     public BigInteger VariableBorrowRate { get; set; }
 
-    [Parameter("uint40", "lastUpdateTimestamp", 17)]
-    public long LastUpdateTimestamp { get; set; }
+    [Parameter("uint128", "stableBorrowRate", 18)]
+    public BigInteger StableBorrowRate { get; set; }
 
-    [Parameter("address", "aTokenAddress", 18)]
-    public string ATokenAddress { get; set; } = null!;
+    [Parameter("uint40", "lastUpdateTimestamp", 19)]
+    public BigInteger LastUpdateTimestamp { get; set; }
 
-    [Parameter("address", "variableDebtTokenAddress", 19)]
-    public string VariableDebtTokenAddress { get; set; } = null!;
+    [Parameter("address", "aTokenAddress", 20)]
+    public string ATokenAddress { get; set; }
 
-    [Parameter("address", "interestRateStrategyAddress", 20)]
-    public string InterestRateStrategyAddress { get; set; } = null!;
+    [Parameter("address", "stableDebtTokenAddress", 21)]
+    public string StableDebtTokenAddress { get; set; }
 
-    [Parameter("uint256", "availableLiquidity", 21)]
+    [Parameter("address", "variableDebtTokenAddress", 22)]
+    public string VariableDebtTokenAddress { get; set; }
+
+    [Parameter("address", "interestRateStrategyAddress", 23)]
+    public string InterestRateStrategyAddress { get; set; }
+
+    [Parameter("uint256", "availableLiquidity", 24)]
     public BigInteger AvailableLiquidity { get; set; }
 
-    [Parameter("uint256", "totalScaledVariableDebt", 22)]
+    [Parameter("uint256", "totalPrincipalStableDebt", 25)]
+    public BigInteger TotalPrincipalStableDebt { get; set; }
+
+    [Parameter("uint256", "averageStableRate", 26)]
+    public BigInteger AverageStableRate { get; set; }
+
+    [Parameter("uint256", "stableDebtLastUpdateTimestamp", 27)]
+    public BigInteger StableDebtLastUpdateTimestamp { get; set; }
+
+    [Parameter("uint256", "totalScaledVariableDebt", 28)]
     public BigInteger TotalScaledVariableDebt { get; set; }
 
-    [Parameter("uint256", "priceInMarketReferenceCurrency", 23)]
+    [Parameter("uint256", "priceInMarketReferenceCurrency", 29)]
     public BigInteger PriceInMarketReferenceCurrency { get; set; }
 
-    [Parameter("address", "priceOracle", 24)]
-    public string PriceOracle { get; set; } = null!;
+    [Parameter("address", "priceOracle", 30)]
+    public string PriceOracle { get; set; }
 
-    [Parameter("uint256", "variableRateSlope1", 25)]
+    [Parameter("uint256", "variableRateSlope1", 31)]
     public BigInteger VariableRateSlope1 { get; set; }
 
-    [Parameter("uint256", "variableRateSlope2", 26)]
+    [Parameter("uint256", "variableRateSlope2", 32)]
     public BigInteger VariableRateSlope2 { get; set; }
 
-    [Parameter("uint256", "baseVariableBorrowRate", 27)]
+    [Parameter("uint256", "stableRateSlope1", 33)]
+    public BigInteger StableRateSlope1 { get; set; }
+
+    [Parameter("uint256", "stableRateSlope2", 34)]
+    public BigInteger StableRateSlope2 { get; set; }
+
+    [Parameter("uint256", "baseStableBorrowRate", 35)]
+    public BigInteger BaseStableBorrowRate { get; set; }
+
+    [Parameter("uint256", "baseVariableBorrowRate", 36)]
     public BigInteger BaseVariableBorrowRate { get; set; }
 
-    [Parameter("uint256", "optimalUsageRatio", 28)]
+    [Parameter("uint256", "optimalUsageRatio", 37)]
     public BigInteger OptimalUsageRatio { get; set; }
 
-    [Parameter("bool", "isPaused", 29)]
-    public bool IsPaused { get; set; }
+    [Parameter("bool", "isPaused", 38)] public bool IsPaused { get; set; }
 
-    [Parameter("bool", "isSiloedBorrowing", 30)]
+    [Parameter("bool", "isSiloedBorrowing", 39)]
     public bool IsSiloedBorrowing { get; set; }
 
-    [Parameter("uint128", "accruedToTreasury", 31)]
+    [Parameter("uint128", "accruedToTreasury", 40)]
     public BigInteger AccruedToTreasury { get; set; }
 
-    [Parameter("uint128", "isolationModeTotalDebt", 32)]
+    [Parameter("uint128", "unbacked", 41)] public BigInteger Unbacked { get; set; }
+
+    [Parameter("uint128", "isolationModeTotalDebt", 42)]
     public BigInteger IsolationModeTotalDebt { get; set; }
 
-    [Parameter("bool", "flashLoanEnabled", 33)]
+    [Parameter("bool", "flashLoanEnabled", 43)]
     public bool FlashLoanEnabled { get; set; }
 
-    [Parameter("uint256", "debtCeiling", 34)]
+    [Parameter("uint256", "debtCeiling", 44)]
     public BigInteger DebtCeiling { get; set; }
 
-    [Parameter("uint256", "debtCeilingDecimals", 35)]
+    [Parameter("uint256", "debtCeilingDecimals", 45)]
     public BigInteger DebtCeilingDecimals { get; set; }
 
-    [Parameter("uint256", "borrowCap", 36)]
+    [Parameter("uint8", "eModeCategoryId", 46)]
+    public BigInteger EModeCategoryId { get; set; }
+
+    [Parameter("uint256", "borrowCap", 47)]
     public BigInteger BorrowCap { get; set; }
 
-    [Parameter("uint256", "supplyCap", 37)]
+    [Parameter("uint256", "supplyCap", 48)]
     public BigInteger SupplyCap { get; set; }
 
-    [Parameter("bool", "borrowableInIsolation", 38)]
+    [Parameter("uint16", "eModeLtv", 49)] public BigInteger EModeLtv { get; set; }
+
+    [Parameter("uint16", "eModeLiquidationThreshold", 50)]
+    public BigInteger EModeLiquidationThreshold { get; set; }
+
+    [Parameter("uint16", "eModeLiquidationBonus", 51)]
+    public BigInteger EModeLiquidationBonus { get; set; }
+
+    [Parameter("address", "eModePriceSource", 52)]
+    public string EModePriceSource { get; set; }
+
+    [Parameter("string", "eModeLabel", 53)]
+    public string EModeLabel { get; set; }
+
+    [Parameter("bool", "borrowableInIsolation", 54)]
     public bool BorrowableInIsolation { get; set; }
-
-    [Parameter("uint128", "virtualUnderlyingBalance", 39)]
-    public BigInteger VirtualUnderlyingBalance { get; set; }
-
-    [Parameter("uint128", "deficit", 40)]
-    public BigInteger Deficit { get; set; }
 }

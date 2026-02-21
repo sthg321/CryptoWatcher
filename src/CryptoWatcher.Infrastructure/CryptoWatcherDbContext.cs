@@ -74,6 +74,8 @@ public class CryptoWatcherDbContext(DbContextOptions<CryptoWatcherDbContext> opt
     /// </remarks>
     public DbSet<AavePositionSnapshot> AavePositionSnapshots => Set<AavePositionSnapshot>();
 
+    public DbSet<AaveAccountSnapshot> AaveAccountSnapshots => Set<AaveAccountSnapshot>();
+
     /// <summary>
     /// Represents the daily performance data for Aave positions in the application's database context.
     /// </summary>
