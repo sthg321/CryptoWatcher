@@ -13,19 +13,27 @@ public class AaveProvider : IAaveProvider
     private readonly IAaveGateway _aaveGateway;
     private readonly IAaveHealthFactorCalculator _aaveHealthFactorCalculator;
 
-    public AaveProvider(IAaveGateway aaveApiClient, IAaveHealthFactorCalculator aaveHealthFactorCalculator)
+    public AaveProvider(
+        IAaveGateway aaveApiClient,
+        IAaveHealthFactorCalculator aaveHealthFactorCalculator)
     {
         _aaveGateway = aaveApiClient;
         _aaveHealthFactorCalculator = aaveHealthFactorCalculator;
     }
 
-    public async Task<AavePositionsResponse> GetLendingPositionAsync(AaveChainConfiguration chain, Wallet wallet)
+    public async Task<AavePositionsResponse> GetLendingPositionAsync(
+        AaveChainConfiguration chain,
+        Wallet wallet)
     {
-        var userReserves = await _aaveGateway.GetUserReservesDataAsync(chain, wallet.Address);
+        var userReserves =
+            await _aaveGateway.GetUserReservesDataAsync(chain, wallet.Address);
 
-        var reserveOutput = await _aaveGateway.GetMarketReservesDataAsync(chain);
+        var reserveOutput =
+            await _aaveGateway.GetMarketReservesDataAsync(chain);
 
-        var marketData = reserveOutput.AggregatedMarketReserveData.ToDictionary(data => data.UnderlyingAsset);
+        var marketData =
+            reserveOutput.AggregatedMarketReserveData
+                .ToDictionary(data => data.UnderlyingAsset);
 
         var result = new List<AaveLendingPosition>();
 
@@ -43,44 +51,37 @@ public class AaveProvider : IAaveProvider
 
             if (!marketData.TryGetValue(userReserveData.UnderlyingAsset, out var reserveData))
             {
-                throw new Exception("Can't find reserve data");
+                throw new InvalidOperationException(
+                    $"Reserve data not found for asset {userReserveData.UnderlyingAsset}");
             }
 
-            var decimals = reserveOutput.NetworkBaseTokenPriceDecimals;
+            var tokenDecimals = (byte)reserveData.Decimals;
+
+            var priceDecimals =
+                reserveOutput.NetworkBaseTokenPriceDecimals;
+
+            var tokenPriceInUsd = reserveData.PriceInMarketReferenceCurrency.ToDecimal(priceDecimals);
 
             if (userReserveData.ScaledATokenBalance > 0)
             {
-                var suppliedPosition = new SuppliedAaveLendingPosition
-                {
-                    ScaleAmount = userReserveData.ScaledATokenBalance,
-                    TokenAddress = EvmAddress.Create(userReserveData.UnderlyingAsset),
-                    LiquidityIndex = reserveData.LiquidityIndex,
-                    TokenPriceInUsd = reserveData.PriceInMarketReferenceCurrency.ToDecimal(decimals),
-                    TokenDecimals = (byte)reserveData.Decimals,
-                    LiquidationLtv = (decimal)Math.Round((double)reserveData.LiquidationLtv / 10000, 4),
-                    IsCollateral = userReserveData.IsCollateral
-                };
+                var supplyPosition =
+                    AaveLendingPositionFactory.CreateSupply(userReserveData, reserveData, tokenPriceInUsd,
+                        tokenDecimals);
 
-                result.Add(suppliedPosition);
+                result.Add(supplyPosition);
             }
 
             if (userReserveData.ScaledVariableDebt > 0)
             {
-                var borrowedPosition = new BorrowedAaveLendingPosition
-                {
-                    ScaleAmount = userReserveData.ScaledVariableDebt,
-                    TokenAddress = EvmAddress.Create(userReserveData.UnderlyingAsset),
-                    VariableBorrowIndex = reserveData.VariableBorrowIndex,
-                    TokenPriceInUsd = reserveData.PriceInMarketReferenceCurrency.ToDecimal(decimals),
-                    TokenDecimals = (byte)reserveData.Decimals
-                };
+                var supplyPosition =
+                    AaveLendingPositionFactory.CreateBorrow(userReserveData, reserveData, tokenPriceInUsd,
+                        tokenDecimals);
 
-                result.Add(borrowedPosition);
+                result.Add(supplyPosition);
             }
         }
 
-        var healthFactor = _aaveHealthFactorCalculator.CalculateHealthFactor(
-            result.OfType<CalculatableAaveLendingPosition>().ToArray(), marketData);
+        var healthFactor = _aaveHealthFactorCalculator.CalculateHealthFactor(result, marketData);
 
         return new AavePositionsResponse(result, healthFactor);
     }

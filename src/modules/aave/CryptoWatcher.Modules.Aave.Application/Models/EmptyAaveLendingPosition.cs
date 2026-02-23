@@ -1,3 +1,5 @@
+using CryptoWatcher.Modules.Aave.Application.Models;
+
 namespace CryptoWatcher.Modules.Aave.Models;
 
 /// <summary>

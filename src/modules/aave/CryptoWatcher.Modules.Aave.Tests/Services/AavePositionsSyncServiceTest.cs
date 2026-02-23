@@ -90,14 +90,17 @@ public class AavePositionsSyncServiceTest
         var expectedPositions = expectedPositionType switch
         {
             AavePositionType.Borrowed => _fixture
-                .CreateMany<BorrowedAaveLendingPosition>()
-                .Cast<AaveLendingPosition>()
+                .Build<AaveLendingPosition>()
+                .With(position => position.PositionType, AavePositionType.Borrowed)
+                .CreateMany()
                 .ToList(),
 
             AavePositionType.Supplied => _fixture
-                .CreateMany<SuppliedAaveLendingPosition>()
-                .Cast<AaveLendingPosition>()
+                .Build<AaveLendingPosition>()
+                .With(position => position.PositionType, AavePositionType.Supplied)
+                .CreateMany()
                 .ToList(),
+
             _ => throw new ArgumentOutOfRangeException(nameof(expectedPositionType), expectedPositionType, null)
         };
 
@@ -137,7 +140,7 @@ public class AavePositionsSyncServiceTest
         Assert.Equal(expectedPositions.Count, actual.Count);
 
         var expectedMap = expectedPositions
-            .Zip(expectedSnapshotTokens, (_, token) => new { TokenAddress = token.Address, Token = token })  
+            .Zip(expectedSnapshotTokens, (_, token) => new { TokenAddress = token.Address, Token = token })
             .ToDictionary(x => x.TokenAddress, x => x.Token);
 
         Assert.Equal(expectedPositions.Count, actual.Count);
@@ -157,8 +160,10 @@ public class AavePositionsSyncServiceTest
     public async Task SyncPositionsAsyncTest_WhenExistAllTypePositions_ShouldReturnNotEmptyPositions()
     {
         AaveLendingPosition emptyPosition = _fixture.Create<EmptyAaveLendingPosition>();
-        AaveLendingPosition suppliedPosition = _fixture.Create<SuppliedAaveLendingPosition>();
-        AaveLendingPosition borrowedPosition = _fixture.Create<BorrowedAaveLendingPosition>();
+        var suppliedPosition = _fixture.Build<AaveLendingPosition>()
+            .With(position => position.PositionType, AavePositionType.Supplied).Create();
+        var borrowedPosition = _fixture.Build<AaveLendingPosition>()
+            .With(position => position.PositionType, AavePositionType.Borrowed).Create();
 
         AaveLendingPosition[] expectedPositions = [suppliedPosition, borrowedPosition];
 
@@ -182,10 +187,8 @@ public class AavePositionsSyncServiceTest
         {
             var actualPosition = actual[index];
             var expectedPosition = expectedPositions[index];
-
-            var expectedPositionType = ((CalculatableAaveLendingPosition)expectedPosition).DeterminePositionType();
-
-            AssertThatAavePositionValid(actualPosition, expectedPositionType);
+            
+            AssertThatAavePositionValid(actualPosition, expectedPosition.PositionType);
 
             var expectedSnapshot = expectedSnapshotTokens[index];
             var actualSnapshot = actualPosition.Snapshots.First();
@@ -218,7 +221,6 @@ public class AavePositionsSyncServiceTest
             TestContext.Current.CancellationToken);
 
         Assert.Single(actual);
-
     }
 
     private AavePositionsSyncService CreateService()

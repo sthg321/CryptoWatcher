@@ -66,20 +66,16 @@ public class AavePositionsSyncService : IAavePositionsSyncService
 
                 continue;
             }
-
-            var calculatableAaveLendingPosition = lendingPosition as CalculatableAaveLendingPosition ??
-                                                  throw new InvalidOperationException("...");
-
-            var cryptoToken = await _aaveTokenEnricher.EnrichTokenAsync(chain, calculatableAaveLendingPosition, ct);
-
-            var positionType = calculatableAaveLendingPosition.DeterminePositionType();
+ 
+            var cryptoToken = await _aaveTokenEnricher.EnrichTokenAsync(chain, lendingPosition, ct);
 
             var currentPosition = existedPositions.FirstOrDefault(position =>
-                position.Token0.Address.Equals(cryptoToken.Address) && position.PositionType == positionType);
+                position.Token0.Address.Equals(cryptoToken.Address) &&
+                position.PositionType == lendingPosition.PositionType);
 
             if (currentPosition is null)
             {
-                currentPosition = new AavePosition(chain, wallet, positionType, cryptoToken, syncDay);
+                currentPosition = new AavePosition(chain, wallet, lendingPosition.PositionType, cryptoToken, syncDay);
 
                 _aavePositionRepository.Insert(currentPosition);
 
@@ -92,13 +88,13 @@ public class AavePositionsSyncService : IAavePositionsSyncService
                 _logger.LogUpdateAavePosition(currentPosition.Token0.Address, cryptoToken);
             }
 
-            var positionScaleAmount = calculatableAaveLendingPosition.CalculatePositionScaleInToken();
+            var positionScaleAmount = lendingPosition.PrincipalAmount;
             currentPosition.AddOrUpdateSnapshot(cryptoToken, positionScaleAmount, syncDay, _timeProvider,
-                (double?)(calculatableAaveLendingPosition as SuppliedAaveLendingPosition)?.LiquidationLtv);
+                (double?)lendingPosition.LiquidationLtv);
 
             result.Add(currentPosition);
 
-            if (positionType == AavePositionType.Supplied)
+            if (lendingPosition.PositionType == AavePositionType.Supplied)
             {
                 totalSupply += cryptoToken.AmountInUsd;
                 continue;

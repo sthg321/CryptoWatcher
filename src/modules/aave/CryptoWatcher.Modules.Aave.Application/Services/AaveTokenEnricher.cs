@@ -1,3 +1,4 @@
+using System.Numerics;
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Modules.Aave.Application.Abstractions;
 using CryptoWatcher.Modules.Aave.Application.Models;
@@ -16,11 +17,21 @@ public class AaveTokenEnricher : IAaveTokenEnricher
     }
 
     public async Task<CryptoToken> EnrichTokenAsync(AaveChainConfiguration chain,
-        CalculatableAaveLendingPosition position,
+        EvmAddress assetAddress,
+        BigInteger amount,
+        decimal priceInUsd,
         CancellationToken ct = default)
     {
-        var token = new Token { Address = position.TokenAddress, Balance = position.CalculateAmountWithInterest() };
-        
-        return await _tokenEnricher.EnrichTokenAsync(chain.RpcUrlWithAuthToken, token, position.TokenPriceInUsd, ct);
+        var token = new Token { Address = assetAddress, Balance = amount };
+
+        return await _tokenEnricher.EnrichTokenAsync(chain.RpcUrlWithAuthToken, token, priceInUsd, ct);
+    }
+
+    public async Task<CryptoToken> EnrichTokenAsync(AaveChainConfiguration chain, AaveLendingPosition lendingPosition,
+        CancellationToken ct = default)
+    {
+        var token = new Token { Address = lendingPosition.TokenAddress, Balance = (BigInteger)lendingPosition.Amount };
+
+        return await _tokenEnricher.EnrichTokenAsync(chain.RpcUrlWithAuthToken, token, lendingPosition.AmountUsd, ct);
     }
 }

@@ -31,7 +31,7 @@ internal static class AavePositionsSyncServiceTestExtensions
             var expectedTokenInfo = fixture.Create<CryptoToken>();
             
             mock.Setup(enricher => enricher.EnrichTokenAsync(chain,
-                    (CalculatableAaveLendingPosition)expectedPosition, It.IsAny<CancellationToken>()))
+                    (AaveLendingPosition)expectedPosition, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedTokenInfo);
             
             expectedSnapshotTokens.Add(expectedTokenInfo);
