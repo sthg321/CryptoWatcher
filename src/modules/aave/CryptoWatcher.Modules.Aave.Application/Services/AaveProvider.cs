@@ -25,15 +25,11 @@ public class AaveProvider : IAaveProvider
         AaveChainConfiguration chain,
         Wallet wallet)
     {
-        var userReserves =
-            await _aaveGateway.GetUserReservesDataAsync(chain, wallet.Address);
+        var userReserves = await _aaveGateway.GetUserReservesDataAsync(chain, wallet.Address);
 
-        var reserveOutput =
-            await _aaveGateway.GetMarketReservesDataAsync(chain);
+        var reserveOutput = await _aaveGateway.GetMarketReservesDataAsync(chain);
 
-        var marketData =
-            reserveOutput.AggregatedMarketReserveData
-                .ToDictionary(data => data.UnderlyingAsset);
+        var marketData = reserveOutput.AggregatedMarketReserveData.ToDictionary(data => data.UnderlyingAsset);
 
         var result = new List<AaveLendingPosition>();
 
@@ -81,7 +77,7 @@ public class AaveProvider : IAaveProvider
             }
         }
 
-        var healthFactor = _aaveHealthFactorCalculator.CalculateHealthFactor(result, marketData);
+        var healthFactor = _aaveHealthFactorCalculator.CalculateHealthFactor(result);
 
         return new AavePositionsResponse(result, healthFactor);
     }

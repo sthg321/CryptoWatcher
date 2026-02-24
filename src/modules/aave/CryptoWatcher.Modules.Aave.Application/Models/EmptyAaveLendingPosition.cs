@@ -1,6 +1,4 @@
-using CryptoWatcher.Modules.Aave.Application.Models;
-
-namespace CryptoWatcher.Modules.Aave.Models;
+namespace CryptoWatcher.Modules.Aave.Application.Models;
 
 /// <summary>
 /// Indicate that for token there is no borrowed or supplied position.

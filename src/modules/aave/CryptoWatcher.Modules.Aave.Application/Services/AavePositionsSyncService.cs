@@ -2,7 +2,6 @@ using CryptoWatcher.Abstractions;
 using CryptoWatcher.Modules.Aave.Application.Abstractions;
 using CryptoWatcher.Modules.Aave.Application.Models;
 using CryptoWatcher.Modules.Aave.Entities;
-using CryptoWatcher.Modules.Aave.Models;
 using CryptoWatcher.Modules.Aave.Specifications;
 using CryptoWatcher.Shared.Entities;
 using Microsoft.Extensions.Logging;

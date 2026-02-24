@@ -16,17 +16,6 @@ public class AaveTokenEnricher : IAaveTokenEnricher
         _tokenEnricher = tokenEnricher;
     }
 
-    public async Task<CryptoToken> EnrichTokenAsync(AaveChainConfiguration chain,
-        EvmAddress assetAddress,
-        BigInteger amount,
-        decimal priceInUsd,
-        CancellationToken ct = default)
-    {
-        var token = new Token { Address = assetAddress, Balance = amount };
-
-        return await _tokenEnricher.EnrichTokenAsync(chain.RpcUrlWithAuthToken, token, priceInUsd, ct);
-    }
-
     public async Task<CryptoToken> EnrichTokenAsync(AaveChainConfiguration chain, AaveLendingPosition lendingPosition,
         CancellationToken ct = default)
     {

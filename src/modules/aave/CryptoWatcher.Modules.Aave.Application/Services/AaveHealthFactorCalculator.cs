@@ -3,7 +3,6 @@ using CryptoWatcher.Modules.Aave.Application.Abstractions;
 using CryptoWatcher.Modules.Aave.Application.Models;
 using CryptoWatcher.Modules.Aave.Entities;
 using CryptoWatcher.Modules.Aave.Models;
-using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Aave.Application.Services;
 
@@ -44,8 +43,7 @@ public class AaveHealthFactorCalculator : IAaveHealthFactorCalculator
         return (double)(collateral / debt);
     }
     
-    public double CalculateHealthFactor(IReadOnlyCollection<AaveLendingPosition> userPositions,
-        Dictionary<EvmAddress, AggregatedMarketReserveData> marketReserveOutput)
+    public double CalculateHealthFactor(IReadOnlyCollection<AaveLendingPosition> userPositions)
     {
         var collateral = 0m;
         var debt = 0m;

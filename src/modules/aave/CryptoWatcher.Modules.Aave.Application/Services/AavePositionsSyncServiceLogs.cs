@@ -1,4 +1,3 @@
-using CryptoWatcher.Shared.ValueObjects;
 using CryptoWatcher.ValueObjects;
 using Microsoft.Extensions.Logging;
 

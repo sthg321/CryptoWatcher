@@ -42,8 +42,6 @@ public static class AaveLendingPositionFactory
         );
     }
 
-    // ===== CORE =====
-
     private static AaveLendingPosition Build(
         string underlyingAsset,
         BigInteger scaledBalance,

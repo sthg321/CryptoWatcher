@@ -32,7 +32,7 @@ public class AaveLiquidationCalculator
     /// Формула:
     ///   total_collateral_usd = Σ(amount_i × price_i)
     /// </summary>
-    public decimal TotalCollateralUsd(IReadOnlyCollection<AavePositionSnapshot> supplies)
+    private static decimal TotalCollateralUsd(IReadOnlyCollection<AavePositionSnapshot> supplies)
         => supplies.Sum(s => s.Token0.AmountInUsd);
 
     /// <summary>
@@ -41,6 +41,7 @@ public class AaveLiquidationCalculator
     /// Формула:
     ///   weighted_avg_lt = Σ(amount_i × price_i × LT_i) / total_collateral_usd
     /// </summary>
-    private decimal WeightedAverageLt(IReadOnlyCollection<AavePositionSnapshot> supplies, decimal totalCollateralUsd)
+    private static decimal WeightedAverageLt(IReadOnlyCollection<AavePositionSnapshot> supplies,
+        decimal totalCollateralUsd)
         => supplies.Sum(s => s.Token0.AmountInUsd * (decimal)s.LiquidationLtv!.Value) / totalCollateralUsd;
 }
