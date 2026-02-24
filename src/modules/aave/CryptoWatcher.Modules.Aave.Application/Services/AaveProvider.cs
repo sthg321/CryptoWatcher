@@ -22,12 +22,12 @@ public class AaveProvider : IAaveProvider
     }
 
     public async Task<AavePositionsResponse> GetLendingPositionAsync(
-        AaveChainConfiguration chain,
+        AaveProtocolConfiguration protocol,
         Wallet wallet)
     {
-        var userReserves = await _aaveGateway.GetUserReservesDataAsync(chain, wallet.Address);
+        var userReserves = await _aaveGateway.GetUserReservesDataAsync(protocol, wallet.Address);
 
-        var reserveOutput = await _aaveGateway.GetMarketReservesDataAsync(chain);
+        var reserveOutput = await _aaveGateway.GetMarketReservesDataAsync(protocol);
 
         var marketData = reserveOutput.AggregatedMarketReserveData.ToDictionary(data => data.UnderlyingAsset);
 

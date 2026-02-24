@@ -19,7 +19,7 @@ public class AaveDbContext : BaseDbContext
     /// and associated smart contract addresses. It is essential to manage and query configuration settings necessary
     /// for interaction with various Aave-supported blockchains within the CryptoWatcher application.
     /// </remarks>
-    public DbSet<AaveChainConfiguration> AaveChainConfigurations => Set<AaveChainConfiguration>();
+    public DbSet<AaveProtocolConfiguration> AaveChainConfigurations => Set<AaveProtocolConfiguration>();
 
     /// <summary>
     /// Provides access to the set of Aave positions within the application's database context.

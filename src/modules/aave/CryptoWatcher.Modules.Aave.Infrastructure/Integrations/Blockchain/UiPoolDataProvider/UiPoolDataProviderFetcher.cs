@@ -16,16 +16,16 @@ public interface IUiPoolDataProviderFetcher
     /// <summary>
     /// Asynchronously retrieves data related to the user's reserve positions in a specific Aave network.
     /// </summary>
-    /// <param name="chain">The network information, including addresses for the UI Pool Data Provider and Pool Addresses Provider.</param>
+    /// <param name="protocol">The network information, including addresses for the UI Pool Data Provider and Pool Addresses Provider.</param>
     /// <param name="userAddress">The address of the user whose reserve data is being queried.</param>
     /// <returns>A task representing the asynchronous operation. The task result contains a list of <c>UserReserveData</c> instances, each of which provides detailed information about the user's reserve positions.</returns>
-    Task<UserReservesResponse> GetUserReservesDataAsync(AaveChainConfiguration chain,
+    Task<UserReservesResponse> GetUserReservesDataAsync(AaveProtocolConfiguration protocol,
         EvmAddress userAddress);
 
     /// <summary>
     /// Asynchronously retrieves detailed reserves data from the Aave protocol for a specific network.
     /// </summary>
-    Task<GetReservesDataOutput> GetMarketReservesDataAsync(AaveChainConfiguration chain);
+    Task<GetReservesDataOutput> GetMarketReservesDataAsync(AaveProtocolConfiguration protocol);
 }
 
 /// <summary>
@@ -33,27 +33,27 @@ public interface IUiPoolDataProviderFetcher
 /// </summary>
 internal class UiPoolDataProviderFetcher : IUiPoolDataProviderFetcher
 {
-    public async Task<UserReservesResponse> GetUserReservesDataAsync(AaveChainConfiguration chain,
+    public async Task<UserReservesResponse> GetUserReservesDataAsync(AaveProtocolConfiguration protocol,
         EvmAddress userAddress)
     {
-        var web3 = new Web3(chain.RpcUrlWithAuthToken.ToString());
+        var web3 = new Web3(protocol.RpcUrlWithAuthToken.ToString());
 
-        var function = GetFunction(web3, "getUserReservesData", chain.SmartContractAddresses.UiPoolDataProviderAddress
+        var function = GetFunction(web3, "getUserReservesData", protocol.SmartContractAddresses.UiPoolDataProviderAddress
             .Value);
 
         return await function.CallDeserializingToObjectAsync<UserReservesResponse>(
-            chain.SmartContractAddresses.PoolAddressesProviderAddress.Value,
+            protocol.SmartContractAddresses.PoolAddressesProviderAddress.Value,
             userAddress.Value
         );
     }
 
-    public async Task<GetReservesDataOutput> GetMarketReservesDataAsync(AaveChainConfiguration chain)
+    public async Task<GetReservesDataOutput> GetMarketReservesDataAsync(AaveProtocolConfiguration protocol)
     {
-        var web3 = new Web3(chain.RpcUrlWithAuthToken.ToString());
+        var web3 = new Web3(protocol.RpcUrlWithAuthToken.ToString());
 
-        var function = GetFunction(web3, "getReservesData", chain.SmartContractAddresses.UiPoolDataProviderAddress.Value);
+        var function = GetFunction(web3, "getReservesData", protocol.SmartContractAddresses.UiPoolDataProviderAddress.Value);
        
-        return await function.CallDeserializingToObjectAsync<GetReservesDataOutput>(chain.SmartContractAddresses
+        return await function.CallDeserializingToObjectAsync<GetReservesDataOutput>(protocol.SmartContractAddresses
             .PoolAddressesProviderAddress.Value);
     }
 

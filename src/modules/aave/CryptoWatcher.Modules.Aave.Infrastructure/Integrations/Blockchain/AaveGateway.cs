@@ -15,10 +15,10 @@ public class AaveGateway : IAaveGateway
         _uiPoolDataProviderFetcher = uiPoolDataProviderFetcher;
     }
 
-    public async Task<IReadOnlyCollection<UserReserve>> GetUserReservesDataAsync(AaveChainConfiguration chain,
+    public async Task<IReadOnlyCollection<UserReserve>> GetUserReservesDataAsync(AaveProtocolConfiguration protocol,
         EvmAddress userAddress)
     {
-        var result = await _uiPoolDataProviderFetcher.GetUserReservesDataAsync(chain, userAddress);
+        var result = await _uiPoolDataProviderFetcher.GetUserReservesDataAsync(protocol, userAddress);
 
         return result.ReservesData.Select(data => new UserReserve
         {
@@ -29,9 +29,9 @@ public class AaveGateway : IAaveGateway
         }).ToArray();
     }
 
-    public async Task<MarketReserveOutput> GetMarketReservesDataAsync(AaveChainConfiguration chain)
+    public async Task<MarketReserveOutput> GetMarketReservesDataAsync(AaveProtocolConfiguration protocol)
     {
-        var result = await _uiPoolDataProviderFetcher.GetMarketReservesDataAsync(chain);
+        var result = await _uiPoolDataProviderFetcher.GetMarketReservesDataAsync(protocol);
 
         return new MarketReserveOutput
         {

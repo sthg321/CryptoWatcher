@@ -28,11 +28,11 @@ public class AavePosition : IDeFiPosition<AavePositionSnapshot, AavePositionCash
     {
     }
 
-    public AavePosition(AaveChainConfiguration chain, Wallet wallet, AavePositionType positionType,
+    public AavePosition(AaveProtocolConfiguration protocol, Wallet wallet, AavePositionType positionType,
         CryptoToken token,
         DateOnly createdAtDay)
     {
-        Network = chain.Name;
+        Network = protocol.Name;
         WalletAddress = wallet.Address;
         PositionType = positionType;
         Token0 = token;

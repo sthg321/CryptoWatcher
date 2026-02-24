@@ -23,7 +23,7 @@ public sealed class AavePositionsWithSnapshotsSpecification : Specification<Aave
             .Where(position => wallets.Contains(position.WalletAddress) && position.IsActive());
     }
     
-    public AavePositionsWithSnapshotsSpecification(AaveChainConfiguration chain, Wallet wallet, DateOnly from,
+    public AavePositionsWithSnapshotsSpecification(AaveProtocolConfiguration protocol, Wallet wallet, DateOnly from,
         DateOnly to)
     {
         Query
@@ -31,6 +31,6 @@ public sealed class AavePositionsWithSnapshotsSpecification : Specification<Aave
             .Include(position =>
                 position.Snapshots.Where(snapshot => snapshot.Day >= from && snapshot.Day <= to))
             .Where(position => position.WalletAddress == wallet.Address && position.IsActive() &&
-                               position.Network == chain.Name);
+                               position.Network == protocol.Name);
     }
 }

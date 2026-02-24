@@ -16,11 +16,11 @@ public class AaveTokenEnricher : IAaveTokenEnricher
         _tokenEnricher = tokenEnricher;
     }
 
-    public async Task<CryptoToken> EnrichTokenAsync(AaveChainConfiguration chain, AaveLendingPosition lendingPosition,
+    public async Task<CryptoToken> EnrichTokenAsync(AaveProtocolConfiguration protocol, AaveLendingPosition lendingPosition,
         CancellationToken ct = default)
     {
         var token = new Token { Address = lendingPosition.TokenAddress, Balance = (BigInteger)lendingPosition.Amount };
 
-        return await _tokenEnricher.EnrichTokenAsync(chain.RpcUrlWithAuthToken, token, lendingPosition.AmountUsd, ct);
+        return await _tokenEnricher.EnrichTokenAsync(protocol.RpcUrlWithAuthToken, token, lendingPosition.AmountUsd, ct);
     }
 }

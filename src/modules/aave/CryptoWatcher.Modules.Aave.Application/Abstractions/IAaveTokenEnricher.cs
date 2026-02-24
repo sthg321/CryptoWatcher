@@ -6,7 +6,7 @@ namespace CryptoWatcher.Modules.Aave.Application.Abstractions;
 
 public interface IAaveTokenEnricher
 {
-    Task<CryptoToken> EnrichTokenAsync(AaveChainConfiguration chain,
+    Task<CryptoToken> EnrichTokenAsync(AaveProtocolConfiguration protocol,
         AaveLendingPosition lendingPosition,
         CancellationToken ct = default);
 }

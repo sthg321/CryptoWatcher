@@ -21,8 +21,4 @@
         <InternalsVisibleTo Include="DynamicProxyGenAssembly2"/>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Abstractions\" />
-    </ItemGroup>
-
 </Project>

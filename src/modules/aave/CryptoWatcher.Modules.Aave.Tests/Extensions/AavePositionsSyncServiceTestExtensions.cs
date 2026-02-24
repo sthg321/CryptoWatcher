@@ -22,7 +22,7 @@ internal static class AavePositionsSyncServiceTestExtensions
 
     public static List<CryptoToken> SetupAaveTokenEnricher(this Mock<IAaveTokenEnricher> mock,
         Fixture fixture,
-        AaveChainConfiguration chain,
+        AaveProtocolConfiguration protocol,
         IEnumerable<AaveLendingPosition> expectedPositions)
     {
         var expectedSnapshotTokens = new List<CryptoToken>();
@@ -30,7 +30,7 @@ internal static class AavePositionsSyncServiceTestExtensions
         {
             var expectedTokenInfo = fixture.Create<CryptoToken>();
             
-            mock.Setup(enricher => enricher.EnrichTokenAsync(chain,
+            mock.Setup(enricher => enricher.EnrichTokenAsync(protocol,
                     (AaveLendingPosition)expectedPosition, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedTokenInfo);
             

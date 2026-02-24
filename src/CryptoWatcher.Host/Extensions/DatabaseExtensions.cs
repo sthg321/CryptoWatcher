@@ -130,9 +130,9 @@ public static class DatabaseExtensions
 
     private static void SeedAaveChainData(DbContext context)
     {
-        if (!context.Set<AaveChainConfiguration>().Any())
+        if (!context.Set<AaveProtocolConfiguration>().Any())
         {
-            context.Set<AaveChainConfiguration>().Add(new AaveChainConfiguration
+            context.Set<AaveProtocolConfiguration>().Add(new AaveProtocolConfiguration
             {
                 Name = "Avalanche",
                 RpcUrl = new Uri("https://lb.drpc.live/avalanche"),
@@ -144,7 +144,7 @@ public static class DatabaseExtensions
                 }
             });
 
-            context.Set<AaveChainConfiguration>().Add(new AaveChainConfiguration
+            context.Set<AaveProtocolConfiguration>().Add(new AaveProtocolConfiguration
             {
                 Name = "Cello",
                 RpcUrl = new Uri("https://lb.drpc.live/celo"),
@@ -156,7 +156,7 @@ public static class DatabaseExtensions
                 }
             });
 
-            context.Set<AaveChainConfiguration>().Add(new AaveChainConfiguration
+            context.Set<AaveProtocolConfiguration>().Add(new AaveProtocolConfiguration
             {
                 Name = "Ink",
                 RpcUrl = new Uri("https://lb.drpc.live/ink"),
@@ -168,7 +168,7 @@ public static class DatabaseExtensions
                 }
             });
             
-            context.Set<AaveChainConfiguration>().Add(new AaveChainConfiguration
+            context.Set<AaveProtocolConfiguration>().Add(new AaveProtocolConfiguration
             {
                 Name = "Arbitrum",
                 RpcUrl = new Uri("https://lb.drpc.live/arbitrum"),

@@ -13,11 +13,11 @@ public class SyncAavePositionsCronJob
 {
     private readonly IAavePositionsSyncService _positionsSyncService;
     private readonly IRepository<Wallet> _walletRepository;
-    private readonly IRepository<AaveChainConfiguration> _aaveNetworkRepository;
+    private readonly IRepository<AaveProtocolConfiguration> _aaveNetworkRepository;
     private readonly ILogger<SyncAavePositionsCronJob> _logger;
 
     public SyncAavePositionsCronJob(IAavePositionsSyncService positionsSyncService,
-        IRepository<Wallet> walletRepository, ILogger<SyncAavePositionsCronJob> logger, IRepository<AaveChainConfiguration> aaveNetworkRepository)
+        IRepository<Wallet> walletRepository, ILogger<SyncAavePositionsCronJob> logger, IRepository<AaveProtocolConfiguration> aaveNetworkRepository)
     {
         _positionsSyncService = positionsSyncService;
         _walletRepository = walletRepository;

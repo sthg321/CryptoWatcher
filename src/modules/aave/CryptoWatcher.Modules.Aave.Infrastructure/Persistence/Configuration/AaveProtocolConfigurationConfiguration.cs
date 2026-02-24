@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CryptoWatcher.Infrastructure.Configuration.Aave;
 
-public class AaveChainConfigurationConfiguration : IEntityTypeConfiguration<AaveChainConfiguration>
+public class AaveProtocolConfigurationConfiguration : IEntityTypeConfiguration<AaveProtocolConfiguration>
 {
-    public void Configure(EntityTypeBuilder<AaveChainConfiguration> builder)
+    public void Configure(EntityTypeBuilder<AaveProtocolConfiguration> builder)
     {
         builder.HasKey(configuration => configuration.Name);
 

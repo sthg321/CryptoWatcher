@@ -30,22 +30,22 @@ public class AavePositionsSyncService : IAavePositionsSyncService
     }
 
     public async Task<List<AavePosition>> SyncPositionsAsync(
-        AaveChainConfiguration chain,
+        AaveProtocolConfiguration protocol,
         Wallet wallet,
         DateOnly syncDay,
         CancellationToken ct = default)
     {
         var existedPositions = await _aavePositionRepository.ListAsync(
-            new AavePositionsWithSnapshotsSpecification(chain, wallet, syncDay, syncDay),
+            new AavePositionsWithSnapshotsSpecification(protocol, wallet, syncDay, syncDay),
             ct);
 
         _logger.LogExistedPositionsForWalletCount(wallet.Address, existedPositions.Count);
 
         var result = new List<AavePosition>();
 
-        var aavePositionsResponse = await _aaveProvider.GetLendingPositionAsync(chain, wallet);
+        var aavePositionsResponse = await _aaveProvider.GetLendingPositionAsync(protocol, wallet);
 
-        _logger.LogFetchedPositionsForNetworkCount(chain.Name, aavePositionsResponse.Positions.Count);
+        _logger.LogFetchedPositionsForNetworkCount(protocol.Name, aavePositionsResponse.Positions.Count);
 
         var totalSupply = 0M;
         var totalBorrow = 0M;
@@ -66,7 +66,7 @@ public class AavePositionsSyncService : IAavePositionsSyncService
                 continue;
             }
  
-            var cryptoToken = await _aaveTokenEnricher.EnrichTokenAsync(chain, lendingPosition, ct);
+            var cryptoToken = await _aaveTokenEnricher.EnrichTokenAsync(protocol, lendingPosition, ct);
 
             var currentPosition = existedPositions.FirstOrDefault(position =>
                 position.Token0.Address.Equals(cryptoToken.Address) &&
@@ -74,7 +74,7 @@ public class AavePositionsSyncService : IAavePositionsSyncService
 
             if (currentPosition is null)
             {
-                currentPosition = new AavePosition(chain, wallet, lendingPosition.PositionType, cryptoToken, syncDay);
+                currentPosition = new AavePosition(protocol, wallet, lendingPosition.PositionType, cryptoToken, syncDay);
 
                 _aavePositionRepository.Insert(currentPosition);
 
@@ -107,7 +107,7 @@ public class AavePositionsSyncService : IAavePositionsSyncService
             HealthFactor = aavePositionsResponse.HealthFactor,
             Day = syncDay,
             WalletAddress = wallet.Address,
-            NetworkName = chain.Name,
+            NetworkName = protocol.Name,
             TotalCollateralInUsd = totalSupply,
             TotalDebtInUsd = totalBorrow
         };

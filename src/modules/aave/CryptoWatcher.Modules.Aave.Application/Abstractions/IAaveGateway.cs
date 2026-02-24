@@ -6,8 +6,8 @@ namespace CryptoWatcher.Modules.Aave.Application.Abstractions;
 
 public interface IAaveGateway
 {
-    Task<IReadOnlyCollection<UserReserve>> GetUserReservesDataAsync(AaveChainConfiguration chain,
+    Task<IReadOnlyCollection<UserReserve>> GetUserReservesDataAsync(AaveProtocolConfiguration protocol,
         EvmAddress userAddress);
 
-    Task<MarketReserveOutput> GetMarketReservesDataAsync(AaveChainConfiguration chain);
+    Task<MarketReserveOutput> GetMarketReservesDataAsync(AaveProtocolConfiguration protocol);
 }

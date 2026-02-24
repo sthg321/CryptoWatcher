@@ -21,7 +21,7 @@ namespace CryptoWatcher.AaveModule.Tests.Services;
 [TestSubject(typeof(AavePositionsSyncService))]
 public class AavePositionsSyncServiceTest
 {
-    private static readonly AaveChainConfiguration TestNetwork = new AaveChainConfiguration
+    private static readonly AaveProtocolConfiguration TestNetwork = new AaveProtocolConfiguration
     {
         Name = "Celo",
         RpcUrl = new Uri("https://alfajores-forno.celo-testnet.org"),

@@ -13,8 +13,8 @@ public interface IAaveProvider
     /// <summary>
     /// Retrieves the list of lending positions from the Aave protocol for a specified network and wallet.
     /// </summary>
-    /// <param name="chain"></param>
+    /// <param name="protocol"></param>
     /// <param name="wallet">The wallet whose lending positions will be queried.</param>
     /// <returns>A task representing the asynchronous operation, containing a list of <see cref="AaveLendingPosition"/> objects.</returns>
-    Task<AavePositionsResponse> GetLendingPositionAsync(AaveChainConfiguration chain, Wallet wallet);
+    Task<AavePositionsResponse> GetLendingPositionAsync(AaveProtocolConfiguration protocol, Wallet wallet);
 }
