@@ -40,7 +40,7 @@ public class AavePositionsSyncServiceTest
 
     private readonly Mock<IAaveProvider> _aaveProviderMock = new();
     private readonly Mock<IAaveTokenEnricher> _tokenEnricherMock = new();
-    private readonly Mock<IRepository<AavePosition>> _aavePositionRepositoryMock = new();
+    private readonly Mock<IAavePositionRepository> _aavePositionRepositoryMock = new();
     private readonly Mock<TimeProvider> _timeProviderMock = new();
     private readonly Fixture _fixture;
 
@@ -50,9 +50,7 @@ public class AavePositionsSyncServiceTest
         _fixture.WithTokenDecimalsRange();
         _fixture.Customize(new PositiveBigIntegerCustomization());
         _fixture.Customize(new EvmAddressCustomization());
-
-        _aavePositionRepositoryMock.Setup(repository => repository.UnitOfWork)
-            .Returns(new Mock<IUnitOfWork>().Object);
+ 
 
         _timeProviderMock.Setup(provider => provider.LocalTimeZone).Returns(TimeZoneInfo.Utc);
         _timeProviderMock.Setup(provider => provider.GetUtcNow()).Returns(TestTime);
@@ -119,10 +117,7 @@ public class AavePositionsSyncServiceTest
                     Symbol = "1"
                 }, SyncDay));
 
-            _aavePositionRepositoryMock.Setup(repository =>
-                    repository.ListAsync(It.IsAny<AavePositionsWithSnapshotsSpecification>(),
-                        It.IsAny<CancellationToken>()))
-                .ReturnsAsync(existedPositions.ToList);
+            _aavePositionRepositoryMock.SetupListFromRepo(existedPositions.ToList());
         }
         else
         {
@@ -210,10 +205,7 @@ public class AavePositionsSyncServiceTest
                 new AavePositionsResponse([new EmptyAaveLendingPosition { TokenAddress = dbPosition.Token0.Address }],
                     2));
 
-        _aavePositionRepositoryMock.Setup(repository => repository.ListAsync(
-                It.IsAny<AavePositionsWithSnapshotsSpecification>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync([dbPosition]);
+        _aavePositionRepositoryMock.SetupListFromRepo([dbPosition]);
 
         var service = CreateService();
 

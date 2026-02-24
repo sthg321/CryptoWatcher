@@ -13,11 +13,22 @@ namespace CryptoWatcher.AaveModule.Tests.Extensions;
 
 internal static class AavePositionsSyncServiceTestExtensions
 {
-    public static void SetupEmptyListFromRepo(this Mock<IRepository<AavePosition>> mock)
+    public static void SetupEmptyListFromRepo(this Mock<IAavePositionRepository> mock)
     {
-        mock.Setup(repository => repository.ListAsync(It.IsAny<AavePositionsWithSnapshotsSpecification>(),
+        mock.Setup(repository => repository.GetActiveForWalletAsync(It.IsAny<string>(),
+                It.IsAny<EvmAddress>(),
+                It.IsAny<DateOnly>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
+    }
+    
+    public static void SetupListFromRepo(this Mock<IAavePositionRepository> mock, List<AavePosition> positions)
+    {
+        mock.Setup(repository => repository.GetActiveForWalletAsync(It.IsAny<string>(),
+                It.IsAny<EvmAddress>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(positions);
     }
 
     public static List<CryptoToken> SetupAaveTokenEnricher(this Mock<IAaveTokenEnricher> mock,
@@ -31,7 +42,7 @@ internal static class AavePositionsSyncServiceTestExtensions
             var expectedTokenInfo = fixture.Create<CryptoToken>();
             
             mock.Setup(enricher => enricher.EnrichTokenAsync(protocol,
-                    (AaveLendingPosition)expectedPosition, It.IsAny<CancellationToken>()))
+                    expectedPosition, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedTokenInfo);
             
             expectedSnapshotTokens.Add(expectedTokenInfo);
