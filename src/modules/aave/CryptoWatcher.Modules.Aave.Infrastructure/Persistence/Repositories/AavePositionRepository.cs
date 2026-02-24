@@ -19,7 +19,7 @@ public class AavePositionRepository : IAavePositionRepository
     {
         return await _dbContext.AavePositions
             .Where(position => wallet == position.WalletAddress && position.Network == network)
-            .Include(position => position.Snapshots)
+            .Include(position => position.Snapshots.Where(snapshot => snapshot.Day >= day && snapshot.Day <= day ))
             .Include(position => position.CashFlows)
             .ToArrayAsync(ct);
     }
