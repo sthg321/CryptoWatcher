@@ -13,11 +13,12 @@ public class SyncAavePositionsCronJob
 {
     private readonly IAavePositionsSyncService _positionsSyncService;
     private readonly IRepository<Wallet> _walletRepository;
-    private readonly IRepository<AaveProtocolConfiguration> _aaveNetworkRepository;
+    private readonly IAaveProtocolConfigurationRepository _aaveNetworkRepository;
     private readonly ILogger<SyncAavePositionsCronJob> _logger;
 
     public SyncAavePositionsCronJob(IAavePositionsSyncService positionsSyncService,
-        IRepository<Wallet> walletRepository, ILogger<SyncAavePositionsCronJob> logger, IRepository<AaveProtocolConfiguration> aaveNetworkRepository)
+        IRepository<Wallet> walletRepository, IAaveProtocolConfigurationRepository aaveNetworkRepository,
+        ILogger<SyncAavePositionsCronJob> logger)
     {
         _positionsSyncService = positionsSyncService;
         _walletRepository = walletRepository;
@@ -32,7 +33,7 @@ public class SyncAavePositionsCronJob
 
         var wallets = await _walletRepository.ListAsync(ct);
 
-        var chains = await _aaveNetworkRepository.ListAsync(ct);
+        var chains = await _aaveNetworkRepository.GetAaveProtocolConfigurationsAsync(ct);
 
         _logger.WalletsFound(wallets.Count);
 
