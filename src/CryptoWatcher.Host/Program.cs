@@ -9,6 +9,7 @@ using CryptoWatcher.Infrastructure.Configs;
 using CryptoWatcher.Infrastructure.CronJobs.Aave;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports;
 using CryptoWatcher.Infrastructure.Extensions;
+using CryptoWatcher.Modules.Aave.Infrastructure.Persistence;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Persistence;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
@@ -64,11 +65,13 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<CryptoWatcherDbContext>();
     var hyperliquidDbContext = scope.ServiceProvider.GetRequiredService<HyperliquidDbContext>();
+    var aaveDbContext = scope.ServiceProvider.GetRequiredService<AaveDbContext>();
     
     if (!app.Environment.IsDevelopment())
     {
         db.Database.Migrate();
         hyperliquidDbContext.Database.Migrate();
+        aaveDbContext.Database.Migrate();
     }
 }
 

@@ -7,13 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\CryptoWatcher.Modules.Infrastructure.Shared\CryptoWatcher.Modules.Infrastructure.Shared.csproj" />
-      <ProjectReference Include="..\CryptoWatcher.Modules.Aave.Application\CryptoWatcher.Modules.Aave.Application.csproj" />
+        <ProjectReference Include="..\..\CryptoWatcher.Modules.Infrastructure.Shared\CryptoWatcher.Modules.Infrastructure.Shared.csproj"/>
+        <ProjectReference Include="..\CryptoWatcher.Modules.Aave.Application\CryptoWatcher.Modules.Aave.Application.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Nethereum.Web3" Version="5.8.0" />
-        <PackageReference Include="Ardalis.SmartEnum.EFCore" Version="8.2.0" />
+        <PackageReference Include="Nethereum.Web3" Version="5.8.0"/>
+        <PackageReference Include="Ardalis.SmartEnum.EFCore" Version="8.2.0"/>
+        <PackageReference Include="EntityFrameworkCore.Projectables" Version="5.0.1"/>
     </ItemGroup>
 
 </Project>
