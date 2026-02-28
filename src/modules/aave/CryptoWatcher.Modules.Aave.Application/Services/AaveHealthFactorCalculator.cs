@@ -1,8 +1,6 @@
-using CryptoWatcher.Exceptions;
 using CryptoWatcher.Modules.Aave.Application.Abstractions;
 using CryptoWatcher.Modules.Aave.Application.Models;
 using CryptoWatcher.Modules.Aave.Entities;
-using CryptoWatcher.Modules.Aave.Models;
 
 namespace CryptoWatcher.Modules.Aave.Application.Services;
 

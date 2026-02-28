@@ -1,30 +1,45 @@
+using System.Text.Json;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Models;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Etherscan.Api;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Etherscan.Contracts.TransactionHistory;
+using Microsoft.Extensions.Logging;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Etherscan;
 
 public class EtherscanTransactionGateway : IWalletTransactionGateway
 {
-    private readonly IEtherscanApi _etherscanApi;
+    private static readonly JsonSerializerOptions _jsonSerializerOptions = new(JsonSerializerDefaults.Web);
 
-    public EtherscanTransactionGateway(IEtherscanApi etherscanApi)
+    private readonly IEtherscanApi _etherscanApi;
+    private readonly ILogger<EtherscanTransactionGateway> _logger;
+
+    public EtherscanTransactionGateway(IEtherscanApi etherscanApi, ILogger<EtherscanTransactionGateway> logger)
     {
         _etherscanApi = etherscanApi;
+        _logger = logger;
     }
 
     public async Task<IReadOnlyCollection<BlockchainTransaction>> GetWalletTransactionsAsync(
         EtherscanTransactionQuery etherscanTransactionQuery,
         CancellationToken ct = default)
     {
-        var transactions = await _etherscanApi.GetAccountTransactionsAsync(etherscanTransactionQuery.MapQuery(), ct);
+        var response = await _etherscanApi.GetAccountTransactionsAsync(etherscanTransactionQuery.MapQuery(), ct);
 
-        if (transactions.Result.Length == 0)
+        if (!response.IsSuccess)
+        {
+            _logger.LogError("Request to etherscan API failed. Status: {Status}, Message: {Message}",
+                response.Status, response.Result);
+            return [];
+        }
+
+        if (response.Result.GetArrayLength() == 0)
         {
             return [];
         }
 
-        return transactions.Result.Select(item => item.MapToBlockchainTransaction()).ToArray();
+        var transactions = response.Result.Deserialize<EtherscanTransactionHistoryItem[]>(_jsonSerializerOptions)!;
+
+        return transactions.Select(item => item.MapToBlockchainTransaction()).ToArray();
     }
 }

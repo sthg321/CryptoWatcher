@@ -76,7 +76,14 @@ public abstract class BaseOnChainSynchronizationJob<TChainConfiguration, TContex
 
                     _logger.LogInformation("Start synchronizing chain");
 
-                    await SynchronizeWalletOnChainAsync(chain, wallet, context, ct);
+                    try
+                    {
+                        await SynchronizeWalletOnChainAsync(chain, wallet, context, ct);
+                    }
+                    catch (Exception e)
+                    {
+                         _logger.LogError(e, "Error while synchronizing chain");
+                    }
 
                     _logger.LogInformation("Synchronization completed for chain");
                 }
