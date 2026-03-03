@@ -51,10 +51,10 @@ public class AaveHealthFactorCalculator : IAaveHealthFactorCalculator
             switch (lendingPosition.PositionType)
             {
                 case AavePositionType.Supplied when (lendingPosition.IsCollateral ?? false):
-                    collateral += lendingPosition.AmountUsd * lendingPosition.LiquidationLtv.GetValueOrDefault();
+                    collateral += lendingPosition.AmountInUsdUsd * lendingPosition.LiquidationLtv.GetValueOrDefault();
                     break;
                 case AavePositionType.Borrowed:
-                    debt += lendingPosition.AmountUsd;
+                    debt += lendingPosition.AmountInUsdUsd;
                     break;
             }
         }

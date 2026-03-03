@@ -21,6 +21,7 @@ public static class AaveLendingPositionFactory
             tokenDecimals,
             tokenPriceInUsd,
             AavePositionType.Supplied,
+            reserve.Symbol,
             liquidationLtv: AaveMath.NormalizeLtv(reserve.LiquidationLtv),
             isCollateral: userReserve.IsCollateral
         );
@@ -38,7 +39,8 @@ public static class AaveLendingPositionFactory
             reserve.VariableBorrowIndex,
             tokenDecimals,
             tokenPriceInUsd,
-            AavePositionType.Borrowed
+            AavePositionType.Borrowed,
+            reserve.Symbol
         );
     }
 
@@ -49,6 +51,7 @@ public static class AaveLendingPositionFactory
         byte tokenDecimals,
         decimal tokenPriceInUsd,
         AavePositionType type,
+        string symbol,
         decimal? liquidationLtv = null,
         bool isCollateral = false)
     {
@@ -56,17 +59,16 @@ public static class AaveLendingPositionFactory
 
         var accruedRaw = AaveMath.CalculateAccruedRaw(scaledBalance, index);
 
-        var currentAmount = accruedRaw.ToDecimal(tokenDecimals);
-
         return new AaveLendingPosition
         {
             TokenAddress = EvmAddress.Create(underlyingAsset),
             PrincipalAmount = principal,
             Amount = accruedRaw.ToDecimal(tokenDecimals),
-            AmountUsd = currentAmount * tokenPriceInUsd,
+            TokenPriceInUsd = tokenPriceInUsd,
             PositionType = type,
             LiquidationLtv = liquidationLtv,
-            IsCollateral = isCollateral
+            IsCollateral = isCollateral,
+            TokenSymbol = symbol
         };
     }
 }

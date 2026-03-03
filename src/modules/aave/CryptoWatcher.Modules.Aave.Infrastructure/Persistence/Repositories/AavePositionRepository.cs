@@ -3,6 +3,7 @@ using CryptoWatcher.Modules.Aave.Application.Abstractions;
 using CryptoWatcher.Modules.Aave.Entities;
 using CryptoWatcher.ValueObjects;
 using Microsoft.EntityFrameworkCore;
+using Z.BulkOperations;
 
 namespace CryptoWatcher.Modules.Aave.Infrastructure.Persistence.Repositories;
 
@@ -48,8 +49,31 @@ public class AavePositionRepository : IAavePositionRepository
         _dbContext.AavePositions.Update(position);
     }
 
-    public async Task SaveAsync(CancellationToken ct)
+    public async Task SaveAsync(List<AavePosition> aavePositions, CancellationToken ct)
     {
-        await _dbContext.SaveChangesAsync(ct);
+        await _dbContext.BulkMergeAsync(aavePositions, operation =>
+        {
+            operation.IncludeGraph = true;
+            operation.IncludeGraphOperationBuilder = bulkOperation =>
+            {
+                switch (bulkOperation)
+                {
+                    case BulkOperation<AavePosition> positionOperation:
+                        positionOperation.ColumnPrimaryKeyExpression = position => position.Id;
+                        break;
+                    case BulkOperation<AavePositionSnapshot> positionOperation:
+                        positionOperation.ColumnPrimaryKeyExpression =
+                            snapshot => new { snapshot.PositionId, snapshot.Day };
+                        break;
+                    case BulkOperation<AavePositionPeriod> positionOperation:
+                        positionOperation.ColumnPrimaryKeyExpression = period => period.Id;
+                        break;
+                    case BulkOperation<AavePositionCashFlow> positionOperation:
+                        positionOperation.ColumnPrimaryKeyExpression =
+                            period => new { period.PositionId, period.Date, period.Event };
+                        break;
+                }
+            };
+        }, ct);
     }
 }

@@ -7,6 +7,8 @@ public class AggregatedMarketReserveData
 {
     public required EvmAddress UnderlyingAsset { get; init; } = null!;
     
+    public required string Symbol { get; init; } = null!;
+    
     public required BigInteger Decimals { get; init; }
     
     public required BigInteger LiquidityIndex { get; init; }

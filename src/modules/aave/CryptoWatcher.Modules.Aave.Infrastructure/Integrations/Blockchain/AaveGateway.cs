@@ -44,7 +44,8 @@ public class AaveGateway : IAaveGateway
                 LiquidationLtv = data.ReserveLiquidationThreshold,
                 PriceInMarketReferenceCurrency = data.PriceInMarketReferenceCurrency,
                 VariableBorrowIndex = data.VariableBorrowIndex,
-                ReserveLiquidationThreshold = (ushort)data.ReserveLiquidationThreshold
+                ReserveLiquidationThreshold = (ushort)data.ReserveLiquidationThreshold,
+                Symbol = data.Symbol
             }).ToArray(),
         };
     }

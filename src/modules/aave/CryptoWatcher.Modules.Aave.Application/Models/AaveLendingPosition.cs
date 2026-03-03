@@ -18,11 +18,14 @@ public class AaveLendingPosition
 
     public decimal Amount { get; init; }
 
-    public decimal AmountUsd { get; init; }
-
+    public decimal TokenPriceInUsd { get; set; }
+    
+    public decimal AmountInUsdUsd  => Amount * TokenPriceInUsd;
+    
     public decimal? LiquidationLtv { get; init; }
 
     public bool? IsCollateral { get; init; }
 
     public AavePositionType PositionType { get; set; }
+    public string TokenSymbol { get; set; } = null!;
 }

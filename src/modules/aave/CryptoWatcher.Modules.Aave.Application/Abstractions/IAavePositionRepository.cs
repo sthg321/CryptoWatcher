@@ -20,5 +20,5 @@ public interface IAavePositionRepository
     
     void Update(AavePosition position);
     
-    Task SaveAsync(CancellationToken ct);
+    Task SaveAsync(List<AavePosition> aavePositions, CancellationToken ct);
 }

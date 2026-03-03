@@ -92,7 +92,7 @@ public class AavePositionsSyncService : IAavePositionsSyncService
             result.Add(currentPosition);
         }
 
-        await _aavePositionRepository.SaveAsync(ct);
+        await _aavePositionRepository.SaveAsync(result, ct);
 
         return result;
     }
