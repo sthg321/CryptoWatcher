@@ -42,5 +42,11 @@
   <Folder Name="/src/modules/uniswap/tests/">
     <Project Path="src/modules/uniswap/tests/CryptoWatcher.Modules.Uniswap.Tests/CryptoWatcher.Modules.Uniswap.Tests.csproj" />
   </Folder>
+  <Folder Name="/src/modules/wallet-ingestion/" />
+  <Folder Name="/src/modules/wallet-ingestion/src/">
+    <Project Path="src/modules/wallet-ingestion/src/CryptoWatcher.Modules.WalletIngestion.Application/CryptoWatcher.Modules.WalletIngestion.Application.csproj" />
+    <Project Path="src/modules/wallet-ingestion/src/CryptoWatcher.Modules.WalletIngestion.Infrastructure/CryptoWatcher.Modules.WalletIngestion.Infrastructure.csproj" />
+    <Project Path="src/modules/wallet-ingestion/src/CryptoWatcher.Modules.WalletIngestion/CryptoWatcher.Modules.WalletIngestion.csproj" />
+  </Folder>
   <Folder Name="/tests/" />
 </Solution>
