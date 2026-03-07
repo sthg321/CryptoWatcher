@@ -13,6 +13,8 @@ using CryptoWatcher.Modules.Aave.Infrastructure.Persistence;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Persistence;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
+using CryptoWatcher.Modules.WalletIngestion.Entities;
+using CryptoWatcher.Modules.WalletIngestion.Infrastructure.Persistence;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.ValueObjects;
 using Hangfire;
@@ -66,12 +68,14 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<CryptoWatcherDbContext>();
     var hyperliquidDbContext = scope.ServiceProvider.GetRequiredService<HyperliquidDbContext>();
     var aaveDbContext = scope.ServiceProvider.GetRequiredService<AaveDbContext>();
+    var walletIngestionDbContext = scope.ServiceProvider.GetRequiredService<WalletIngestionDbContext>();
     
-    if (!app.Environment.IsDevelopment())
+    if (app.Environment.IsDevelopment())
     {
         db.Database.Migrate();
         hyperliquidDbContext.Database.Migrate();
         aaveDbContext.Database.Migrate();
+        walletIngestionDbContext.Database.Migrate();
     }
 }
 

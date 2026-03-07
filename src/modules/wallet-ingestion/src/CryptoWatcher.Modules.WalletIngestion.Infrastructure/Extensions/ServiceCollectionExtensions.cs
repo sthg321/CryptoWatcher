@@ -20,11 +20,12 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration,
         string connectionString)
     {
-        services.AddSingleton<KafkaConfig>(provider =>
+        services.AddSingleton<KafkaConfig>(_ =>
         {
-            services.Configure<KafkaConfig>(configuration);
+            var config = new KafkaConfig();
+            configuration.GetSection(nameof(KafkaConfig)).Bind(config);
 
-            return provider.GetRequiredService<IOptions<KafkaConfig>>().Value;
+            return config;
         });
 
         services.AddDbContext<WalletIngestionDbContext>(builder => builder
