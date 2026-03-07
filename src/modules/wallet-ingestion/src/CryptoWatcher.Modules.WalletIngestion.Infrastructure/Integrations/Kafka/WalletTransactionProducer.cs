@@ -1,12 +1,13 @@
 using System.Text.Json;
 using Confluent.Kafka;
+using CryptoWatcher.Modules.WalletIngestion.Application.Abstractions;
 using CryptoWatcher.Modules.WalletIngestion.Application.Models;
 using CryptoWatcher.Modules.WalletIngestion.Infrastructure.Integrations.Configs;
 using Microsoft.Extensions.Logging;
 
 namespace CryptoWatcher.Modules.WalletIngestion.Infrastructure.Integrations.Kafka;
 
-public class WalletTransactionProducer : IDisposable
+public class WalletTransactionProducer : IWalletTransactionProducer, IDisposable
 {
     private static readonly JsonSerializerOptions JsonSerializerOptions = new(JsonSerializerDefaults.Web);
 
