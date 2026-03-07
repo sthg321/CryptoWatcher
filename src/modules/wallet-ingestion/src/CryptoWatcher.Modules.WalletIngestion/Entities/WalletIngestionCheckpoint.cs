@@ -24,7 +24,7 @@ public class WalletIngestionCheckpoint
 
     public TransactionHash? LastPublishedTransactionHash { get; private set; }
 
-    public BigInteger? LastPublishedBlockNumber { get; private set; }
+    public BigInteger LastPublishedBlockNumber { get; private set; }
 
     public DateTime UpdatedAt { get; private set; }
 
@@ -32,11 +32,11 @@ public class WalletIngestionCheckpoint
     {
         return new WalletIngestionCheckpoint(walletAddress, chainId);
     }
-    
-    public void SaveCheckpoint(TransactionHash hash, BigInteger lastBlockNumber, TimeProvider provider)
+ 
+    public void Advance(TransactionHash lastHash, BigInteger lastBlockNumber, TimeProvider timeProvider)
     {
-        LastPublishedTransactionHash = hash;
+        LastPublishedTransactionHash = lastHash;
         LastPublishedBlockNumber = lastBlockNumber;
-        UpdatedAt = provider.GetUtcNow().UtcDateTime;
+        UpdatedAt = timeProvider.GetUtcNow().UtcDateTime;
     }
 }
