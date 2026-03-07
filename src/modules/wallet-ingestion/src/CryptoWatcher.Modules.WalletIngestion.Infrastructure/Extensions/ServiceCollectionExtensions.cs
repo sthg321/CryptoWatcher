@@ -7,17 +7,26 @@ using CryptoWatcher.Modules.WalletIngestion.Infrastructure.Integrations.Kafka;
 using CryptoWatcher.Modules.WalletIngestion.Infrastructure.Persistence;
 using CryptoWatcher.Modules.WalletIngestion.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Refit;
 
 namespace CryptoWatcher.Modules.WalletIngestion.Infrastructure.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddWalletIngestionModule(this IServiceCollection services, string connectionString)
+    public static IServiceCollection AddWalletIngestionModule(this IServiceCollection services,
+        IConfiguration configuration,
+        string connectionString)
     {
-        services.AddSingleton<KafkaConfig>(provider => new KafkaConfig());
-        
+        services.AddSingleton<KafkaConfig>(provider =>
+        {
+            services.Configure<KafkaConfig>(configuration);
+
+            return provider.GetRequiredService<IOptions<KafkaConfig>>().Value;
+        });
+
         services.AddDbContext<WalletIngestionDbContext>(builder => builder
             .UseNpgsql(connectionString, npgsql => npgsql
                 .MigrationsHistoryTable("__EFMigrationsHistory", "wallet_ingestion")
@@ -30,7 +39,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUnprocessedWalletTransactions, UnprocessedWalletTransactions>();
         services.AddScoped<IWalletTransactionIngestionService, WalletTransactionIngestionService>();
         services.AddScoped<IWalletTransactionIngestionOrchestrator, WalletTransactionIngestionOrchestrator>();
-        
+
         services.AddRefitClient<IEtherscanApi>()
             .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://api.etherscan.io"));
 

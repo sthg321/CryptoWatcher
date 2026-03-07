@@ -37,9 +37,9 @@ public static class ServiceCollectionExtensions
         services.Configure<TelegramConfig>(configuration.GetSection(nameof(TelegramConfig)));
         services.AddSingleton(provider => provider.GetRequiredService<IOptions<TelegramConfig>>().Value);
         services.AddSingleton<TelegramReportHandler>();
-        
+
         services.AddHostedService<TelegramBackgroundService>();
-      
+
         services.AddSingleton<TelegramBotClient>(provider =>
         {
             var client = new TelegramBotClient(provider.GetRequiredService<TelegramConfig>().BotToken);
@@ -59,7 +59,7 @@ public static class ServiceCollectionExtensions
             .AddConfiguredUniswapModule()
             .AddMorphoModule(provider => provider.GetRequiredService<ExternalServicesConfig>().Morpho)
             .AddMerklModule(provider => provider.GetRequiredService<ExternalServicesConfig>().Merkl)
-            .AddWalletIngestionModule(connectionString)
+            .AddWalletIngestionModule(configuration, connectionString)
             .AddConfiguredApplication();
 
         services.AddSingleton<ITokenEnricher, TokenEnricher>();
@@ -101,7 +101,8 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static IServiceCollection AddConfiguredHyperliquidModule(this IServiceCollection services, string conectionString)
+    private static IServiceCollection AddConfiguredHyperliquidModule(this IServiceCollection services,
+        string conectionString)
     {
         services.AddHyperliquidModule(conectionString)
             .AddSingleton<IDailyExcelSheetBuilder, HyperliquidDailyExcelSheetBuilder>()
