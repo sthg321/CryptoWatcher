@@ -109,13 +109,6 @@ app.MapPost("/sync-daily-performance",
         return TypedResults.Ok();
     });
 
-app.MapPost("/hyperliquid/sync-positions",
-    async (
-        CryptoWatcherDbContext dbContext,  DateOnly from, DateOnly to, CancellationToken ct) =>
-    {
-      
-    });
-
 app.MapPost("/uniswap/sync-block/{transactionHash}", async (IUniswapPositionTransactionSynchronizer sync,
     CryptoWatcherDbContext dbContext,
     string transactionHash,
