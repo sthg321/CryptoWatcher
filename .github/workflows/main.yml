@@ -2,7 +2,7 @@ name: Build and Push ARM64
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build:
