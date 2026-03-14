@@ -2,6 +2,7 @@ using CryptoWatcher.Abstractions;
 using CryptoWatcher.Modules.Contracts.Messages;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization;
 
@@ -10,13 +11,16 @@ public class WalletTransactionConsumer : IWalletTransactionConsumer
     private readonly UniswapChainConfigurationService _chainConfigurationService;
     private readonly IUniswapWalletEventApplier _walletEventApplier;
     private readonly IRepository<UniswapLiquidityPosition> _repository;
+    private readonly ILogger<WalletTransactionConsumer> _logger;
 
     public WalletTransactionConsumer(UniswapChainConfigurationService chainConfigurationService,
-        IUniswapWalletEventApplier walletEventApplier, IRepository<UniswapLiquidityPosition> repository)
+        IUniswapWalletEventApplier walletEventApplier, IRepository<UniswapLiquidityPosition> repository,
+        ILogger<WalletTransactionConsumer> logger)
     {
         _chainConfigurationService = chainConfigurationService;
         _walletEventApplier = walletEventApplier;
         _repository = repository;
+        _logger = logger;
     }
 
     public async Task ConsumeTransactionAsync(BlockchainTransaction transaction, CancellationToken ct = default)
@@ -28,6 +32,8 @@ public class WalletTransactionConsumer : IWalletTransactionConsumer
         if (updatedPositions.Length > 0)
         {
             await _repository.BulkMergeAsync(updatedPositions, ct);
+
+            _logger.LogInformation("Saved {Count} updated positions for transaction", updatedPositions.Length);
         }
     }
 }

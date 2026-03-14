@@ -125,6 +125,9 @@ public class BlockchainTransactionTransactionsConsumer : BackgroundService
         {
             try
             {
+                using var _ = _logger.BeginScope("Transaction hash: {TransactionHash}. ChainId: {ChainId}",
+                    transaction.Hash, transaction.ChainId);
+                
                 await consumerService.ConsumeTransactionAsync(transaction, stoppingToken);
                 return;
             }
