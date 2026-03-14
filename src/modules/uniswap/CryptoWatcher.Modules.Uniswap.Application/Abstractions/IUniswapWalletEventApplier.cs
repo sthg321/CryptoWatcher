@@ -5,8 +5,8 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 
 public interface IUniswapWalletEventApplier
 {
-    IAsyncEnumerable<UniswapLiquidityPosition[]> ApplyEventsToPositionsAsync(
+    Task<UniswapLiquidityPosition[]> ApplyEventToPositionsAsync(
         UniswapChainConfiguration chainConfiguration,
-        IEnumerable<BlockchainTransaction> transaction,
+        BlockchainTransaction transaction,
         CancellationToken ct = default);
 }

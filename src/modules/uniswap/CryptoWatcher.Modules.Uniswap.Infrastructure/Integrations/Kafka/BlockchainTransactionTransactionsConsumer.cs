@@ -11,6 +11,7 @@ namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Kafka;
 
 public class BlockchainTransactionTransactionsConsumer : BackgroundService
 {
+    private const int MaxRetries = 3;
     private static readonly JsonSerializerOptions JsonSerializerOptions = new(JsonSerializerDefaults.Web);
 
     private readonly KafkaConfig _config;
@@ -33,8 +34,7 @@ public class BlockchainTransactionTransactionsConsumer : BackgroundService
             EnableAutoCommit = false,
             BootstrapServers = _config.Host.ToString()
         }).Build();
-        
-        consumer.Assign(new TopicPartitionOffset(_config.RawTransactionsTopic, 0, new Offset(0)));
+
         consumer.Subscribe(_config.RawTransactionsTopic);
 
         while (!stoppingToken.IsCancellationRequested)
@@ -45,18 +45,11 @@ public class BlockchainTransactionTransactionsConsumer : BackgroundService
 
                 if (batch.Count == 0)
                 {
+                    await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
                     continue;
                 }
 
-                using var scope = _scopeFactory.CreateScope();
-                
-                var transactions = batch
-                    .Where(result => result.Message.Value is not null)
-                    .Select(result => JsonSerializer.Deserialize<BlockchainTransaction>(result.Message.Value,
-                        JsonSerializerOptions)!);
-
-                var consumerService = scope.ServiceProvider.GetRequiredService<IWalletTransactionConsumer>();
-                await consumerService.ConsumeTransactionsAsync(transactions, stoppingToken);
+                await ProcessBatchSequentially(batch, stoppingToken);
 
                 consumer.Commit(batch.Last());
             }
@@ -64,9 +57,72 @@ public class BlockchainTransactionTransactionsConsumer : BackgroundService
             {
                 _logger.LogError(e, "Kafka consume error");
             }
+            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+            {
+                break;
+            }
+        }
+    }
+
+    private async Task ProcessBatchSequentially(
+        List<ConsumeResult<string, string>> batch,
+        CancellationToken stoppingToken)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var consumerService = scope.ServiceProvider.GetRequiredService<IWalletTransactionConsumer>();
+
+        foreach (var message in batch)
+        {
+            if (message.Message.Value is null)
+            {
+                continue;
+            }
+
+            BlockchainTransaction transaction;
+            try
+            {
+                transaction = JsonSerializer.Deserialize<BlockchainTransaction>(
+                    message.Message.Value, JsonSerializerOptions)!;
+            }
+            catch (JsonException e)
+            {
+                _logger.LogError(e,
+                    "Failed to deserialize message at {Topic}/{Partition}:{Offset}, skipping",
+                    message.Topic, message.Partition.Value, message.Offset.Value);
+                {
+                    continue;
+                }
+            }
+
+            await ProcessWithRetryAsync(consumerService, transaction, stoppingToken);
+        }
+    }
+
+    private async Task ProcessWithRetryAsync(
+        IWalletTransactionConsumer consumerService,
+        BlockchainTransaction transaction,
+        CancellationToken stoppingToken)
+    {
+        for (var attempt = 1; attempt <= MaxRetries; attempt++)
+        {
+            try
+            {
+                await consumerService.ConsumeTransactionAsync(transaction, stoppingToken);
+                return;
+            }
+            catch (Exception e) when (attempt < MaxRetries)
+            {
+                var delay = TimeSpan.FromSeconds(Math.Pow(2, attempt));
+                _logger.LogWarning(e,
+                    "Transient error processing transaction {Hash}, attempt {Attempt}/{MaxRetries}. Retrying in {Delay}s",
+                    transaction.Hash, attempt, MaxRetries, delay.TotalSeconds);
+                await Task.Delay(delay, stoppingToken);
+            }
             catch (Exception e)
             {
-                _logger.LogError(e, "Processing error");
+                _logger.LogError(e,
+                    "Failed to process transaction {Hash} after {MaxRetries} attempts, skipping",
+                    transaction.Hash, MaxRetries);
             }
         }
     }

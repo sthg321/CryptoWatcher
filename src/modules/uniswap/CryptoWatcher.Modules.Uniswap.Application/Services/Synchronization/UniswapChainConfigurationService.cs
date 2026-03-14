@@ -19,8 +19,20 @@ public class UniswapChainConfigurationService
 
     public async ValueTask<UniswapChainConfiguration> GetByIdAsync(int chainId, CancellationToken ct)
     {
-        return (await _memoryCache.GetOrCreateAsync(chainId,
-            async _ => await _chainConfigurationRepository.FirstOrDefaultAsync(new GetUnichainSpecification(chainId),
-                ct)))!;
+        var result = await _memoryCache.GetOrCreateAsync(chainId, async entry =>
+        {
+            var chain = await _chainConfigurationRepository.FirstOrDefaultAsync(
+                new GetUnichainSpecification(chainId), ct);
+
+            if (chain is null)
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.Zero;
+            }
+
+            return chain;
+        });
+
+        return result ?? throw new InvalidOperationException(
+            $"Chain configuration for chainId={chainId} not found");
     }
 }

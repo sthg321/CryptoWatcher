@@ -4,6 +4,5 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 
 public interface IWalletTransactionConsumer
 {
-    Task ConsumeTransactionsAsync(IEnumerable<BlockchainTransaction> blockchainTransaction,
-        CancellationToken ct = default);
+    Task ConsumeTransactionAsync(BlockchainTransaction transaction, CancellationToken ct = default);
 }

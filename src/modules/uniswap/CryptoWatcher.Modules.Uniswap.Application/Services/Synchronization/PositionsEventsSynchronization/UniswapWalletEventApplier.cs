@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using CryptoWatcher.Modules.Contracts.Messages;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
@@ -17,28 +16,18 @@ public class UniswapWalletEventApplier : IUniswapWalletEventApplier
         _transactionEnricher = transactionEnricher;
     }
 
-    public async IAsyncEnumerable<UniswapLiquidityPosition[]> ApplyEventsToPositionsAsync(
+    public async Task<UniswapLiquidityPosition[]> ApplyEventToPositionsAsync(
         UniswapChainConfiguration chainConfiguration,
-        IEnumerable<BlockchainTransaction> transaction,
-        [EnumeratorCancellation] CancellationToken ct = default)
+        BlockchainTransaction transaction,
+        CancellationToken ct = default)
     {
-        var tasks = transaction
-            .OrderBy(blockchainTransaction => blockchainTransaction.Timestamp)
-            .Select(tx => _transactionEnricher.TryEnrichAsync(chainConfiguration, tx, ct));
+        var enriched = await _transactionEnricher.TryEnrichAsync(chainConfiguration, transaction, ct);
 
-        foreach (var chunk in tasks.Chunk(5))
+        if (enriched is null)
         {
-            var results = await Task.WhenAll(chunk);
-
-            var uniswapEvents = results
-                .Where(x => x != null)
-                .ToArray();
-
-            if (uniswapEvents.Length != 0)
-            {
-                yield return await _positionUpdater.UpdateFromEventAsync(chainConfiguration, uniswapEvents!, ct);
-            }    
+            return [];
         }
-        
+
+        return await _positionUpdater.UpdateFromEventAsync(chainConfiguration, [enriched], ct);
     }
 }

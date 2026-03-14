@@ -19,21 +19,15 @@ public class WalletTransactionConsumer : IWalletTransactionConsumer
         _repository = repository;
     }
 
-    public async Task ConsumeTransactionsAsync(IEnumerable<BlockchainTransaction> blockchainTransaction,
-        CancellationToken ct = default)
+    public async Task ConsumeTransactionAsync(BlockchainTransaction transaction, CancellationToken ct = default)
     {
-        foreach (var transactionByChain in blockchainTransaction.GroupBy(transaction => transaction.ChainId))
-        {
-            var chain = await _chainConfigurationService.GetByIdAsync(transactionByChain.Key, ct);
+        var chain = await _chainConfigurationService.GetByIdAsync(transaction.ChainId, ct);
 
-            foreach (var transactionsByFrom in transactionByChain.GroupBy(transaction => transaction.From))
-            {
-                await foreach (var updatedPositions in _walletEventApplier.ApplyEventsToPositionsAsync(chain,
-                                   transactionsByFrom, ct))
-                {
-                    await _repository.BulkMergeAsync(updatedPositions, ct);
-                }
-            }
+        var updatedPositions = await _walletEventApplier.ApplyEventToPositionsAsync(chain, transaction, ct);
+
+        if (updatedPositions.Length > 0)
+        {
+            await _repository.BulkMergeAsync(updatedPositions, ct);
         }
     }
 }
