@@ -6,6 +6,7 @@ using CryptoWatcher.Modules.WalletIngestion.Infrastructure.Integrations.Configs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Nethereum.JsonRpc.Client;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Kafka;
 
@@ -89,9 +90,7 @@ public class BlockchainTransactionTransactionsConsumer : BackgroundService
                 _logger.LogError(e,
                     "Failed to deserialize message at {Topic}/{Partition}:{Offset}, skipping",
                     message.Topic, message.Partition.Value, message.Offset.Value);
-                {
-                    continue;
-                }
+                continue;
             }
 
             await ProcessWithRetryAsync(consumerService, transaction, stoppingToken);
@@ -110,7 +109,7 @@ public class BlockchainTransactionTransactionsConsumer : BackgroundService
                 await consumerService.ConsumeTransactionAsync(transaction, stoppingToken);
                 return;
             }
-            catch (Exception e) when (attempt < MaxRetries)
+            catch (Exception e) when (IsTransient(e) && attempt < MaxRetries)
             {
                 var delay = TimeSpan.FromSeconds(Math.Pow(2, attempt));
                 _logger.LogWarning(e,
@@ -118,13 +117,31 @@ public class BlockchainTransactionTransactionsConsumer : BackgroundService
                     transaction.Hash, attempt, MaxRetries, delay.TotalSeconds);
                 await Task.Delay(delay, stoppingToken);
             }
+            catch (Exception e) when (IsTransient(e))
+            {
+                _logger.LogError(e,
+                    "Transaction {Hash} failed after {MaxRetries} attempts due to transient error. Stopping batch to preserve ordering",
+                    transaction.Hash, MaxRetries);
+                throw;
+            }
             catch (Exception e)
             {
                 _logger.LogError(e,
-                    "Failed to process transaction {Hash} after {MaxRetries} attempts, skipping",
-                    transaction.Hash, MaxRetries);
+                    "Permanent error processing transaction {Hash}. Stopping batch to preserve ordering",
+                    transaction.Hash);
+                throw;
             }
         }
+    }
+
+    private static bool IsTransient(Exception exception)
+    {
+        return exception is HttpRequestException
+            or RpcResponseException
+            or RpcClientTimeoutException
+            or RpcClientUnknownException
+            or TimeoutException
+            or TaskCanceledException { InnerException: TimeoutException };
     }
 
     private static List<ConsumeResult<string, string>> ConsumeBatch(

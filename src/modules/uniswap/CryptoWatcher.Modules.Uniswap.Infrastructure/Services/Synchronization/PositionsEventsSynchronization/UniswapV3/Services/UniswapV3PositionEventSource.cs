@@ -29,19 +29,12 @@ public class UniswapV3PositionEventSource : IPositionEventSource
     {
         ct.ThrowIfCancellationRequested();
 
-        try
-        {
-            var transactionReceipt =
-                await _blockchainApi.GetTransactionReceiptAsync(chainConfiguration, hash);
+        var transactionReceipt =
+            await _blockchainApi.GetTransactionReceiptAsync(chainConfiguration, hash);
 
-            ct.ThrowIfCancellationRequested();
+        ct.ThrowIfCancellationRequested();
 
-            return _decoderFactory.DecodeEventFromTransaction(transactionReceipt);
-        }
-        catch (Exception e)
-        {
-            throw;
-        }
+        return _decoderFactory.DecodeEventFromTransaction(transactionReceipt);
     }
 
     public async Task<BigInteger> GetPositionLiquidityAsync(UniswapChainConfiguration chain, BigInteger tokenId)
