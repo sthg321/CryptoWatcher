@@ -1,9 +1,9 @@
 using System.Text.Json;
 using Confluent.Kafka;
 using CryptoWatcher.Modules.Contracts.Messages;
+using CryptoWatcher.Modules.Infrastructure.Shared.Configs;
 using CryptoWatcher.Modules.WalletIngestion.Application.Abstractions;
 using CryptoWatcher.Modules.WalletIngestion.Application.Models;
-using CryptoWatcher.Modules.WalletIngestion.Infrastructure.Integrations.Configs;
 using Microsoft.Extensions.Logging;
 
 namespace CryptoWatcher.Modules.WalletIngestion.Infrastructure.Integrations.Kafka;

@@ -1,8 +1,8 @@
 using System.Text.Json;
 using Confluent.Kafka;
 using CryptoWatcher.Modules.Contracts.Messages;
+using CryptoWatcher.Modules.Infrastructure.Shared.Configs;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
-using CryptoWatcher.Modules.WalletIngestion.Infrastructure.Integrations.Configs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -31,7 +31,7 @@ public class BlockchainTransactionTransactionsConsumer : BackgroundService
     {
         using var consumer = new ConsumerBuilder<string, string>(new ConsumerConfig
         {
-            GroupId = "uniswap",
+            GroupId = _config.UniswapConsumerGroupId,
             EnableAutoCommit = false,
             BootstrapServers = _config.Host.ToString()
         }).Build();
@@ -46,7 +46,6 @@ public class BlockchainTransactionTransactionsConsumer : BackgroundService
 
                 if (batch.Count == 0)
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
                     continue;
                 }
 

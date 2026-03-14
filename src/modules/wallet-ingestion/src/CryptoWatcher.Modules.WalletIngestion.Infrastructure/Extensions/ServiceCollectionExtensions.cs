@@ -1,6 +1,6 @@
+using CryptoWatcher.Modules.Infrastructure.Shared.Configs;
 using CryptoWatcher.Modules.WalletIngestion.Application.Abstractions;
 using CryptoWatcher.Modules.WalletIngestion.Application.Services;
-using CryptoWatcher.Modules.WalletIngestion.Infrastructure.Integrations.Configs;
 using CryptoWatcher.Modules.WalletIngestion.Infrastructure.Integrations.Etherscan;
 using CryptoWatcher.Modules.WalletIngestion.Infrastructure.Integrations.Etherscan.Api;
 using CryptoWatcher.Modules.WalletIngestion.Infrastructure.Integrations.Kafka;
