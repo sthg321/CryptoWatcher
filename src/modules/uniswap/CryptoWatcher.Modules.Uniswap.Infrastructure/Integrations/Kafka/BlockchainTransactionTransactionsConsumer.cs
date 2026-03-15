@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Nethereum.JsonRpc.Client;
+using Polly;
+using Polly.Wrap;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Kafka;
 
@@ -19,13 +21,27 @@ public class BlockchainTransactionTransactionsConsumer : BackgroundService
     private readonly KafkaConfig _config;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<BlockchainTransactionTransactionsConsumer> _logger;
-
+    
+    private readonly AsyncPolicyWrap _retryPolicy;
+    
     public BlockchainTransactionTransactionsConsumer(KafkaConfig config, IServiceScopeFactory scopeFactory,
         ILogger<BlockchainTransactionTransactionsConsumer> logger)
     {
         _config = config;
         _scopeFactory = scopeFactory;
         _logger = logger;
+        
+        var retry = Policy
+            .Handle<Exception>(IsTransient)
+            .WaitAndRetryAsync(MaxRetries, i => TimeSpan.FromSeconds(Math.Pow(2, i)));
+
+        var circuitBreaker = Policy
+            .Handle<Exception>(IsTransient)
+            .CircuitBreakerAsync(
+                exceptionsAllowedBeforeBreaking: 5,
+                durationOfBreak: TimeSpan.FromSeconds(30));
+
+        _retryPolicy = Policy.WrapAsync(retry, circuitBreaker);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -121,25 +137,15 @@ public class BlockchainTransactionTransactionsConsumer : BackgroundService
         BlockchainTransaction transaction,
         CancellationToken stoppingToken)
     {
-        for (var attempt = 1; attempt <= MaxRetries; attempt++)
+        using var _ = _logger.BeginScope(
+            "Transaction hash: {TransactionHash}. ChainId: {ChainId}",
+            transaction.Hash,
+            transaction.ChainId);
+
+        await _retryPolicy.ExecuteAsync(async ct =>
         {
-            try
-            {
-                using var _ = _logger.BeginScope("Transaction hash: {TransactionHash}. ChainId: {ChainId}",
-                    transaction.Hash, transaction.ChainId);
-                
-                await consumerService.ConsumeTransactionAsync(transaction, stoppingToken);
-                return;
-            }
-            catch (Exception e) when (IsTransient(e) && attempt < MaxRetries)
-            {
-                var delay = TimeSpan.FromSeconds(Math.Pow(2, attempt));
-                _logger.LogWarning(e,
-                    "Transient error processing transaction {Hash}, attempt {Attempt}/{MaxRetries}. Retrying in {Delay}s",
-                    transaction.Hash, attempt, MaxRetries, delay.TotalSeconds);
-                await Task.Delay(delay, stoppingToken);
-            } 
-        }
+            await consumerService.ConsumeTransactionAsync(transaction, ct);
+        }, stoppingToken);
     }
 
     private static bool IsTransient(Exception exception)
