@@ -1,3 +1,4 @@
+using System.Threading.RateLimiting;
 using CryptoWatcher.Modules.Infrastructure.Shared.Configs;
 using CryptoWatcher.Modules.WalletIngestion.Application.Abstractions;
 using CryptoWatcher.Modules.WalletIngestion.Application.Services;
@@ -9,7 +10,7 @@ using CryptoWatcher.Modules.WalletIngestion.Infrastructure.Persistence.Repositor
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Polly;
 using Refit;
 
 namespace CryptoWatcher.Modules.WalletIngestion.Infrastructure.Extensions;
@@ -42,7 +43,17 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IWalletTransactionIngestionOrchestrator, WalletTransactionIngestionOrchestrator>();
 
         services.AddRefitClient<IEtherscanApi>()
-            .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://api.etherscan.io"));
+            .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://api.etherscan.io"))
+            .AddResilienceHandler("Etherscan", builder =>
+            {
+                builder.AddRateLimiter(new TokenBucketRateLimiter(new TokenBucketRateLimiterOptions
+                {
+                    AutoReplenishment = true,
+                    QueueLimit = 3,
+                    TokenLimit = 3,
+                    ReplenishmentPeriod = TimeSpan.FromSeconds(3)
+                }));
+            });
 
         services.AddSingleton<IEtherscanApiKeyProvider, EtherscanApiKeyProvider>();
 

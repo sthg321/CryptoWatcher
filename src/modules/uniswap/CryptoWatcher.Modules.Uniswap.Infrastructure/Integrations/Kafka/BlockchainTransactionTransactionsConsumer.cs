@@ -92,7 +92,7 @@ public class BlockchainTransactionTransactionsConsumer : BackgroundService
                 break;
             }
             catch (Exception e)
-            {
+            {   
                 _logger.LogError(e, "Error processing batch. Committing last stored offset");
                 consumer.Commit();
             }

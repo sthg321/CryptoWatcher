@@ -7,20 +7,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\CryptoWatcher.Modules.Infrastructure.Shared\CryptoWatcher.Modules.Infrastructure.Shared.csproj" />
-      <ProjectReference Include="..\CryptoWatcher.Modules.WalletIngestion.Application\CryptoWatcher.Modules.WalletIngestion.Application.csproj" />
-      <ProjectReference Include="..\CryptoWatcher.Modules.WalletIngestion\CryptoWatcher.Modules.WalletIngestion.csproj" />
+        <ProjectReference Include="..\..\..\CryptoWatcher.Modules.Infrastructure.Shared\CryptoWatcher.Modules.Infrastructure.Shared.csproj"/>
+        <ProjectReference Include="..\CryptoWatcher.Modules.WalletIngestion.Application\CryptoWatcher.Modules.WalletIngestion.Application.csproj"/>
+        <ProjectReference Include="..\CryptoWatcher.Modules.WalletIngestion\CryptoWatcher.Modules.WalletIngestion.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Confluent.Kafka" Version="2.13.2" />
-      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.3" />
-      <PackageReference Include="Refit.HttpClientFactory" Version="10.0.1" />
-      <PackageReference Include="Riok.Mapperly" Version="5.0.0-next.2" />
+        <PackageReference Include="Confluent.Kafka" Version="2.13.2"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.3"/>
+        <PackageReference Include="Refit.HttpClientFactory" Version="10.0.1"/>
+        <PackageReference Include="Riok.Mapperly" Version="5.0.0-next.2"/>
+        <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.3.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Persistence\Migrations\" />
+        <Folder Include="Persistence\Migrations\"/>
     </ItemGroup>
 
 </Project>
