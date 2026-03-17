@@ -139,7 +139,7 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
                     switch (bulkOperation)  
                     {
                         case BulkOperation<Wallet> walletOperation:
-                            walletOperation.IsReadOnly = true;
+                            walletOperation.ColumnPrimaryKeyExpression = wallet => wallet.Address;
                             break;
                         case BulkOperation<UniswapLiquidityPosition> positionOperation:
                             positionOperation.ColumnPrimaryKeyExpression = position =>
