@@ -52,7 +52,7 @@ public class BlockchainTransactionTransactionsConsumer : BackgroundService
             EnableAutoCommit = false,
             EnableAutoOffsetStore = false,
             BootstrapServers = _config.Host.ToString(),
-            AutoOffsetReset = AutoOffsetReset.Earliest
+            AutoOffsetReset = AutoOffsetReset.Latest
         }).Build();
 
         consumer.Subscribe(_config.RawTransactionsTopic);
