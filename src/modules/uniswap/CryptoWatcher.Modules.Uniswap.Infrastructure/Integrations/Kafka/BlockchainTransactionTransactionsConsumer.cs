@@ -51,7 +51,8 @@ public class BlockchainTransactionTransactionsConsumer : BackgroundService
             GroupId = _config.UniswapConsumerGroupId,
             EnableAutoCommit = false,
             EnableAutoOffsetStore = false,
-            BootstrapServers = _config.Host.ToString()
+            BootstrapServers = _config.Host.ToString(),
+            AutoOffsetReset = AutoOffsetReset.Earliest
         }).Build();
 
         consumer.Subscribe(_config.RawTransactionsTopic);
@@ -76,7 +77,7 @@ public class BlockchainTransactionTransactionsConsumer : BackgroundService
                     if (transaction is not null)
                     {
                         await ProcessWithRetryAsync(consumerService, transaction, stoppingToken);
-                    }
+                    } 
 
                     consumer.StoreOffset(result);
                 }
@@ -94,7 +95,6 @@ public class BlockchainTransactionTransactionsConsumer : BackgroundService
             catch (Exception e)
             {   
                 _logger.LogError(e, "Error processing batch. Committing last stored offset");
-                consumer.Commit();
             }
         }
     }
@@ -104,7 +104,7 @@ public class BlockchainTransactionTransactionsConsumer : BackgroundService
     {
         for (var i = 0; i < BatchSize; i++)
         {
-            var result = consumer.Consume(TimeSpan.FromMilliseconds(100));
+            var result = consumer.Consume(TimeSpan.FromSeconds(1));
             if (result is null)
             {
                 yield break;
@@ -116,9 +116,6 @@ public class BlockchainTransactionTransactionsConsumer : BackgroundService
 
     private BlockchainTransaction? DeserializeTransaction(ConsumeResult<string, string> result)
     {
-        if (result.Message.Value is null)
-            return null;
-
         try
         {
             return JsonSerializer.Deserialize<BlockchainTransaction>(result.Message.Value, JsonSerializerOptions);
@@ -128,7 +125,7 @@ public class BlockchainTransactionTransactionsConsumer : BackgroundService
             _logger.LogError(e,
                 "Failed to deserialize message at {Topic}/{Partition}:{Offset}",
                 result.Topic, result.Partition.Value, result.Offset.Value);
-            throw;
+            return null;
         }
     }
 

@@ -17,6 +17,12 @@ public class TokenEnricher : ITokenEnricher
         _tokenService = tokenService;
     }
 
+    public async ValueTask<CryptoToken> EnrichAsync(string networkName, Uri rpcAddress, Token token,
+        CancellationToken ct = default)
+    {
+        return await EnrichTokenAsync(networkName, rpcAddress, token, null, ct);
+    }
+
     public async ValueTask<TokenInfoPair> EnrichAsync(string networkName, Uri rpcAddress, TokenPair tokenPair,
         CancellationToken ct = default)
     {

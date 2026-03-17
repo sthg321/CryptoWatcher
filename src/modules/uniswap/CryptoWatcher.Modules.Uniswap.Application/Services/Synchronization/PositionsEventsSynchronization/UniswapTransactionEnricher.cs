@@ -47,7 +47,7 @@ public class UniswapTransactionEnricher : IUniswapTransactionEnricher
 
             decrease.IsPositionClosed = liquidityAfter == 0;
         }
-
+        
         _logger.LogInformation("Enriched transaction with {EventType} for position {PositionId}", uniswapEvent.GetType().Name, uniswapEvent.PositionId);
         
         return new UniswapPositionEvent

@@ -51,7 +51,8 @@ public static class ServiceCollectionExtensions
                     AutoReplenishment = true,
                     QueueLimit = 3,
                     TokenLimit = 3,
-                    ReplenishmentPeriod = TimeSpan.FromSeconds(3)
+                    ReplenishmentPeriod = TimeSpan.FromSeconds(3),
+                    TokensPerPeriod = 3
                 }));
             });
 
