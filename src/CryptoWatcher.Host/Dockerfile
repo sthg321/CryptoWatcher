@@ -12,8 +12,8 @@ COPY ["clients/CoinGeckoClient/CoinGeckoClient.csproj", "clients/CoinGeckoClient
 COPY ["src/CryptoWatcher.Application/CryptoWatcher.Application.csproj", "src/CryptoWatcher.Application/"]
 COPY ["src/CryptoWatcher/CryptoWatcher.csproj", "src/CryptoWatcher/"]
 COPY ["src/CryptoWatcher.Infrastructure/CryptoWatcher.Infrastructure.csproj", "src/CryptoWatcher.Infrastructure/"]
-COPY ["src/modules/CryptoWatcher.Modules.Infrastructure.Shared/CryptoWatcher.Modules.Infrastructure.Shared.csproj", "src/modules/CryptoWatcher.Modules.Infrastructure.Shared/"]
 COPY ["src/modules/aave/CryptoWatcher.Modules.Aave.Infrastructure/CryptoWatcher.Modules.Aave.Infrastructure.csproj", "src/modules/aave/CryptoWatcher.Modules.Aave.Infrastructure/"]
+COPY ["src/modules/CryptoWatcher.Modules.Infrastructure.Shared/CryptoWatcher.Modules.Infrastructure.Shared.csproj", "src/modules/CryptoWatcher.Modules.Infrastructure.Shared/"]
 COPY ["src/modules/aave/CryptoWatcher.Modules.Aave.Application/CryptoWatcher.Modules.Aave.Application.csproj", "src/modules/aave/CryptoWatcher.Modules.Aave.Application/"]
 COPY ["src/modules/aave/CryptoWatcher.Modules.Aave/CryptoWatcher.Modules.Aave.csproj", "src/modules/aave/CryptoWatcher.Modules.Aave/"]
 COPY ["src/modules/hyperliquid/CryptoWatcher.Modules.Hyperliquid.Infrastructure/CryptoWatcher.Modules.Hyperliquid.Infrastructure.csproj", "src/modules/hyperliquid/CryptoWatcher.Modules.Hyperliquid.Infrastructure/"]
@@ -27,7 +27,11 @@ COPY ["src/modules/morpho/CryptoWatcher.Modules.Morpho.Application/CryptoWatcher
 COPY ["src/modules/morpho/CryptoWatcher.Modules.Morpho/CryptoWatcher.Modules.Morpho.csproj", "src/modules/morpho/CryptoWatcher.Modules.Morpho/"]
 COPY ["src/modules/uniswap/CryptoWatcher.Modules.Uniswap.Application/CryptoWatcher.Modules.Uniswap.Application.csproj", "src/modules/uniswap/CryptoWatcher.Modules.Uniswap.Application/"]
 COPY ["src/modules/uniswap/CryptoWatcher.Modules.Uniswap/CryptoWatcher.Modules.Uniswap.csproj", "src/modules/uniswap/CryptoWatcher.Modules.Uniswap/"]
+COPY ["src/modules/CryptoWatcher.Modules.Contracts/CryptoWatcher.Modules.Contracts.csproj", "src/modules/CryptoWatcher.Modules.Contracts/"]
 COPY ["src/modules/uniswap/CryptoWatcher.Modules.Uniswap.Infrastructure/CryptoWatcher.Modules.Uniswap.Infrastructure.csproj", "src/modules/uniswap/CryptoWatcher.Modules.Uniswap.Infrastructure/"]
+COPY ["src/modules/wallet-ingestion/src/CryptoWatcher.Modules.WalletIngestion/CryptoWatcher.Modules.WalletIngestion.csproj", "src/modules/wallet-ingestion/src/CryptoWatcher.Modules.WalletIngestion/"]
+COPY ["src/modules/wallet-ingestion/src/CryptoWatcher.Modules.WalletIngestion.Infrastructure/CryptoWatcher.Modules.WalletIngestion.Infrastructure.csproj", "src/modules/wallet-ingestion/src/CryptoWatcher.Modules.WalletIngestion.Infrastructure/"]
+COPY ["src/modules/wallet-ingestion/src/CryptoWatcher.Modules.WalletIngestion.Application/CryptoWatcher.Modules.WalletIngestion.Application.csproj", "src/modules/wallet-ingestion/src/CryptoWatcher.Modules.WalletIngestion.Application/"]
 RUN dotnet restore "src/CryptoWatcher.Host/CryptoWatcher.Host.csproj"
 COPY . .
 WORKDIR "/src/src/CryptoWatcher.Host"

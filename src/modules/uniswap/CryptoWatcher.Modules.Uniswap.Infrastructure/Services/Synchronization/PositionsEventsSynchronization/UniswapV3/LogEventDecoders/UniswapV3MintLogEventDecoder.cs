@@ -39,6 +39,7 @@ public class UniswapV3MintLogEventDecoder : ITransactionLogEventDecoder
             TickUpper = mintEvent.Event.TickUpper,
             Token0 = token0,
             Token1 = token1,
+            From = EvmAddress.Create(transactionReceipt.From)
         };
     }
 }

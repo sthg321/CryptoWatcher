@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace CryptoWatcher.ValueObjects;
@@ -6,7 +7,7 @@ public sealed partial class EvmAddress : IEquatable<EvmAddress>, IEqualityCompar
 {
     private static readonly Regex AddressRegex = MyRegex();
 
-    private EvmAddress(string value) => Value = value;
+    [JsonConstructor] private EvmAddress(string value) => Value = value.ToLowerInvariant();
 
     public string Value { get; }
     

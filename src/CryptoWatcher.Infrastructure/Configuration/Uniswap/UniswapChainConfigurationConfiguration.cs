@@ -19,7 +19,7 @@ public class UniswapChainConfigurationConfiguration : IEntityTypeConfiguration<U
         builder.Property(configuration => configuration.LastProcessedBlock)
             .HasConversion(integer => integer.ToString(), bigInterString => BigInteger.Parse(bigInterString));
 
-        builder.ComplexProperty(chain => chain.SmartContractAddresses);
+        builder.ComplexProperty(chain => chain.SmartContractAddresses, propertyBuilder => propertyBuilder.Ignore(addresses => addresses.ProtocolVersion));
 
         builder.Navigation(configuration => configuration.LiquidityPoolPositions)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
@@ -28,5 +28,7 @@ public class UniswapChainConfigurationConfiguration : IEntityTypeConfiguration<U
             .WithOne()
             .HasForeignKey(position => new { position.NetworkName, position.ProtocolVersion })
             .IsRequired();
+
+        builder.Ignore(configuration => configuration.SmartContractAddressesList);
     }
 }

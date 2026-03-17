@@ -1,10 +1,12 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions.EventAppliers;
-using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.Models.PositionEvents;
+using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.Models
+    .PositionEvents;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.ValueObjects;
 
-namespace CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.PositionEventAppliers;
+namespace CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.
+    PositionEventAppliers;
 
 public class PositionMintEventApplier : IPositionMintEventApplier
 {
@@ -15,7 +17,7 @@ public class PositionMintEventApplier : IPositionMintEventApplier
         _tokenEnricher = tokenEnricher;
     }
 
-    public async Task<UniswapLiquidityPosition> CreatePositionAsync(EvmAddress walletAddress,
+    public async Task<UniswapLiquidityPosition> CreatePositionAsync(
         MintPositionEvent @event,
         UniswapChainConfiguration chainConfiguration,
         DateTime timestamp,
@@ -34,7 +36,7 @@ public class PositionMintEventApplier : IPositionMintEventApplier
             @event.TickUpper,
             enrichedTokens.Token0,
             enrichedTokens.Token1,
-            walletAddress,
+            @event.From,
             chainConfiguration,
             DateOnly.FromDateTime(timestamp));
 

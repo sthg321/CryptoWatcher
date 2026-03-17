@@ -22,7 +22,6 @@ public class UniswapPositionUpdater : IUniswapPositionUpdater
 
     public async Task<UniswapLiquidityPosition[]> UpdateFromEventAsync(
         UniswapChainConfiguration chain,
-        EvmAddress walletAddress,
         UniswapPositionEvent[] uniswapEvents,
         CancellationToken ct = default)
     {
@@ -36,7 +35,6 @@ public class UniswapPositionUpdater : IUniswapPositionUpdater
 
         return await _eventReducer.ApplyEventsAsync(
             chain,
-            walletAddress,
             uniswapEvents,
             currentPositions,
             ct);

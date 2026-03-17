@@ -2,6 +2,7 @@ using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.Positio
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.Models.EventLogs;
+using CryptoWatcher.ValueObjects;
 using Nethereum.Contracts;
 using Nethereum.Contracts.Standards.ERC20.ContractDefinition;
 using Nethereum.RPC.Eth.DTOs;
@@ -39,7 +40,8 @@ public class UniswapV3CollectLogEventDecoder : ITransactionLogEventDecoder
             Token0 = token0,
             Token1 = token1,
             TransactionHash = transactionReceipt.TransactionHash,
-            BlockNumber = transactionReceipt.BlockNumber
+            BlockNumber = transactionReceipt.BlockNumber,
+            From = EvmAddress.Create(transactionReceipt.From)
         };
     }
 }

@@ -9,10 +9,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\CryptoWatcher.Modules.Infrastructure.Shared\CryptoWatcher.Modules.Infrastructure.Shared.csproj" />
       <ProjectReference Include="..\CryptoWatcher.Modules.Uniswap.Application\CryptoWatcher.Modules.Uniswap.Application.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Confluent.Kafka" Version="2.13.2" />
       <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.3" />
       <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.3.0" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.3" />

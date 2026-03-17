@@ -6,6 +6,7 @@ using CryptoWatcher.Application.Abstractions;
 using CryptoWatcher.Host.Extensions;
 using CryptoWatcher.Infrastructure;
 using CryptoWatcher.Infrastructure.Configs;
+using CryptoWatcher.Infrastructure.CronJobs;
 using CryptoWatcher.Infrastructure.CronJobs.Aave;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports;
 using CryptoWatcher.Infrastructure.Extensions;
@@ -13,6 +14,7 @@ using CryptoWatcher.Modules.Aave.Infrastructure.Persistence;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Persistence;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
+using CryptoWatcher.Modules.WalletIngestion.Infrastructure.Persistence;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.ValueObjects;
 using Hangfire;
@@ -53,7 +55,7 @@ builder.Services.AddHangfire(configuration => configuration
     .UseRecommendedSerializerSettings()
     .UsePostgreSqlStorage(options =>
         options.UseNpgsqlConnection(builder.Configuration.GetConnectionString("Hangfire")))
-    .UseRecurringJob(typeof(SyncAavePositionsCronJob).Assembly.GetRecurringJobs));
+    .UseRecurringJob(typeof(SyncDailyPositionPerformanceCronJob).Assembly.GetRecurringJobs));
 
 builder.Services.AddHangfireServer();
 
@@ -66,18 +68,20 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<CryptoWatcherDbContext>();
     var hyperliquidDbContext = scope.ServiceProvider.GetRequiredService<HyperliquidDbContext>();
     var aaveDbContext = scope.ServiceProvider.GetRequiredService<AaveDbContext>();
-
-    if (!app.Environment.IsDevelopment())
+    var walletIngestionDbContext = scope.ServiceProvider.GetRequiredService<WalletIngestionDbContext>();
+    
+    if (app.Environment.IsDevelopment())
     {
         db.Database.Migrate();
         hyperliquidDbContext.Database.Migrate();
         aaveDbContext.Database.Migrate();
+        walletIngestionDbContext.Database.Migrate();
     }
 }
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
+ 
 app.MapHangfireDashboardWithNoAuthorizationFilters();
 
 async Task<FileStreamHttpResult> Handler(IPlatformDailyReportFacade reportFacade,

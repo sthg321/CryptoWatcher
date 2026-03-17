@@ -1,3 +1,4 @@
+using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Uniswap.ValueObjects;
@@ -47,4 +48,6 @@ public record UniswapAddresses
     public required EvmAddress MultiCall { get; init; } = null!;
 
     public EvmAddress? StateView { get; set; }
+
+    public UniswapProtocolVersion ProtocolVersion { get; set; } = UniswapProtocolVersion.V3;
 }

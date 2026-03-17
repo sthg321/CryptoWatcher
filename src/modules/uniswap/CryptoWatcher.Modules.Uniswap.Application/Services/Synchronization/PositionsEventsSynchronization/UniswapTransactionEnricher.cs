@@ -1,7 +1,8 @@
+using CryptoWatcher.Modules.Contracts.Messages;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
-using CryptoWatcher.Modules.Uniswap.Application.Models;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.Models.PositionEvents;
 using CryptoWatcher.Modules.Uniswap.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization;
 
@@ -9,12 +10,15 @@ public class UniswapTransactionEnricher : IUniswapTransactionEnricher
 {
     private readonly IPositionEventSource _positionEventSource;
     private readonly IUniswapTransactionFilter _uniswapTransactionFilter;
+    private readonly ILogger<UniswapTransactionEnricher> _logger;
 
     public UniswapTransactionEnricher(IPositionEventSource positionEventSource,
-        IUniswapTransactionFilter uniswapTransactionFilter)
+        IUniswapTransactionFilter uniswapTransactionFilter,
+        ILogger<UniswapTransactionEnricher> logger)
     {
         _positionEventSource = positionEventSource;
         _uniswapTransactionFilter = uniswapTransactionFilter;
+        _logger = logger;
     }
 
     public async Task<UniswapPositionEvent?> TryEnrichAsync(UniswapChainConfiguration chainConfiguration,
@@ -43,7 +47,9 @@ public class UniswapTransactionEnricher : IUniswapTransactionEnricher
 
             decrease.IsPositionClosed = liquidityAfter == 0;
         }
-
+        
+        _logger.LogInformation("Enriched transaction with {EventType} for position {PositionId}", uniswapEvent.GetType().Name, uniswapEvent.PositionId);
+        
         return new UniswapPositionEvent
         {
             Event = uniswapEvent,

@@ -6,9 +6,7 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions.EventAppliers;
 
 public interface IPositionMintEventApplier
 {
-    Task<UniswapLiquidityPosition> CreatePositionAsync(
-        EvmAddress walletAddress,
-        MintPositionEvent mintPositionEvent,
+    Task<UniswapLiquidityPosition> CreatePositionAsync(MintPositionEvent mintPositionEvent,
         UniswapChainConfiguration chainConfiguration,
         DateTime timestamp,
         CancellationToken ct = default);

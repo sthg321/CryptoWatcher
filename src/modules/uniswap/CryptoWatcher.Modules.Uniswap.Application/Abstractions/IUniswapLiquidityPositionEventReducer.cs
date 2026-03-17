@@ -7,7 +7,6 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 public interface IUniswapLiquidityPositionEventReducer
 {
     Task<UniswapLiquidityPosition[]> ApplyEventsAsync(UniswapChainConfiguration chainConfiguration,
-        EvmAddress walletAddress,
         IReadOnlyCollection<UniswapPositionEvent> uniswapEvents,
         IReadOnlyCollection<UniswapLiquidityPosition> currentPositions,
         CancellationToken ct = default);

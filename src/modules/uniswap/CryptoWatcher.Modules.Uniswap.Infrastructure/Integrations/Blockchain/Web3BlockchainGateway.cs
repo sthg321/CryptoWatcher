@@ -1,5 +1,5 @@
+using CryptoWatcher.Modules.Contracts.Messages;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
-using CryptoWatcher.Modules.Uniswap.Application.Models;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain.Api;
 using CryptoWatcher.ValueObjects;
@@ -26,10 +26,12 @@ public class Web3BlockchainGateway : IBlockchainGateway
         return new BlockchainTransaction
         {
             BlockNumber = transactionReceipt.BlockNumber,
+            ChainId = chain.ChainId,
             Hash = transactionHash,
             To = EvmAddress.Create(transactionReceipt.To),
             FunctionName = null,
-            Timestamp = transactionTimestamp
+            Timestamp = transactionTimestamp,
+            From = EvmAddress.Create(transactionReceipt.From),
         };
     }
 }

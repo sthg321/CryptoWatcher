@@ -6,9 +6,7 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 
 public interface IUniswapPositionUpdater
 {
-    Task<UniswapLiquidityPosition[]> UpdateFromEventAsync(
-        UniswapChainConfiguration chain,
-        EvmAddress walletAddress,
+    Task<UniswapLiquidityPosition[]> UpdateFromEventAsync(UniswapChainConfiguration chain,
         UniswapPositionEvent[] uniswapEvents,
         CancellationToken ct = default);
 }

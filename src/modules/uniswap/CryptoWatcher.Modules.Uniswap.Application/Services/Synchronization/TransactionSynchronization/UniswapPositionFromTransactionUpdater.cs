@@ -32,6 +32,6 @@ public class UniswapPositionFromTransactionUpdater : IUniswapPositionFromTransac
             throw new InvalidOperationException("Provided transaction is not a Uniswap event");
         }
         
-        return await _positionUpdater.UpdateFromEventAsync(chain, wallet.Address, [uniswapEvent], ct);
+        return await _positionUpdater.UpdateFromEventAsync(chain, [uniswapEvent], ct);
     }
 }

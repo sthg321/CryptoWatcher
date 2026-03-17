@@ -60,4 +60,6 @@ public class UniswapChainConfiguration : BaseChainConfiguration
     public DateTime LastProcessedBlockUpdatedAt { get; private set; } = DateTime.UtcNow;
 
     public IReadOnlyCollection<UniswapLiquidityPosition> LiquidityPoolPositions => _liquidityPoolPositions;
+    
+    public IReadOnlyCollection<UniswapAddresses> SmartContractAddressesList => [SmartContractAddresses];
 }

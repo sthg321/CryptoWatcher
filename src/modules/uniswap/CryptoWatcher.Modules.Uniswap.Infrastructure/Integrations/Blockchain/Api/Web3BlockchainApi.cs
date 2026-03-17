@@ -5,6 +5,7 @@ using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain.Unisw
 using CryptoWatcher.ValueObjects;
 using Nethereum.Hex.HexTypes;
 using Nethereum.RPC.Eth.DTOs;
+using Polly.Registry;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain.Api;
 

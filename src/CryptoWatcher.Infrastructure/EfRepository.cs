@@ -136,10 +136,10 @@ public class EfRepository<TEntity> : RepositoryBase<TEntity>, IRepository<TEntit
                 operation.IncludeGraph = true;
                 operation.IncludeGraphOperationBuilder = bulkOperation =>
                 {
-                    switch (bulkOperation)
+                    switch (bulkOperation)  
                     {
                         case BulkOperation<Wallet> walletOperation:
-                            walletOperation.ColumnPrimaryKeyExpression = wallet => wallet.Address;
+                            walletOperation.IsReadOnly = true;
                             break;
                         case BulkOperation<UniswapLiquidityPosition> positionOperation:
                             positionOperation.ColumnPrimaryKeyExpression = position =>

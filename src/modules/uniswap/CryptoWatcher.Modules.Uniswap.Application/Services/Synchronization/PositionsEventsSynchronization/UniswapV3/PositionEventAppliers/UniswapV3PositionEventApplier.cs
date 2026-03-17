@@ -21,14 +21,13 @@ public class UniswapV3PositionEventApplier : IUniswapPositionEventApplier
 
     public async Task<UniswapLiquidityPosition> ApplyOperationToPositionAsync(
         UniswapChainConfiguration chainConfiguration,
-        EvmAddress walletAddress,
         UniswapPositionEvent positionEvent,
         UniswapLiquidityPosition? position, 
         CancellationToken ct = default)
     {
         if (positionEvent.Event is MintPositionEvent mintPositionOperation)
         {
-            return await _positionMintEventApplier.CreatePositionAsync(walletAddress, mintPositionOperation,
+            return await _positionMintEventApplier.CreatePositionAsync(mintPositionOperation,
                 chainConfiguration, positionEvent.Timestamp, ct);
         }
 

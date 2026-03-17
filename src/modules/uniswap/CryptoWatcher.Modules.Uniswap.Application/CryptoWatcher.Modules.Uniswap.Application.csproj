@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\CryptoWatcher.Application\CryptoWatcher.Application.csproj" />
+      <ProjectReference Include="..\..\CryptoWatcher.Modules.Contracts\CryptoWatcher.Modules.Contracts.csproj" />
       <ProjectReference Include="..\..\merkl\src\CryptoWatcher.Modules.Merkl.Application\CryptoWatcher.Modules.Merkl.Application.csproj" />
       <ProjectReference Include="..\CryptoWatcher.Modules.Uniswap\CryptoWatcher.Modules.Uniswap.csproj" />
     </ItemGroup>

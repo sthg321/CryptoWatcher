@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace CryptoWatcher.ValueObjects;
@@ -9,6 +10,7 @@ public partial class TransactionHash : IEquatable<TransactionHash>, IEqualityCom
     [GeneratedRegex("^0x[a-fA-F0-9]{64}$", RegexOptions.None)]
     private static partial Regex HashValidator();
 
+    [JsonConstructor]
     private TransactionHash(string value)
     {
         if (string.IsNullOrWhiteSpace(value) || !IsValid(value))
