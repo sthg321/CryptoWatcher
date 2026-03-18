@@ -71,7 +71,7 @@ using (var scope = app.Services.CreateScope())
     var aaveDbContext = scope.ServiceProvider.GetRequiredService<AaveDbContext>();
     var walletIngestionDbContext = scope.ServiceProvider.GetRequiredService<WalletIngestionDbContext>();
     
-    if (app.Environment.IsDevelopment())
+    if (!app.Environment.IsDevelopment())
     {
         db.Database.Migrate();
         hyperliquidDbContext.Database.Migrate();
