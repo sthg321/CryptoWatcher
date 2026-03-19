@@ -60,7 +60,7 @@ public static class ServiceCollectionExtensions
         services.AddDbContext<UniswapDbContext>(options =>
             options.UseNpgsql(connectionString, npgsql =>
             {
-                npgsql.MigrationsHistoryTable("__EFMigrationsHistory", "hyperliquid");
+                npgsql.MigrationsHistoryTable("__EFMigrationsHistory", "uniswap");
                 npgsql.MigrationsAssembly(typeof(UniswapDbContext).Assembly.FullName);
             }));
 
