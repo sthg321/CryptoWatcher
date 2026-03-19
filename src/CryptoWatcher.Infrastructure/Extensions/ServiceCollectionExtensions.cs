@@ -56,7 +56,7 @@ public static class ServiceCollectionExtensions
         services
             .AddConfiguredAaveModule(connectionString)
             .AddConfiguredHyperliquidModule(connectionString)
-            .AddConfiguredUniswapModule()
+            .AddConfiguredUniswapModule(connectionString)
             .AddMorphoModule(provider => provider.GetRequiredService<ExternalServicesConfig>().Morpho)
             .AddMerklModule(provider => provider.GetRequiredService<ExternalServicesConfig>().Merkl)
             .AddWalletIngestionModule(configuration, connectionString)
@@ -111,9 +111,10 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static IServiceCollection AddConfiguredUniswapModule(this IServiceCollection services)
+    private static IServiceCollection AddConfiguredUniswapModule(this IServiceCollection services,
+        string connectionString)
     {
-        services.AddUniswapModule()
+        services.AddUniswapModule(connectionString)
             .AddSingleton<IDailyExcelSheetBuilder, UniswapDailyExcelSheetBuilder>()
             .AddScoped<UniswapOverallExcelReportService>()
             .AddSingleton<UniswapDailyReportExcelWorksheetWriter>();

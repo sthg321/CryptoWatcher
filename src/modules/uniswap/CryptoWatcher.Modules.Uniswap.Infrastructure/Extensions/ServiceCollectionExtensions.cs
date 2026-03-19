@@ -27,6 +27,7 @@ using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain.Unisw
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain.UniswapV4.PositionsFetcher;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain.UniswapV4.StateView;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Kafka;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Persistence;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Services.Synchronization.PositionsEventsSynchronization;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.
     Abstractions;
@@ -34,6 +35,7 @@ using CryptoWatcher.Modules.Uniswap.Infrastructure.Services.Synchronization.Posi
     LogEventDecoders;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.
     Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http.Resilience;
@@ -50,11 +52,17 @@ public static class UniswapModuleKeyedService
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddUniswapModule(this IServiceCollection services)
+    public static IServiceCollection AddUniswapModule(this IServiceCollection services, string connectionString)
     {
         AbiDeserializationSettings.UseSystemTextJson = true;
 
         services.AddMemoryCache();
+        services.AddDbContext<UniswapDbContext>(options =>
+            options.UseNpgsql(connectionString, npgsql =>
+            {
+                npgsql.MigrationsHistoryTable("__EFMigrationsHistory", "hyperliquid");
+                npgsql.MigrationsAssembly(typeof(UniswapDbContext).Assembly.FullName);
+            }));
 
         services.AddResiliencePipeline("Uniswap", builder =>
         {

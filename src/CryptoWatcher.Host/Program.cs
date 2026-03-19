@@ -14,6 +14,7 @@ using CryptoWatcher.Modules.Aave.Infrastructure.Persistence;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Persistence;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Persistence;
 using CryptoWatcher.Modules.WalletIngestion.Infrastructure.Persistence;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.ValueObjects;
@@ -115,7 +116,7 @@ app.MapPost("/sync-daily-performance",
     });
 
 app.MapPost("/uniswap/sync-block/{transactionHash}", async (IUniswapPositionTransactionSynchronizer sync,
-    CryptoWatcherDbContext dbContext,
+    UniswapDbContext dbContext,
     string transactionHash,
     string chainName,
     string walletAddress,
