@@ -1,4 +1,3 @@
-using System.Numerics;
 using CryptoWatcher.Modules.Uniswap.ValueObjects;
 
 namespace CryptoWatcher.Modules.Uniswap.Entities;
@@ -12,9 +11,6 @@ namespace CryptoWatcher.Modules.Uniswap.Entities;
 /// </remarks>
 public class UniswapChainConfiguration : BaseChainConfiguration
 {
-    // ReSharper disable once CollectionNeverUpdated.Local
-    private readonly List<UniswapLiquidityPosition> _liquidityPoolPositions = [];
-    
     /// <summary>
     /// Gets the identifier of the blockchain network where the Uniswap protocol is deployed.
     /// </summary>
@@ -48,18 +44,6 @@ public class UniswapChainConfiguration : BaseChainConfiguration
     /// and dictates the behavior and features available based on the version defined.
     /// </summary>
     public required UniswapProtocolVersion ProtocolVersion { get; init; }
-
-    /// <summary>
-    /// The last block number that has been successfully processed for Uniswap data
-    /// </summary>
-    public BigInteger LastProcessedBlock { get; init; }
-
-    /// <summary>
-    /// Timestamp when the synchronization state was last updated
-    /// </summary>
-    public DateTime LastProcessedBlockUpdatedAt { get; private set; } = DateTime.UtcNow;
-
-    public IReadOnlyCollection<UniswapLiquidityPosition> LiquidityPoolPositions => _liquidityPoolPositions;
-    
+ 
     public IReadOnlyCollection<UniswapAddresses> SmartContractAddressesList => [SmartContractAddresses];
 }

@@ -53,7 +53,6 @@ public static class DatabaseExtensions
                         EvmAddress.Create("0x4529A01c7A0410167c5740C487A8DE60232617bf"),
                     StateView = EvmAddress.Create("0x86e8631A016F9068C3f085fAF484Ee3F5fDee8f2")
                 },
-                LastProcessedBlock = 29634140,
                 ProtocolVersion = UniswapProtocolVersion.V4
             });
             
@@ -70,7 +69,6 @@ public static class DatabaseExtensions
                     PositionManager = EvmAddress.Create("0xd88F38F930b7952f2DB2432Cb002E7abbF3dD869"),
                     StateView = EvmAddress.Create("0x76Fd297e2D437cd7f76d50F01AfE6160f86e9990")
                 },
-                LastProcessedBlock = 389191403,
                 ProtocolVersion = UniswapProtocolVersion.V4
             });
             
@@ -86,7 +84,6 @@ public static class DatabaseExtensions
                     MultiCall = EvmAddress.Create("0xcA11bde05977b3631167028862bE2a173976CA11"),
                     PositionManager = EvmAddress.Create("0xC36442b4a4522E871399CD717aBDD847Ab11FE88")
                 },
-                LastProcessedBlock = 389191403,
                 ProtocolVersion = UniswapProtocolVersion.V3
             });
             
@@ -102,7 +99,6 @@ public static class DatabaseExtensions
                     MultiCall = EvmAddress.Create("0xcA11bde05977b3631167028862bE2a173976CA11"),
                     PositionManager = EvmAddress.Create("0xC36442b4a4522E871399CD717aBDD847Ab11FE88")
                 },
-                LastProcessedBlock = 24155256,
                 ProtocolVersion = UniswapProtocolVersion.V3
             });
             
@@ -118,7 +114,6 @@ public static class DatabaseExtensions
                     MultiCall = EvmAddress.Create("0xcA11bde05977b3631167028862bE2a173976CA11"),
                     PositionManager = EvmAddress.Create("0x7197e214c0b767cfb76fb734ab638e2c192f4e53")
                 },
-                LastProcessedBlock = 46147240,
                 ProtocolVersion = UniswapProtocolVersion.V3
             });
         }
