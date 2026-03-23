@@ -1,23 +1,20 @@
-using CryptoWatcher.Abstractions;
+using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
-using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.Models
-    .PositionEvents;
+using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.Models.PositionEvents;
 using CryptoWatcher.Modules.Uniswap.Entities;
-using CryptoWatcher.Modules.Uniswap.Specifications;
-using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization;
 
 public class UniswapPositionUpdater : IUniswapPositionUpdater
 {
-    private readonly IRepository<UniswapLiquidityPosition> _positionsRepository;
     private readonly IUniswapLiquidityPositionEventReducer _eventReducer;
+    private readonly IUniswapLiquidityPositionRepository _repository;
 
-    public UniswapPositionUpdater(IRepository<UniswapLiquidityPosition> positionsRepository,
-        IUniswapLiquidityPositionEventReducer eventReducer)
+    public UniswapPositionUpdater(IUniswapLiquidityPositionEventReducer eventReducer,
+        IUniswapLiquidityPositionRepository repository)
     {
-        _positionsRepository = positionsRepository;
         _eventReducer = eventReducer;
+        _repository = repository;
     }
 
     public async Task<UniswapLiquidityPosition[]> UpdateFromEventAsync(
@@ -30,13 +27,8 @@ public class UniswapPositionUpdater : IUniswapPositionUpdater
             .Distinct()
             .ToArray();
 
-        var currentPositions =
-            await _positionsRepository.ListAsync(new UniswapLiquidityPositionFullAggregate(chain, positionIds), ct);
+        var currentPositions = await _repository.GetActiveAsync(chain, positionIds, ct);
 
-        return await _eventReducer.ApplyEventsAsync(
-            chain,
-            uniswapEvents,
-            currentPositions,
-            ct);
+        return await _eventReducer.ApplyEventsAsync(chain, uniswapEvents, currentPositions, ct);
     }
 }

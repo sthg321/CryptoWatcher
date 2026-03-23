@@ -14,6 +14,7 @@ using CryptoWatcher.Modules.Aave.Infrastructure.Persistence;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Persistence;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Persistence;
 using CryptoWatcher.Modules.WalletIngestion.Infrastructure.Persistence;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.ValueObjects;
@@ -70,6 +71,7 @@ using (var scope = app.Services.CreateScope())
     var hyperliquidDbContext = scope.ServiceProvider.GetRequiredService<HyperliquidDbContext>();
     var aaveDbContext = scope.ServiceProvider.GetRequiredService<AaveDbContext>();
     var walletIngestionDbContext = scope.ServiceProvider.GetRequiredService<WalletIngestionDbContext>();
+    var uniswapDbContext = scope.ServiceProvider.GetRequiredService<UniswapDbContext>();
     
     if (!app.Environment.IsDevelopment())
     {
@@ -77,6 +79,7 @@ using (var scope = app.Services.CreateScope())
         hyperliquidDbContext.Database.Migrate();
         aaveDbContext.Database.Migrate();
         walletIngestionDbContext.Database.Migrate();
+        uniswapDbContext.Database.Migrate();
     }
 }
 
@@ -115,7 +118,7 @@ app.MapPost("/sync-daily-performance",
     });
 
 app.MapPost("/uniswap/sync-block/{transactionHash}", async (IUniswapPositionTransactionSynchronizer sync,
-    CryptoWatcherDbContext dbContext,
+    UniswapDbContext dbContext,
     string transactionHash,
     string chainName,
     string walletAddress,

@@ -1,9 +1,9 @@
-using CryptoWatcher.Abstractions;
 using CryptoWatcher.Abstractions.Reports;
 using CryptoWatcher.Extensions;
 using CryptoWatcher.Models;
 using CryptoWatcher.Modules.Merkl.Application.Abstractions;
 using CryptoWatcher.Modules.Merkl.Entities;
+using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Modules.Uniswap.Models;
 using CryptoWatcher.Shared.Entities;
@@ -12,8 +12,8 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Services.Reports;
 
 public class UniswapDailyReportService : BaseReportService<PlatformDailyReport>, IPlatformDailyReportDataProvider
 {
-    public UniswapDailyReportService(IRepository<UniswapLiquidityPosition> poolPositionRepository,
-        IMerklRewardService merklRewardService) : base(poolPositionRepository, merklRewardService)
+    public UniswapDailyReportService(IUniswapLiquidityPositionRepository poolPositionRepository,
+        IMerklRewardService merklRewardService) : base(merklRewardService, poolPositionRepository)
     {
     }
 

@@ -5,7 +5,6 @@ using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions.EventAppliers;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions.Reports;
-using CryptoWatcher.Modules.Uniswap.Application.Services.DailyPerformance;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Reports;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization;
@@ -16,6 +15,7 @@ using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.Positio
     PositionEventAppliers;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsSnapshotSynchronization;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.TransactionSynchronization;
+using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain.Api;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain.UniswapV3;
@@ -27,6 +27,8 @@ using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain.Unisw
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain.UniswapV4.PositionsFetcher;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain.UniswapV4.StateView;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Kafka;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Persistence;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Persistence.Repositories;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Services.Synchronization.PositionsEventsSynchronization;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.
     Abstractions;
@@ -34,6 +36,9 @@ using CryptoWatcher.Modules.Uniswap.Infrastructure.Services.Synchronization.Posi
     LogEventDecoders;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.
     Services;
+using CryptoWatcher.Modules.Uniswap.ValueObjects;
+using CryptoWatcher.ValueObjects;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http.Resilience;
@@ -50,12 +55,24 @@ public static class UniswapModuleKeyedService
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddUniswapModule(this IServiceCollection services)
+    public static IServiceCollection AddUniswapModule(this IServiceCollection services, string connectionString)
     {
         AbiDeserializationSettings.UseSystemTextJson = true;
 
         services.AddMemoryCache();
+        services.AddDbContext<UniswapDbContext>(options =>
+            
+            options
+                .UseSeeding((context, _) => SeedUniswapChainData(context))
+                .UseNpgsql(connectionString, npgsql =>
+            {
+                npgsql.MigrationsHistoryTable("__EFMigrationsHistory", "uniswap");
+                npgsql.MigrationsAssembly(typeof(UniswapDbContext).Assembly.FullName);
+            }));
 
+        services.AddScoped<IUniswapLiquidityPositionRepository, UniswapLiquidityPositionRepository>();
+        services.AddScoped<IUniswapChainConfigurationRepository, UniswapChainConfigurationRepository>();
+        
         services.AddResiliencePipeline("Uniswap", builder =>
         {
             builder.AddRateLimiter(new SlidingWindowRateLimiter(new SlidingWindowRateLimiterOptions
@@ -72,8 +89,6 @@ public static class ServiceCollectionExtensions
         services.AddHostedService<BlockchainTransactionTransactionsConsumer>();
         services.AddScoped<UniswapChainConfigurationService>();
         services.AddScoped<IWalletTransactionConsumer, WalletTransactionConsumer>();
-
-        services.AddScoped<IDailyPositionPerformanceSynchronizer, UniswapDailyPositionPerformanceSynchronizer>();
 
         services.AddSingleton<IUniswapProvider, UniswapProvider>();
 
@@ -185,5 +200,90 @@ public static class ServiceCollectionExtensions
 
         var key = typeof(TOperation);
         services.AddKeyedSingleton<IPositionMutationEvent>(key, (sp, _) => sp.GetRequiredService<TApplier>());
+    }
+    
+    
+    private static void SeedUniswapChainData(DbContext context)
+    {
+        if (!context.Set<UniswapChainConfiguration>().Any())
+        {
+            context.Set<UniswapChainConfiguration>().Add(new UniswapChainConfiguration
+            {
+                Name = "Unichain",
+                ChainId = 130,
+                RpcUrl = new Uri("https://lb.drpc.live/unichain"),
+                BlockscoutUrl = new Uri("https://unichain.blockscout.com"),
+                SmartContractAddresses = new UniswapAddresses
+                {
+                    PoolFactory = EvmAddress.Create("0x1f98400000000000000000000000000000000004"),
+                    MultiCall = EvmAddress.Create("0xb7610f9b733e7d45184be3a1bc966960ccc54f0b"),
+                    PositionManager =
+                        EvmAddress.Create("0x4529A01c7A0410167c5740C487A8DE60232617bf"),
+                    StateView = EvmAddress.Create("0x86e8631A016F9068C3f085fAF484Ee3F5fDee8f2")
+                },
+                ProtocolVersion = UniswapProtocolVersion.V4
+            });
+            
+            context.Set<UniswapChainConfiguration>().Add(new UniswapChainConfiguration
+            {
+                Name = "Arbitrum",
+                ChainId = 42161,
+                RpcUrl = new Uri("https://lb.drpc.live/arbitrum"),
+                BlockscoutUrl = new Uri("https://arbitrum.blockscout.com"),
+                SmartContractAddresses = new UniswapAddresses
+                {
+                    PoolFactory = EvmAddress.Create("0x360e68faccca8ca495c1b759fd9eee466db9fb32"),
+                    MultiCall = EvmAddress.Create("0x842eC2c7D803033Edf55E478F461FC547Bc54EB2"),
+                    PositionManager = EvmAddress.Create("0xd88F38F930b7952f2DB2432Cb002E7abbF3dD869"),
+                    StateView = EvmAddress.Create("0x76Fd297e2D437cd7f76d50F01AfE6160f86e9990")
+                },
+                ProtocolVersion = UniswapProtocolVersion.V4
+            });
+            
+            context.Set<UniswapChainConfiguration>().Add(new UniswapChainConfiguration
+            {
+                Name = "Arbitrum",
+                ChainId = 42161,
+                RpcUrl = new Uri("https://lb.drpc.live/arbitrum"),
+                BlockscoutUrl = new Uri("https://arbitrum.blockscout.com"),
+                SmartContractAddresses = new UniswapAddresses
+                {
+                    PoolFactory = EvmAddress.Create("0x1F98431c8aD98523631AE4a59f267346ea31F984"),
+                    MultiCall = EvmAddress.Create("0xcA11bde05977b3631167028862bE2a173976CA11"),
+                    PositionManager = EvmAddress.Create("0xC36442b4a4522E871399CD717aBDD847Ab11FE88")
+                },
+                ProtocolVersion = UniswapProtocolVersion.V3
+            });
+            
+            context.Set<UniswapChainConfiguration>().Add(new UniswapChainConfiguration
+            {
+                Name = "Ethereum",
+                ChainId = 1,
+                RpcUrl = new Uri("https://lb.drpc.live/ethereum"),
+                BlockscoutUrl = new Uri("https://etherscan.io"),
+                SmartContractAddresses = new UniswapAddresses
+                {
+                    PoolFactory = EvmAddress.Create("0x1F98431c8aD98523631AE4a59f267346ea31F984"),
+                    MultiCall = EvmAddress.Create("0xcA11bde05977b3631167028862bE2a173976CA11"),
+                    PositionManager = EvmAddress.Create("0xC36442b4a4522E871399CD717aBDD847Ab11FE88")
+                },
+                ProtocolVersion = UniswapProtocolVersion.V3
+            });
+            
+            context.Set<UniswapChainConfiguration>().Add(new UniswapChainConfiguration
+            {
+                Name = "Monad",
+                ChainId = 143,
+                RpcUrl = new Uri("https://lb.drpc.live/monad-mainnet"),
+                BlockscoutUrl = new Uri("https://monadscan.com"),
+                SmartContractAddresses = new UniswapAddresses
+                {
+                    PoolFactory = EvmAddress.Create("0x204faca1764b154221e35c0d20abb3c525710498"),
+                    MultiCall = EvmAddress.Create("0xcA11bde05977b3631167028862bE2a173976CA11"),
+                    PositionManager = EvmAddress.Create("0x7197e214c0b767cfb76fb734ab638e2c192f4e53")
+                },
+                ProtocolVersion = UniswapProtocolVersion.V3
+            });
+        }
     }
 }

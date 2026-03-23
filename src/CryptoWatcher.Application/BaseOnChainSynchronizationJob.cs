@@ -4,27 +4,6 @@ using Microsoft.Extensions.Logging;
 
 namespace CryptoWatcher.Application;
 
-public class EmptyContext
-{
-    public static EmptyContext Instance { get; } = new();
-}
-
-public abstract class BaseOnChainSynchronizationJobWithoutContext<TChainConfiguration>
-    : BaseOnChainSynchronizationJob<TChainConfiguration, EmptyContext>
-    where TChainConfiguration : BaseChainConfiguration
-{
-    protected BaseOnChainSynchronizationJobWithoutContext(IRepository<Wallet> walletRepository,
-        IRepository<TChainConfiguration> chainRepository, ILogger logger) : base(walletRepository, chainRepository,
-        logger)
-    {
-    }
-
-    protected sealed override Task<EmptyContext> CreateContextAsync(CancellationToken ct)
-    {
-        return Task.FromResult(EmptyContext.Instance);
-    }
-}
-
 public abstract class BaseOnChainSynchronizationJob<TChainConfiguration, TContext>
     where TChainConfiguration : BaseChainConfiguration
 {
@@ -33,14 +12,11 @@ public abstract class BaseOnChainSynchronizationJob<TChainConfiguration, TContex
     private static int _isRunning;
 
     private readonly IRepository<Wallet> _walletRepository;
-    private readonly IRepository<TChainConfiguration> _chainRepository;
     private readonly ILogger _logger;
 
-    protected BaseOnChainSynchronizationJob(IRepository<Wallet> walletRepository,
-        IRepository<TChainConfiguration> chainRepository, ILogger logger)
+    protected BaseOnChainSynchronizationJob(IRepository<Wallet> walletRepository, ILogger logger)
     {
         _walletRepository = walletRepository;
-        _chainRepository = chainRepository;
         _logger = logger;
     }
 
@@ -60,7 +36,7 @@ public abstract class BaseOnChainSynchronizationJob<TChainConfiguration, TContex
         {
             var wallets = await _walletRepository.ListAsync(ct);
 
-            var chains = await _chainRepository.ListAsync(ct);
+            var chains = await GetChainConfiguration(ct);
 
             var context = await CreateContextAsync(ct);
 
@@ -82,7 +58,7 @@ public abstract class BaseOnChainSynchronizationJob<TChainConfiguration, TContex
                     }
                     catch (Exception e)
                     {
-                         _logger.LogError(e, "Error while synchronizing chain");
+                        _logger.LogError(e, "Error while synchronizing chain");
                     }
 
                     _logger.LogInformation("Synchronization completed for chain");
@@ -98,6 +74,8 @@ public abstract class BaseOnChainSynchronizationJob<TChainConfiguration, TContex
     }
 
     protected abstract Task<TContext> CreateContextAsync(CancellationToken ct);
+
+    protected abstract Task<TChainConfiguration[]> GetChainConfiguration(CancellationToken ct);
 
     protected abstract Task SynchronizeWalletOnChainAsync(TChainConfiguration chain, Wallet wallet, TContext context,
         CancellationToken ct);

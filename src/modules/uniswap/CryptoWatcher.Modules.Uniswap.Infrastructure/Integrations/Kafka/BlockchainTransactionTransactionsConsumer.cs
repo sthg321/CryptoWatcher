@@ -54,7 +54,7 @@ public class BlockchainTransactionTransactionsConsumer : BackgroundService
             BootstrapServers = _config.Host.ToString(),
             AutoOffsetReset = AutoOffsetReset.Latest
         }).Build();
-
+        
         consumer.Subscribe(_config.RawTransactionsTopic);
 
         while (!stoppingToken.IsCancellationRequested)

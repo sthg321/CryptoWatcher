@@ -23,6 +23,5 @@ public sealed class UniswapChainConfigurationFaker : Faker<UniswapChainConfigura
         });
         RuleFor(chainConfiguration => chainConfiguration.ProtocolVersion,
             faker => faker.PickRandom<UniswapProtocolVersion>());
-        RuleFor(chainConfiguration => chainConfiguration.LastProcessedBlock, faker => faker.Random.Long(0));
     }
 }

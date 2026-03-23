@@ -2,7 +2,7 @@ using CryptoWatcher.Modules.Uniswap.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CryptoWatcher.Infrastructure.Configuration.Uniswap;
+namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Persistence.Configuration;
 
 public class UniswapLiquidityPositionConfiguration : IEntityTypeConfiguration<UniswapLiquidityPosition>
 {
@@ -11,11 +11,6 @@ public class UniswapLiquidityPositionConfiguration : IEntityTypeConfiguration<Un
         builder.HasKey(position => new { position.PositionId, position.NetworkName });
 
         builder.Property(network => network.NetworkName).HasMaxLength(32);
- 
-        builder.HasOne(position => position.Wallet)
-            .WithMany()
-            .HasForeignKey(position => position.WalletAddress)
-            .IsRequired();
         
          builder.HasMany(position => position.Snapshots)
             .WithOne()
