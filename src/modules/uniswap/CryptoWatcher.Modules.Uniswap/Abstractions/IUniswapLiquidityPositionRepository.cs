@@ -15,4 +15,6 @@ public interface IUniswapLiquidityPositionRepository
         CancellationToken ct = default);
     
     Task SaveAsync(UniswapLiquidityPosition[] positions, CancellationToken ct = default);
+
+    Task<UniswapLiquidityPosition[]> GetActivePositionsAsync(CancellationToken ct = default);
 }

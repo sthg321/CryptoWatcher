@@ -19,6 +19,11 @@ public class UniswapLiquidityPositionRepository : IUniswapLiquidityPositionRepos
     {
         return await _context.UniswapLiquidityPositions.ToArrayAsync(ct);
     }
+    
+    public async Task<UniswapLiquidityPosition[]> GetActivePositionsAsync(CancellationToken ct = default)
+    {
+        return await _context.UniswapLiquidityPositions.Where(position => position.ClosedAt == null).ToArrayAsync(ct);
+    }
 
     public async Task<IReadOnlyCollection<UniswapLiquidityPosition>> GetActiveAsync(UniswapChainConfiguration chain,
         ulong[] positionIds, CancellationToken ct = default)

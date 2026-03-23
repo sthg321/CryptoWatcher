@@ -34,7 +34,7 @@ public class PositionSnapshotSynchronizationJob :
 
     protected override async Task<UniswapPositionsContext> CreateContextAsync(CancellationToken ct)
     {
-        var positions = await _positionsRepository.GetAllAsync(ct);
+        var positions = await _positionsRepository.GetActivePositionsAsync(ct);
 
         return new UniswapPositionsContext(positions);
     }
