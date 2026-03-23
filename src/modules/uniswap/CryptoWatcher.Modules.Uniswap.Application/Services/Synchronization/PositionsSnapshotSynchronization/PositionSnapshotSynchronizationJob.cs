@@ -1,5 +1,6 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Application;
+using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsSnapshotSynchronization.Models;
 using CryptoWatcher.Modules.Uniswap.Entities;
@@ -14,29 +15,34 @@ public class PositionSnapshotSynchronizationJob :
 {
     private const int ChunkSize = 500;
 
-    private readonly IRepository<UniswapLiquidityPosition> _positionsRepository;
     private readonly IPositionSnapshotUpdater _positionSnapshotUpdater;
-    private readonly ILogger<PositionSnapshotSynchronizationJob> _logger;
+    private readonly IUniswapLiquidityPositionRepository _positionsRepository;
+    private readonly IUniswapChainConfigurationRepository _configurationRepository;
     private readonly TimeProvider _timeProvider;
+    private readonly ILogger<PositionSnapshotSynchronizationJob> _logger;
 
-    public PositionSnapshotSynchronizationJob(IRepository<Wallet> walletRepository,
-        IRepository<UniswapChainConfiguration> chainRepository,
-        IRepository<UniswapLiquidityPosition> positionsRepository,
-        IPositionSnapshotUpdater positionSnapshotUpdater,
-        TimeProvider timeProvider,
-        ILogger<PositionSnapshotSynchronizationJob> logger) : base(walletRepository, chainRepository, logger)
+    public PositionSnapshotSynchronizationJob(IRepository<Wallet> walletRepository,  
+        IPositionSnapshotUpdater positionSnapshotUpdater, IUniswapLiquidityPositionRepository positionsRepository,
+        IUniswapChainConfigurationRepository configurationRepository, TimeProvider timeProvider,
+        ILogger<PositionSnapshotSynchronizationJob> logger) : base(walletRepository, logger)
     {
-        _positionsRepository = positionsRepository;
         _positionSnapshotUpdater = positionSnapshotUpdater;
+        _positionsRepository = positionsRepository;
+        _configurationRepository = configurationRepository;
         _timeProvider = timeProvider;
         _logger = logger;
     }
 
     protected override async Task<UniswapPositionsContext> CreateContextAsync(CancellationToken ct)
     {
-        var positions = await _positionsRepository.ListAsync(new UniswapLiquidityPositionFullAggregate(), ct);
+        var positions = await _positionsRepository.GetAllAsync(ct);
 
         return new UniswapPositionsContext(positions);
+    }
+
+    protected override async Task<UniswapChainConfiguration[]> GetChainConfiguration(CancellationToken ct)
+    {
+        return await _configurationRepository.GetAllAsync(ct);
     }
 
     protected override async Task SynchronizeWalletOnChainAsync(UniswapChainConfiguration chain, Wallet wallet,
@@ -59,7 +65,7 @@ public class PositionSnapshotSynchronizationJob :
 
         await foreach (var chunk in updatedPositions.Chunk(ChunkSize).WithCancellation(ct))
         {
-            await _positionsRepository.BulkMergeAsync(chunk, ct);
+            await _positionsRepository.SaveAsync(chunk, ct);
         }
     }
 }

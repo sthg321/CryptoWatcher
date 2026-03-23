@@ -1,6 +1,6 @@
-using CryptoWatcher.Abstractions;
 using CryptoWatcher.Modules.Merkl.Application.Abstractions;
 using CryptoWatcher.Modules.Merkl.Entities;
+using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions.Reports;
 using CryptoWatcher.Modules.Uniswap.Application.Models.Reports;
 using CryptoWatcher.Modules.Uniswap.Entities;
@@ -9,10 +9,11 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Services.Reports;
 
 public class UniswapOverallReportService : BaseReportService<UniswapOverallReport>, IUniswapOverallReportService
 {
-    public UniswapOverallReportService(IRepository<UniswapLiquidityPosition> poolPositionRepository,
-        IMerklRewardService merklRewardService) : base(poolPositionRepository, merklRewardService)
+    public UniswapOverallReportService(IUniswapLiquidityPositionRepository poolPositionRepository,
+        IMerklRewardService merklRewardService) : base(merklRewardService, poolPositionRepository)
     {
     }
+
 
     protected override UniswapOverallReport CreateReportItem(UniswapLiquidityPosition position,
         MerklCampaign? merklCampaign, DateOnly from, DateOnly to)

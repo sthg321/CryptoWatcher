@@ -28,6 +28,7 @@ using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain.Unisw
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Blockchain.UniswapV4.StateView;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Integrations.Kafka;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Persistence;
+using CryptoWatcher.Modules.Uniswap.Infrastructure.Persistence.Repositories;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Services.Synchronization.PositionsEventsSynchronization;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Services.Synchronization.PositionsEventsSynchronization.UniswapV3.
     Abstractions;
@@ -64,6 +65,9 @@ public static class ServiceCollectionExtensions
                 npgsql.MigrationsAssembly(typeof(UniswapDbContext).Assembly.FullName);
             }));
 
+        services.AddScoped<IUniswapLiquidityPositionRepository, UniswapLiquidityPositionRepository>();
+        services.AddScoped<IUniswapChainConfigurationRepository, UniswapChainConfigurationRepository>();
+        
         services.AddResiliencePipeline("Uniswap", builder =>
         {
             builder.AddRateLimiter(new SlidingWindowRateLimiter(new SlidingWindowRateLimiterOptions

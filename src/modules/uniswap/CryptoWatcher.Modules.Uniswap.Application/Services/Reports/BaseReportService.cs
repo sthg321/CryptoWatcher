@@ -1,6 +1,6 @@
-using CryptoWatcher.Abstractions;
 using CryptoWatcher.Modules.Merkl.Application.Abstractions;
 using CryptoWatcher.Modules.Merkl.Entities;
+using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Modules.Uniswap.Specifications;
 using CryptoWatcher.Shared.Entities;
@@ -10,22 +10,21 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Services.Reports;
 
 public abstract class BaseReportService<TReport> where TReport : class
 {
-    private readonly IRepository<UniswapLiquidityPosition> _poolPositionRepository;
     private readonly IMerklRewardService _merklRewardService;
+    private readonly IUniswapLiquidityPositionRepository _positionRepository;
 
-    public BaseReportService(IRepository<UniswapLiquidityPosition> poolPositionRepository,
-        IMerklRewardService merklRewardService)
+    protected BaseReportService(IMerklRewardService merklRewardService,
+        IUniswapLiquidityPositionRepository positionRepository)
     {
-        _poolPositionRepository = poolPositionRepository;
         _merklRewardService = merklRewardService;
+        _positionRepository = positionRepository;
     }
 
     public async Task<Dictionary<EvmAddress, List<TReport>>> GetReportDataAsync(IReadOnlyCollection<Wallet> wallets,
         DateOnly from, DateOnly to,
         CancellationToken ct = default)
     {
-        var poolPositions =
-            await _poolPositionRepository.ListAsync(new UniswapPositionsForReportSpecification(wallets, from, to), ct);
+        var poolPositions = await _positionRepository.GetForReportAsync(wallets, from, to, ct);
 
         var result = new Dictionary<EvmAddress, List<TReport>>();
 

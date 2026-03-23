@@ -1,4 +1,4 @@
-using CryptoWatcher.Abstractions;
+using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
@@ -9,13 +9,13 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.Tra
 public class UniswapPositionTransactionSynchronizer : IUniswapPositionTransactionSynchronizer
 {
     private readonly IUniswapPositionFromTransactionUpdater _updater;
-    private readonly IRepository<UniswapLiquidityPosition> _positionsRepository;
+    private readonly IUniswapLiquidityPositionRepository _repository;
 
     public UniswapPositionTransactionSynchronizer(IUniswapPositionFromTransactionUpdater updater,
-        IRepository<UniswapLiquidityPosition> positionsRepository)
+        IUniswapLiquidityPositionRepository repository)
     {
         _updater = updater;
-        _positionsRepository = positionsRepository;
+        _repository = repository;
     }
 
     public async Task SynchronizeEventFromTransactionAsync(UniswapChainConfiguration chain,
@@ -25,6 +25,6 @@ public class UniswapPositionTransactionSynchronizer : IUniswapPositionTransactio
     {
         var positions = await _updater.ApplyEventFromTransactionAsync(chain, wallet, transactionHash, ct);
 
-        await _positionsRepository.BulkMergeAsync(positions, ct);
+        await _repository.SaveAsync(positions, ct);
     }
 }

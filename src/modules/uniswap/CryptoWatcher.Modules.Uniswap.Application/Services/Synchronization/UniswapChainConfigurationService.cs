@@ -1,6 +1,5 @@
-using CryptoWatcher.Abstractions;
+using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
-using CryptoWatcher.Modules.Uniswap.Specifications;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization;
@@ -8,10 +7,10 @@ namespace CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization;
 public class UniswapChainConfigurationService
 {
     private readonly IMemoryCache _memoryCache;
-    private readonly IRepository<UniswapChainConfiguration> _chainConfigurationRepository;
+    private readonly IUniswapChainConfigurationRepository _chainConfigurationRepository;
 
     public UniswapChainConfigurationService(IMemoryCache memoryCache,
-        IRepository<UniswapChainConfiguration> chainConfigurationRepository)
+        IUniswapChainConfigurationRepository chainConfigurationRepository)
     {
         _memoryCache = memoryCache;
         _chainConfigurationRepository = chainConfigurationRepository;
@@ -19,15 +18,9 @@ public class UniswapChainConfigurationService
 
     public async ValueTask<UniswapChainConfiguration> GetByIdAsync(int chainId, CancellationToken ct)
     {
-        var result = await _memoryCache.GetOrCreateAsync(chainId, async entry =>
+        var result = await _memoryCache.GetOrCreateAsync(chainId, async _ =>
         {
-            var chain = await _chainConfigurationRepository.FirstOrDefaultAsync(
-                new GetUnichainSpecification(chainId), ct);
-
-            if (chain is null)
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.Zero;
-            }
+            var chain = await _chainConfigurationRepository.GetByIdAsync(chainId, ct);
 
             return chain;
         });
