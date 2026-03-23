@@ -4,7 +4,6 @@ using CryptoWatcher.Infrastructure.Configuration.Conventions;
 using CryptoWatcher.Infrastructure.Configuration.Converters;
 using CryptoWatcher.Modules.Merkl.Entities;
 using CryptoWatcher.Modules.Morpho.Entities;
-using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.ValueObjects;
 using Microsoft.EntityFrameworkCore;

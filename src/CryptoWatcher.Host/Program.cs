@@ -71,6 +71,7 @@ using (var scope = app.Services.CreateScope())
     var hyperliquidDbContext = scope.ServiceProvider.GetRequiredService<HyperliquidDbContext>();
     var aaveDbContext = scope.ServiceProvider.GetRequiredService<AaveDbContext>();
     var walletIngestionDbContext = scope.ServiceProvider.GetRequiredService<WalletIngestionDbContext>();
+    var uniswapDbContext = scope.ServiceProvider.GetRequiredService<UniswapDbContext>();
     
     if (!app.Environment.IsDevelopment())
     {
@@ -78,6 +79,7 @@ using (var scope = app.Services.CreateScope())
         hyperliquidDbContext.Database.Migrate();
         aaveDbContext.Database.Migrate();
         walletIngestionDbContext.Database.Migrate();
+        uniswapDbContext.Database.Migrate();
     }
 }
 

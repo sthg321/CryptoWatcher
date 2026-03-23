@@ -1,3 +1,4 @@
+using CryptoWatcher.Modules.Infrastructure.Shared.Persistence.Conventions;
 using CryptoWatcher.Modules.Infrastructure.Shared.Persistence.Converters;
 using CryptoWatcher.ValueObjects;
 using Microsoft.EntityFrameworkCore;
@@ -42,5 +43,7 @@ public class BaseDbContext : DbContext
             .AreFixedLength()
             .AreUnicode(false)
             .HaveMaxLength(TransactionHashLength);
+        
+        configurationBuilder.Conventions.Add(_ => new TokenInfoSymbolMaxLengthConvention());
     }
 }
