@@ -2,6 +2,7 @@ using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using CryptoWatcher.Shared.Entities;
 using Microsoft.EntityFrameworkCore;
+using Z.BulkOperations;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Persistence.Repositories;
 
@@ -36,9 +37,8 @@ public class UniswapLiquidityPositionRepository : IUniswapLiquidityPositionRepos
         DateOnly to, CancellationToken ct = default)
     {
         var walletAddresses = wallets.Select(x => x.Address.Value).ToArray();
-        
+
         return await _context.UniswapLiquidityPositions
-            .Include(position => position.Wallet)
             .Include(poolPosition => poolPosition.Snapshots
                 .Where(snapshot => snapshot.Day >= from && snapshot.Day <= to)
                 .OrderBy(snapshot => snapshot.Day)
@@ -50,6 +50,31 @@ public class UniswapLiquidityPositionRepository : IUniswapLiquidityPositionRepos
 
     public async Task SaveAsync(UniswapLiquidityPosition[] positions, CancellationToken ct = default)
     {
-        await _context.BulkMergeAsync(positions, operation => { }, ct);
+        await _context.BulkMergeAsync(positions, operation =>
+        {
+            operation.IncludeGraphOperationBuilder = bulkOperation =>
+            {
+                switch (bulkOperation)
+                {
+                    case BulkOperation<UniswapLiquidityPosition> positionOperation:
+                        positionOperation.ColumnPrimaryKeyExpression = position =>
+                            new { position.PositionId, position.NetworkName };
+                        break;
+
+                    case BulkOperation<UniswapLiquidityPositionSnapshot> positionOperation:
+                        positionOperation.ColumnPrimaryKeyExpression = position =>
+                            new { position.PoolPositionId, position.NetworkName, position.Day };
+                        break;
+
+                    case BulkOperation<UniswapLiquidityPositionCashFlow> positionOperation:
+                        positionOperation.ColumnPrimaryKeyExpression = position =>
+                            new
+                            {
+                                position.PositionId, position.NetworkName, position.TransactionHash, position.Event
+                            };
+                        break;
+                }
+            };
+        }, ct);
     }
 }
