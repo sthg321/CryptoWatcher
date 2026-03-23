@@ -57,6 +57,7 @@ public class UniswapLiquidityPositionRepository : IUniswapLiquidityPositionRepos
     {
         await _context.BulkMergeAsync(positions, operation =>
         {
+            operation.IncludeGraph = true;
             operation.IncludeGraphOperationBuilder = bulkOperation =>
             {
                 switch (bulkOperation)
