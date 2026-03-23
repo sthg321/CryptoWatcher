@@ -2,7 +2,6 @@ using CryptoWatcher.Modules.Merkl.Application.Abstractions;
 using CryptoWatcher.Modules.Merkl.Entities;
 using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
-using CryptoWatcher.Modules.Uniswap.Specifications;
 using CryptoWatcher.Shared.Entities;
 using CryptoWatcher.ValueObjects;
 

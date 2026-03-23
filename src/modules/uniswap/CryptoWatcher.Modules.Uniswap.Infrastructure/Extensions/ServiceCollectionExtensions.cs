@@ -5,7 +5,6 @@ using CryptoWatcher.Modules.Uniswap.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions.EventAppliers;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions.Reports;
-using CryptoWatcher.Modules.Uniswap.Application.Services.DailyPerformance;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Reports;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization;
 using CryptoWatcher.Modules.Uniswap.Application.Services.Synchronization.PositionsEventsSynchronization;
@@ -84,8 +83,6 @@ public static class ServiceCollectionExtensions
         services.AddHostedService<BlockchainTransactionTransactionsConsumer>();
         services.AddScoped<UniswapChainConfigurationService>();
         services.AddScoped<IWalletTransactionConsumer, WalletTransactionConsumer>();
-
-        services.AddScoped<IDailyPositionPerformanceSynchronizer, UniswapDailyPositionPerformanceSynchronizer>();
 
         services.AddSingleton<IUniswapProvider, UniswapProvider>();
 

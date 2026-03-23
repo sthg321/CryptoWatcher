@@ -1,6 +1,7 @@
 using CryptoWatcher.Modules.Infrastructure.Shared.Persistence;
 using CryptoWatcher.Modules.Uniswap.Entities;
 using Microsoft.EntityFrameworkCore;
+using SmartEnum.EFCore;
 
 namespace CryptoWatcher.Modules.Uniswap.Infrastructure.Persistence;
 
@@ -72,5 +73,6 @@ public class UniswapDbContext : BaseDbContext
     {
         modelBuilder.HasDefaultSchema("uniswap");
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(UniswapDbContext).Assembly);
+        modelBuilder.ConfigureSmartEnum();
     }
 }
