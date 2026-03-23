@@ -4,17 +4,20 @@ using System.Collections.Generic;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace CryptoWatcher.Modules.Hyperliquid.Infrastructure.Persistence.Migrations
+namespace CryptoWatcher.Modules.Hyperliquid.Infrastructure.Migrations
 {
     [DbContext(typeof(HyperliquidDbContext))]
-    partial class HyperliquidDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260323124117_FixedCryptoTokenLenght")]
+    partial class FixedCryptoTokenLenght
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
