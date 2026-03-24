@@ -18,6 +18,11 @@
     <Project Path="src\modules\aave\CryptoWatcher.Modules.Aave.Tests\CryptoWatcher.Modules.Aave.Tests.csproj" />
     <Project Path="src\modules\aave\CryptoWatcher.Modules.Aave\CryptoWatcher.Modules.Aave.csproj" />
   </Folder>
+  <Folder Name="/src/modules/fluid/">
+    <Project Path="src/modules/CryptoWatcher.Modules.Fluid.Application/CryptoWatcher.Modules.Fluid.Application.csproj" />
+    <Project Path="src/modules/CryptoWatcher.Modules.Fluid.Infrastructure/CryptoWatcher.Modules.Fluid.Infrastructure.csproj" />
+    <Project Path="src/modules/CryptoWatcher.Modules.Fluid/CryptoWatcher.Modules.Fluid.csproj" />
+  </Folder>
   <Folder Name="/src/modules/hyperliquid/">
     <Project Path="src\modules\hyperliquid\CryptoWatcher.Modules.Hyperliquid.Application\CryptoWatcher.Modules.Hyperliquid.Application.csproj" />
     <Project Path="src\modules\hyperliquid\CryptoWatcher.Modules.Hyperliquid.Infrastructure\CryptoWatcher.Modules.Hyperliquid.Infrastructure.csproj" />
