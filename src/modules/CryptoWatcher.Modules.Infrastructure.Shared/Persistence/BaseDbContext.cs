@@ -18,6 +18,7 @@ public class BaseDbContext : DbContext
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         configurationBuilder.ComplexProperties<CryptoToken>();
+        configurationBuilder.ComplexProperties<CryptoTokenShort>();
         configurationBuilder.ComplexProperties<CryptoTokenStatistic>();
         
         configurationBuilder.Properties<EvmAddress>()
