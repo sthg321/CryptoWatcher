@@ -6,4 +6,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\CryptoWatcher.Modules.Fluid\CryptoWatcher.Modules.Fluid.csproj" />
+      <ProjectReference Include="..\CryptoWatcher.Modules.Infrastructure.Shared\CryptoWatcher.Modules.Infrastructure.Shared.csproj" />
+    </ItemGroup>
+
 </Project>
