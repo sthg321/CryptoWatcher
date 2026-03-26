@@ -2,7 +2,7 @@ using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Fluid.Entities.Supply;
 
-public class FluidSupplyPosition
+public class FluidLendPosition
 {
     public Guid Id { get; set; }
     
@@ -12,5 +12,5 @@ public class FluidSupplyPosition
 
     public EvmAddress WalletAddress { get; set; } = null!;
 
-    public IReadOnlyCollection<FluidSupplyPositionSnapshot> PositionSnapshots { get; set; } = [];
+    public IReadOnlyCollection<FluidLendPositionSnapshot> PositionSnapshots { get; set; } = [];
 }

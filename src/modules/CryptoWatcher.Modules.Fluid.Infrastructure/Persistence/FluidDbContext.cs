@@ -12,13 +12,13 @@ public class FluidDbContext : BaseDbContext
 
     public DbSet<FluidLendAddress> FluidLendAddresses => Set<FluidLendAddress>();
     
-    public DbSet<FluidSupplyPosition> FluidSupplyPositions => Set<FluidSupplyPosition>();
+    public DbSet<FluidLendPosition> FluidSupplyPositions => Set<FluidLendPosition>();
     
-    public DbSet<FluidSupplyPositionCashFlow> FluidSupplyPositionCashFlows => Set<FluidSupplyPositionCashFlow>();
+    public DbSet<FluidLendPositionCashFlow> FluidSupplyPositionCashFlows => Set<FluidLendPositionCashFlow>();
     
-    public DbSet<FluidSupplyPositionPeriod> FluidSupplyPositionPeriods => Set<FluidSupplyPositionPeriod>();
+    public DbSet<FluidLendPositionPeriod> FluidSupplyPositionPeriods => Set<FluidLendPositionPeriod>();
     
-    public DbSet<FluidSupplyPositionSnapshot> FluidSupplyPositionSnapshots => Set<FluidSupplyPositionSnapshot>();
+    public DbSet<FluidLendPositionSnapshot> FluidSupplyPositionSnapshots => Set<FluidLendPositionSnapshot>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

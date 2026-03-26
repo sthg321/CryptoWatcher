@@ -2,7 +2,7 @@ using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Fluid.Entities.Supply;
 
-public class FluidSupplyPositionSnapshot
+public class FluidLendPositionSnapshot
 {
     public Guid FluidSupplyPositionId { get; set; }
 

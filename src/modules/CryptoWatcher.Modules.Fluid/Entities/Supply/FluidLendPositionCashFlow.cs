@@ -3,7 +3,7 @@ using CryptoWatcher.ValueObjects;
 
 namespace CryptoWatcher.Modules.Fluid.Entities.Supply;
 
-public class FluidSupplyPositionCashFlow
+public class FluidLendPositionCashFlow
 {
     public DateTimeOffset Date { get; private set; }
 

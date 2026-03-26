@@ -1,6 +1,6 @@
 namespace CryptoWatcher.Modules.Fluid.Entities.Supply;
 
-public class FluidSupplyPositionPeriod
+public class FluidLendPositionPeriod
 {
     public Guid Id { get; set; }
     
