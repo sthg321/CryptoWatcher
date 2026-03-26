@@ -2,7 +2,7 @@ using CryptoWatcher.Modules.Fluid.Entities.Supply;
 using CryptoWatcher.Modules.Infrastructure.Shared.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace CryptoWatcher.Modules.Fluid.Infrastructure;
+namespace CryptoWatcher.Modules.Fluid.Infrastructure.Persistence;
 
 public class FluidDbContext : BaseDbContext
 {
