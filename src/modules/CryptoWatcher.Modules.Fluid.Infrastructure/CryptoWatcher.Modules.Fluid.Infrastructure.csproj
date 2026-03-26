@@ -12,4 +12,8 @@
       <ProjectReference Include="..\CryptoWatcher.Modules.Infrastructure.Shared\CryptoWatcher.Modules.Infrastructure.Shared.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <PackageReference Include="Nethereum.Web3" Version="5.8.0" />
+    </ItemGroup>
+ 
 </Project>

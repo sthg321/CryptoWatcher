@@ -30,6 +30,7 @@
         <ProjectReference Include="..\CryptoWatcher\CryptoWatcher.csproj"/>
         <ProjectReference Include="..\modules\aave\CryptoWatcher.Modules.Aave.Infrastructure\CryptoWatcher.Modules.Aave.Infrastructure.csproj" />
         <ProjectReference Include="..\modules\aave\CryptoWatcher.Modules.Aave\CryptoWatcher.Modules.Aave.csproj" />
+        <ProjectReference Include="..\modules\CryptoWatcher.Modules.Fluid.Infrastructure\CryptoWatcher.Modules.Fluid.Infrastructure.csproj" />
         <ProjectReference Include="..\modules\hyperliquid\CryptoWatcher.Modules.Hyperliquid.Infrastructure\CryptoWatcher.Modules.Hyperliquid.Infrastructure.csproj" />
         <ProjectReference Include="..\modules\hyperliquid\CryptoWatcher.Modules.Hyperliquid\CryptoWatcher.Modules.Hyperliquid.csproj" />
         <ProjectReference Include="..\modules\merkl\src\CryptoWatcher.Modules.Merkl.Infrastructure\CryptoWatcher.Modules.Merkl.Infrastructure.csproj" />
