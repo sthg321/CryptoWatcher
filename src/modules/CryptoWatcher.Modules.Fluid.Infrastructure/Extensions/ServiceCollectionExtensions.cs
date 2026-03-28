@@ -4,6 +4,8 @@ using CryptoWatcher.Modules.Fluid.Application.Features.Abstractions;
 using CryptoWatcher.Modules.Fluid.Application.Features.LendPositionsSynchronization.Abstractions;
 using CryptoWatcher.Modules.Fluid.Entities.Supply;
 using CryptoWatcher.Modules.Fluid.Infrastructure.Integrations.Blockchain;
+using CryptoWatcher.Modules.Fluid.Infrastructure.Integrations.Blockchain.Abstractions;
+using CryptoWatcher.Modules.Fluid.Infrastructure.Integrations.Blockchain.Events;
 using CryptoWatcher.Modules.Fluid.Infrastructure.Persistence;
 using CryptoWatcher.Modules.Fluid.Infrastructure.Persistence.Repositories;
 using CryptoWatcher.ValueObjects;
@@ -21,11 +23,15 @@ public static class ServiceCollectionExtensions
             .UseNpgsql(connectionString, npgsql => npgsql
                 .MigrationsHistoryTable("__EFMigrationsHistory", "fluid")
                 .MigrationsAssembly(typeof(FluidDbContext).Assembly.FullName)));
-        
+
         services.AddSingleton<IFluidLendAddressCache, FluidLendAddressCache>();
+        services.AddSingleton<IFluidTransactionClassifier, FluidTransactionClassifier>();
         services.AddScoped<IFluidLendAddressRepository, FluidLendAddressRepository>();
-        services.AddScoped<IFluidTransactionClassifier, FluidTransactionClassifier>();
         services.AddScoped<IFluidGateway, FluidGateway>();
+        
+        services.AddSingleton<IFluidTransactionLogDecoderFactory, FluidTransactionLogDecoderFactory>();
+        services.AddSingleton<IFluidTransactionLogDecoder, DepositLogDecoder>();
+        services.AddSingleton<IFluidTransactionLogDecoder, WithdrawLogDecoder>();
 
         return services;
     }

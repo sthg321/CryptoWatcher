@@ -11,6 +11,7 @@ using CryptoWatcher.Infrastructure.CronJobs.Aave;
 using CryptoWatcher.Infrastructure.Excel.PlatformDailyReports;
 using CryptoWatcher.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Aave.Infrastructure.Persistence;
+using CryptoWatcher.Modules.Fluid.Application.Features.Abstractions;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Persistence;
 using CryptoWatcher.Modules.Uniswap.Application.Abstractions;
 using CryptoWatcher.Modules.Uniswap.Entities;
@@ -72,7 +73,7 @@ using (var scope = app.Services.CreateScope())
     var aaveDbContext = scope.ServiceProvider.GetRequiredService<AaveDbContext>();
     var walletIngestionDbContext = scope.ServiceProvider.GetRequiredService<WalletIngestionDbContext>();
     var uniswapDbContext = scope.ServiceProvider.GetRequiredService<UniswapDbContext>();
-    
+
     if (!app.Environment.IsDevelopment())
     {
         db.Database.Migrate();
@@ -85,7 +86,7 @@ using (var scope = app.Services.CreateScope())
 
 app.UseSwagger();
 app.UseSwaggerUI();
- 
+
 app.MapHangfireDashboardWithNoAuthorizationFilters();
 
 async Task<FileStreamHttpResult> Handler(IPlatformDailyReportFacade reportFacade,
