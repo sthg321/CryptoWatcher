@@ -8,8 +8,10 @@
 
     <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" />
+        <PackageReference Include="Nethereum.Web3" Version="5.8.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
         <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="10.105.2.2" />
+        <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.3.0" />
     </ItemGroup>
 
     <ItemGroup>

@@ -20,6 +20,7 @@ using CryptoWatcher.Integrations;
 using CryptoWatcher.Modules.Aave.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Fluid.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Hyperliquid.Infrastructure.Extensions;
+using CryptoWatcher.Modules.Infrastructure.Shared.Extensions;
 using CryptoWatcher.Modules.Merkl.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Morpho.Infrastructure.Extensions;
 using CryptoWatcher.Modules.Uniswap.Infrastructure.Extensions;
@@ -55,6 +56,7 @@ public static class ServiceCollectionExtensions
     {
         var connectionString = configuration.GetConnectionString("Postgres")!;
         services
+            .AddSharedModule()
             .AddConfiguredAaveModule(connectionString)
             .AddConfiguredHyperliquidModule(connectionString)
             .AddConfiguredUniswapModule(connectionString)
