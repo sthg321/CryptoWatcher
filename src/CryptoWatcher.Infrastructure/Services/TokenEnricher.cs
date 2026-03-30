@@ -1,5 +1,7 @@
 using CryptoWatcher.Abstractions;
 using CryptoWatcher.Extensions;
+using CryptoWatcher.Models;
+using CryptoWatcher.Modules.Infrastructure.Shared.Integrations.Abstractions;
 using CryptoWatcher.ValueObjects;
 using Nethereum.Web3;
 
@@ -11,11 +13,33 @@ namespace CryptoWatcher.Infrastructure.Services;
 public class TokenEnricher : ITokenEnricher
 {
     private readonly TokenService _tokenService;
+    private readonly IWeb3Gateway _web3Gateway;
+    private readonly BlockchainRegistry _blockchainRegistry;
 
-    public TokenEnricher(TokenService tokenService)
+    public TokenEnricher(TokenService tokenService, IWeb3Gateway web3Gateway, BlockchainRegistry blockchainRegistry)
     {
         _tokenService = tokenService;
+        _web3Gateway = web3Gateway;
+        _blockchainRegistry = blockchainRegistry;
     }
+
+    public async ValueTask<CryptoToken> EnrichAsync(int chainId, Token token, CancellationToken ct = default)
+    {
+        var web3 = _web3Gateway.GetConfigured(chainId);
+        var chain = _blockchainRegistry.GetNetwork(chainId);
+
+        var tokenDecimals = await _tokenService.GetTokenDecimalsAsync(web3, token.Address, ct);
+        var symbol = await _tokenService.GetTokenSymbolAsync(web3, token.Address);
+        
+        return new CryptoToken
+        {
+            Address = EvmAddress.Create(token.Address),
+            Symbol = symbol,
+            Amount = token.Balance.ToDecimal(tokenDecimals),
+            PriceInUsd = await _tokenService.GetTokenPriceByTokenAddressAsync(chain.Name, token.Address, symbol, ct)
+        };
+    }
+
 
     public async ValueTask<CryptoToken> EnrichAsync(string networkName, Uri rpcAddress, Token token,
         CancellationToken ct = default)
@@ -31,12 +55,6 @@ public class TokenEnricher : ITokenEnricher
             Token0 = await EnrichTokenAsync(networkName, rpcAddress, tokenPair.Token0, null, ct),
             Token1 = await EnrichTokenAsync(networkName, rpcAddress, tokenPair.Token1, null, ct),
         };
-    }
-
-    public async ValueTask<CryptoToken> EnrichTokenAsync(Uri rpcAddress, Token token, decimal priceInUsd,
-        CancellationToken ct)
-    {
-        return await EnrichTokenAsync(null!, rpcAddress, token, priceInUsd, ct);
     }
 
     private async ValueTask<CryptoToken> EnrichTokenAsync(string platform, Uri rpcAddress, Token token,

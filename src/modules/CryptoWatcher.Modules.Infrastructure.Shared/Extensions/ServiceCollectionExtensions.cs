@@ -18,8 +18,11 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<DrpcConfig>(provider =>
         {
-            var config = provider.GetRequiredService<IConfiguration>();
-            return config.GetSection("Drpc").Get<DrpcConfig>()!;
+            var configuration = provider.GetRequiredService<IConfiguration>();
+            var config = new DrpcConfig();
+            configuration.Bind(config);
+
+            return config;
         });
 
         services.AddHttpClient(Web3Gateway.HttpClientName)

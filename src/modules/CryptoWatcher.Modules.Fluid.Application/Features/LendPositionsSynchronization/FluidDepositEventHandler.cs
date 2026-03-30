@@ -19,13 +19,15 @@ public class FluidDepositEventHandler
         _tokenEnricher = tokenEnricher;
     }
 
-    public async Task HandleAsync(int chainId, FluidEventDetails eventDetails)
+    public async Task HandleAsync(FluidEventDetails eventDetails)
     {
-        var activePosition =
-            await _positionRepository.GetActivePositionAsync(chainId, eventDetails.Event.Token.Address,
-                eventDetails.WalletAddress);
+        var chainId = eventDetails.ChainId;
+        var token = eventDetails.Event.Token;
 
-        var enrichedToken = await _tokenEnricher.EnrichAsync("", new Uri(""), eventDetails.Event.Token);
+        var activePosition =
+            await _positionRepository.GetActivePositionAsync(chainId, token.Address, eventDetails.WalletAddress);
+
+        var enrichedToken = await _tokenEnricher.EnrichAsync(chainId, token);
 
         activePosition = activePosition switch
         {

@@ -4,13 +4,13 @@ namespace CryptoWatcher.Modules.Fluid.Application.Features.LendPositionsSynchron
 
 public class FluidEventDetails
 {
-    public FluidEvent Event { get; set; } = null!;
-
-    public int ChainId { get; set; }
-
-    public EvmAddress WalletAddress { get; set; } = null!;
-
-    public TransactionHash Hash { get; set; } = null!;
+    public required FluidEvent Event { get; init; } 
     
-    public DateTimeOffset Timestamp { get; set; }
+    public required int ChainId { get; init; }
+
+    public required EvmAddress WalletAddress { get; init; } = null!;
+
+    public required TransactionHash Hash { get; init; } = null!;
+    
+    public required DateTimeOffset Timestamp { get; init; }
 }
