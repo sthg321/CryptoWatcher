@@ -12,9 +12,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Nethereum.Web3" Version="5.8.0"/>
+        <PackageReference Include="Nethereum.Web3" Version="6.1.0" />
         <PackageReference Include="Ardalis.SmartEnum.EFCore" Version="8.2.0"/>
-        <PackageReference Include="EntityFrameworkCore.Projectables" Version="5.0.2" />
+        <PackageReference Include="EntityFrameworkCore.Projectables" Version="6.0.2" />
     </ItemGroup>
 
 </Project>
